@@ -1,5 +1,28 @@
 # MELISA CRM — Güncel Durum
 
+## GitHub çalışma düzeni — 3 Ekim 2026
+
+Bu bölüm kaynak/CI hazırlığının güncel kaydıdır. Önceki uygulama/TEST kabul kayıtları aşağıda korunur; bu çalışma uygulama özelliklerinin genel kabulü değildir.
+
+| Alan | Sonuç |
+| --- | --- |
+| Kapsam | CI workflow, branch/main stratejisi, sürümleme, deploy/rollback, AGENTS ve PR şablonu |
+| Teknik sonuç | Yerel **PASS**; 449/449 offline test, frontend build, JS syntax; tam HEAD geçmişi secret scan PASS |
+| Bağımsız inceleme | PASS; yalnız incelenmiş tekil yanlış pozitif secret fingerprint istisnaları |
+| GitHub CI | PR/push kontrolleri gönderim sonrası beklenecek; henüz PASS denmiyor |
+| Gerçek kullanıcı kabulü | **BEKLİYOR** — bu PR/commit için kullanıcı kabulü kaydı yok; önceki uygulama kabulleri korunur |
+| Branch | `codex/crm-github-workflow-20261003` |
+| Taban commit | `164cb534b9db0cbcb423ceb671e41b87da0ba649` / `codex/crm-agents-on-completion-20261003` |
+| Teslim commit / PR | PR açıldıktan sonra bu bölümün takip kaydına yazılır |
+| TEST commit / paket | Bu görevde deployment yapılmadı; mevcut runtime kimliği **Durum doğrulanmadı** |
+| LIVE commit / paket | Bu görevde deployment yapılmadı; mevcut runtime kimliği **Durum doğrulanmadı** |
+| Release / main | Tag/release/merge yapılmadı; ilk tag yalnız kabul edilmiş main'den |
+| Kalan iş | Son PR head CI sonucunu kaydet; kullanıcı PR'yi kabul etsin; main'e geçiş ve LIVE ayrıca ele alınır |
+
+[Çalışma düzeni](docs/development/GITHUB_WORKFLOW.md) · [Sürümleme](docs/development/RELEASES.md) · [Deploy/rollback](docs/development/DEPLOY_ROLLBACK.md).
+
+Mevcut büyük bundle uyarısı sürer; runtime/telefon/mobil/SQL/provider kabulü bu CI kapsamında değil. Ana checkout'taki iş öncesi CRM_STATUS.md değişikliği bu izole çalışma commit'lerine alınmadan korunur.
+
 Source of truth: [CRM_FINISH_PLAN.md](CRM_FINISH_PLAN.md)
 
 ## Aktif geliştirme
