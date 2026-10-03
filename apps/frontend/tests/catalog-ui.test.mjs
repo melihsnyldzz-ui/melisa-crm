@@ -11,7 +11,7 @@ import {CATALOG_CRM_ONLY_ENABLED} from '../src/releaseCapabilities.js';
 test('actual ERP connection panel exposes a clean corrective form only for recoverable auth states',async()=>{
  mkdirSync('.sites-runtime',{recursive:true});const file='.sites-runtime/catalog-ui-test.mjs';
  try {
-  buildSync({entryPoints:['src/catalog/CatalogWorkspace.jsx'],outfile:file,bundle:true,platform:'node',format:'esm',jsx:'automatic',external:['react','@phosphor-icons/react'],loader:{'.css':'empty'}});
+  buildSync({absWorkingDir:process.cwd(),tsconfigRaw:{},entryPoints:[process.cwd()+'/src/catalog/CatalogWorkspace.jsx'],outfile:file,bundle:true,platform:'node',format:'esm',jsx:'automatic',external:['react','@phosphor-icons/react'],loader:{'.css':'empty'}});
   const {CatalogConnectionPanel}=await import(pathToFileURL(`${process.cwd()}/${file}`).href);
   const render=source=>renderToStaticMarkup(React.createElement(CatalogConnectionPanel,{customer:{name:'Synthetic customer'},source,onClose(){},onRead(){},onSignIn(){},onDisconnect(){}}));
   for (const code of ['USER_ERP_SESSION_REQUIRED','CATALOG_SESSION_REVOKED','ERP_LOGIN_REJECTED']) {

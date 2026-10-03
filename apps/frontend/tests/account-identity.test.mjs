@@ -20,7 +20,7 @@ test('account identity only allows /auth/me id, username and raw reported role',
 test('account info SSR cannot leak session fields or invent a Patron identity',async()=>{
  mkdirSync('.sites-runtime',{recursive:true});const file='.sites-runtime/account-info-test.mjs';
  try{
-  buildSync({entryPoints:['src/AccountInfo.jsx'],outfile:file,bundle:true,platform:'node',format:'esm',jsx:'automatic',external:['react']});
+  buildSync({absWorkingDir:process.cwd(),tsconfigRaw:{},entryPoints:[process.cwd()+'/src/AccountInfo.jsx'],outfile:file,bundle:true,platform:'node',format:'esm',jsx:'automatic',external:['react']});
   const {default:AccountInfo}=await import(pathToFileURL(`${process.cwd()}/${file}`).href);
   const html=renderToStaticMarkup(React.createElement(AccountInfo,{identity:{id:'42',username:'review',role:'mudur',accessToken:'DO_NOT_RENDER',password:'ALSO_PRIVATE'}}));
   assert.match(html,/42/);assert.match(html,/review/);assert.match(html,/mudur/);assert.doesNotMatch(html,/DO_NOT_RENDER|ALSO_PRIVATE|Patron/);
@@ -36,7 +36,7 @@ test('mobile-preview selects layout only and still uses the real application log
 test('production first render with or without a remembered CRM token exposes only the login gate',async()=>{
  mkdirSync('.sites-runtime',{recursive:true});const file='.sites-runtime/anonymous-app-test.mjs';const previousWindow=globalThis.window;
  try{
-  buildSync({entryPoints:['src/App.jsx'],outfile:file,bundle:true,platform:'node',format:'esm',jsx:'automatic',define:{'import.meta.env.DEV':'false'},external:['react','@phosphor-icons/react'],loader:{'.css':'empty'}});
+  buildSync({absWorkingDir:process.cwd(),tsconfigRaw:{},entryPoints:[process.cwd()+'/src/App.jsx'],outfile:file,bundle:true,platform:'node',format:'esm',jsx:'automatic',define:{'import.meta.env.DEV':'false'},external:['react','@phosphor-icons/react'],loader:{'.css':'empty'}});
   const {App}=await import(pathToFileURL(`${process.cwd()}/${file}`).href);
   for(const remembered of ['', 'synthetic-remembered-token']){
    globalThis.window={location:{pathname:'/mobile-preview',search:'?demo=1'},matchMedia:()=>({matches:true}),sessionStorage:{getItem:key=>key==='melisa-crm-access-token'?remembered:null},localStorage:{getItem:()=>null}};

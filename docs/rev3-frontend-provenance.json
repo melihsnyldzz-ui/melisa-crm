@@ -1,0 +1,433 @@
+{
+  "sealSha256": "77e68203ff1f1e28d8ba5b0430caef042badab8f072b5598e854295e29ecd93a",
+  "status": "NOT_INSTALLED",
+  "phase": "frontend",
+  "changed": 8,
+  "added": 2,
+  "files": [
+    {
+      "source": "deployment-dependency/frontend/src/accountIdentity.js",
+      "target": "apps/frontend/src/accountIdentity.js",
+      "sourceSha256": "080c3e6d03618bd0f6697021897e7087c305185d59d67c4e0b3c81a5099f56f5",
+      "copiedSha256": "080c3e6d03618bd0f6697021897e7087c305185d59d67c4e0b3c81a5099f56f5",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/frontend/src/AccountInfo.jsx",
+      "target": "apps/frontend/src/AccountInfo.jsx",
+      "sourceSha256": "1b9a7a8e3982153fe977dedc7cd977d42583e0234ab2367dcbffd57f5a470f09",
+      "copiedSha256": "1b9a7a8e3982153fe977dedc7cd977d42583e0234ab2367dcbffd57f5a470f09",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/frontend/src/App.jsx",
+      "target": "apps/frontend/src/App.jsx",
+      "sourceSha256": "e9af13f2dee36a49ad1703eacb9ef48dafbe8e91661f7fc6becc42965d01780d",
+      "copiedSha256": "e9af13f2dee36a49ad1703eacb9ef48dafbe8e91661f7fc6becc42965d01780d",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "deployment-dependency/frontend/src/catalog/catalog.css",
+      "target": "apps/frontend/src/catalog/catalog.css",
+      "sourceSha256": "632263573551c6bc4e590eed08286e56c16bb07cb854bcb8f60b3504c6ecf0b4",
+      "copiedSha256": "632263573551c6bc4e590eed08286e56c16bb07cb854bcb8f60b3504c6ecf0b4",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/frontend/src/catalog/CatalogBuilder.jsx",
+      "target": "apps/frontend/src/catalog/CatalogBuilder.jsx",
+      "sourceSha256": "e9876ef62a460c157ce6a320c9c54f8f1a3c5533f028fce29907175070bdb79b",
+      "copiedSha256": "e9876ef62a460c157ce6a320c9c54f8f1a3c5533f028fce29907175070bdb79b",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/frontend/src/catalog/CatalogWorkspace.jsx",
+      "target": "apps/frontend/src/catalog/CatalogWorkspace.jsx",
+      "sourceSha256": "e0bfbe6e390e5f8d36efbc46a67743409b9398ff9e75e11eb581aa40b76ac64e",
+      "copiedSha256": "e0bfbe6e390e5f8d36efbc46a67743409b9398ff9e75e11eb581aa40b76ac64e",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/frontend/src/catalog/existingSession.js",
+      "target": "apps/frontend/src/catalog/existingSession.js",
+      "sourceSha256": "9f4286a168541b428d0d639f4efa0a10c7b11a0d5d6e63419f792ee665792202",
+      "copiedSha256": "9f4286a168541b428d0d639f4efa0a10c7b11a0d5d6e63419f792ee665792202",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/frontend/src/catalog/existingStock.js",
+      "target": "apps/frontend/src/catalog/existingStock.js",
+      "sourceSha256": "48911239b4af138cd9b61fde4d7755c88c71685d352d5f5af5f8648a91c4a270",
+      "copiedSha256": "48911239b4af138cd9b61fde4d7755c88c71685d352d5f5af5f8648a91c4a270",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/frontend/src/catalog/exports.js",
+      "target": "apps/frontend/src/catalog/exports.js",
+      "sourceSha256": "fd6d0a065e5f0eff09119307d73aeb500eb5883a9dabc69a7e0dada90c463ef0",
+      "copiedSha256": "fd6d0a065e5f0eff09119307d73aeb500eb5883a9dabc69a7e0dada90c463ef0",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/frontend/src/catalog/font.js",
+      "target": "apps/frontend/src/catalog/font.js",
+      "sourceSha256": "1cde08d0272978d93ad7e7c0f386c45200c618058384aabba79449a0147b69ac",
+      "copiedSha256": "1cde08d0272978d93ad7e7c0f386c45200c618058384aabba79449a0147b69ac",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/frontend/src/catalog/liveFields.js",
+      "target": "apps/frontend/src/catalog/liveFields.js",
+      "sourceSha256": "77e9ea307d09cec61c8dcae5869f9a803d90593e16495684470c34edb1be46ba",
+      "copiedSha256": "77e9ea307d09cec61c8dcae5869f9a803d90593e16495684470c34edb1be46ba",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/frontend/src/catalog/logout.js",
+      "target": "apps/frontend/src/catalog/logout.js",
+      "sourceSha256": "ffb78c55f65f9bf88701fed8b48596d7515d419a63b5474b301d9d0b16253e05",
+      "copiedSha256": "ffb78c55f65f9bf88701fed8b48596d7515d419a63b5474b301d9d0b16253e05",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/frontend/src/catalog/model.js",
+      "target": "apps/frontend/src/catalog/model.js",
+      "sourceSha256": "5142206df1a7dbfba2a916551591ff23bf347ae37af05c0e887768abb9d37a2c",
+      "copiedSha256": "5142206df1a7dbfba2a916551591ff23bf347ae37af05c0e887768abb9d37a2c",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/frontend/src/catalog/model.test.js",
+      "target": "apps/frontend/src/catalog/model.test.js",
+      "sourceSha256": "e56afaaa71383a67787bfde1965bd5ef89e827ef204c496224b8a136d39c1508",
+      "copiedSha256": "e56afaaa71383a67787bfde1965bd5ef89e827ef204c496224b8a136d39c1508",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/frontend/src/catalog/photoCache.js",
+      "target": "apps/frontend/src/catalog/photoCache.js",
+      "sourceSha256": "5c254179b89fafe94d1c6687391fe1ed025c7b677eee2ada2634f94e18fbfcd8",
+      "copiedSha256": "5c254179b89fafe94d1c6687391fe1ed025c7b677eee2ada2634f94e18fbfcd8",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/frontend/src/catalog/session.js",
+      "target": "apps/frontend/src/catalog/session.js",
+      "sourceSha256": "46a33e840e5395ecad1660c036d33d56fdc9c11bd96329467fef8c9e40791b0e",
+      "copiedSha256": "46a33e840e5395ecad1660c036d33d56fdc9c11bd96329467fef8c9e40791b0e",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/frontend/src/catalog/source.js",
+      "target": "apps/frontend/src/catalog/source.js",
+      "sourceSha256": "72ec8e912da20b6f9aa6635093d135958389f11a586f9fd4f40955a391694d20",
+      "copiedSha256": "72ec8e912da20b6f9aa6635093d135958389f11a586f9fd4f40955a391694d20",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/frontend/src/contactIdentity.js",
+      "target": "apps/frontend/src/contactIdentity.js",
+      "sourceSha256": "f16149f52b9c829882464b9732d13cf7f6d5095372eaddd2b388ff1d8dd8f3ae",
+      "copiedSha256": "f16149f52b9c829882464b9732d13cf7f6d5095372eaddd2b388ff1d8dd8f3ae",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/frontend/src/CustomerPhone.jsx",
+      "target": "apps/frontend/src/CustomerPhone.jsx",
+      "sourceSha256": "86e2838b1c6a87071b9abc1b09cb049350cc793e1e72604b248e5d102eb531fc",
+      "copiedSha256": "86e2838b1c6a87071b9abc1b09cb049350cc793e1e72604b248e5d102eb531fc",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/frontend/src/experience.css",
+      "target": "apps/frontend/src/experience.css",
+      "sourceSha256": "81688ec46aac8746b2ece11b8f537ce5e708a9de9949b4af6c241d3f8e3c39f2",
+      "copiedSha256": "81688ec46aac8746b2ece11b8f537ce5e708a9de9949b4af6c241d3f8e3c39f2",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/frontend/src/liveApi.js",
+      "target": "apps/frontend/src/liveApi.js",
+      "sourceSha256": "0f1af0ae8a860175b89caaca6a5bb47acc3555f05aec89b476f0ef9c3cdf1725",
+      "copiedSha256": "0f1af0ae8a860175b89caaca6a5bb47acc3555f05aec89b476f0ef9c3cdf1725",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/frontend/src/main.jsx",
+      "target": "apps/frontend/src/main.jsx",
+      "sourceSha256": "00fb1bff88f997cd7104ad763929e40090cb06f1af13df721aa5a54837c804da",
+      "copiedSha256": "00fb1bff88f997cd7104ad763929e40090cb06f1af13df721aa5a54837c804da",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/frontend/src/orderPreview.js",
+      "target": "apps/frontend/src/orderPreview.js",
+      "sourceSha256": "4324c323703e8650e0275e56312af5e75bc2741e21680c7874b16f99b1d28d79",
+      "copiedSha256": "4324c323703e8650e0275e56312af5e75bc2741e21680c7874b16f99b1d28d79",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "deployment-dependency/frontend/src/outboundMedia.js",
+      "target": "apps/frontend/src/outboundMedia.js",
+      "sourceSha256": "92499616ca9d5c12e660ab45b5a9941db312a0b9672c93f3732bcc1fc5752705",
+      "copiedSha256": "92499616ca9d5c12e660ab45b5a9941db312a0b9672c93f3732bcc1fc5752705",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "deployment-dependency/frontend/src/permissionRefresh.js",
+      "target": "apps/frontend/src/permissionRefresh.js",
+      "sourceSha256": "4378c900687c7a6c3e24079c5e7f05469b25ea2e6f9f0cf52847a04d72c43844",
+      "copiedSha256": "4378c900687c7a6c3e24079c5e7f05469b25ea2e6f9f0cf52847a04d72c43844",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/frontend/src/releaseCapabilities.js",
+      "target": "apps/frontend/src/releaseCapabilities.js",
+      "sourceSha256": "71c7d4afb206c182a3839c6c6fcf823d389e0bfcd6491a451a61b6d1c63fcf33",
+      "copiedSha256": "71c7d4afb206c182a3839c6c6fcf823d389e0bfcd6491a451a61b6d1c63fcf33",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "deployment-dependency/frontend/src/requestControl.js",
+      "target": "apps/frontend/src/requestControl.js",
+      "sourceSha256": "f43dd208e40979e484de3d69cea3891f4370a784e137dc1df59712990802d680",
+      "copiedSha256": "f43dd208e40979e484de3d69cea3891f4370a784e137dc1df59712990802d680",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/frontend/src/sessionLoader.js",
+      "target": "apps/frontend/src/sessionLoader.js",
+      "sourceSha256": "059e0b36312d2a617c28bad549c385902e40fc0ef1ca6caca22ccc12a23792f2",
+      "copiedSha256": "059e0b36312d2a617c28bad549c385902e40fc0ef1ca6caca22ccc12a23792f2",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/frontend/src/styles.css",
+      "target": "apps/frontend/src/styles.css",
+      "sourceSha256": "179d188ca59af3caabf1bf8bb13b71f688bf08ce1241b6ff761d47369ab76197",
+      "copiedSha256": "179d188ca59af3caabf1bf8bb13b71f688bf08ce1241b6ff761d47369ab76197",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/frontend/src/video/JitsiPilot.jsx",
+      "target": "apps/frontend/src/video/JitsiPilot.jsx",
+      "sourceSha256": "8a2ba583ae8efc566c799568c2502af2b56d71942e096194ca0e4a84fa458bff",
+      "copiedSha256": "8a2ba583ae8efc566c799568c2502af2b56d71942e096194ca0e4a84fa458bff",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "deployment-dependency/frontend/src/video/pilot.js",
+      "target": "apps/frontend/src/video/pilot.js",
+      "sourceSha256": "cf1c6c2bcc90a6a52c54bded047b60f2e9b1b311cfec364c66b7da7768087726",
+      "copiedSha256": "cf1c6c2bcc90a6a52c54bded047b60f2e9b1b311cfec364c66b7da7768087726",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/frontend/src/video/video.css",
+      "target": "apps/frontend/src/video/video.css",
+      "sourceSha256": "422068ce483573c1bd0c2111e849374ff8fe23e684dc64d3ba44711199396e79",
+      "copiedSha256": "422068ce483573c1bd0c2111e849374ff8fe23e684dc64d3ba44711199396e79",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/frontend/src/whatsapp.css",
+      "target": "apps/frontend/src/whatsapp.css",
+      "sourceSha256": "f1dae3f57ebb23f8f87b00c71b30095d2b4e7e3a70ef0bb35d3a3d528e6ed4d0",
+      "copiedSha256": "f1dae3f57ebb23f8f87b00c71b30095d2b4e7e3a70ef0bb35d3a3d528e6ed4d0",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/frontend/tests/account-identity.test.mjs",
+      "target": "apps/frontend/tests/account-identity.test.mjs",
+      "sourceSha256": "ce1850d196e4258b90dcd4d6710613cbb0aad5bf8a30101f78cdbd2cc31d45c7",
+      "copiedSha256": "ce1850d196e4258b90dcd4d6710613cbb0aad5bf8a30101f78cdbd2cc31d45c7",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "deployment-dependency/frontend/tests/catalog-api.test.mjs",
+      "target": "apps/frontend/tests/catalog-api.test.mjs",
+      "sourceSha256": "c3a69965a13b517d645409d3a2dce730ab80024ed092dae20b6d0c3380278987",
+      "copiedSha256": "c3a69965a13b517d645409d3a2dce730ab80024ed092dae20b6d0c3380278987",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/frontend/tests/catalog-auth-api.test.mjs",
+      "target": "apps/frontend/tests/catalog-auth-api.test.mjs",
+      "sourceSha256": "147c28ba327bbdee1849fb4653bcb475a7ae203dbdb4fe43714124e873ab78bf",
+      "copiedSha256": "147c28ba327bbdee1849fb4653bcb475a7ae203dbdb4fe43714124e873ab78bf",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/frontend/tests/catalog-logout.test.mjs",
+      "target": "apps/frontend/tests/catalog-logout.test.mjs",
+      "sourceSha256": "cad0063e5ec00a5d5eddabe91dc9045a785b0722acb3fbea863c645b0851e188",
+      "copiedSha256": "cad0063e5ec00a5d5eddabe91dc9045a785b0722acb3fbea863c645b0851e188",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/frontend/tests/catalog-origin-worker.test.mjs",
+      "target": "apps/frontend/tests/catalog-origin-worker.test.mjs",
+      "sourceSha256": "06733d100b70286e76134ac5dcd02bb28e176df5bbce0aae0f1abfb0a85294bd",
+      "copiedSha256": "06733d100b70286e76134ac5dcd02bb28e176df5bbce0aae0f1abfb0a85294bd",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/frontend/tests/catalog-session.test.mjs",
+      "target": "apps/frontend/tests/catalog-session.test.mjs",
+      "sourceSha256": "462f9b89dd28745e878a656391164776bfacac38cff85bc709c0debb5ef7cadc",
+      "copiedSha256": "462f9b89dd28745e878a656391164776bfacac38cff85bc709c0debb5ef7cadc",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/frontend/tests/catalog-source.test.mjs",
+      "target": "apps/frontend/tests/catalog-source.test.mjs",
+      "sourceSha256": "48b7ba53b339ee054f1281c81e2379b7ee27c24ef6db4c6af48a587be5765b8d",
+      "copiedSha256": "48b7ba53b339ee054f1281c81e2379b7ee27c24ef6db4c6af48a587be5765b8d",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/frontend/tests/catalog-ui.test.mjs",
+      "target": "apps/frontend/tests/catalog-ui.test.mjs",
+      "sourceSha256": "3e72bb8f0c91b402ed7585489b9e0ad6b3c7c465799428f1a58db3d1abf04647",
+      "copiedSha256": "3e72bb8f0c91b402ed7585489b9e0ad6b3c7c465799428f1a58db3d1abf04647",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "deployment-dependency/frontend/tests/contact-identity.test.mjs",
+      "target": "apps/frontend/tests/contact-identity.test.mjs",
+      "sourceSha256": "a365eae6ebe258e177ede20daac967f2440186dee39e49ef22f3f6ac5cd85721",
+      "copiedSha256": "a365eae6ebe258e177ede20daac967f2440186dee39e49ef22f3f6ac5cd85721",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/frontend/tests/existing-stock-recovery.test.mjs",
+      "target": "apps/frontend/tests/existing-stock-recovery.test.mjs",
+      "sourceSha256": "e45e061b59d86d8e3d77a91547a7d5fcba0f6d5da5c7760cfeda4daad0689f77",
+      "copiedSha256": "e45e061b59d86d8e3d77a91547a7d5fcba0f6d5da5c7760cfeda4daad0689f77",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "deployment-dependency/frontend/tests/gateway.test.mjs",
+      "target": "apps/frontend/tests/gateway.test.mjs",
+      "sourceSha256": "3eab3a51230b3d697ecfd25a4ce9a566bf1bcb71077aa0ee29dc0d002400bbcf",
+      "copiedSha256": "3eab3a51230b3d697ecfd25a4ce9a566bf1bcb71077aa0ee29dc0d002400bbcf",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/frontend/tests/live-media.test.mjs",
+      "target": "apps/frontend/tests/live-media.test.mjs",
+      "sourceSha256": "13d178c2ac61e6909a319f082929d9554c08559a4a4950e5340e647680c02c47",
+      "copiedSha256": "13d178c2ac61e6909a319f082929d9554c08559a4a4950e5340e647680c02c47",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/frontend/tests/order-preview.test.mjs",
+      "target": "apps/frontend/tests/order-preview.test.mjs",
+      "sourceSha256": "14257fe6702947cbe543d5211c35a8e1efa35eb6b3d5dd1f6781ebd95d55e0cd",
+      "copiedSha256": "14257fe6702947cbe543d5211c35a8e1efa35eb6b3d5dd1f6781ebd95d55e0cd",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "deployment-dependency/frontend/tests/outbound-media.test.mjs",
+      "target": "apps/frontend/tests/outbound-media.test.mjs",
+      "sourceSha256": "414517a7c5536531d06fb5a638d3966a215d14dc9a949d8400c6e07ca107f72f",
+      "copiedSha256": "414517a7c5536531d06fb5a638d3966a215d14dc9a949d8400c6e07ca107f72f",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/frontend/tests/permission-refresh.test.mjs",
+      "target": "apps/frontend/tests/permission-refresh.test.mjs",
+      "sourceSha256": "dcb1d373054867ef203af0b167c98de34be931b6d20f1bf566967e2d5a98deac",
+      "copiedSha256": "dcb1d373054867ef203af0b167c98de34be931b6d20f1bf566967e2d5a98deac",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/frontend/tests/request-control.test.mjs",
+      "target": "apps/frontend/tests/request-control.test.mjs",
+      "sourceSha256": "9fe755334efbb5f727cfc73bddc2954514a2b6d159f6fe865a5c5b4ebd928128",
+      "copiedSha256": "9fe755334efbb5f727cfc73bddc2954514a2b6d159f6fe865a5c5b4ebd928128",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/frontend/tests/session-loader.test.mjs",
+      "target": "apps/frontend/tests/session-loader.test.mjs",
+      "sourceSha256": "d7f45530d2ea9510cd83433e05bb7ef5e5219d1d22b79e468346cbfffa4a9e60",
+      "copiedSha256": "d7f45530d2ea9510cd83433e05bb7ef5e5219d1d22b79e468346cbfffa4a9e60",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/frontend/tests/sites-worker.test.mjs",
+      "target": "apps/frontend/tests/sites-worker.test.mjs",
+      "sourceSha256": "5ccd41d2170c008f55a2cf0a549f07bbf974c1eb01842cc3639d5ca5117f3784",
+      "copiedSha256": "5ccd41d2170c008f55a2cf0a549f07bbf974c1eb01842cc3639d5ca5117f3784",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/frontend/tests/translation-back.test.mjs",
+      "target": "apps/frontend/tests/translation-back.test.mjs",
+      "sourceSha256": "5a7a1e99272f384cc983a24696afcc58d2a299f3b35476a8b195feb68dc2fad2",
+      "copiedSha256": "5a7a1e99272f384cc983a24696afcc58d2a299f3b35476a8b195feb68dc2fad2",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/frontend/tests/video-pilot.test.mjs",
+      "target": "apps/frontend/tests/video-pilot.test.mjs",
+      "sourceSha256": "4fac8a028b0c288443ec3df264f8047c3ea4b94858f009897fd5de5e51d63c55",
+      "copiedSha256": "065c4b0d239dcd68e8305c5818c021d33d70f9e1d806d2d83eba26599701c319",
+      "privacyAdaptation": true,
+      "changed": true
+    }
+  ]
+}

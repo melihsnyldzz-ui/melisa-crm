@@ -18,7 +18,7 @@ test('room links contain only fixed Jitsi origin, opaque entropy and optional mu
   const room=createRoomName(fakeCrypto), url=new URL(roomURL(room,{join:true}));
   assert.equal(url.protocol,'https:'); assert.equal(url.hostname,'meet.jit.si'); assert.equal(url.username,''); assert.equal(url.search,'');
   assert.equal(url.hash,'#config.startWithAudioMuted=true&config.startWithVideoMuted=true');
-  for(const bad of ['', 'Customer-905387217733', '../x', '//other.test', 'MelisaPilot-'+ 'a'.repeat(32)+'?token=private', 'https://meet.jit.si/name']) assert.throws(()=>roomURL(bad));
+  for(const bad of ['', 'Customer-19999999999', '../x', '//other.test', 'MelisaPilot-'+ 'a'.repeat(32)+'?token=private', 'https://meet.jit.si/name']) assert.throws(()=>roomURL(bad));
   const preview=invitationPreview(room); assert(preview.includes(url.href)); assert(!preview.includes('müşteriId')); assert(!preview.includes('token='));
 });
 test('missing secure crypto fails closed rather than using time, phone, names or Math.random',()=>{
@@ -51,7 +51,7 @@ test('offer selection is an explicit local allowlist with no price, quantity, su
 test('actual component initially renders no room link or embedded media and only a read-only non-sending preview flow',async()=>{
   mkdirSync('.sites-runtime',{recursive:true});const filename='.sites-runtime/video-pilot-test.mjs';
   try{
-    buildSync({entryPoints:['src/video/JitsiPilot.jsx'],outfile:filename,bundle:true,platform:'node',format:'esm',jsx:'automatic',external:['react','@phosphor-icons/react'],loader:{'.css':'empty'}});
+    buildSync({absWorkingDir:process.cwd(),tsconfigRaw:{},entryPoints:[process.cwd()+'/src/video/JitsiPilot.jsx'],outfile:filename,bundle:true,platform:'node',format:'esm',jsx:'automatic',external:['react','@phosphor-icons/react'],loader:{'.css':'empty'}});
     const {default:JitsiPilot}=await import(pathToFileURL(`${process.cwd()}/${filename}`).href);
     const html=renderToStaticMarkup(React.createElement(JitsiPilot,{customer:{name:'Synthetic <script>Customer</script>',phone:'+0000'},products:[],isCurrent:()=>true,onClose:()=>{throw Error('SSR must not close');}}));
     assert.match(html,/Davet bağlantısını hazırla/);assert.match(html,/Gönderilmeyen|davet önizlemesi/);assert.match(html,/&lt;script&gt;/);assert.doesNotMatch(html,/<script|<iframe|<video|<audio|href=|MelisaPilot-[a-f0-9]{32}/);

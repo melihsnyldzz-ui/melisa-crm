@@ -22,6 +22,11 @@ export default function JitsiPilot({ customer, products = [], isCurrent, onClose
     return () => { cleanup(); session.close(); };
   }, []);
   const close = () => { sessionRef.current.close(); closeRef.current(); };
+  const guardJoin = event => {
+    if (!disclosureAccepted || sessionRef.current.current() !== room) {
+      event.preventDefault(); close();
+    }
+  };
   const prepare = () => {
     try { setRoom(sessionRef.current.prepare()); setFeedback('Bağlantı hazır. Henüz kimseye gönderilmedi ve görüşmeye katılmadınız.'); }
     catch (error) { setFeedback(error.message); }
@@ -46,7 +51,7 @@ export default function JitsiPilot({ customer, products = [], isCurrent, onClose
       <label className="pilot-preview">Gönderilmeyen davet önizlemesi<textarea readOnly rows={6} value={invitationPreview(room)} aria-label="Gönderilmeyen davet önizlemesi" /></label>
       <button type="button" className="secondary-button" onClick={copy}><Copy size={18}/>Daveti kopyala</button>
       <label className="pilot-consent"><input type="checkbox" checked={disclosureAccepted} onChange={event => setDisclosureAccepted(event.target.checked)} /><span>Jitsi’nin ayrı bir hizmet olduğunu ve cihaz izinlerini orada kontrol edeceğimi anladım</span></label>
-      {disclosureAccepted ? <a className="primary-button pilot-join" href={roomURL(room, { join: true })} target="_blank" rel="noopener noreferrer" referrerPolicy="no-referrer" onClick={event => { if (sessionRef.current.current() !== room) { event.preventDefault(); close(); } }}><VideoCamera size={19}/>Jitsi’ye katıl<ArrowRight size={17}/></a> : <button className="primary-button pilot-join" type="button" disabled>Jitsi’ye katıl</button>}
+      {disclosureAccepted ? <a className="primary-button pilot-join" href={roomURL(room, { join: true })} target="_blank" rel="noopener noreferrer" referrerPolicy="no-referrer" onClick={guardJoin} onAuxClick={guardJoin} onContextMenu={guardJoin} onDragStart={guardJoin}><VideoCamera size={19}/>Jitsi’ye katıl<ArrowRight size={17}/></a> : <button className="primary-button pilot-join" type="button" disabled>Jitsi’ye katıl</button>}
       <small className="pilot-muted-note">Ses ve görüntü kapalı başlangıç tercihi iletilir; harici hizmette geçerli olduğunu kontrol edin.</small>
     </>}
     <div className="pilot-feedback" role="status" aria-live="polite">{feedback}</div>

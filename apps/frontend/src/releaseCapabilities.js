@@ -8,4 +8,4 @@ export const CATALOG_ENABLED = true;
 export const CATALOG_CRM_ONLY_ENABLED = true;
 
 // Local preparation only; activate after protected backend acceptance.
-export const CATALOG_EXISTING_STOCK_ENABLED = false;
+export const CATALOG_EXISTING_STOCK_ENABLED = true;

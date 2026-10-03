@@ -1,16 +1,16 @@
 // The existing gateway takes one base64 file in JSON, not multipart upload.
 export const MAX_FILE_BYTES = 3 * 1024 * 1024;
 export const MAX_REQUEST_BYTES = 5 * 1024 * 1024;
-export const ALLOWED_MIME_TYPES = ["image/jpeg", "image/png", "image/webp", "application/pdf"];
+export const ALLOWED_MIME_TYPES = ["image/jpeg", "image/png", "image/webp", "application/pdf", "text/plain"];
 export function validateAttachmentFile(file) {
-  if (!file || !ALLOWED_MIME_TYPES.includes(file.type)) throw new Error("Yalnız JPEG, PNG, WebP fotoğraf veya PDF seçin.");
+  if (!file || !ALLOWED_MIME_TYPES.includes(file.type)) throw new Error("Yalnız JPEG, PNG, WebP fotoğraf, PDF veya TXT seçin.");
   if (!file.size) throw new Error("Boş dosya gönderilemez.");
   if (file.size > MAX_FILE_BYTES) throw new Error("Dosya en fazla 3 MB olabilir. Daha küçük bir dosya seçin.");
 }
 export function validateFileSignature(bytes, type) {
   const starts = (...expected) => expected.every((value, index) => bytes[index] === value);
   const ascii = (offset, text) => [...text].every((char, i) => bytes[offset + i] === char.charCodeAt(0));
-  const valid = type === "image/jpeg" ? starts(255,216,255) : type === "image/png" ? starts(137,80,78,71,13,10,26,10) : type === "image/webp" ? ascii(0,"RIFF") && ascii(8,"WEBP") : type === "application/pdf" && ascii(0,"%PDF-");
+  const valid = type === "image/jpeg" ? starts(255,216,255) : type === "image/png" ? starts(137,80,78,71,13,10,26,10) : type === "image/webp" ? ascii(0,"RIFF") && ascii(8,"WEBP") : type === "text/plain" ? bytes.length > 0 && !bytes.some(b => b < 9 || b > 13 && b < 32 || b === 127) : type === "application/pdf" && ascii(0,"%PDF-");
   if (!valid) throw new Error("Dosyanın içeriği seçilen türle eşleşmiyor. Geçerli bir fotoğraf veya PDF seçin.");
 }
 export async function prepareAttachment(file) {
