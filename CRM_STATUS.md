@@ -26,3 +26,5 @@ Kritik kalan işler: Bağımsız inceleme; installer owner/path uyarlaması; ger
 - Kullanıcı PR/commit kabulü: **BEKLİYOR**. Bitiş planındaki eski uygulama kabulleri bu main PR'sinin kabulü değildir.
 - TEST/LIVE commit ve runtime sağlığı: **Durum doğrulanmadı**; runtime işlemi yapılmadı.
 - Sonraki tek iş: PR'nin tam head CI kontrolleri başarılı olduktan sonra kullanıcı altyapı PR'sini inceler ve main merge kararını verir. Eski PR #4 korunur.
+
+- Altyapı teslimi: [main hedefli PR #5](https://github.com/melihsnyldzz-ui/melisa-crm/pull/5); [tam güncel head/Checks](https://github.com/melihsnyldzz-ui/melisa-crm/pull/5/checks). İlk altyapı commit'i `6c804e5527efc07bd2fe4039b31739e9bb3826da` için [push CI](https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/37154719023) iki check PASS. Bu status kaydı sonrası son head'in push/PR kontrolleri ayrıca yeşil olmalıdır; güncel head PR'den okunur. Merge/kullanıcı kabulü BEKLİYOR.
