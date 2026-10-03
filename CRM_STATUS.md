@@ -1,6 +1,6 @@
 # MELISA CRM — Güncel Durum
 
-Güncelleme: **4 Ekim 2026 — ERP taslak gerçek kullanım kabulü tamamlandı**. İş sırası: [CRM_FINISH_PLAN.md](CRM_FINISH_PLAN.md).
+Güncelleme: **4 Ekim 2026 — ERP taslak kabulü korunur; başka kişiden gelen yazışma eksikliği bildirildi**. İş sırası: [CRM_FINISH_PLAN.md](CRM_FINISH_PLAN.md).
 
 Çalışan CRM baseline korunmuştur. Bu tur yalnız 7733 test hattıyla gerçek yazışma yapıldı; explorer, frontend/backend ve bağımsız reviewer kullanıldı. HTTP 200, build ve unit test tek başına yeşil gerekçe değildir. LIVE deployment yapılmadı, başka müşteriye mesaj gönderilmedi.
 
@@ -13,6 +13,8 @@ Güncelleme: **4 Ekim 2026 — ERP taslak gerçek kullanım kabulü tamamlandı*
 - Katalog gerçek Vega ürünleri ve MELISA_ERP_V2 aktif-primary fotoğraf metadata'sını salt okunur kullanır. Mevcut fotoğraf dosyaları değiştirilmedi. Güncel kanonik ERP release kaynakları kullanıldı.
 
 ## Bu tur gerçek sonuçlar ve düzeltmeler
+
+**Yeni günlük kullanım eksiği — başka kişiden gelen mesaj:** Kullanıcı WhatsApp uygulamasında yazan başka kişinin burada görünmediğini bildirdi; bu kişi 7733 test hattı değildir. Açık ekran 62400 TEST ve aramada 7733 vardı. TEST okuyucusu yalnız bu telefonun mesajlarını konuşma55'e aktarır. Daha önemlisi, kanonik `normalizeWaapiEvent` başka peer'leri `isWaapiTrialPeer` ile ignored yapar ve phone'u tek test alıcısına bağlar. Çalışan MelisaWhatsAppCrmGateway servisinin kayıtlı AppDirectory'sindeki mevcut kaynak da aynı filtreyi ve sabit 7733 alıcısını taşır (salt okunur inceleme). Bu nedenle 7733 kabulü genel müşteri gelen mesajları için yeşil sayılmaz. LIVE sağlık providerConnected/bridgeReady/sendReady=true olsa da genel mesaj alımını kanıtlamaz. Bu tur LIVE/source arşivi/provider ayarı değiştirilmedi; başka müşteriye mesaj gönderilmedi veya yeni konuşma aktarılmadı. Samsung Tailscale bağlantısı bulundu; WhatsApp'taki ilgili yazışmayı karşılaştırma henüz sürüyor. Genel inbound/exact-peer/konuşma eşleme eksikliği kapanmadan günlük mesaj akışı PASS değildir.
 
 **Metin:** Kullanıcı yanıtının gelmediğini bildirdi. Kapalı kanonik TEST alıcısı çalıştırıldı; Merhaba test, Kkk, Haloo normal ekranda göründü. Haloo otomatik Merhaba çevrildi. Bu TEST okuyucu davranışı tüm LIVE alıcılara genellenmez.
 
@@ -48,7 +50,7 @@ Tek güncel liste. Kritik sayım 13 başlıktaki açık sarı/kırmızı satırl
 
 | Madde | Sınıflandırma | Gerçek sonuç ve kalan somut iş |
 | --- | --- | --- |
-| Gelen/giden metin | 🟢 ÇALIŞIYOR — gerçek kullanım kanıtı var | Gerçek gönderim ve kullanıcı yanıtları ekranda. Kapalı TEST alıcısı açıldı; devam sayfası hatası giderildi. |
+| Gelen/giden metin | 🔴 EKSİK / BOZUK — gerçekten geliştirme gerekiyor | 7733 gerçek gönderim/yanıt kabulü korunur. Başka kişiden yeni WhatsApp yazışması bildirilmiş; mevcut incoming normalizer yalnız test peer'ini kabul ediyor. Genel müşteri gelen mesajı ve doğru konuşmaya eşleme yolu eksik; ilgili Samsung yazışmasının karşılaştırması sürüyor. |
 | Fotoğraf | 🟢 ÇALIŞIYOR — gerçek kullanım kanıtı var | Telefon açma yanıtı ve gelen fotoğrafı CRM'de büyütüp açma kabulü tamamlandı. |
 | PDF/dosya | 🟢 ÇALIŞIYOR — gerçek kullanım kanıtı var | PDF/TXT iki yönde açıldı/indirildi; içerikler eşleşiyor. Fiyatlı PDF de render edildi ve telefonda açıldı. Mevcut kapsam PDF/TXT. |
 | Ses/video | 🔴 EKSİK / BOZUK — gerçekten geliştirme gerekiyor | Giden ses/video seçme/validasyon/provider yolu MIME kapsamında yok. Gelen oynatıcı hazır; gerçek oynatma kabulü yok. |
@@ -69,8 +71,8 @@ Tek güncel liste. Kritik sayım 13 başlıktaki açık sarı/kırmızı satırl
 
 3 Ekim ilk incelemesinde TEST 62094/4212/62400–62403 kapalıydı; o anda açık diye sunulmadı. Sonraki açık kullanıcı yetkisiyle 4 Ekim bu kaynak TEST'i açıldı ve yukarıdaki gerçek kabul kaydedildi. Eski eksik PDF indirme/telefon kabulü kapandı; güncel ERP sözleşmesi de yukarıdaki dar TEST kapsamıyla kabul edildi. Fiziksel mobil CRM ve Windows açılışı hâlâ açıktır. [docs/BASELINE.md](docs/BASELINE.md) ve [docs/REV3_VALIDATION.md](docs/REV3_VALIDATION.md) eski kapsam kanıtı olarak korunur.
 
-KALAN KRİTİK MADDE SAYISI: **5 — 2 geliştirme eksiği, 3 kullanıcı kabulü.**
+KALAN KRİTİK MADDE SAYISI: **6 — 3 geliştirme eksiği, 3 kullanıcı kabulü.**
 
-KULLANICININ ŞİMDİ GÖZÜYLE DENEYECEĞİ İLK ŞEY: **Personel hesabıyla kendi atanmış 7733 konuşmasını açmak; atamanın doğru personele göründüğünü kontrol etmek.**
+KULLANICININ ŞİMDİ GÖZÜYLE DENEYECEĞİ İLK ŞEY: **Samsung WhatsApp'taki görünmeyen konuşmayı açıp CRM ile karşılaştırmak; kablosuz ADB eşleştirmesi hazırlanıyor.**
 
-SONRAKİ TEK GELİŞTİRME İŞİ: **Giden ses/video seçme, doğrulama ve gönderim yolunu yalnız 7733 TEST hattında tamamlamak. ERP gerçek kabulünde çıkan somut hata varsa önce o düzeltilir.**
+SONRAKİ TEK GELİŞTİRME İŞİ: **Genel gelen WhatsApp mesajlarını gerçek gönderen kimliğiyle doğru CRM konuşmasına alan yolu tamamlamak; 7733 gönderim sınırı ve LIVE deployment yasağı korunur.**

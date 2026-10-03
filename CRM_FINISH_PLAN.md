@@ -10,6 +10,8 @@ SEMIH repo kökü `C:\Sirket\CRM\melisa-crm`. Uygulama tabanı `feature/crm-comp
 
 Mevcut çalışan CRM baseline kabul edilir. Çalışan özellikler yeniden ispatlanmaz; yalnızca gerçekten eksik özellikler aşağıdaki sırayla tamamlanır. Mevcut çalışan akış korunur; yeni mimari veya ek onay zinciri üretmek bitiş işi değildir.
 
+**4 Ekim 2026 kullanıcı düzeltmesi:** 7733 dışındaki bir kişinin WhatsApp yazışması CRM'de görünmüyor. Tek test peer'ine bağlı incoming normalizer salt okunur kaynak incelemesinde doğrulandı. Önce bu günlük kullanım eksiği ve ilgili konuşma karşılaştırması ele alınır; 7733 metin/medya ve ERP taslak kabulleri yeniden açılmaz. Genel müşteri alımı kodu hazır olmadan tüm metin akışı PASS denmez. LIVE deployment ve başka müşteriye gönderim yetkisi verilmiş değildir.
+
 Her adım: **eksiği bul → düzelt → TEST’e kur → gerekli otomatik kontrolü yap → gerçek kullanım kabulüyle PASS yap → sıradakine geç.** Değişiklikten etkilenen akış veya somut bir regresyon şüphesi için hedefli kontrol yapılabilir; bu, tüm baseline’ı yeniden kanıtlama döngüsüne dönüşmez.
 
 ## Öncelik sırası ve gerçek kullanım kabulü
