@@ -1,0 +1,3 @@
+# Exact false positives independently reviewed on 2026-10-03; no broad exclusions.
+# Synthetic role-auth test fixture
+c2f1682bd3839b60d3a038f6240df9a55f6ae89f:apps/frontend/tests/gateway.test.mjs:generic-api-key:87

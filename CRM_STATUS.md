@@ -18,3 +18,11 @@ Kritik kalan işler: Bağımsız inceleme; installer owner/path uyarlaması; ger
 - ⚫SONRA: Production deploy, GitHub repo/push; ayrı yetki ve inceleme sonrası.
 
 
+
+## 4 Ekim 2026 — main altyapı PR hazırlığı
+
+- Kapsam: yalnız çalışma düzeni, ajan/CI/dokümantasyon; main tabanı `53904e9692a542f9ccb449141d5f750452e99865` korunur. Uygulama/SQL/manifest/lockfile/test feature farkı sıfırdır.
+- Teslim dalı: `codex/crm-clean-main-infra-20261004`; hedef `main`. Tam head commit, PR ve tamamlanan CI sonucu PR'nin Checks alanında kaydedilir; Yerel teknik kontroller **PASS**: 148 JS syntax modülü, 216 frontend + 107 gateway + 5 contract/CI test (328/328), frontend build ve HEAD geçmiş secret scan (Gitleaks 8.30.1). GitHub CI henüz çalışmadı; sonucu tam PR head commit'inin Checks alanında doğrulanır.
+- Kullanıcı PR/commit kabulü: **BEKLİYOR**. Bitiş planındaki eski uygulama kabulleri bu main PR'sinin kabulü değildir.
+- TEST/LIVE commit ve runtime sağlığı: **Durum doğrulanmadı**; runtime işlemi yapılmadı.
+- Sonraki tek iş: PR'nin tam head CI kontrolleri başarılı olduktan sonra kullanıcı altyapı PR'sini inceler ve main merge kararını verir. Eski PR #4 korunur.
