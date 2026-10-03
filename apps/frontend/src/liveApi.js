@@ -487,7 +487,9 @@ export const liveApi = {
     return { accessToken, expiresIn: result.expiresIn, user: result.user || null };
   },
   async session(token, options = {}) { return normalizePermissions(await request("/auth/me", token, options)); },
-  async inbox(token, offset = 0, options = {}) { return normalizeInboxPayload(await request(`/crm/inbox?limit=100&offset=${Math.max(0, Number(offset) || 0)}`, token, options)); },
+  // Chatwoot-backed inbox pages can take over 20 seconds; retain a bounded read
+  // budget without extending sends or preventing session cancellation.
+  async inbox(token, offset = 0, options = {}) { return normalizeInboxPayload(await request(`/crm/inbox?limit=100&offset=${Math.max(0, Number(offset) || 0)}`, token, { timeoutMs: 45000, ...options })); },
   async conversation(token, id) {
     const result = await request(`/crm/conversations/${id}`, token);
     return { conversation: normalizeConversation(result.conversation || result) };

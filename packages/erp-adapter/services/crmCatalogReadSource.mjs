@@ -1,5 +1,11 @@
 const PREFIX='/api/crm-catalog/products',CRM_ORIGIN='http://127.0.0.1:4200',DATABASE='MELISA_ERP_V2';
 const ROLES=new Set(['patron','mudur','personel']);
+export function normalizeCrmOrigin(value,{loopbackOnly=false}={}){
+  let url;try{url=new URL(value)}catch{throw Error('CRM_ORIGIN_INVALID')}
+  if(!['http:','https:'].includes(url.protocol)||url.username||url.password||url.pathname!=='/'||url.search||url.hash)throw Error('CRM_ORIGIN_INVALID');
+  if(loopbackOnly&&!['127.0.0.1','localhost','[::1]'].includes(url.hostname))throw Error('TEST_CRM_LOOPBACK_REQUIRED');
+  return url.origin;
+}
 const fail=(status,code)=>Response.json({success:false,error:{code,message:code}},{status,headers:{'cache-control':'no-store'}});
 const error=(status,code)=>Object.assign(Error(code),{status,code});
 // Pure developer contract, not installed/activated. No config, database, listener or credential imports.
@@ -94,11 +100,12 @@ async function json(response,max=65536){
   try{return JSON.parse(Buffer.concat(parts.map(value=>Buffer.from(value))).toString())}catch{throw error(503,'CRM_VERIFICATION_UNAVAILABLE')}
 }
 export const CATALOG_SQL=Object.freeze({identity:'SELECT DB_NAME() AS databaseName;',images:`IF DB_NAME()<>N'MELISA_ERP_V2' THROW 51000,N'ERP_SOURCE_IDENTITY_REQUIRED',1; SELECT DB_NAME() AS databaseName; SELECT TOP(2001) vega_source_id AS sourceId,file_path AS filePath FROM dbo.vega_product_images WHERE is_active=1 AND is_primary=1 ORDER BY vega_source_id,id; SELECT DB_NAME() AS databaseName;`});
-export function createCrmCatalogReadSource({activationApproved=false,transport,getSqlPool,getSqlDriver,readExistingStock,now=Date.now}={}){
+export function createCrmCatalogReadSource({activationApproved=false,transport,getSqlPool,getSqlDriver,readExistingStock,now=Date.now,crmOrigin=CRM_ORIGIN}={}){
+  const authenticationOrigin=normalizeCrmOrigin(crmOrigin);
   if(activationApproved&&![transport,getSqlPool,getSqlDriver,readExistingStock].every(value=>typeof value==='function'))throw Error('EXPLICIT_READ_DEPENDENCIES_REQUIRED');
   async function current(request,signal){
     const authorization=request.headers.get('authorization')||'';if(!/^Bearer [^\s]+$/.test(authorization))throw error(401,'WHATSAPP_CRM_AUTH_TOKEN_REQUIRED');
-    let response;try{response=await transport(new URL('/auth/me',CRM_ORIGIN),{method:'GET',headers:{accept:'application/json',authorization},redirect:'manual',credentials:'omit',cache:'no-store',signal})}catch{throw error(503,'CRM_VERIFICATION_UNAVAILABLE')}
+    let response;try{response=await transport(new URL('/auth/me',authenticationOrigin),{method:'GET',headers:{accept:'application/json',authorization},redirect:'manual',credentials:'omit',cache:'no-store',signal})}catch{throw error(503,'CRM_VERIFICATION_UNAVAILABLE')}
     const body=await json(response);
     if(response.status!==200){const allowed=new Set(['AUTH_TOKEN_EXPIRED','AUTH_TOKEN_INVALID','WHATSAPP_CRM_AUTH_TOKEN_REQUIRED','WHATSAPP_CRM_RATE_LIMITED']);throw error([401,403,429].includes(response.status)?response.status:503,allowed.has(body.error?.code)?body.error.code:'CRM_VERIFICATION_UNAVAILABLE')}
     const actor=body.data;if(body.success!==true||body.meta?.source!=='crm-auth'||!actor?.id||!ROLES.has(actor.role)||!Array.isArray(actor.permissions)||!actor.permissions.includes('crm.view'))throw error(403,'CRM_CATALOG_SCOPE_REQUIRED');

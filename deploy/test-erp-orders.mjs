@@ -1,6 +1,8 @@
 import http from 'node:http';
 import crypto from 'node:crypto';
 import {pathToFileURL} from 'node:url';
+import {normalizeCrmOrigin} from '../packages/erp-adapter/services/crmCatalogReadSource.mjs';
+const crmOrigin=normalizeCrmOrigin(process.env.CRM_TEST_GATEWAY_ORIGIN||'http://127.0.0.1:62401',{loopbackOnly:true});
 const root=process.env.CRM_ERP_API_ROOT;
 if(!root)throw Error('CRM_ERP_API_ROOT_REQUIRED');
 process.chdir(root);
@@ -14,7 +16,7 @@ const operations=new Map();
 const loginAttempts=new Map();
 function fail(code,status=400){throw Object.assign(Error(code),{code,statusCode:status});}
 async function body(req){let text='';for await(const chunk of req){text+=chunk;if(Buffer.byteLength(text)>65536)fail('ERP_REQUEST_TOO_LARGE',413);}return JSON.parse(text||'{}');}
-async function crmActor(req){const authorization=req.headers.authorization;if(!authorization)fail('CRM_SESSION_REQUIRED',401);const r=await fetch('http://127.0.0.1:4200/auth/me',{headers:{authorization},signal:AbortSignal.timeout(10000)});const result=await r.json();if(!r.ok||!result.data?.permissions?.includes('crm.send'))fail('CRM_ORDER_PERMISSION_REQUIRED',403);return result.data;}
+async function crmActor(req){const authorization=req.headers.authorization;if(!authorization)fail('CRM_SESSION_REQUIRED',401);const r=await fetch(new URL('/auth/me',crmOrigin),{headers:{authorization},redirect:'error',signal:AbortSignal.timeout(10000)});const result=await r.json();if(!r.ok||!result.data?.permissions?.includes('crm.send'))fail('CRM_ORDER_PERMISSION_REQUIRED',403);return result.data;}
 async function erpActor(req,permission){const token=req.headers['x-erp-token'];if(!token)fail('ERP_LOGIN_REQUIRED',401);const payload=auth.verifyAccessToken(token),user=await auth.getUserById(payload.sub);if(!user?.permissions?.includes(permission))fail('ERP_PERMISSION_REQUIRED',403);return user;}
 async function testPool(){const pool=await database.getSqlPool();const identity=await pool.request().query('SELECT DB_NAME() AS name;');if(identity.recordset[0]?.name!=='MELISA_ERP_FULL_TEST_20260916')fail('TEST_DATABASE_REQUIRED',503);return pool;}
 const server=http.createServer(async(req,res)=>{
@@ -57,7 +59,7 @@ const server=http.createServer(async(req,res)=>{
    data={...data,erpPersisted:true,testOnly:true,database:'MELISA_ERP_FULL_TEST_20260916',stockEffect:false};
   }else fail('ERP_ROUTE_NOT_FOUND',404);
   res.writeHead(200);res.end(JSON.stringify({success:true,data}));
- }catch(error){const code=/^[A-Z0-9_]+$/.test(error.code||'')?error.code:'ERP_TEST_REQUEST_FAILED';const messages={AUTH_INVALID_CREDENTIALS:'ERP kullanıcı adı veya parola doğru değil.',ERP_LOGIN_REQUIRED:'Mevcut ERP hesabınızla giriş yapın.',ERP_PERMISSION_REQUIRED:'Bu ERP hesabının sipariş oluşturma yetkisi yok.',ERP_PRODUCT_MAPPING_REQUIRED:'Seçilen ürünün TEST ERP kaydı tek olarak eşleşmedi. Taslak kaydedilmedi.',ERP_DRAFT_LINE_INVALID:'Ürün adedi, satış fiyatı, para birimi veya kuru kontrol edin.',ERP_LOGIN_RATE_LIMIT:'Çok fazla giriş denemesi yapıldı. Bir süre sonra tekrar deneyin.'};res.writeHead(error.statusCode||503);res.end(JSON.stringify({success:false,error:{code,message:messages[code]||'ERP TEST işlemi tamamlanamadı. Seçiminiz korunuyor.'}}));}
+ }catch(error){const code=/^[A-Z0-9_]+$/.test(error.code||'')?error.code:'ERP_TEST_REQUEST_FAILED';const messages={AUTH_INVALID_CREDENTIALS:'ERP kullanıcı adı veya parola doğru değil.',ERP_LOGIN_REQUIRED:'Mevcut ERP hesabınızla giriş yapın.',ERP_PERMISSION_REQUIRED:'Bu ERP hesabının sipariş oluşturma yetkisi yok.',ERP_PRODUCT_MAPPING_REQUIRED:'Seçilen ürünün TEST ERP kaydı tek olarak eşleşmedi. Taslak kaydedilmedi.',ERP_DRAFT_LINE_INVALID:'Ürün adedi, satış fiyatı, para birimi veya kuru kontrol edin.',ERP_LOGIN_RATE_LIMIT:'Çok fazla giriş denemesi yapıldı. Bir süre sonra tekrar deneyin.',SQL_WRITE_TARGET_INVALID:'Bu ERP TEST ortamında CRM sipariş taslağı bağlantısı henüz hazır değil. Taslak kaydedilmedi; ürün seçiminiz korunuyor.'};res.writeHead(error.statusCode||503);res.end(JSON.stringify({success:false,error:{code,message:messages[code]||'ERP TEST işlemi tamamlanamadı. Seçiminiz korunuyor.'}}));}
 }).listen(62403,'127.0.0.1',()=>console.log('ERP TEST taslak servisi hazır.'));
 server.on('error',error=>{console.error(error.code);process.exit(1);});
 process.on('SIGTERM',()=>server.close(()=>process.exit(0)));

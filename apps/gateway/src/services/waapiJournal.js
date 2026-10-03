@@ -5,7 +5,7 @@ import crypto from 'node:crypto';
 const mutations = new Map();
 
 export class WaapiJournal {
-  constructor(root = fileURLToPath(new URL('../../runtime/waapi', import.meta.url))) { this.root = root; }
+  constructor(root = process.env.CRM_WAAPI_JOURNAL_DIR || fileURLToPath(new URL('../../runtime/waapi', import.meta.url))) { this.root = root; }
   key(value) { return crypto.createHash('sha256').update(String(value)).digest('hex'); }
   file(group, key) {
     if (!['events', 'state'].includes(group) || !/^[a-f0-9]{64}$/.test(key)) throw new Error('Invalid journal key');

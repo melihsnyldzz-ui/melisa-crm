@@ -46,7 +46,11 @@ function sanitize(row) {
     photoStatus: photoPath(row) ? 'guarded-path' : 'unavailable',
     sourceUpdatedAt: null, pricedDocumentEligible: false, pricedDocumentBlockReason: 'SOURCE_FRESHNESS_UNVERIFIED' };
 }
-export function createCatalogBridge({ deploymentApproved = false, transport, authorizeCrm, resolveCrmReadSession, now = Date.now, maxReadAgeMs = 15000 } = {}) {
+export function isTestCatalogPhotoOrigin(value){
+  try{const url=new URL(value);return url.protocol==='http:'&&['127.0.0.1','localhost','[::1]'].includes(url.hostname)&&url.port==='62402'&&!url.username&&!url.password&&url.pathname==='/'&&!url.search&&!url.hash}catch{return false}
+}
+export function createCatalogBridge({ deploymentApproved = false, transport, authorizeCrm, resolveCrmReadSession, now = Date.now, maxReadAgeMs = 15000, photoCrmAuthorization = false } = {}) {
+  if(photoCrmAuthorization&&!isTestCatalogPhotoOrigin(ERP_ORIGIN))throw Error('TEST_PHOTO_AUTH_ORIGIN_REQUIRED');
   if (deploymentApproved && (![transport, authorizeCrm, resolveCrmReadSession].every(x => typeof x === 'function'))) throw Error('EXPLICIT_AUTH_AND_TRANSPORT_REQUIRED');
   // resolveCrmReadSession: verified current CRM JWT read lease only; no ERP login/credential or UI role claim.
   // authorizeCrm: fresh verified CRM actor and explicit catalog grant. No role-name equivalence or default staff access.
@@ -104,9 +108,11 @@ export function createCatalogBridge({ deploymentApproved = false, transport, aut
         if (!(upstream.data.data.isPassive === false || upstream.data.data.isActive === true)) return fail(403, 'ACTIVE_PRODUCT_REQUIRED');
         if (isPhoto) {
           const path = photoPath(upstream.data.data); if (!path) return fail(404, 'VERIFIED_PHOTO_PATH_REQUIRED');
-          // Existing ERP /uploads is public in source. Never forward ERP Bearer to an asset path.
+          // Legacy public ERP assets retain accept-only headers. Explicit TEST adapter
+          // may receive the verified CRM read lease; no ERP credential is forwarded.
           assertCurrent();
-          const response = await transport(new URL(path, ERP_ORIGIN), { method: 'GET', redirect: 'manual', credentials: 'omit', cache: 'no-store', headers: { accept: 'image/png,image/jpeg,image/webp' }, signal });
+          const headers={accept:'image/png,image/jpeg,image/webp',...(photoCrmAuthorization?{authorization:session.authorization}:{})};
+          const response = await transport(new URL(path, ERP_ORIGIN), { method: 'GET', redirect: 'manual', credentials: 'omit', cache: 'no-store', headers, signal });
           assertCurrent();
           if (!response.ok || response.status >= 300 && response.status < 400) return fail(502, 'PHOTO_REJECTED');
           const mime = (response.headers.get('content-type') || '').split(';')[0].trim().toLowerCase();

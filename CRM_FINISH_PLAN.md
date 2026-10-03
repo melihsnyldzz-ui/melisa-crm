@@ -39,6 +39,8 @@ Her özelliğin bitiş kriteri **gerçek kullanım kabulüdür**. Unit test, bui
 
 Bu adresler planın kontrol hedefleridir; şu anda kurulu veya erişilebilir olduklarına dair doğrulama sayılmaz. Durum panosu normal CRM ve telefon kabulünün sonucunu yansıtır.
 
+**4 Ekim 2026 gerçek TEST kaydı:** kanonik kaynakla normal CRM arayüzü `http://127.0.0.1:62400/`, gateway `62401`, katalog `62402`, eski ERP taslak adapteri `62403` üzerinde açıldı. `62094/status` hedefi bu runtime'da kurulmuş değildir; yeni kabul/gate ekranı eklenmedi. Güncel tek bitirme listesi ve 7733 telefon kabulü `CRM_STATUS.md` içindedir. Güncel kanonik ERP, eski FULL_TEST taslak adapterinin yazım hedefini reddediyor; yeni taslak sözleşmesi tamamlanmadan 8. madde PASS değildir. 3 Ekim tarihli eski runtime taslak kabulü korunur.
+
 ## TEST’ten LIVE’a bitiş sırası
 
 1. TEST’te bu planın gerekli maddeleri gerçek kullanımda PASS olur; eksik veya doğrulanmamış madde tamamlandı sayılmaz.
