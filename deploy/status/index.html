@@ -3,6 +3,7 @@
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f3f5f7;color:#172331;font:15px system-ui,sans-serif}main{max-width:480px;margin:auto;padding:18px 16px}header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}h1{font-size:22px;margin:0}small{color:#677481}.pill{background:#e5eaf0;padding:5px 9px;border-radius:20px;font-size:11px;font-weight:700}.card{background:white;border:1px solid #e0e5e9;border-radius:15px;padding:14px;margin-bottom:10px}h2{font-size:11px;letter-spacing:1px;margin:0 0 6px;color:#677481}p{margin:0;line-height:1.45;font-size:14px}.focus{background:#172e43;color:white;border:0}.focus h2{color:#a8c7de}.stats{display:grid;grid-template-columns:1fr 1fr;gap:9px}.stats .card{margin:0}.green{color:#22734b}.amber{color:#946416}.red{color:#a93434}.details{margin:16px 0 0;font-size:12px;color:#677481}.footer{font-size:11px;color:#677481;margin-top:15px}button{border:1px solid #d3dce4;background:white;border-radius:8px;padding:10px;min-height:44px;color:#172331}#error{color:#a93434}@media(max-height:740px){main{padding-top:12px}header{margin-bottom:12px}.card{padding:11px}.details{margin-top:10px}}
 </style>
+<style>.stats p{overflow-wrap:anywhere;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:4;overflow:hidden}.stats .green{color:#677481}</style>
 <main><header><div><h1>Melisa CRM</h1><small>Kaynak: CRM_STATUS.md</small></div><span class="pill">YEREL TASLAK</span></header>
 <section class="card"><h2>LIVE</h2><p id="live">Yükleniyor…</p></section>
 <section class="card"><h2>CANDIDATE</h2><p id="candidate">Yükleniyor…</p></section>
@@ -11,5 +12,18 @@
 <p class="details" id="deploy"></p><p class="details" id="rollback"></p><p id="error" role="alert"></p><p class="footer">Canlı sisteme bağlı değildir · Gönderim ve deploy yok</p></main>
 <script type="module">
 const put=(id,text)=>document.getElementById(id).textContent=text;
-try{const r=await fetch('/CRM_STATUS.md',{cache:'no-store'});if(!r.ok)throw Error('status');const md=await r.text();const value=key=>md.split('\n').find(x=>x.startsWith(key+':'))?.slice(key.length+1).trim()||'Bilinmiyor';for(const[id,key]of Object.entries({live:'LIVE',candidate:'TEST/CANDIDATE',task:'Şu anki tek görev',deploy:'Son deploy',rollback:'Rollback durumu'}))put(id,value(key));for(const[id,mark]of Object.entries({pass:'🟢PASS',pending:'🟡TEST BEKLİYOR',fail:'🔴FAIL-BLOCKED',later:'⚫SONRA'})){const rows=md.split('\n').filter(x=>x.startsWith('- '+mark+':'));put(id,rows.map(x=>x.slice(('- '+mark+':').length).trim()).join(' ')||(id==='pass'?'Gerçek acceptance yok; yeşil özellik yok.':'Kayıt yok'));}}catch{put('error','Durum dosyası okunamadı. PASS varsayılmadı.');}
+try{
+ const r=await fetch('/CRM_STATUS.md',{cache:'no-store'});if(!r.ok)throw Error('status');const md=await r.text();
+ const value=key=>md.split('\n').find(x=>x.startsWith(key+':'))?.slice(key.length+1).trim()||'Bilinmiyor';
+ for(const[id,key]of Object.entries({live:'LIVE',candidate:'TEST/CANDIDATE',task:'Şu anki tek görev',deploy:'Son deploy',rollback:'Rollback durumu'}))put(id,value(key));
+ for(const[id,mark]of Object.entries({pass:'🟢PASS',pending:'🟡TEST BEKLİYOR',fail:'🔴FAIL-BLOCKED',later:'⚫SONRA'})){
+  const rows=md.split('\n').filter(x=>x.startsWith('- '+mark+':'));
+  const full=rows.map(x=>x.slice(('- '+mark+':').length).trim()).join(' ');
+  let text=full||(id==='pass'?'Gerçek acceptance yok; yeşil özellik yok.':'Kayıt yok');
+  if(id==='pending'&&rows.length)text='Gerçek acceptance bekliyor · '+rows.length+' kayıt.';
+  if(id==='fail'&&full.includes('NORMAL_OWNER_REQUIRED'))text='Installer blokeli · NORMAL_OWNER_REQUIRED';
+  if(id==='later'&&rows.length)text=full.split(';')[0];
+  put(id,text);document.getElementById(id).title=full;
+ }
+}catch{put('error','Durum dosyası okunamadı. PASS varsayılmadı.');}
 </script></html>
