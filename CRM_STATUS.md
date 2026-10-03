@@ -3,7 +3,7 @@
 LIVE: 4076 frontend / mevcut 4200 gateway · WAAPI text-only
 TEST/CANDIDATE: REV3 · NOT_INSTALLED · candidate/rev3
 Son deploy: Kesin zaman bilinmiyor; bu görevde deploy yok.
-Rollback durumu: Eski kaynak/runtime korundu; gerçek rollback tatbikatı yapılmadı.
+Rollback durumu: Geçmişte 90 dosyalık hash proof var; runtime rollback hiç uygulanmadı, gerçek tatbikat yapılmadı.
 Şu anki tek görev: Yerel repo için bağımsız inceleme.
 Bugün kapanan işler: İzole baseline, hash/build/test kanıtı, yerel Git, REV3 ayrımı.
 Kritik kalan işler: Bağımsız inceleme; installer owner/path uyarlaması; gerçek medya ve ERP kabulü.
@@ -16,4 +16,5 @@ Kritik kalan işler: Bağımsız inceleme; installer owner/path uyarlaması; ger
 - 🟡TEST BEKLİYOR: ERP write acceptance ve rollback tatbikatı.
 - 🔴FAIL-BLOCKED: REV3 installer NORMAL_OWNER_REQUIRED; eski mutlak yol/manifest uyarlaması.
 - ⚫SONRA: Production deploy, GitHub repo/push; ayrı yetki ve inceleme sonrası.
+
 
