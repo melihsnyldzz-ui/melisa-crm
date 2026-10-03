@@ -1,0 +1,56 @@
+name: CRM CI
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: crm-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality-build-test:
+    name: quality-build-test
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Use Node.js 24
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: |
+            apps/frontend/package-lock.json
+            apps/gateway/package-lock.json
+      - name: Install locked frontend dependencies without lifecycle scripts
+        run: npm ci --prefix apps/frontend --ignore-scripts --no-audit --no-fund
+      - name: Install locked gateway dependencies without lifecycle scripts
+        run: npm ci --prefix apps/gateway --ignore-scripts --no-audit --no-fund
+      - name: Check JavaScript syntax
+        run: node scripts/ci/check-syntax.mjs
+      - name: Build frontend with offline guard
+        run: node scripts/ci/build.mjs
+      - name: Run all offline frontend, gateway and contract tests
+        run: node scripts/ci/run-tests.mjs
+
+  secret-scan:
+    name: secret-scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout full source history
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Scan reachable history with pinned Gitleaks and masked findings
+        run: bash scripts/ci/scan-secrets.sh
