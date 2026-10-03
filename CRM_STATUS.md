@@ -1,5 +1,28 @@
 # MELISA CRM — Güncel Durum
 
+## GitHub çalışma düzeni — 3 Ekim 2026
+
+Bu bölüm kaynak/CI hazırlığının güncel kaydıdır. Önceki uygulama/TEST kabul kayıtları aşağıda korunur; bu çalışma uygulama özelliklerinin genel kabulü değildir.
+
+| Alan | Sonuç |
+| --- | --- |
+| Kapsam | CI workflow, branch/main stratejisi, sürümleme, deploy/rollback, AGENTS ve PR şablonu |
+| Teknik sonuç | Yerel **PASS**; 449/449 offline test, frontend build, JS syntax; tam HEAD geçmişi secret scan PASS |
+| Bağımsız inceleme | PASS; yalnız incelenmiş tekil yanlış pozitif secret fingerprint istisnaları |
+| GitHub CI | **PASS** — kaynak/CI teslim commit'i `e75472586b85a9506b878b424c2fa79cfdc04dfa` için [PR kontrolü](https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/37153071730) ve [push kontrolü](https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/37153037477) başarılı; son PR head kontrolleri Checks sekmesinde ayrıca doğrulanır |
+| Gerçek kullanıcı kabulü | **BEKLİYOR** — bu PR/commit için kullanıcı kabulü kaydı yok; önceki uygulama kabulleri korunur |
+| Branch | `codex/crm-github-workflow-20261003` |
+| Taban commit | `164cb534b9db0cbcb423ceb671e41b87da0ba649` / `codex/crm-agents-on-completion-20261003` |
+| Teslim commit / PR | CI `24f0969`; belge `e75472586b85a9506b878b424c2fa79cfdc04dfa`; [PR #4](https://github.com/melihsnyldzz-ui/melisa-crm/pull/4), hedef `codex/crm-agents-on-completion-20261003`; takip kaydı yalnız bu STATUS sonucudur |
+| TEST commit / paket | Bu görevde deployment yapılmadı; mevcut runtime kimliği **Durum doğrulanmadı** |
+| LIVE commit / paket | Bu görevde deployment yapılmadı; mevcut runtime kimliği **Durum doğrulanmadı** |
+| Release / main | Tag/release/merge yapılmadı; ilk tag yalnız kabul edilmiş main'den |
+| Kalan iş | Kullanıcı PR'yi kabul etsin; main'e geçiş ve LIVE ayrıca ele alınır. Son PR head ve kontrollerinin güncel sonucu PR'nin Checks sekmesindedir |
+
+[Çalışma düzeni](docs/development/GITHUB_WORKFLOW.md) · [Sürümleme](docs/development/RELEASES.md) · [Deploy/rollback](docs/development/DEPLOY_ROLLBACK.md).
+
+Mevcut büyük bundle uyarısı sürer; runtime/telefon/mobil/SQL/provider kabulü bu CI kapsamında değil. Ana checkout'taki iş öncesi CRM_STATUS.md değişikliği bu izole çalışma commit'lerine alınmadan korunur.
+
 Source of truth: [CRM_FINISH_PLAN.md](CRM_FINISH_PLAN.md)
 
 ## Aktif geliştirme
