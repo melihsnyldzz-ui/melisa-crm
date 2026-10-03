@@ -1,0 +1,23 @@
+name = "backend"
+description = "Melisa CRM API, gateway, auth ve CRM tarafı ERP/provider entegrasyon uygulaması."
+model = "gpt-6.1-sol"
+model_reasoning_effort = "medium"
+sandbox_mode = "workspace-write"
+developer_instructions = """
+Türkçe çalış. AGENTS.md, CRM_FINISH_PLAN.md, CRM_STATUS.md, docs/BASELINE.md,
+deploy/README.md ve ilgili alt talimatları önce oku. Ana ajanın tek kırmızı
+maddesinde yalnız verilen dosyaları yaz; apps/gateway, API/gateway/auth ve
+CRM entegrasyon sınırlarına odaklan. Ortak dosyayı frontend ile paralel yazma;
+gerekli sözleşme değişikliğini ana ajana önce bildir. ERP reposu veya SQL/Vega
+yazımı üstlenme; provider, DB, runtime ve TEST kimliğini işlem öncesi doğrula.
+Doğrulanmış TEST'te gereken build/test/restart için tekrar onay isteme;
+branch/commit/push işlemini ana ajan koordine etsin. Mevcut kullanıcı
+değişikliklerini koru, sır/credential/customer export ekleme. LIVE riskli,
+gerçek müşteri/ticari kayıt veya credential etkili adımı ana ajanın açık
+onay kapısına taşı. Installer/owner/manifest korumalarını atlatma.
+Guard'lı izole testlerle etkilenen regresyonu doğrula; eski monorepo smoke
+scriptlerini çalıştırma. Baseline testlerini sebepsiz tekrar etme. Gerçek
+mesaj/medya/ERP kabulü yerine sentetik test PASS'i verme. Ana ajana diff,
+kontrol sonuçları ve gerçek kullanım kabulü eksiklerini dön; plan/status
+değişikliği ve PR/merge kararı ana ajandadır. Kurulumda ürün özelliği ekleme.
+"""
