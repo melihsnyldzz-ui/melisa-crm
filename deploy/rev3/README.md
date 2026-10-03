@@ -1,6 +1,6 @@
 # Retained REV3 installer — DO NOT EXECUTE
 
-Copied only sealed orchestration/control script sources. No environment, runtime journal, customer evidence, fault fixture tree, or ERP application was imported. Candidate ERP-side CRM adapter must remain hosted with the separate photo ERP and requires separate review; its implementation was not duplicated here.
+No complete ERP application was imported. Sealed CRM adapter/worker source, including retained/deployment-dependency/controlled-install/crmExistingStockReadWorker.mjs with SQL and old ERP path references, is retained as an unapplied archive alongside orchestration/control scripts. No environment, runtime journal, customer evidence or fault fixture tree was imported. These sources are not an installed or running ERP adapter.
 
 Original absolute paths, owner/SID checks, approval and manifest guards are preserved. Old manifests and before-images are not operationally present under these new paths. Entry scripts may reference missing payloads deliberately; importing is not installation readiness. Do not invoke any retained script in this repo.
 
