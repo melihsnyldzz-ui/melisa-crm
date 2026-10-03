@@ -18,6 +18,14 @@ Git işlemini repo kökünde yap; üst klasörü Git repo sayma. Başlangıçta 
 
 Yerel servis ve özel ayarlar kaynak repo dışında kalır. Repo yanında `releases`, `runtime`, `logs`, `backups` dizinleri bulunur; bunlara geçmiş paketler otomatik taşınmaz. Proje config'leri model/ajan varsayılanlarını taşır; host sandbox ve approval politikası korunur.
 
+## Tek kelimelik varsayılan — 3 Ekim 2026
+
+- Kullanıcı ana Codex konuşmasında yalnız `devam`, `başla` veya `sıradaki` yazarsa bunu **CRM bitiş planındaki sıradaki açık/kırmızı maddeyi tamamla; gereken subagent'ları kullan, TEST'te gereken teknik işlemleri yap ve gerçek kabul hazır olunca dön** talimatı olarak uygula. Uzun komutu yeniden yazmasını veya rutin iş için tekrar onay vermesini isteme.
+- Önce `CRM_FINISH_PLAN.md` ve `CRM_STATUS.md` dosyalarını oku. Plan iş sırası ve kabul ölçütlerinin source of truth'u, status güncel durum ve kanıt kaydı olarak kalır. Plan sırasını güncel açık durumla birlikte değerlendir; tamamlanmış/kabulü kayıtlı işi yeniden açmadan sıradaki tek açık/kırmızı maddeyi seç. Tarihsel durum satırlarını güncel eksik sayma.
+- Seçilen işi aşağıdaki ana ajan döngüsüyle tamamla: gereken explorer/backend/frontend/reviewer subagent'larını açık dosya sahipliğiyle görevlendir, sonuçları birleştir ve doğrulanmış TEST'te gerekli kod düzeltmesi, build, kurulum, restart, test, feature branch/commit/push işlemlerini yürüt. Verilmiş TEST yetkisi için yeni gate, bridge veya approval döngüsü oluşturma.
+- Çalışan baseline'ı yeniden ispatlama; yalnız değişen akış, somut regresyon veya eksik kabul için hedefli doğrulama yap. Gerçek kabul hazır olunca kullanılabilir sonucu ve kanıtını aynı plan/status'a kaydet. Kullanıcının fiziksel kontrolü gerekiyorsa teknik hazırlığı tamamlayıp yalnız kalan somut kabul adımını iste; build/smoke/mock sonucunu gerçek kabul veya PASS yerine koyma.
+- Aşağıdaki runtime kimliği, TEST/LIVE, gerçek gönderim/ticari kayıt ve credential sınırları sürer. Kısa komut main'e otomatik merge veya LIVE değişiklik yetkisi vermez; açık madde kalmadıysa tamamlanmış işi yeniden başlatmadan mevcut sonucu bildir.
+
 ## Ana ajan döngüsü
 
 1. Plan/status ve ilgili talimatları oku; Git durumunu ve mevcut kanıtın seçilen iş için yeterliliğini kontrol et. Çalışan baseline'ı her seferinde yeniden ispatlama. Kaynak/dependency değişikliği, kanıt eksikliği veya runtime kimliğinin değişmesi varsa yalnız ilgili doğrulamayı yenile.
@@ -49,4 +57,4 @@ Yerel servis ve özel ayarlar kaynak repo dışında kalır. Repo yanında `rele
 
 Yerel yolu seçip kanonik origin'i doğruladıktan sonra feature branch'i getir ve uygun checkout'ta aç. `.codex/config.toml` ve `.codex/agents/*.toml` repo ile taşınır; mutlak makine yolu içermez. Proje güveni sağlanmamışsa Codex proje config'ini yüklemeyebilir; kullanıcı ilgili checkout'ı güvenilir olarak açmalıdır. Yeni bir Codex oturumunda model/effort ve dört rolün yüklendiğini kontrol et. 3 Ekim 2026 SEMIH kök standardizasyonunda iki kanonik repo için proje config’inin etkin yüklenmesi, `gpt-6.1-sol` / `medium` ve ajan varsayılanları kurulu Codex’in `config/read` yanıtından doğrulandı. Gerçek özel rol/model çağrısı bu config kontrolünün kapsamı değildir; desteklenmeyen model/config için sessiz fallback veya PASS verme. Gerçek servisleri başlatmadan runtime sınırını ayrıca kanıtla.
 
-Kısa komut: **Planındaki sıradaki kırmızı maddeyi bitir. Gereken ajanları kullan, gerçek kabul hazır olunca dön.**
+Kısa komut: **`devam`**, **`başla`** veya **`sıradaki`**. Ana ajan yukarıdaki varsayılanı otomatik uygular.
