@@ -4,7 +4,7 @@ import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 function processFixture(input) {
   return new Promise((resolve,reject) => {
-    const child = spawn(process.execPath, ['--import', new URL('../../../offline-test-guard.mjs', import.meta.url).href, fileURLToPath(new URL('./fixtures/sessionProcess.mjs', import.meta.url))], {
+    const child = spawn(process.execPath, ['--import', new URL('../../../../tests/offline-test-guard.mjs', import.meta.url).href, fileURLToPath(new URL('./fixtures/sessionProcess.mjs', import.meta.url))], {
       cwd: fileURLToPath(new URL('../../', import.meta.url)), stdio: ['pipe','pipe','pipe'], windowsHide: true,
     });
     let stdout = ''; let stderr = '';
