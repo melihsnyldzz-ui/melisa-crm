@@ -12,7 +12,7 @@ export function createReadBudgetMiddleware({verifyToken,canRead,globalLimiter,ca
   return function readBudget(request,response,next){
     delete request[ASSIGNMENT];
     // Method and exact route classification never trusts Origin, query URL, IP spoofing or browser role.
-    const kind=request.method==='GET'&&/^\/crm\/catalog\/products(?:\/[1-9][0-9]*(?:\/photo)?)?$/.test(request.path)?'catalog':request.method==='GET'&&request.path==='/auth/me'?'verification':null;
+    const kind=request.method==='GET'&&/^\/crm\/catalog\/products(?:\/vega-[1-9][0-9]*(?:\/photo)?)?$/.test(request.path)?'catalog':request.method==='GET'&&request.path==='/auth/me'?'verification':null;
     if(!kind)return globalLimiter(request,response,next);
     let user;const authorization=request.get('authorization')||'';
     if(!/^Bearer [^\s]+$/.test(authorization))return globalLimiter(request,response,next);

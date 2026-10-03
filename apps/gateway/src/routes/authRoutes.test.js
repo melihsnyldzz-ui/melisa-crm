@@ -36,8 +36,8 @@ test('POST /auth/login and GET /auth/me use CRM-local auth', async () => {
     },
   ];
 
-  const server = createApp().listen(0);
-  await new Promise(resolve => server.once('listening', resolve));
+  const server = createApp().listen(0, '127.0.0.1');
+  await new Promise((resolve, reject) => { server.once('listening', resolve); server.once('error', reject); });
   try {
     const { port } = server.address();
     const login = await fetch(`http://127.0.0.1:${port}/auth/login`, {

@@ -1,4 +1,5 @@
 import dotenv from 'dotenv';
+import { approvedBoundedOwnerMediaDefault } from './boundedOwnerMediaActivation.js';
 import { fileURLToPath } from 'node:url';
 
 dotenv.config({ path: '.env.local' });
@@ -114,6 +115,7 @@ export const env = {
     webhookSecret: process.env.WAAPI_WEBHOOK_SECRET || '',
     timeoutMs: numberEnv('WAAPI_TIMEOUT_MS', 15000),
     bridgeEnabled: booleanEnv('WAAPI_CHATWOOT_BRIDGE_ENABLED', false),
+    outboundMediaEnabled: booleanEnv('WAAPI_OUTBOUND_MEDIA_ENABLED', approvedBoundedOwnerMediaDefault),
   },
   evolution: {
     apiUrl: (process.env.EVOLUTION_API_URL || 'http://localhost:8080').replace(/\/+$/, ''),

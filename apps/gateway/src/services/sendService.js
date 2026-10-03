@@ -5,6 +5,7 @@ import { verifyChatwootOutboundProof } from './chatwootDeliveryProofService.js';
 import { waapiChatwootBridge } from './waapiChatwootBridge.js';
 import { waapiJournal } from './waapiJournal.js';
 import { WAAPI_INSTANCE, WAAPI_RECIPIENT } from '../providers/waapiProvider.js';
+import { normalizeOutboundMedia, mediaForJournal } from '../utils/messageMedia.js';
 import {
   fingerprintOutbound,
   outboundAttemptStore,
@@ -50,38 +51,6 @@ function messageFromProviderResult(providerResult) {
     }),
     status: providerResult.provider === 'waapi' ? 'accepted' : 'sent',
     received_at: sentAt,
-  };
-}
-
-function normalizeSendMedia(media = {}) {
-  if (!media || typeof media !== 'object') return null;
-
-  const dataUrl = trimText(media.dataUrl);
-  const mimeType = trimText(media.mimeType) || 'application/octet-stream';
-  const mediaType = trimText(media.mediaType) || (mimeType.startsWith('image/') ? 'image' : 'document');
-  const fileName = trimText(media.fileName) || (mediaType === 'image' ? 'image.jpg' : 'document.pdf');
-
-  if (!dataUrl) return null;
-
-  const isSupported = mimeType.startsWith('image/') || mimeType === 'application/pdf';
-
-  if (!isSupported) {
-    throw sendError('WHATSAPP_CRM_MEDIA_UNSUPPORTED', 'Sadece gorsel veya PDF dosyasi gonderilebilir.');
-  }
-
-  if (!dataUrl.startsWith('data:')) {
-    throw sendError('WHATSAPP_CRM_MEDIA_INVALID', 'Dosya verisi gecersiz.');
-  }
-
-  if (dataUrl.length > 14_000_000) {
-    throw sendError('WHATSAPP_CRM_MEDIA_TOO_LARGE', 'Dosya 10 MB sinirini asmamalidir.');
-  }
-
-  return {
-    dataUrl,
-    fileName,
-    mediaType: mimeType.startsWith('image/') ? 'image' : mediaType,
-    mimeType,
   };
 }
 
@@ -202,7 +171,7 @@ export async function sendCrmTextMessage(payload = {}, dependencies = {}) {
   const remoteJid = trimText(payload.remoteJid);
   const contactName = trimText(payload.contactName);
   const text = trimText(payload.text);
-  const media = normalizeSendMedia(payload.media);
+  const media = normalizeOutboundMedia(payload.media);
   const conversationId = normalizeConversationId(payload.conversationId);
   const instanceKey = trimText(payload.instanceKey);
 
@@ -224,6 +193,9 @@ export async function sendCrmTextMessage(payload = {}, dependencies = {}) {
   }
 
   assertSendConfiguration(phone, conversationId);
+  if (env.whatsapp.provider === 'waapi' && media && !env.waapi.outboundMediaEnabled) {
+    throw sendError('WHATSAPP_CRM_WAAPI_PILOT_TEXT_ONLY', 'WAAPI medya gonderimi icin ayri onay kapisi kapali.', 400, { transportAttempted: false });
+  }
   const clientRequestId = validateClientRequestId(payload.clientRequestId);
 
   const fingerprint = fingerprintOutbound({
@@ -301,7 +273,8 @@ export async function sendCrmTextMessage(payload = {}, dependencies = {}) {
     if (env.whatsapp.provider === 'waapi') {
       await attemptStore.update(clientRequestId, { state: 'PROVIDER_ACCEPTED', providerMessageId });
       const event = { instanceId: WAAPI_INSTANCE, event: 'message_create', providerMessageId,
-        phone, text, direction: 'outgoing', media: null, mediaPending: false, conversationId };
+        phone, text, direction: 'outgoing', media: mediaForJournal(media), mediaPending: false, conversationId,
+        timestamp: Math.floor(Date.parse(providerResult.sentAt || '') / 1000) || null };
       await (dependencies.journal || waapiJournal).accept(event);
       await (dependencies.bridge || waapiChatwootBridge).sync(event, conversationId);
     }

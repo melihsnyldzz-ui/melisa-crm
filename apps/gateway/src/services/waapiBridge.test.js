@@ -9,6 +9,7 @@ import { env } from '../config/env.js';
 import { WAAPI_INSTANCE } from '../providers/waapiProvider.js';
 import { acceptWaapiWebhook, normalizeWaapiEvent, normalizeWaapiMedia } from './waapiWebhookService.js';
 import { enrichWaapiReceipt } from './waapiReceiptService.js';
+import { validMediaBytes } from '../utils/validMediaFixtures.js';
 
 const config = { waapi: { bridgeEnabled: true }, chatwoot: { accountId: 2, inboxId: 1 } };
 function envelope(fromMe = false, event = 'message') {
@@ -80,7 +81,7 @@ test('WAAPI ambiguous Chatwoot write is never posted again', async t => {
 test('WAAPI preserves inline photo, audio, video and document attachments', async t => {
   for (const mime of ['image/jpeg', 'audio/ogg; codecs=opus', 'video/mp4', 'application/pdf']) {
     const f = await fixture(t); const body = envelope(); body.data.message.hasMedia = true;
-    body.data.media = { mimetype: mime, data: Buffer.from('synthetic bytes').toString('base64'), filename: '../sample' };
+    body.data.media = { mimetype: mime, data: validMediaBytes(mime.split(';')[0]).toString('base64'), filename: '../sample' };
     const event = normalizeWaapiEvent(body); await f.bridge.sync(event, 55);
     assert.equal(f.writes[0].media.mimeType, mime.split(';')[0]); assert(!f.writes[0].media.fileName.includes('/'));
   }
@@ -165,12 +166,13 @@ test('WAAPI active-instance filtering preserves batch, completion and retry boun
 test('WAAPI worker requests the active instance and never processes or updates old records', async t => {
   const originals = {
     provider: env.whatsapp.provider, bridgeEnabled: env.waapi.bridgeEnabled,
-    pending: waapiJournal.pending, put: waapiJournal.put, process: waapiChatwootBridge.process,
+    pending: waapiJournal.pending, put: waapiJournal.put, update: waapiJournal.update, process: waapiChatwootBridge.process,
     setInterval: globalThis.setInterval, clearInterval: globalThis.clearInterval,
   };
   t.after(() => {
     env.whatsapp.provider = originals.provider; env.waapi.bridgeEnabled = originals.bridgeEnabled;
     waapiJournal.pending = originals.pending; waapiJournal.put = originals.put;
+    waapiJournal.update = originals.update;
     waapiChatwootBridge.process = originals.process;
     globalThis.setInterval = originals.setInterval; globalThis.clearInterval = originals.clearInterval;
   });
@@ -188,6 +190,7 @@ test('WAAPI worker requests the active instance and never processes or updates o
   };
   waapiChatwootBridge.process = async event => { processed.push(event); };
   waapiJournal.put = async (group, key, value) => { updated.push({ group, key, value }); };
+  waapiJournal.update = async (group, key, change) => waapiJournal.put(group, key, change({ event: { instanceId: WAAPI_INSTANCE } }));
   const stop = startWaapiWorker();
   await tick(); stop();
   assert.deepEqual(processed.map(event => event.instanceId), ['105185']);

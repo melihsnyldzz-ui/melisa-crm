@@ -1,7 +1,8 @@
 import {createCatalogBridge,CATALOG_RESPONSE_GUARD} from './catalogBridge.mjs';
 import {catalogAccess} from './crmCatalogAccess.mjs';
-export function createCatalogRouter({Router,verifyCrmContext,transport,activationApproved=false,uiOrigin,access=catalogAccess}={}) {
+export function createCatalogRouter({Router,verifyCrmContext,transport,activationApproved=false,uiOrigin,logoutOrigin=null,access=catalogAccess}={}) {
   if(typeof Router!=='function'||typeof verifyCrmContext!=='function')throw Error('REVIEWED_GATEWAY_HOOKS_REQUIRED');
+  if(logoutOrigin!==null&&logoutOrigin!=='http://127.0.0.1:4212')throw Error('EXACT_LOCAL_LOGOUT_ORIGIN_REQUIRED');
   const router=Router();
   const fail=(status,code)=>Response.json({success:false,error:{code,message:code}},{status,headers:{'cache-control':'no-store'}});
   const context=request=>{
@@ -18,7 +19,9 @@ export function createCatalogRouter({Router,verifyCrmContext,transport,activatio
   });
   const auth=async request=>{
     if(!activationApproved)return fail(503,'BRIDGE_NOT_DEPLOYED');
-    if(request.headers.get('origin')!==uiOrigin)return fail(403,'CATALOG_ORIGIN_REQUIRED');
+    const signOut=new URL(request.url).pathname==='/crm/catalog/auth/sign-out';
+    const origin=request.headers.get('origin');
+    if(origin!==uiOrigin&&!(signOut&&logoutOrigin!==null&&origin===logoutOrigin))return fail(403,'CATALOG_ORIGIN_REQUIRED');
     if(new URL(request.url).search)return fail(400,'INVALID_QUERY');
     const current=context(request);
     if(!access.base(current.user))return fail(403,'CRM_CATALOG_SCOPE_REQUIRED');

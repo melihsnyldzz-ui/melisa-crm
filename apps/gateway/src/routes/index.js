@@ -21,6 +21,7 @@ const catalogBinding = createCatalogRouter({
   transport: (url, options) => fetch(url, options),
   activationApproved: true,
   uiOrigin: 'https://melisa-crm-ozel-tasarim-testi.melihsnyldzz.chatgpt.site',
+  logoutOrigin: 'http://127.0.0.1:4212',
 });
 routes.use(catalogBinding.router);
 // Clear only catalog RAM revocation/read leases on existing shutdown; provider lifecycle unchanged.

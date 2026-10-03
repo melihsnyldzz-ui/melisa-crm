@@ -1,5 +1,5 @@
 // Approved single-CRM-login reader. No listener, ERP login, credential store, cache or business write.
-import { ERP_ORIGIN, ERP_DATABASE } from './erpSourceContract.mjs';
+import { ERP_ORIGIN, ERP_DATABASE, ERP_PRODUCT_DATABASE } from './erpSourceContract.mjs';
 const PREFIX = '/crm/catalog/products';
 // Internal only: router rechecks the read lease immediately before committing response bytes.
 export const CATALOG_RESPONSE_GUARD = Symbol('catalog-response-guard');
@@ -24,14 +24,14 @@ function photoPath(row) {
   images.sort((a, b) => Number(b.isPrimary === true) - Number(a.isPrimary === true) || Number(a.sortOrder || 0) - Number(b.sortOrder || 0) || Number(a.id || 0) - Number(b.id || 0));
   const raw = typeof row.imageUrl === 'string' && row.imageUrl ? row.imageUrl : images[0]?.filePath;
   // No caller URLs, query tokens, remote origins, traversal, encoded separators or filesystem paths.
-  if (typeof raw !== 'string' || raw.length > 500 || !/^\/uploads\/products\/[A-Za-z0-9][A-Za-z0-9 ._-]*\.(?:jpe?g|png|webp)$/i.test(raw)
+  if (typeof raw !== 'string' || raw.length > 500 || !/^\/uploads\/vega-products\/[A-Za-z0-9][A-Za-z0-9 ._-]*\.(?:jpe?g|png|webp)$/i.test(raw)
     || raw.includes('..')) return null;
   // Existing 4100 filenames include spaces. Encode ONLY a validated single basename.
   // Percent escapes, slashes, query delimiters and non-ASCII characters remain rejected.
-  return '/uploads/products/' + encodeURIComponent(raw.slice('/uploads/products/'.length));
+  return '/uploads/vega-products/' + encodeURIComponent(raw.slice('/uploads/vega-products/'.length));
 }
 function sanitize(row) {
-  if (!row || !identity(row.id) || typeof row.stockCode !== 'string' || !row.stockCode.trim()
+  if (!row || typeof row.id!=='string' || !/^vega-[1-9][0-9]*$/.test(row.id) || !Number.isSafeInteger(Number(row.id.slice(5))) || typeof row.stockCode !== 'string' || !row.stockCode.trim()
     || typeof row.productName !== 'string' || !row.productName.trim()) throw Error('PRODUCT_CONTRACT');
   if (!(row.isPassive === false || row.isActive === true)) throw Error('ACTIVE_PRODUCT_REQUIRED');
   const price = numberOrNull(row.salePrice); const qty = numberOrNull(row.stockQuantity);
@@ -71,12 +71,12 @@ export function createCatalogBridge({ deploymentApproved = false, transport, aut
     const url = new URL(request.url);
     if (request.method !== 'GET') return fail(405, 'GET_ONLY');
     const tail = url.pathname.slice(PREFIX.length);
-    if (!url.pathname.startsWith(PREFIX) || !/^(?:|\/[1-9][0-9]*(?:\/photo)?)$/.test(tail)) return fail(404, 'ROUTE_NOT_ALLOWED');
+    if (!url.pathname.startsWith(PREFIX) || !/^(?:|\/vega-[1-9][0-9]*(?:\/photo)?)$/.test(tail)) return fail(404, 'ROUTE_NOT_ALLOWED');
     const isPhoto = tail.endsWith('/photo'); const id = tail ? tail.split('/')[1] : null;
     const query = new URLSearchParams();
     for (const [key, value] of url.searchParams) {
-      if (tail || !['search', 'brand', 'category', 'page', 'limit'].includes(key) || url.searchParams.getAll(key).length !== 1) return fail(400, 'INVALID_QUERY');
-      if (['search', 'brand', 'category'].includes(key) ? value.length > 120 : !/^[1-9][0-9]*$/.test(value) || !Number.isSafeInteger(+value) || (key === 'limit' && +value > 100)) return fail(400, 'INVALID_QUERY');
+      if (tail || !['search', 'brand', 'category', 'hasImage', 'page', 'limit'].includes(key) || url.searchParams.getAll(key).length !== 1) return fail(400, 'INVALID_QUERY');
+      if (key === 'hasImage' ? !['true','false'].includes(value) : ['search', 'brand', 'category'].includes(key) ? value.length > 120 : !/^[1-9][0-9]*$/.test(value) || !Number.isSafeInteger(+value) || (key === 'limit' && +value > 100)) return fail(400, 'INVALID_QUERY');
       query.set(key, value);
     }
     if (!deploymentApproved) return fail(503, 'BRIDGE_NOT_DEPLOYED');
@@ -96,7 +96,7 @@ export function createCatalogBridge({ deploymentApproved = false, transport, aut
       const upstream = await exchange(id ? `/api/crm-catalog/products/${id}` : `/api/crm-catalog/products?${query}`, session, assertCurrent, signal);
       if (upstream.status === 404 && upstream.code !== 'PRODUCT_NOT_FOUND') return fail(503, 'ERP_SINGLE_LOGIN_ROUTE_UNAVAILABLE');
       if (upstream.status !== 200) return fail(upstream.status >= 400 ? upstream.status : 502, upstream.code || 'ERP_READ_REJECTED');
-      if (upstream.data.meta?.source !== 'crm-catalog-sql-select-only' || upstream.data.meta?.sourceDatabaseVerified !== true || upstream.data.meta?.databaseName !== ERP_DATABASE) return fail(503, 'ERP_SOURCE_IDENTITY_REQUIRED');
+      if (upstream.data.meta?.source !== 'crm-existing-stock-select-only' || upstream.data.meta?.sourceDatabaseVerified !== true || upstream.data.meta?.productDatabaseVerified!==true || upstream.data.meta?.imageDatabaseVerified!==true || upstream.data.meta?.imageDatabaseName !== ERP_DATABASE || upstream.data.meta?.productDatabaseName!==ERP_PRODUCT_DATABASE) return fail(503, 'ERP_SOURCE_IDENTITY_REQUIRED');
       if (!sameId(upstream.data.meta?.verifiedCrmActorId, crm.id) || upstream.data.meta?.verifiedCrmRole !== crm.role) return fail(502, 'CRM_SOURCE_ACTOR_MISMATCH');
       if (now() - started > maxReadAgeMs || session.expiresAt <= now()) return fail(503, 'FRESH_READ_REQUIRED');
       if (id) {
@@ -119,14 +119,20 @@ export function createCatalogBridge({ deploymentApproved = false, transport, aut
           if (!signature || now() - started > maxReadAgeMs || session.expiresAt <= now()) return fail(502, 'PHOTO_BYTES_OR_FRESHNESS_REJECTED');
           return protect(new Response(body, { headers: { 'content-type': mime, 'cache-control': 'no-store', 'x-content-type-options': 'nosniff', 'content-disposition': 'inline' } }));
         }
-        return protect(Response.json({ success: true, data: sanitize(upstream.data.data), meta: { source: 'melisa-erp-authorized-read', fetchedAt: new Date(now()).toISOString(), cached: false, sourceUpdatedAt: null, sourceDatabaseVerified: true, capabilities: { read: true, unpricedCatalog: true, pricedPdf: false } } }, { headers: { 'cache-control': 'no-store' } }));
+        return protect(Response.json({ success: true, data: sanitize(upstream.data.data), meta: { source: 'melisa-existing-erp-stock-read', catalogVersion:'existing-stock-v1', sourceDatabases:{products:ERP_PRODUCT_DATABASE,images:ERP_DATABASE}, stockFreshness:'unverified', fetchedAt: new Date(now()).toISOString(), cached: false, sourceUpdatedAt: null, sourceDatabaseVerified: true, capabilities: { read: true, unpricedCatalog: true, pricedPdf: false } } }, { headers: { 'cache-control': 'no-store' } }));
       }
-      if (!Array.isArray(upstream.data.data) || upstream.data.meta?.source !== 'crm-catalog-sql-select-only') return fail(502, 'LIST_CONTRACT_REQUIRED');
+      if (!Array.isArray(upstream.data.data) || upstream.data.meta?.source !== 'crm-existing-stock-select-only') return fail(502, 'LIST_CONTRACT_REQUIRED');
       const data = upstream.data.data.map(sanitize); const m = upstream.data.meta;
       const pagination = Object.fromEntries(['page','limit','total','totalPages','hasNextPage','hasPreviousPage'].map(k => [k,m[k]]));
       if (!['page','limit','total','totalPages'].every(k => Number.isSafeInteger(pagination[k]) && pagination[k] >= 0)
         || !['hasNextPage','hasPreviousPage'].every(k => typeof pagination[k] === 'boolean')) return fail(502, 'PAGINATION_CONTRACT_REQUIRED');
-      return protect(Response.json({ success: true, data, meta: { ...pagination, source: 'melisa-erp-authorized-read', fetchedAt: new Date(now()).toISOString(), cached: false, sourceUpdatedAt: null, sourceDatabaseVerified: true, capabilities: { read: true, unpricedCatalog: true, pricedPdf: false } } }, { headers: { 'cache-control': 'no-store' } }));
+      const expectedPage=Number(query.get('page')||1),expectedLimit=Number(query.get('limit')||24);
+      if(pagination.page!==expectedPage||pagination.limit!==expectedLimit||pagination.totalPages!==Math.max(1,Math.ceil(pagination.total/expectedLimit))||data.length!==Math.min(expectedLimit,Math.max(0,pagination.total-(expectedPage-1)*expectedLimit)))return fail(502,'PAGINATION_CONTRACT_REQUIRED');
+      const publicOptions=rows=>{if(!Array.isArray(rows)||rows.length>500)throw Error('FACET_CONTRACT');return rows.map(row=>{if(typeof row?.value!=='string'||!row.value||row.value.length>120||!Number.isSafeInteger(row.count)||row.count<1)throw Error('FACET_CONTRACT');return{value:row.value,count:row.count}})};
+      const expectedFilters={search:(query.get('search')||'').trim(),brand:(query.get('brand')||'').trim()||null,category:(query.get('category')||'').trim()||null,hasImage:query.get('hasImage')!=='false'};
+      if(Object.keys(expectedFilters).some(key=>m.filters?.[key]!==expectedFilters[key])||m.photoEligibility!=='guarded-existing-ui-reference'||m.facets?.scope!=='current-query-excluding-own-facet'||!Number.isSafeInteger(m.totalPhotoEligible)||m.totalPhotoEligible<0||m.totalPhotoEligible>m.total||expectedFilters.hasImage&&(m.totalPhotoEligible!==m.total||data.some(row=>!row.photoPath)))throw Error('FILTER_CONTRACT');
+      const facetMeta={totalPhotoEligible:m.totalPhotoEligible,photoEligibility:m.photoEligibility,filters:expectedFilters,facets:{scope:m.facets.scope,brands:publicOptions(m.facets.brands),categories:publicOptions(m.facets.categories)}};
+      return protect(Response.json({ success: true, data, meta: { ...pagination,...facetMeta, source: 'melisa-existing-erp-stock-read', catalogVersion:'existing-stock-v1', sourceDatabases:{products:ERP_PRODUCT_DATABASE,images:ERP_DATABASE}, stockFreshness:'unverified', fetchedAt: new Date(now()).toISOString(), cached: false, sourceUpdatedAt: null, sourceDatabaseVerified: true, capabilities: { read: true, unpricedCatalog: true, pricedPdf: false } } }, { headers: { 'cache-control': 'no-store' } }));
     } catch (error) { return activeSession&&(!activeSession.isCurrent()||activeSession.signal.aborted||activeSession.expiresAt<=now()) ? fail(401,'CATALOG_SESSION_REVOKED') : fail(error?.status || 502, error?.message === 'CATALOG_SESSION_LIMIT' ? 'CATALOG_SESSION_LIMIT' : 'ERP_BRIDGE_UNAVAILABLE'); } finally { activeSession?.release?.(); }
   };
 }

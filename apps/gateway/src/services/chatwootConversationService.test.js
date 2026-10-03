@@ -9,15 +9,15 @@ test('Chatwoot assignment uses the selected CRM-linked agent', async () => {
     ...env.chatwoot,
     agentPersonnelMap: new Map(env.chatwoot.agentPersonnelMap),
   };
-  let request = null;
+  const requests = [];
   env.chatwoot.baseUrl = 'http://chatwoot.local';
   env.chatwoot.accountId = 2;
   env.chatwoot.apiAccessToken = 'test-token';
   env.chatwoot.agentPersonnelMap = new Map([[7, 19]]);
 
   global.fetch = async (url, options) => {
-    request = { url, options };
-    return new Response(JSON.stringify({ meta: { assignee: { id: 19 } } }), { status: 200 });
+    requests.push({ url, options });
+    return new Response(JSON.stringify({ id: 41, meta: { assignee: { id: 19 } } }), { status: 200 });
   };
 
   try {
@@ -25,9 +25,11 @@ test('Chatwoot assignment uses the selected CRM-linked agent', async () => {
       conversationId: 41,
       assignee: { id: 7, username: 'ahmet', displayName: 'Ahmet', employeeId: 70 },
     });
-    assert.equal(request.url, 'http://chatwoot.local/api/v1/accounts/2/conversations/41/assignments');
-    assert.equal(request.options.method, 'POST');
-    assert.deepEqual(JSON.parse(request.options.body), { assignee_id: 19 });
+    assert.equal(requests[0].url, 'http://chatwoot.local/api/v1/accounts/2/conversations/41/assignments');
+    assert.equal(requests[0].options.method, 'POST');
+    assert.deepEqual(JSON.parse(requests[0].options.body), { assignee_id: 19 });
+    assert.equal(requests[1].options.method, 'GET');
+    assert.equal(result.confirmed, true);
     assert.equal(result.assignedUserId, 7);
     assert.equal(result.chatwootAgentId, 19);
   } finally {

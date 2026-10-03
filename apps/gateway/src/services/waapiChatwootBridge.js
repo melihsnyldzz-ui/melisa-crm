@@ -97,7 +97,8 @@ export class WaapiChatwootBridge {
         () => this.request(`/conversations/${id}/messages`, {
           method: 'POST',
           body: { content: event.text, message_type: event.direction, private: false,
-            source_id: event.providerMessageId, content_attributes: { provider_message_id: event.providerMessageId, provider: 'waapi', provider_accepted: event.direction === 'outgoing' } },
+            source_id: event.providerMessageId, content_attributes: { provider_message_id: event.providerMessageId, provider: 'waapi',
+              provider_timestamp: event.timestamp || null, provider_accepted: event.direction === 'outgoing' } },
           media: event.media,
         }));
       return { confirmed: true, chatwootMessageId: String(message.id), providerMessageId: event.providerMessageId };
@@ -108,34 +109,43 @@ export class WaapiChatwootBridge {
     if (event.event === 'message_ack') {
       // ACK journal is separate from acceptance and Chatwoot recording. Monotonic receipt evidence.
       const key = this.journal.key(`ack:${event.providerMessageId}`);
-      const previous = await this.journal.get('state', key);
-      await this.journal.put('state', key, { providerMessageId: event.providerMessageId,
-        ack: Math.max(previous?.ack ?? -1, event.ack ?? -1), checkedAt: new Date().toISOString() });
+      await this.journal.update('state', key, previous => ({ providerMessageId: event.providerMessageId,
+        ack: Math.max(previous?.ack ?? -1, event.ack ?? -1), checkedAt: new Date().toISOString() }));
       return;
     }
     await this.sync(event, event.conversationId);
   }
 }
 export const waapiChatwootBridge = new WaapiChatwootBridge();
-export function startWaapiWorker() {
+export function createWaapiWorker({ journal = waapiJournal, bridge = waapiChatwootBridge, config = env,
+  now = Date.now, setIntervalFn = globalThis.setInterval, clearIntervalFn = globalThis.clearInterval } = {}) {
   let running = false;
-  const timer = setInterval(async () => {
-    if (running || env.whatsapp.provider !== 'waapi') return;
+  const timer = setIntervalFn(async () => {
+    if (running || config.whatsapp.provider !== 'waapi') return;
     running = true;
     try {
-      for (const item of await waapiJournal.pending(WAAPI_INSTANCE)) {
+      for (const item of await journal.pending(WAAPI_INSTANCE)) {
         if (String(item.event?.instanceId) !== WAAPI_INSTANCE) continue;
         try {
-          if (!env.waapi.bridgeEnabled && ['message', 'message_create'].includes(item.event.event)) continue;
-          await waapiChatwootBridge.process(item.event);
-          await waapiJournal.put('events', item.key, { ...item, done: true });
+          if (!config.waapi.bridgeEnabled && ['message', 'message_create'].includes(item.event.event)) continue;
+          await bridge.process(item.event);
+          await journal.update('events', item.key, current => ({ ...(current || item), done: true,
+            attemptCount: ((current || item).attemptCount || 0) + 1, processedAt: new Date(now()).toISOString(), retryAt: null, lastError: null }));
         } catch (e) {
-          await waapiJournal.put('events', item.key, { ...item, lastError: String(e.code || 'IMPORT_FAILED'), lastCheckedAt: new Date().toISOString(), retryAt: new Date(Date.now() + 60000).toISOString() });
+          await journal.update('events', item.key, current => {
+            const latest = current || item;
+            const retryCount = (latest.retryCount || 0) + 1;
+            const hydrated = item.event.mediaPending && latest.event.media && !latest.event.mediaPending;
+            return { ...latest, attemptCount: (latest.attemptCount || 0) + 1, retryCount,
+              lastError: String(e.code || 'IMPORT_FAILED'), lastCheckedAt: new Date(now()).toISOString(),
+              retryAt: hydrated ? null : new Date(now() + Math.min(60000 * 2 ** Math.min(retryCount - 1, 4), 900000)).toISOString() };
+          });
         }
       }
     } catch { /* durable files remain pending; no provider send is possible from this worker */ }
     finally { running = false; }
   }, 5000);
   timer.unref();
-  return () => clearInterval(timer);
+  return () => clearIntervalFn(timer);
 }
+export function startWaapiWorker() { return createWaapiWorker(); }

@@ -1,0 +1,841 @@
+{
+  "sealSha256": "77e68203ff1f1e28d8ba5b0430caef042badab8f072b5598e854295e29ecd93a",
+  "status": "NOT_INSTALLED",
+  "phase": "gateway",
+  "changed": 21,
+  "added": 16,
+  "files": [
+    {
+      "source": "deployment-dependency/gateway/src/app.js",
+      "target": "apps/gateway/src/app.js",
+      "sourceSha256": "0270981e04e9d89277bf65c913e46eb8ef60669da59ac8c992323e1324619d41",
+      "copiedSha256": "0270981e04e9d89277bf65c913e46eb8ef60669da59ac8c992323e1324619d41",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "deployment-dependency/gateway/src/config/boundedOwnerMediaActivation.js",
+      "target": "apps/gateway/src/config/boundedOwnerMediaActivation.js",
+      "sourceSha256": "cf1c41d7911df4270ff969e8716bdf6f455fbedc061cf9a2bb8ca97f940828ac",
+      "copiedSha256": "cf1c41d7911df4270ff969e8716bdf6f455fbedc061cf9a2bb8ca97f940828ac",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "deployment-dependency/gateway/src/config/env.js",
+      "target": "apps/gateway/src/config/env.js",
+      "sourceSha256": "fe592bbdaf8e3f946f9c337e4e81d2f54c5443689ab10f69c682bd80bfd361dd",
+      "copiedSha256": "fe592bbdaf8e3f946f9c337e4e81d2f54c5443689ab10f69c682bd80bfd361dd",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "deployment-dependency/gateway/src/controllers/agentController.js",
+      "target": "apps/gateway/src/controllers/agentController.js",
+      "sourceSha256": "5e43cfac039809cd9c6dd0585951bfae48212de294dd159934412534eb390fb8",
+      "copiedSha256": "5e43cfac039809cd9c6dd0585951bfae48212de294dd159934412534eb390fb8",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/controllers/authController.js",
+      "target": "apps/gateway/src/controllers/authController.js",
+      "sourceSha256": "22fa2afd1504cbd4a1743828fe65923ccc7f162e4e4b67aedd816a4b4bff5e90",
+      "copiedSha256": "22fa2afd1504cbd4a1743828fe65923ccc7f162e4e4b67aedd816a4b4bff5e90",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/controllers/contactController.js",
+      "target": "apps/gateway/src/controllers/contactController.js",
+      "sourceSha256": "3631cf6339cfc2d1f6fccb93fe74062a1f45f87598e316452f0531705d59041f",
+      "copiedSha256": "3631cf6339cfc2d1f6fccb93fe74062a1f45f87598e316452f0531705d59041f",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/controllers/conversationController.js",
+      "target": "apps/gateway/src/controllers/conversationController.js",
+      "sourceSha256": "95c22b6100ec923500fed9f8f5c34b70a2e46433870eb041fa64f1d8ae3bae84",
+      "copiedSha256": "95c22b6100ec923500fed9f8f5c34b70a2e46433870eb041fa64f1d8ae3bae84",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "deployment-dependency/gateway/src/controllers/healthController.js",
+      "target": "apps/gateway/src/controllers/healthController.js",
+      "sourceSha256": "8e5c5266591e06aa381f763205e8b98c3a6e298ff8249bb40e02744df71ee863",
+      "copiedSha256": "8e5c5266591e06aa381f763205e8b98c3a6e298ff8249bb40e02744df71ee863",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/controllers/inboxController.js",
+      "target": "apps/gateway/src/controllers/inboxController.js",
+      "sourceSha256": "0f5a40c2c4a57d4a8a20127e8fae54150319095abdb78717d7acb4a9505b4f4b",
+      "copiedSha256": "0f5a40c2c4a57d4a8a20127e8fae54150319095abdb78717d7acb4a9505b4f4b",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/controllers/integrationController.js",
+      "target": "apps/gateway/src/controllers/integrationController.js",
+      "sourceSha256": "40816c7c083d8a5667bcf772742777cfd2c187282aac8fce6a6484c7431481c3",
+      "copiedSha256": "40816c7c083d8a5667bcf772742777cfd2c187282aac8fce6a6484c7431481c3",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/controllers/mediaController.js",
+      "target": "apps/gateway/src/controllers/mediaController.js",
+      "sourceSha256": "f46b34810f76c4a9b7d5cce50c3eb65f65434787a4fa675baf4f63a5e23eb187",
+      "copiedSha256": "f46b34810f76c4a9b7d5cce50c3eb65f65434787a4fa675baf4f63a5e23eb187",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/controllers/sendController.js",
+      "target": "apps/gateway/src/controllers/sendController.js",
+      "sourceSha256": "b97feee968b8f423acaa48438f11e9534a5a67878cc2b97eaeef87e3239699dc",
+      "copiedSha256": "b97feee968b8f423acaa48438f11e9534a5a67878cc2b97eaeef87e3239699dc",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/controllers/translationController.js",
+      "target": "apps/gateway/src/controllers/translationController.js",
+      "sourceSha256": "fb1d99cc8079616e0ca042f5f20f8b14b5ef643be81db37e32d493b7a34133d8",
+      "copiedSha256": "fb1d99cc8079616e0ca042f5f20f8b14b5ef643be81db37e32d493b7a34133d8",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/controllers/webhookController.js",
+      "target": "apps/gateway/src/controllers/webhookController.js",
+      "sourceSha256": "b311f82748a9bd609ae2ca694da144c16bba7ae630eabb82990769de56f91dd0",
+      "copiedSha256": "b311f82748a9bd609ae2ca694da144c16bba7ae630eabb82990769de56f91dd0",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/middleware/auth.js",
+      "target": "apps/gateway/src/middleware/auth.js",
+      "sourceSha256": "b3d2dd1660f26482f111081901a56c4962d80e49c01c890d3c396b6b7520cda9",
+      "copiedSha256": "b3d2dd1660f26482f111081901a56c4962d80e49c01c890d3c396b6b7520cda9",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/middleware/catalogReadBudget.mjs",
+      "target": "apps/gateway/src/middleware/catalogReadBudget.mjs",
+      "sourceSha256": "db21c5ef6a29398d021886e66a2d59953df56ca9207234890e2a636bd8bfcb05",
+      "copiedSha256": "db21c5ef6a29398d021886e66a2d59953df56ca9207234890e2a636bd8bfcb05",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "deployment-dependency/gateway/src/middleware/errorHandler.js",
+      "target": "apps/gateway/src/middleware/errorHandler.js",
+      "sourceSha256": "d42a1829edb285882893188771a9c7e5813ba4ea3d1a0c6512466974badaa2ad",
+      "copiedSha256": "d42a1829edb285882893188771a9c7e5813ba4ea3d1a0c6512466974badaa2ad",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/middleware/messageUploadParser.js",
+      "target": "apps/gateway/src/middleware/messageUploadParser.js",
+      "sourceSha256": "c98281a99a75faee924eaddf6cfdb2acd63fb18f500a48a250dccbb03991a5e0",
+      "copiedSha256": "c98281a99a75faee924eaddf6cfdb2acd63fb18f500a48a250dccbb03991a5e0",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "deployment-dependency/gateway/src/middleware/messageUploadParser.test.js",
+      "target": "apps/gateway/src/middleware/messageUploadParser.test.js",
+      "sourceSha256": "20799a00c8b585257df180120a9f9f8449b4e0f19a231a9d6e73ef797c49f588",
+      "copiedSha256": "20799a00c8b585257df180120a9f9f8449b4e0f19a231a9d6e73ef797c49f588",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "deployment-dependency/gateway/src/middleware/notFound.js",
+      "target": "apps/gateway/src/middleware/notFound.js",
+      "sourceSha256": "2a7ef849d06c477d4d4aeb35b099e45d1deebd6e610bc0a2bd153a4d3b97d1c5",
+      "copiedSha256": "2a7ef849d06c477d4d4aeb35b099e45d1deebd6e610bc0a2bd153a4d3b97d1c5",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/middleware/requestContext.js",
+      "target": "apps/gateway/src/middleware/requestContext.js",
+      "sourceSha256": "49d18d2caf579f3740374209841873da19d5765dca4533efe2bfd87a2965795c",
+      "copiedSha256": "49d18d2caf579f3740374209841873da19d5765dca4533efe2bfd87a2965795c",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/middleware/security.js",
+      "target": "apps/gateway/src/middleware/security.js",
+      "sourceSha256": "666b80e86c4e3f0339696ec3fd6a9d113e3355529710f4c119e65c0f6f9115ba",
+      "copiedSha256": "666b80e86c4e3f0339696ec3fd6a9d113e3355529710f4c119e65c0f6f9115ba",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "deployment-dependency/gateway/src/middleware/webhookSecurity.js",
+      "target": "apps/gateway/src/middleware/webhookSecurity.js",
+      "sourceSha256": "9f74e106baabe2f378d38e8b88f7e6a37f894a1e5eb09f635cf763c475da9ad7",
+      "copiedSha256": "9f74e106baabe2f378d38e8b88f7e6a37f894a1e5eb09f635cf763c475da9ad7",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/middleware/webhookSecurity.test.js",
+      "target": "apps/gateway/src/middleware/webhookSecurity.test.js",
+      "sourceSha256": "a6cde0af8399a4532a503dcb4db12919025482a7cdb6c43418517b80bfb68e10",
+      "copiedSha256": "a6cde0af8399a4532a503dcb4db12919025482a7cdb6c43418517b80bfb68e10",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/providers/chatwootProvider.js",
+      "target": "apps/gateway/src/providers/chatwootProvider.js",
+      "sourceSha256": "862fed3723dc3b779d6e52b0bb68d591bceabcbd60bd9235e1643616cd8742b8",
+      "copiedSha256": "862fed3723dc3b779d6e52b0bb68d591bceabcbd60bd9235e1643616cd8742b8",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/providers/chatwootProvider.test.js",
+      "target": "apps/gateway/src/providers/chatwootProvider.test.js",
+      "sourceSha256": "a141425a497192b41fbef77c2395716cb91b10b8bf4f53434e3975a7329774f9",
+      "copiedSha256": "a141425a497192b41fbef77c2395716cb91b10b8bf4f53434e3975a7329774f9",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/providers/evolutionProvider.js",
+      "target": "apps/gateway/src/providers/evolutionProvider.js",
+      "sourceSha256": "c342f983016acb064de26b54cb034bd3ab0625db0e41048b68cb13ce62c0a403",
+      "copiedSha256": "c342f983016acb064de26b54cb034bd3ab0625db0e41048b68cb13ce62c0a403",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/providers/evolutionProvider.test.js",
+      "target": "apps/gateway/src/providers/evolutionProvider.test.js",
+      "sourceSha256": "24a5827715afc52f2c43a422549232638846acf1241e6da27f133da1c2668e1b",
+      "copiedSha256": "2bec07f3969a4464f13e0bf1f6cffbaa6500cace91495ea056b00e11e1cfa244",
+      "privacyAdaptation": true,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/providers/index.js",
+      "target": "apps/gateway/src/providers/index.js",
+      "sourceSha256": "7188d51cc0a527a24cb1cc1754b0ac7f869f7499c3c36221034b073f5074cab7",
+      "copiedSha256": "7188d51cc0a527a24cb1cc1754b0ac7f869f7499c3c36221034b073f5074cab7",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/providers/waapiMedia.test.js",
+      "target": "apps/gateway/src/providers/waapiMedia.test.js",
+      "sourceSha256": "7897a6bfac8145505de554182fbee001cb761e921b6e6782ffd713404d3a426f",
+      "copiedSha256": "6309fa8caf099e825141cfccf41d18f481628c66c18c84cde94d890554d59a7c",
+      "privacyAdaptation": true,
+      "changed": true
+    },
+    {
+      "source": "deployment-dependency/gateway/src/providers/waapiProvider.js",
+      "target": "apps/gateway/src/providers/waapiProvider.js",
+      "sourceSha256": "a1a9ea1424212fdbc61ead8633be193251c4753348c5e180c711ff0c3a7c2753",
+      "copiedSha256": "b4057ced0daf0b9a9ab40da5b3ce26c092efa2fae71bef0495150ecaa7216a1e",
+      "privacyAdaptation": true,
+      "changed": true
+    },
+    {
+      "source": "deployment-dependency/gateway/src/providers/waapiProvider.test.js",
+      "target": "apps/gateway/src/providers/waapiProvider.test.js",
+      "sourceSha256": "719b24506baff7dbf69eac8d24c4984007d5394eacd2b6710a0cce090e5dfec2",
+      "copiedSha256": "1e937d1cf95bcae90569d8f9c78154c7d7c3d0f060f0be52e1fc841f1de45493",
+      "privacyAdaptation": true,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/providers/whatsappProvider.js",
+      "target": "apps/gateway/src/providers/whatsappProvider.js",
+      "sourceSha256": "6cac68646850eb47cc6ff1245430d316fb3afc83547ccb2db042d412009621d5",
+      "copiedSha256": "6cac68646850eb47cc6ff1245430d316fb3afc83547ccb2db042d412009621d5",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/repositories/crmRepository.js",
+      "target": "apps/gateway/src/repositories/crmRepository.js",
+      "sourceSha256": "53fd29d6cb6c7587b48122341846ede12e485b4ffe6146b6569da1837f721b49",
+      "copiedSha256": "53fd29d6cb6c7587b48122341846ede12e485b4ffe6146b6569da1837f721b49",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/routes/agentRoutes.js",
+      "target": "apps/gateway/src/routes/agentRoutes.js",
+      "sourceSha256": "ce911e1a8b2078f0ee193d7e002e56e635304c40b9f65499c57ea617cb574ef2",
+      "copiedSha256": "ce911e1a8b2078f0ee193d7e002e56e635304c40b9f65499c57ea617cb574ef2",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/routes/authRoutes.js",
+      "target": "apps/gateway/src/routes/authRoutes.js",
+      "sourceSha256": "89732e220f41bfce033efc31b5ed7d81b496b0424f0f3d30c71eaaa2abedacd9",
+      "copiedSha256": "89732e220f41bfce033efc31b5ed7d81b496b0424f0f3d30c71eaaa2abedacd9",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/routes/authRoutes.test.js",
+      "target": "apps/gateway/src/routes/authRoutes.test.js",
+      "sourceSha256": "860ae1db111ebd4765ac2edf60b7bf2b03349714bd518e366a9d86430c87e8c0",
+      "copiedSha256": "860ae1db111ebd4765ac2edf60b7bf2b03349714bd518e366a9d86430c87e8c0",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "deployment-dependency/gateway/src/routes/contactRoutes.js",
+      "target": "apps/gateway/src/routes/contactRoutes.js",
+      "sourceSha256": "3a33bb1fe39a477057367855a47fa0cac39d80bdfd0f34604fe01f3ece18521c",
+      "copiedSha256": "3a33bb1fe39a477057367855a47fa0cac39d80bdfd0f34604fe01f3ece18521c",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/routes/conversationRoutes.js",
+      "target": "apps/gateway/src/routes/conversationRoutes.js",
+      "sourceSha256": "82dd74c645d7ecafc15ef7db192ef9fef900265ce021fa0fcf636c483be60d09",
+      "copiedSha256": "82dd74c645d7ecafc15ef7db192ef9fef900265ce021fa0fcf636c483be60d09",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/routes/healthRoutes.js",
+      "target": "apps/gateway/src/routes/healthRoutes.js",
+      "sourceSha256": "18e7365338d5d992ef1e01295e0231ea6d1e174f84d772817d9105642f9f9be7",
+      "copiedSha256": "18e7365338d5d992ef1e01295e0231ea6d1e174f84d772817d9105642f9f9be7",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/routes/inboxRoutes.js",
+      "target": "apps/gateway/src/routes/inboxRoutes.js",
+      "sourceSha256": "e7e60b885aa95d3db4a8db1b0f119fe8c8fdbc197549fdcca473eba549ef0de6",
+      "copiedSha256": "e7e60b885aa95d3db4a8db1b0f119fe8c8fdbc197549fdcca473eba549ef0de6",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/routes/index.js",
+      "target": "apps/gateway/src/routes/index.js",
+      "sourceSha256": "9d066aa8f3853c2c2093f79f357d753f05912ff65fce178c5de6022a73610848",
+      "copiedSha256": "9d066aa8f3853c2c2093f79f357d753f05912ff65fce178c5de6022a73610848",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "deployment-dependency/gateway/src/routes/integrationRoutes.js",
+      "target": "apps/gateway/src/routes/integrationRoutes.js",
+      "sourceSha256": "cbb71b9083f1f891538209633a076caaa801017bec0da198cf34b9c05ba642c9",
+      "copiedSha256": "cbb71b9083f1f891538209633a076caaa801017bec0da198cf34b9c05ba642c9",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/routes/mediaRoutes.js",
+      "target": "apps/gateway/src/routes/mediaRoutes.js",
+      "sourceSha256": "cdf63b188206100fb21bd6ce760fa25866d94f6ca7f7f02da5019c08cb3bef92",
+      "copiedSha256": "cdf63b188206100fb21bd6ce760fa25866d94f6ca7f7f02da5019c08cb3bef92",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/routes/sendRoutes.js",
+      "target": "apps/gateway/src/routes/sendRoutes.js",
+      "sourceSha256": "b10d211dae0c6806f7e08bc36702966f829167cacceeefe23c6d9fc588c9a360",
+      "copiedSha256": "b10d211dae0c6806f7e08bc36702966f829167cacceeefe23c6d9fc588c9a360",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/routes/translationRoutes.test.js",
+      "target": "apps/gateway/src/routes/translationRoutes.test.js",
+      "sourceSha256": "a13eecb12b13f1253b60d502f080be963f183043b0fa31f5b81f9f0ebfb58879",
+      "copiedSha256": "a13eecb12b13f1253b60d502f080be963f183043b0fa31f5b81f9f0ebfb58879",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "deployment-dependency/gateway/src/routes/waapiWebhookRoutes.js",
+      "target": "apps/gateway/src/routes/waapiWebhookRoutes.js",
+      "sourceSha256": "c13eadb017382f52ccd83893c9a962bcb7fe3efe8c884a1ddecb515f512832ae",
+      "copiedSha256": "c13eadb017382f52ccd83893c9a962bcb7fe3efe8c884a1ddecb515f512832ae",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/routes/waapiWebhookRoutes.test.js",
+      "target": "apps/gateway/src/routes/waapiWebhookRoutes.test.js",
+      "sourceSha256": "62c17233c2939ffb47719a0e0a70356cf199db04f63a574f9533387ac4d4fe73",
+      "copiedSha256": "62c17233c2939ffb47719a0e0a70356cf199db04f63a574f9533387ac4d4fe73",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/routes/webhookRoutes.js",
+      "target": "apps/gateway/src/routes/webhookRoutes.js",
+      "sourceSha256": "41ba2c900ff6dcdd55d8fc489dd7eed5ce3dc5a0172891935d81cb63e9ecb321",
+      "copiedSha256": "41ba2c900ff6dcdd55d8fc489dd7eed5ce3dc5a0172891935d81cb63e9ecb321",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/server.js",
+      "target": "apps/gateway/src/server.js",
+      "sourceSha256": "951c26d7b684334dc0c67414cb3d6243c65ee99368ede37c2ebd17424afe124b",
+      "copiedSha256": "951c26d7b684334dc0c67414cb3d6243c65ee99368ede37c2ebd17424afe124b",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/services/assignmentRecovery.test.js",
+      "target": "apps/gateway/src/services/assignmentRecovery.test.js",
+      "sourceSha256": "aecabc348f8c3a188083f59ab59011e21190f2b9381bf7907d5d2dfbf7c661bc",
+      "copiedSha256": "aecabc348f8c3a188083f59ab59011e21190f2b9381bf7907d5d2dfbf7c661bc",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "deployment-dependency/gateway/src/services/autoReplyService.js",
+      "target": "apps/gateway/src/services/autoReplyService.js",
+      "sourceSha256": "ceb12238572556fec5fdd85a72bd818081b0bfdf496e4394a4afc623c9d5c56f",
+      "copiedSha256": "ceb12238572556fec5fdd85a72bd818081b0bfdf496e4394a4afc623c9d5c56f",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/services/autoReplyService.test.js",
+      "target": "apps/gateway/src/services/autoReplyService.test.js",
+      "sourceSha256": "3ddfc12bddb2741d4dff605b9b3d431decfd6a930abb3aa091de0f5d3bb1c364",
+      "copiedSha256": "3ddfc12bddb2741d4dff605b9b3d431decfd6a930abb3aa091de0f5d3bb1c364",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/services/catalogBridge.mjs",
+      "target": "apps/gateway/src/services/catalogBridge.mjs",
+      "sourceSha256": "a78c656057207fcdc00cdf92f2974377a4280d00b38feebb569d7b0e68552082",
+      "copiedSha256": "a78c656057207fcdc00cdf92f2974377a4280d00b38feebb569d7b0e68552082",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "deployment-dependency/gateway/src/services/catalogRouter.mjs",
+      "target": "apps/gateway/src/services/catalogRouter.mjs",
+      "sourceSha256": "42b778310cc5fcb857709963e5ae0ef8ab1b525b4b5edd3b9ac66e84a2768220",
+      "copiedSha256": "42b778310cc5fcb857709963e5ae0ef8ab1b525b4b5edd3b9ac66e84a2768220",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "deployment-dependency/gateway/src/services/chatwootApiService.js",
+      "target": "apps/gateway/src/services/chatwootApiService.js",
+      "sourceSha256": "460e7a2583c6fab59f4f78953589ac423c6b8287e6e0520e3932e253f4d8a7fe",
+      "copiedSha256": "460e7a2583c6fab59f4f78953589ac423c6b8287e6e0520e3932e253f4d8a7fe",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/services/chatwootConversationService.js",
+      "target": "apps/gateway/src/services/chatwootConversationService.js",
+      "sourceSha256": "d8736d44643b7a83d22ca318ce832e91571d4274c35bfccebe011d1c65beda9f",
+      "copiedSha256": "d8736d44643b7a83d22ca318ce832e91571d4274c35bfccebe011d1c65beda9f",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "deployment-dependency/gateway/src/services/chatwootConversationService.test.js",
+      "target": "apps/gateway/src/services/chatwootConversationService.test.js",
+      "sourceSha256": "aef6f945a601551622db6df2c87ec3dfcc2220d9d1687d4d9b0cacbeb2dfd36b",
+      "copiedSha256": "aef6f945a601551622db6df2c87ec3dfcc2220d9d1687d4d9b0cacbeb2dfd36b",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "deployment-dependency/gateway/src/services/chatwootDeliveryProofService.js",
+      "target": "apps/gateway/src/services/chatwootDeliveryProofService.js",
+      "sourceSha256": "59d5340f0e6d497524980b5502bed15dea7de097251198cb72699ff48c264390",
+      "copiedSha256": "59d5340f0e6d497524980b5502bed15dea7de097251198cb72699ff48c264390",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/services/chatwootInboxService.js",
+      "target": "apps/gateway/src/services/chatwootInboxService.js",
+      "sourceSha256": "5315d304030f765ec70fa062142cff922685c33ce56cf9b23746a37e075cfc83",
+      "copiedSha256": "5315d304030f765ec70fa062142cff922685c33ce56cf9b23746a37e075cfc83",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "deployment-dependency/gateway/src/services/chatwootInboxService.test.js",
+      "target": "apps/gateway/src/services/chatwootInboxService.test.js",
+      "sourceSha256": "e4a01fcee7627035e0f141e7d49de14379e7585b81252cf6a5a5dbddfe042a44",
+      "copiedSha256": "e4a01fcee7627035e0f141e7d49de14379e7585b81252cf6a5a5dbddfe042a44",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/services/chatwootPersonnelMappingService.js",
+      "target": "apps/gateway/src/services/chatwootPersonnelMappingService.js",
+      "sourceSha256": "a1c8de8811ecfb2165b9e242c138d15490af38895867a0e35877207aa46c563e",
+      "copiedSha256": "a1c8de8811ecfb2165b9e242c138d15490af38895867a0e35877207aa46c563e",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/services/chatwootPersonnelMappingService.test.js",
+      "target": "apps/gateway/src/services/chatwootPersonnelMappingService.test.js",
+      "sourceSha256": "f83ca5e494c6c912cc5bce766ac8fdbf2a88945269c6f9de5d9131d806e2248a",
+      "copiedSha256": "f83ca5e494c6c912cc5bce766ac8fdbf2a88945269c6f9de5d9131d806e2248a",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/services/chatwootWorkflowService.js",
+      "target": "apps/gateway/src/services/chatwootWorkflowService.js",
+      "sourceSha256": "cac4c8a9c8fa4223965fd2d6d56557395c408b90764d43f4b025758bd6fa5a76",
+      "copiedSha256": "cac4c8a9c8fa4223965fd2d6d56557395c408b90764d43f4b025758bd6fa5a76",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/services/chatwootWorkflowService.test.js",
+      "target": "apps/gateway/src/services/chatwootWorkflowService.test.js",
+      "sourceSha256": "cf920850b79d0904196800487eadce1b9225493a71b4a62f552cfea132374851",
+      "copiedSha256": "cf920850b79d0904196800487eadce1b9225493a71b4a62f552cfea132374851",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/services/crmAuthService.js",
+      "target": "apps/gateway/src/services/crmAuthService.js",
+      "sourceSha256": "d1403e669b6625751bf084a2e90cfba92b8b59673b55416545f704423eaa02e2",
+      "copiedSha256": "d1403e669b6625751bf084a2e90cfba92b8b59673b55416545f704423eaa02e2",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/services/crmAuthService.test.js",
+      "target": "apps/gateway/src/services/crmAuthService.test.js",
+      "sourceSha256": "41083d311468a273994fb8c370fa5aafa660c582eb86b7f95d72311ccd0df8a1",
+      "copiedSha256": "41083d311468a273994fb8c370fa5aafa660c582eb86b7f95d72311ccd0df8a1",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/services/crmCatalogAccess.mjs",
+      "target": "apps/gateway/src/services/crmCatalogAccess.mjs",
+      "sourceSha256": "e38836799a5d0146186a392a678f02bc6e63215ffddc92bcd81b1ec43cfacaba",
+      "copiedSha256": "e38836799a5d0146186a392a678f02bc6e63215ffddc92bcd81b1ec43cfacaba",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/services/db.js",
+      "target": "apps/gateway/src/services/db.js",
+      "sourceSha256": "4289628badc99b6a399fcf1db99265156d2b96693bfe2aeb097efe6c51830225",
+      "copiedSha256": "4289628badc99b6a399fcf1db99265156d2b96693bfe2aeb097efe6c51830225",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/services/erpSourceContract.mjs",
+      "target": "apps/gateway/src/services/erpSourceContract.mjs",
+      "sourceSha256": "435983d2f6e8fab7dbbab205ffbe2c7df0a19067c067a8087de4b735148f65a0",
+      "copiedSha256": "435983d2f6e8fab7dbbab205ffbe2c7df0a19067c067a8087de4b735148f65a0",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "deployment-dependency/gateway/src/services/fixtures/sessionProcess.mjs",
+      "target": "apps/gateway/src/services/fixtures/sessionProcess.mjs",
+      "sourceSha256": "c4ca961e4eb42c8b416bb0dc940cce7a65264be8bb7fac8e2f5f85e83f8d8406",
+      "copiedSha256": "c4ca961e4eb42c8b416bb0dc940cce7a65264be8bb7fac8e2f5f85e83f8d8406",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "deployment-dependency/gateway/src/services/healthService.js",
+      "target": "apps/gateway/src/services/healthService.js",
+      "sourceSha256": "8be79b47a2d52fafda5959df8389882393e78758ec779f8ac43ca8240a48a86d",
+      "copiedSha256": "8be79b47a2d52fafda5959df8389882393e78758ec779f8ac43ca8240a48a86d",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/services/idempotencyStore.js",
+      "target": "apps/gateway/src/services/idempotencyStore.js",
+      "sourceSha256": "360c8fd9b65544f6f1ed92df3b5a8492c3b4acb4cde96d07c547ed400dd740f6",
+      "copiedSha256": "360c8fd9b65544f6f1ed92df3b5a8492c3b4acb4cde96d07c547ed400dd740f6",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/services/inboxService.js",
+      "target": "apps/gateway/src/services/inboxService.js",
+      "sourceSha256": "8124636bf4b508a1052351e64323d886eac355aa535159bc2d63b783fa5f308e",
+      "copiedSha256": "8124636bf4b508a1052351e64323d886eac355aa535159bc2d63b783fa5f308e",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/services/mediaMapping.test.js",
+      "target": "apps/gateway/src/services/mediaMapping.test.js",
+      "sourceSha256": "9c5a74f43a70bcda97388778dd05e93ac6ec3a246f00727faae197c08fb5fe09",
+      "copiedSha256": "e62bb9c2f77e4b42ed311f48aaafd0bfc2fdae5d94b4e4bd6c97a5e40ca2de58",
+      "privacyAdaptation": true,
+      "changed": true
+    },
+    {
+      "source": "deployment-dependency/gateway/src/services/mediaService.js",
+      "target": "apps/gateway/src/services/mediaService.js",
+      "sourceSha256": "dcf31ff188b58c9a1b3bd9d3d157d519f1b2433ac61cb1b12cb13f979ab61075",
+      "copiedSha256": "dcf31ff188b58c9a1b3bd9d3d157d519f1b2433ac61cb1b12cb13f979ab61075",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/services/mediaService.test.js",
+      "target": "apps/gateway/src/services/mediaService.test.js",
+      "sourceSha256": "137062fed63ca49442b7cf58ea442e827f9c0eb2f2444440f703c740dd96012a",
+      "copiedSha256": "137062fed63ca49442b7cf58ea442e827f9c0eb2f2444440f703c740dd96012a",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/services/outboundAttemptService.js",
+      "target": "apps/gateway/src/services/outboundAttemptService.js",
+      "sourceSha256": "80cdde65924e70094c91a327a2ae8db35c498e955292c023edb6813c3d281ea8",
+      "copiedSha256": "80cdde65924e70094c91a327a2ae8db35c498e955292c023edb6813c3d281ea8",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "deployment-dependency/gateway/src/services/outboundDurability.test.js",
+      "target": "apps/gateway/src/services/outboundDurability.test.js",
+      "sourceSha256": "4fea31a1efd403986f91fdfe676e9b58748dc1d7602f82dd8c1a0b3e42584739",
+      "copiedSha256": "4fea31a1efd403986f91fdfe676e9b58748dc1d7602f82dd8c1a0b3e42584739",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "deployment-dependency/gateway/src/services/sendService.js",
+      "target": "apps/gateway/src/services/sendService.js",
+      "sourceSha256": "3296e3d18c489c7fae0e71118ff53fbb34bc59413a8b72d482083568d7214bbc",
+      "copiedSha256": "3296e3d18c489c7fae0e71118ff53fbb34bc59413a8b72d482083568d7214bbc",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "deployment-dependency/gateway/src/services/sendService.test.js",
+      "target": "apps/gateway/src/services/sendService.test.js",
+      "sourceSha256": "65ec1e422d5f40307a8953e946c14add555e99258f8312f269e090677e8fd129",
+      "copiedSha256": "65ec1e422d5f40307a8953e946c14add555e99258f8312f269e090677e8fd129",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/services/sessionRestart.test.js",
+      "target": "apps/gateway/src/services/sessionRestart.test.js",
+      "sourceSha256": "b59f597307866cdce81d09d5d839159c77f63f0303116f8b880c984f1c2133e4",
+      "copiedSha256": "b59f597307866cdce81d09d5d839159c77f63f0303116f8b880c984f1c2133e4",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "deployment-dependency/gateway/src/services/translationService.js",
+      "target": "apps/gateway/src/services/translationService.js",
+      "sourceSha256": "6e7b2070a4d3565ccce8ad234fe6455c9b5e5d3f8eb05d74b0af1634eabd259e",
+      "copiedSha256": "6e7b2070a4d3565ccce8ad234fe6455c9b5e5d3f8eb05d74b0af1634eabd259e",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/services/translationService.test.js",
+      "target": "apps/gateway/src/services/translationService.test.js",
+      "sourceSha256": "2b8f75cd395f07803a5a2cefdb71b7076eace2a8916421e0d3fb4483946c25b9",
+      "copiedSha256": "2b8f75cd395f07803a5a2cefdb71b7076eace2a8916421e0d3fb4483946c25b9",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/services/userErpBinding.mjs",
+      "target": "apps/gateway/src/services/userErpBinding.mjs",
+      "sourceSha256": "14056f4ebdfd41ccece9cc136a0f8923be5b01d353583b85970ea8e8e72c1857",
+      "copiedSha256": "14056f4ebdfd41ccece9cc136a0f8923be5b01d353583b85970ea8e8e72c1857",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/services/waapiBridge.test.js",
+      "target": "apps/gateway/src/services/waapiBridge.test.js",
+      "sourceSha256": "8e475eb99282aa8428dae381dfaea6bafc32a9de825790b53f51e56a36d19511",
+      "copiedSha256": "57b0a7316514229a587891c822217f3ed47827549cfb176e98aea1dc465e7d41",
+      "privacyAdaptation": true,
+      "changed": true
+    },
+    {
+      "source": "deployment-dependency/gateway/src/services/waapiChatwootBridge.js",
+      "target": "apps/gateway/src/services/waapiChatwootBridge.js",
+      "sourceSha256": "e5e5629ecd59207365868cd5fe6e8e6401a470686d0d89b4eac0f1bf881bc67e",
+      "copiedSha256": "e5e5629ecd59207365868cd5fe6e8e6401a470686d0d89b4eac0f1bf881bc67e",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "deployment-dependency/gateway/src/services/waapiJournal.js",
+      "target": "apps/gateway/src/services/waapiJournal.js",
+      "sourceSha256": "982ae5f37b177bcd7b398a7763eebc363a237be4668a89086e0307031b28b002",
+      "copiedSha256": "982ae5f37b177bcd7b398a7763eebc363a237be4668a89086e0307031b28b002",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "deployment-dependency/gateway/src/services/waapiMediaSend.test.js",
+      "target": "apps/gateway/src/services/waapiMediaSend.test.js",
+      "sourceSha256": "875a8fc1cf75b2d54dea5937ebb461be417d44f78ea717c7267b88761813bc2e",
+      "copiedSha256": "d109358168c4f898b764d50db3044f324f73c381820f25eeb0d5809cff8a50fc",
+      "privacyAdaptation": true,
+      "changed": true
+    },
+    {
+      "source": "deployment-dependency/gateway/src/services/waapiReadiness.js",
+      "target": "apps/gateway/src/services/waapiReadiness.js",
+      "sourceSha256": "ff4dd855d24452e7b2cb7518f46e55a40a082a43486a9c34c8ade9df3e04bb1c",
+      "copiedSha256": "ff4dd855d24452e7b2cb7518f46e55a40a082a43486a9c34c8ade9df3e04bb1c",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/services/waapiReceiptService.js",
+      "target": "apps/gateway/src/services/waapiReceiptService.js",
+      "sourceSha256": "c7f0fbcb269deadc5c0f4c6fcf5bd9831e7aabd1a2db5181201cac0bdba15b3a",
+      "copiedSha256": "c7f0fbcb269deadc5c0f4c6fcf5bd9831e7aabd1a2db5181201cac0bdba15b3a",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/services/waapiRecovery.test.js",
+      "target": "apps/gateway/src/services/waapiRecovery.test.js",
+      "sourceSha256": "4aa7f1aa05ee48ce7a759b2d506c3b42f8d26d7130804aa5977381609d83bfcd",
+      "copiedSha256": "e8179ff5f077c95964819a4f90fd4d3bdb76e4f2738e0d01625daebb55ebd6b3",
+      "privacyAdaptation": true,
+      "changed": true
+    },
+    {
+      "source": "deployment-dependency/gateway/src/services/waapiSend.test.js",
+      "target": "apps/gateway/src/services/waapiSend.test.js",
+      "sourceSha256": "919569a07fa89e05bf3481e69d971793c0934a8f2f3153d2aebd3ec58ef3be1d",
+      "copiedSha256": "cd79ff829a66b0ce41c17aacd13eb36bbe7bf819025e2ce5c5655b12577d2f43",
+      "privacyAdaptation": true,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/services/waapiWebhookService.js",
+      "target": "apps/gateway/src/services/waapiWebhookService.js",
+      "sourceSha256": "dc06cef68b310715a0c505590fdcb5053b63d5b5089aa5901ce124813513c302",
+      "copiedSha256": "dc06cef68b310715a0c505590fdcb5053b63d5b5089aa5901ce124813513c302",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "deployment-dependency/gateway/src/utils/logger.js",
+      "target": "apps/gateway/src/utils/logger.js",
+      "sourceSha256": "8f1ae30270a2adbae081fd6d848f8e174272b4e5504d803876e8f7d2e6b2713c",
+      "copiedSha256": "8f1ae30270a2adbae081fd6d848f8e174272b4e5504d803876e8f7d2e6b2713c",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/utils/mediaFormatValidation.js",
+      "target": "apps/gateway/src/utils/mediaFormatValidation.js",
+      "sourceSha256": "f0069b02535d8827d92b6db32928bf9a4fac5219a3892e4d1d65ab7ab90af452",
+      "copiedSha256": "f0069b02535d8827d92b6db32928bf9a4fac5219a3892e4d1d65ab7ab90af452",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "deployment-dependency/gateway/src/utils/mediaFormatValidation.test.js",
+      "target": "apps/gateway/src/utils/mediaFormatValidation.test.js",
+      "sourceSha256": "63ce0544414692d20300a562368465fd85496f311ddbc5eaca038b90e4ffe744",
+      "copiedSha256": "7f2a123bb224965ba20f1989cdac53cb812f9435eda33e3f3a9bcc32d177f3d8",
+      "privacyAdaptation": true,
+      "changed": true
+    },
+    {
+      "source": "deployment-dependency/gateway/src/utils/messageMedia.js",
+      "target": "apps/gateway/src/utils/messageMedia.js",
+      "sourceSha256": "48f5dd00e1223d04af19b9c67d8590ead2f511150fe72e85e065e604e9f3eb33",
+      "copiedSha256": "48f5dd00e1223d04af19b9c67d8590ead2f511150fe72e85e065e604e9f3eb33",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "deployment-dependency/gateway/src/utils/messageMedia.test.js",
+      "target": "apps/gateway/src/utils/messageMedia.test.js",
+      "sourceSha256": "e3b51fc597b1c4ffdf0155173c31546d23d8b53d2df4fd62d927f331cb844c01",
+      "copiedSha256": "e3b51fc597b1c4ffdf0155173c31546d23d8b53d2df4fd62d927f331cb844c01",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "deployment-dependency/gateway/src/utils/phoneIdentity.js",
+      "target": "apps/gateway/src/utils/phoneIdentity.js",
+      "sourceSha256": "6c09447815963dea4bfa11ef5ad502af616586d00c24af9102d6165ea6f2bed0",
+      "copiedSha256": "6c09447815963dea4bfa11ef5ad502af616586d00c24af9102d6165ea6f2bed0",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/utils/phoneIdentity.test.js",
+      "target": "apps/gateway/src/utils/phoneIdentity.test.js",
+      "sourceSha256": "cb1193a98996a64cc913ce50f989cbd1f19234308bd979fb523c3fb8529e3555",
+      "copiedSha256": "cb1193a98996a64cc913ce50f989cbd1f19234308bd979fb523c3fb8529e3555",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/utils/response.js",
+      "target": "apps/gateway/src/utils/response.js",
+      "sourceSha256": "32ac96368edc5d005445a2a703c9c3b07bd18e53e807393866581c427edf408f",
+      "copiedSha256": "32ac96368edc5d005445a2a703c9c3b07bd18e53e807393866581c427edf408f",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/utils/safeRequestPath.js",
+      "target": "apps/gateway/src/utils/safeRequestPath.js",
+      "sourceSha256": "2ad20def94411caf07578db77c08ddeed685e8369f2e9871c669007ff63f328a",
+      "copiedSha256": "2ad20def94411caf07578db77c08ddeed685e8369f2e9871c669007ff63f328a",
+      "privacyAdaptation": false,
+      "changed": false
+    },
+    {
+      "source": "deployment-dependency/gateway/src/utils/validMediaFixtures.js",
+      "target": "apps/gateway/src/utils/validMediaFixtures.js",
+      "sourceSha256": "71db37820b00bb75192ee2220dbe7fe7907d27f15be9938a917ff7b200413a0c",
+      "copiedSha256": "71db37820b00bb75192ee2220dbe7fe7907d27f15be9938a917ff7b200413a0c",
+      "privacyAdaptation": false,
+      "changed": true
+    }
+  ]
+}

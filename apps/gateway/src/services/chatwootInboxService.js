@@ -101,7 +101,8 @@ export function mapChatwootMessage(message) {
     ? message.attachments.map(mapAttachment)
     : [];
   const attachment = attachments[0] || {};
-  const createdAt = toIsoDate(message.created_at ?? message.createdAt);
+  const providerTime = message.content_attributes?.provider === 'waapi' ? message.content_attributes?.provider_timestamp : null;
+  const createdAt = toIsoDate(providerTime) || toIsoDate(message.created_at ?? message.createdAt);
   return {
     id: message.id,
     direction: normalizeChatwootMessageDirection(message),
@@ -134,10 +135,11 @@ async function readMessages(conversation) {
     .filter((message) => message.private && message.content_attributes?.melisa_crm)
     .map((message) => ({ id: message.id, ...message.content_attributes.melisa_crm }));
   return {
-    messages: await Promise.all(rows
+    messages: (await Promise.all(rows
       .filter((message) => !message.private && normalizeChatwootMessageType(message) !== 'activity')
-      .slice(-20)
-      .map(row => enrichWaapiReceipt(mapChatwootMessage(row), row))),
+      .map(row => enrichWaapiReceipt(mapChatwootMessage(row), row))))
+      .sort((a, b) => (Date.parse(a.createdAt) || 0) - (Date.parse(b.createdAt) || 0) || Number(a.id) - Number(b.id))
+      .slice(-20),
     workflow,
   };
 }

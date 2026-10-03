@@ -33,11 +33,15 @@ export function crmCors() {
   // Approved exact Sites Origin, only the two catalog auth POSTs. Existing CORS config stays unchanged.
   const catalogOrigin = "https://melisa-crm-ozel-tasarim-testi.melihsnyldzz.chatgpt.site";
   const catalogAuthCors = cors({ origin: catalogOrigin, credentials: true });
+  const localLogoutOrigin = 'http://127.0.0.1:4212';
+  const localLogoutCors = cors({ origin: localLogoutOrigin, credentials: true });
   return (req, res, next) => {
+    const localLogout = req.method === 'POST' && req.path === '/crm/catalog/auth/sign-out'
+      && req.headers.origin === localLogoutOrigin;
     const catalogAuth = req.method === 'POST'
       && ['/crm/catalog/auth/sign-in', '/crm/catalog/auth/sign-out'].includes(req.path)
       && req.headers.origin === catalogOrigin;
-    return (catalogAuth ? catalogAuthCors : existingCors)(req, res, next);
+    return (localLogout ? localLogoutCors : catalogAuth ? catalogAuthCors : existingCors)(req, res, next);
   };
 }
 

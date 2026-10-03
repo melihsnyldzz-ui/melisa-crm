@@ -42,8 +42,8 @@ test('personnel cannot translate a conversation assigned to another agent', asyn
     return originalFetch(url, options);
   };
 
-  const server = createApp().listen(0);
-  await new Promise(resolve => server.once('listening', resolve));
+  const server = createApp().listen(0, '127.0.0.1');
+  await new Promise((resolve, reject) => { server.once('listening', resolve); server.once('error', reject); });
   try {
     const { port } = server.address();
     const login = await originalFetch(`http://127.0.0.1:${port}/auth/login`, {

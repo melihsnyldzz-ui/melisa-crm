@@ -148,8 +148,8 @@ async function redisCommand(work) {
   }
 }
 
-export const outboundAttemptStore = {
-  backend: env.redis.url ? 'redis' : 'unavailable',
+export function createRedisOutboundAttemptStore(command = redisCommand) { return {
+  backend: command !== redisCommand || env.redis.url ? 'redis' : 'unavailable',
   async begin({ clientRequestId, fingerprint, conversationId, provider }) {
     const key = redisKey(clientRequestId);
     const now = Date.now();
@@ -165,7 +165,7 @@ export const outboundAttemptStore = {
       updatedAt: new Date(now).toISOString(),
       expiresAt: now + ATTEMPT_TTL_MS,
     };
-    return redisCommand(async (client) => {
+    return command(async (client) => {
       const created = provider === 'waapi'
         ? await client.set(key, JSON.stringify(attempt), 'NX')
         : await client.set(key, JSON.stringify(attempt), 'PX', ATTEMPT_TTL_MS, 'NX');
@@ -192,15 +192,18 @@ export const outboundAttemptStore = {
   },
   async update(clientRequestId, changes) {
     const key = redisKey(clientRequestId);
-    return redisCommand(async (client) => {
+    return command(async (client) => {
       const raw = await client.get(key);
       if (!raw) throw attemptError('WHATSAPP_CRM_ATTEMPT_NOT_FOUND', 'Gonderim denemesi bulunamadi.', 404);
       const existing = JSON.parse(raw);
       const updated = { ...existing, ...changes, updatedAt: new Date().toISOString() };
       const ttl = Number(await client.pttl(key));
-      if (existing.provider === 'waapi' || ttl === -1) await client.set(key, JSON.stringify(updated), 'XX');
-      else await client.set(key, JSON.stringify(updated), 'PX', Math.max(ttl, 1000), 'XX');
+      const saved = existing.provider === 'waapi' || ttl === -1
+        ? await client.set(key, JSON.stringify(updated), 'XX')
+        : await client.set(key, JSON.stringify(updated), 'PX', Math.max(ttl, 1000), 'XX');
+      if (saved !== 'OK') throw attemptError('WHATSAPP_CRM_IDEMPOTENCY_UNAVAILABLE', 'Kalici gonderim guncellemesi dogrulanamadi.', 503);
       return updated;
     });
   },
-};
+}; }
+export const outboundAttemptStore = createRedisOutboundAttemptStore();

@@ -1,4 +1,5 @@
 import { env } from '../config/env.js';
+import { normalizeOutboundMedia } from '../utils/messageMedia.js';
 
 export const WAAPI_INSTANCE = '105185';
 export const WAAPI_RECIPIENT = '19999999999';
@@ -63,16 +64,24 @@ export class WaapiProvider {
   }
   async sendMessage({ phone, text, media, remoteJid }) {
     if (phone !== WAAPI_RECIPIENT || /@(g.us|broadcast|newsletter)$/.test(remoteJid || '')) throw waapiError('WAAPI_RECIPIENT_NOT_ALLOWED', false, 403);
-    if (media) throw waapiError('WAAPI_PILOT_TEXT_ONLY', false, 400);
+    if (media && !this.config.outboundMediaEnabled) throw waapiError('WAAPI_PILOT_TEXT_ONLY', false, 400);
+    const attachment = normalizeOutboundMedia(media);
     if (!(await this.getStatus()).providerConnected) throw waapiError('WAAPI_NOT_READY');
-    const result = await this.request('action/send-message', { chatId: `${phone}@c.us`, message: text });
+    const result = attachment
+      ? await this.request('action/send-media', { chatId: `${phone}@c.us`,
+        mediaBase64: attachment.dataUrl.slice(attachment.dataUrl.indexOf(',') + 1), mediaName: attachment.fileName,
+        mediaCaption: text || '', asDocument: attachment.asDocument, firedandforget: false })
+      : await this.request('action/send-message', { chatId: `${phone}@c.us`, message: text });
     if (result.status !== 'success' || result.data?.status !== 'success'
       || String(result.data?.instanceId) !== WAAPI_INSTANCE) throw waapiError('WAAPI_NESTED_REJECTED', true, 502);
     const message = result.data.data;
     const id = message?.id || message?._data?.id;
     if (!id?._serialized || id.fromMe !== true || !isWaapiTrialPeer(id.remote, this.config)) throw waapiError('WAAPI_MESSAGE_ID_UNCONFIRMED', true, 502);
     return { provider: 'waapi', providerMessageId: id._serialized, text, direction: 'outgoing',
-      messageType: 'text', sentAt: new Date(this.now()).toISOString(), status: 'accepted',
+      messageType: attachment ? (attachment.mediaType === 'image' ? 'image' : 'file') : 'text',
+      ...(attachment ? { media: { mimeType: attachment.mimeType, fileName: attachment.fileName, byteLength: attachment.byteLength,
+        asDocument: attachment.asDocument, quality: attachment.asDocument ? 'original-file-requested' : 'provider-image-processing' } } : {}),
+      sentAt: new Date(this.now()).toISOString(), status: 'accepted',
       providerAccepted: true, delivered: false, read: false };
   }
 }

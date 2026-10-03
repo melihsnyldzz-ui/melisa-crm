@@ -6,6 +6,7 @@ import { requestContext } from './middleware/requestContext.js';
 import { apiRateLimit, crmCors, securityHeaders } from './middleware/security.js';
 import { routes } from './routes/index.js';
 import { createWaapiWebhookRoutes } from './routes/waapiWebhookRoutes.js';
+import { createMessageUploadParser } from './middleware/messageUploadParser.js';
 
 export function createApp() {
   const app = express();
@@ -19,6 +20,7 @@ export function createApp() {
   app.use(requestContext);
   app.use(apiRateLimit());
   app.use(createWaapiWebhookRoutes());
+  app.use(createMessageUploadParser());
   app.use(express.json({ limit: env.requestBodyLimit }));
 
   app.use(routes);

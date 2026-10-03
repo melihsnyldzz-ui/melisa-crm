@@ -6,10 +6,11 @@ import { ok } from '../utils/response.js';
 
 export async function patchConversationAssignment(req, res, next) {
   try {
-    const requestedAgentId = Number(req.body?.agentId || req.body?.chatwootAgentId);
-    const agents = await listChatwootAgents();
-    const agent = agents.find((item) => Number(item.id) === requestedAgentId);
-    if (!agent) {
+    const value = Object.hasOwn(req.body || {}, 'agentId') ? req.body.agentId : req.body?.chatwootAgentId;
+    const requestedAgentId = value === null ? null : Number(value);
+    const agents = requestedAgentId === null ? [] : await listChatwootAgents();
+    const agent = requestedAgentId === null ? null : agents.find((item) => Number(item.id) === requestedAgentId);
+    if (requestedAgentId !== null && !agent) {
       const error = new Error('Atanacak Chatwoot temsilcisi bulunamadi.');
       error.code = 'WHATSAPP_CRM_CHATWOOT_ASSIGNEE_INVALID';
       error.statusCode = 400;
