@@ -1,3 +1,7 @@
+# Güncel çalışma kapsamı — 3 Ekim 2026
+
+Kanonik kaynak/Git/ajan düzenlemesi ve feature branch/commit/push/PR kullanıcı tarafından yetkilendirildi. Bu düzenleme görevi LIVE veya TEST servisi restart, kurulum, deployment, gerçek gönderim ya da ticari veri yazımı içermez. Gelecekteki TEST işlemleri AGENTS.md ve o görevin açık kapsamına göre değerlendirilir. Aşağıdaki ilk hazırlık sınırı tarihsel kayıttır; güncel GitHub kaynak düzenleme yetkisini geri almaz. Installer owner/manifest korumaları korunur.
+
 # Deployment boundary
 
 This repository is offline source preparation only. No deploy, restart, install, send, SQL write, GitHub remote or push is authorized.

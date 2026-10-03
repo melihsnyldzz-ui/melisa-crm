@@ -2,6 +2,10 @@
 
 Bu dosya, `melihsnyldzz-ui/melisa-crm` reposunda CRM’in kapsamı, çalışma sırası ve “BİTTİ” kararı için **source of truth (tek ana referans)** kaynağıdır. README buraya yönlendirir; CRM_STATUS.md durum ve kanıt kaydıdır. Bu planın varlığı özelliklerin tamamlandığı anlamına gelmez.
 
+## Kanonik geliştirme girişi — 3 Ekim 2026
+
+SEMIH repo kökü `C:\Sirket\CRM\melisa-crm`. Uygulama tabanı `feature/crm-completion` / `fd297df9922c4157aa5e8944bf0c091d618906c3`; ajan ve yerel düzen çalışma dalı `codex/crm-agents-on-completion-20261003`, PR #3. Main otomatik merge edilmez. Eski kaynak ve çalışan runtime’lar korunur.
+
 ## Çalışma kuralı
 
 Mevcut çalışan CRM baseline kabul edilir. Çalışan özellikler yeniden ispatlanmaz; yalnızca gerçekten eksik özellikler aşağıdaki sırayla tamamlanır. Mevcut çalışan akış korunur; yeni mimari veya ek onay zinciri üretmek bitiş işi değildir.
