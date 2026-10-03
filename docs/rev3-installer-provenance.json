@@ -1,0 +1,249 @@
+{
+  "sealSha256": "77e68203ff1f1e28d8ba5b0430caef042badab8f072b5598e854295e29ecd93a",
+  "status": "NOT_INSTALLED",
+  "phase": "installer",
+  "changed": 0,
+  "added": 30,
+  "files": [
+    {
+      "source": "admin-backend-bridge.ps1",
+      "target": "deploy/rev3/retained/admin-backend-bridge.ps1",
+      "sourceSha256": "0de8911df51665948fa7455ab8374a80ffb3ecee3f08d014877f9398aa37dd24",
+      "copiedSha256": "0de8911df51665948fa7455ab8374a80ffb3ecee3f08d014877f9398aa37dd24",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "diagnose-frontend-compile.mjs",
+      "target": "deploy/rev3/retained/diagnose-frontend-compile.mjs",
+      "sourceSha256": "86ca91efa5b88a1adc6eadb9e87aab87f00af2c34fd479243c6c343c972aa275",
+      "copiedSha256": "86ca91efa5b88a1adc6eadb9e87aab87f00af2c34fd479243c6c343c972aa275",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "diagnose-preflight-missing-dependencies.mjs",
+      "target": "deploy/rev3/retained/diagnose-preflight-missing-dependencies.mjs",
+      "sourceSha256": "92827b30a2317ba9ea09d7a381f106b5507f4128580f6dd8c9710467742cb82e",
+      "copiedSha256": "92827b30a2317ba9ea09d7a381f106b5507f4128580f6dd8c9710467742cb82e",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "install-locked-dev-dependencies.mjs",
+      "target": "deploy/rev3/retained/install-locked-dev-dependencies.mjs",
+      "sourceSha256": "2114a42facb316c414fe546887f931f51f5554b7d12b1804283a81f0698eeba8",
+      "copiedSha256": "2114a42facb316c414fe546887f931f51f5554b7d12b1804283a81f0698eeba8",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "installer-common.ps1",
+      "target": "deploy/rev3/retained/installer-common.ps1",
+      "sourceSha256": "a8ea928c2160cda8d46da3eb81aff0cde2bebc6002b462eeeeeee6b86b2c784b",
+      "copiedSha256": "a8ea928c2160cda8d46da3eb81aff0cde2bebc6002b462eeeeeee6b86b2c784b",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "installer-core.ps1",
+      "target": "deploy/rev3/retained/installer-core.ps1",
+      "sourceSha256": "76c9f0120442c6271373aafa35ccc9fb0b7ac3a81b7fc59988a7e5651ceac0a8",
+      "copiedSha256": "76c9f0120442c6271373aafa35ccc9fb0b7ac3a81b7fc59988a7e5651ceac0a8",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "installer-recovery.ps1",
+      "target": "deploy/rev3/retained/installer-recovery.ps1",
+      "sourceSha256": "f22cccb61e4b74c5563787b2360a1061ab3daade8c4137b840ad3d6b0df747d5",
+      "copiedSha256": "f22cccb61e4b74c5563787b2360a1061ab3daade8c4137b840ad3d6b0df747d5",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "Invoke-FullOfflinePreflight.ps1",
+      "target": "deploy/rev3/retained/Invoke-FullOfflinePreflight.ps1",
+      "sourceSha256": "4830701cf6fe4e351faad06b7a28dc9b7a3f806a93e0a8edf124258fa2dd4287",
+      "copiedSha256": "4830701cf6fe4e351faad06b7a28dc9b7a3f806a93e0a8edf124258fa2dd4287",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "manifest-dev-source-trees.mjs",
+      "target": "deploy/rev3/retained/manifest-dev-source-trees.mjs",
+      "sourceSha256": "77e1873e6a68aaf29d26aae150814767489b54229150471dd5c65af0273b419e",
+      "copiedSha256": "77e1873e6a68aaf29d26aae150814767489b54229150471dd5c65af0273b419e",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "manifest-locked-dependencies.mjs",
+      "target": "deploy/rev3/retained/manifest-locked-dependencies.mjs",
+      "sourceSha256": "7b4d0555924cde04ecd7dadb24dd968b29b0219b4e417b5f99f2476a76951a93",
+      "copiedSha256": "7b4d0555924cde04ecd7dadb24dd968b29b0219b4e417b5f99f2476a76951a93",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "prepare-final-review.ps1",
+      "target": "deploy/rev3/retained/prepare-final-review.ps1",
+      "sourceSha256": "fd25bf7837ace33bcd12284df8c97151b81339f4452ebd8b376adbc13958cc15",
+      "copiedSha256": "fd25bf7837ace33bcd12284df8c97151b81339f4452ebd8b376adbc13958cc15",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "preserve-aborted-run-proof.mjs",
+      "target": "deploy/rev3/retained/preserve-aborted-run-proof.mjs",
+      "sourceSha256": "25b0217ca53e9c658484bea3ba643c73c3c147af587eecd90ec124b5cf4d2314",
+      "copiedSha256": "25b0217ca53e9c658484bea3ba643c73c3c147af587eecd90ec124b5cf4d2314",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "request-windows-consent.ps1",
+      "target": "deploy/rev3/retained/request-windows-consent.ps1",
+      "sourceSha256": "efa1726520bdeb635fe9e032e5999b21654b9fd9a38d5a6dee9caccd3a579e3c",
+      "copiedSha256": "efa1726520bdeb635fe9e032e5999b21654b9fd9a38d5a6dee9caccd3a579e3c",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "run-dev-process.mjs",
+      "target": "deploy/rev3/retained/run-dev-process.mjs",
+      "sourceSha256": "5866a5026c7f04ea1673e15e519ee3049ef8e46189356dd74f3e9d459d164db5",
+      "copiedSha256": "5866a5026c7f04ea1673e15e519ee3049ef8e46189356dd74f3e9d459d164db5",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "run-full-dev-preflight.mjs",
+      "target": "deploy/rev3/retained/run-full-dev-preflight.mjs",
+      "sourceSha256": "3379cc74ce45a173c47a812234b217d3d4ab83d6bec275b5f46bac4276749d88",
+      "copiedSha256": "3379cc74ce45a173c47a812234b217d3d4ab83d6bec275b5f46bac4276749d88",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "run-regression-proof.mjs",
+      "target": "deploy/rev3/retained/run-regression-proof.mjs",
+      "sourceSha256": "87acc974f3b5318d64ffe308adb36910ded0783e4c15be86278e0a6d66be5b75",
+      "copiedSha256": "87acc974f3b5318d64ffe308adb36910ded0783e4c15be86278e0a6d66be5b75",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "seal-blocked-dev-package.ps1",
+      "target": "deploy/rev3/retained/seal-blocked-dev-package.ps1",
+      "sourceSha256": "41a927026abbbcef9870f28c2e44a355758134e2a8b0d97b59bed6dba55c78bd",
+      "copiedSha256": "41a927026abbbcef9870f28c2e44a355758134e2a8b0d97b59bed6dba55c78bd",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "Start-CrmUnifiedInstall.ps1",
+      "target": "deploy/rev3/retained/Start-CrmUnifiedInstall.ps1",
+      "sourceSha256": "38acf836d5c27c8d280e6f7c2d12f7e45ee4d5f5ce857f28baec9f8c8d1d56cd",
+      "copiedSha256": "38acf836d5c27c8d280e6f7c2d12f7e45ee4d5f5ce857f28baec9f8c8d1d56cd",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "verify-locked-dependencies.mjs",
+      "target": "deploy/rev3/retained/verify-locked-dependencies.mjs",
+      "sourceSha256": "dac9dfe5f69e3c5a94952eb8a976c57c310f2a090669a229abed4d20704a8bb0",
+      "copiedSha256": "dac9dfe5f69e3c5a94952eb8a976c57c310f2a090669a229abed4d20704a8bb0",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "deployment-dependency/boundedHost.mjs",
+      "target": "deploy/rev3/retained/deployment-dependency/boundedHost.mjs",
+      "sourceSha256": "bd38bb59bf67317d947f7ab7fe1a835861ad39b3532ce6686ff00fe1ac414504",
+      "copiedSha256": "bd38bb59bf67317d947f7ab7fe1a835861ad39b3532ce6686ff00fe1ac414504",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "deployment-dependency/owned-host-metadata.ps1",
+      "target": "deploy/rev3/retained/deployment-dependency/owned-host-metadata.ps1",
+      "sourceSha256": "cce1cec0793445ced1dae0ca7243c47ac830bfcfc4f723f4f27f9c70b1b18c54",
+      "copiedSha256": "cce1cec0793445ced1dae0ca7243c47ac830bfcfc4f723f4f27f9c70b1b18c54",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "deployment-dependency/owned-local-transition.mjs",
+      "target": "deploy/rev3/retained/deployment-dependency/owned-local-transition.mjs",
+      "sourceSha256": "8e0c4e4d218fcb207d65f31deeeb10973632eac9e419f0a0c2efefb4fc381a12",
+      "copiedSha256": "8e0c4e4d218fcb207d65f31deeeb10973632eac9e419f0a0c2efefb4fc381a12",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "deployment-dependency/ownedTransition.mjs",
+      "target": "deploy/rev3/retained/deployment-dependency/ownedTransition.mjs",
+      "sourceSha256": "4242572555a1974258ba4d48896014ba150d29ba4556b244ab54c55e13f56d3a",
+      "copiedSha256": "4242572555a1974258ba4d48896014ba150d29ba4556b244ab54c55e13f56d3a",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "deployment-dependency/query-approved-service-access.ps1",
+      "target": "deploy/rev3/retained/deployment-dependency/query-approved-service-access.ps1",
+      "sourceSha256": "45e38b060b62c529a011484f7932cab61befc9f0bb4e0877240af15e16aafb4c",
+      "copiedSha256": "45e38b060b62c529a011484f7932cab61befc9f0bb4e0877240af15e16aafb4c",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "deployment-dependency/controlled-install/crmExistingStockReadWorker.mjs",
+      "target": "deploy/rev3/retained/deployment-dependency/controlled-install/crmExistingStockReadWorker.mjs",
+      "sourceSha256": "c267f41a073466d838a8cf1e4af480826122b1945bfbb44d972bd65744478e34",
+      "copiedSha256": "c267f41a073466d838a8cf1e4af480826122b1945bfbb44d972bd65744478e34",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "deployment-dependency/controlled-install/deploy-first-photo-page.role-separated.candidate.ps1",
+      "target": "deploy/rev3/retained/deployment-dependency/controlled-install/deploy-first-photo-page.role-separated.candidate.ps1",
+      "sourceSha256": "f082551786995c04a11c6ada906a203327660fa82822d31c945fb7f051349ed3",
+      "copiedSha256": "f082551786995c04a11c6ada906a203327660fa82822d31c945fb7f051349ed3",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "deployment-dependency/controlled-install/operator-admin-launch-control.candidate.ps1",
+      "target": "deploy/rev3/retained/deployment-dependency/controlled-install/operator-admin-launch-control.candidate.ps1",
+      "sourceSha256": "272d1a6ee5991b928bafecd4103fdd159e28858f38408ed5b1f74b30d533b334",
+      "copiedSha256": "272d1a6ee5991b928bafecd4103fdd159e28858f38408ed5b1f74b30d533b334",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "deployment-dependency/controlled-install/operator-normal-launch-worker.candidate.ps1",
+      "target": "deploy/rev3/retained/deployment-dependency/controlled-install/operator-normal-launch-worker.candidate.ps1",
+      "sourceSha256": "99d5255397055386704fdeaf72ec82cb0761b5cdea557184593f48817459600b",
+      "copiedSha256": "99d5255397055386704fdeaf72ec82cb0761b5cdea557184593f48817459600b",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "deployment-dependency/controlled-install/run-role-separated-dev-validation.ps1",
+      "target": "deploy/rev3/retained/deployment-dependency/controlled-install/run-role-separated-dev-validation.ps1",
+      "sourceSha256": "4116f39c94df1c9234b8fe69fe0d2ddb0449b22e6914babd8dbddf608b2436d3",
+      "copiedSha256": "4116f39c94df1c9234b8fe69fe0d2ddb0449b22e6914babd8dbddf608b2436d3",
+      "privacyAdaptation": false,
+      "changed": true
+    },
+    {
+      "source": "deployment-dependency/controlled-install/runExistingStockWorker.mjs",
+      "target": "deploy/rev3/retained/deployment-dependency/controlled-install/runExistingStockWorker.mjs",
+      "sourceSha256": "378037b25b13efdcc89107f7ca75c5e73313d387a99fa0bd1b269872a2690a8f",
+      "copiedSha256": "378037b25b13efdcc89107f7ca75c5e73313d387a99fa0bd1b269872a2690a8f",
+      "privacyAdaptation": false,
+      "changed": true
+    }
+  ]
+}
