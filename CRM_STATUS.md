@@ -1,5 +1,7 @@
 # MELISA CRM
 
+> **Source of truth:** CRM’in ana bitiş planı, öncelik sırası, operasyon ve “BİTTİ” kriterleri [CRM_FINISH_PLAN.md](CRM_FINISH_PLAN.md) dosyasındadır. Aşağıdaki kayıtlar geçmiş durum anlık görüntüsüdür; görev/yetki/sıra ifadeleri güncel planın yerine geçmez ve çalışan baseline’ı yeniden ispatlama zorunluluğu oluşturmaz.
+
 LIVE: 4076 frontend / mevcut 4200 gateway · WAAPI text-only
 TEST/CANDIDATE: REV3 · NOT_INSTALLED · candidate/rev3
 Son deploy: Kesin zaman bilinmiyor; bu görevde deploy yok.
