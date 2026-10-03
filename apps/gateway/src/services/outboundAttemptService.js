@@ -130,7 +130,8 @@ function getRedisClient() {
 }
 
 function redisKey(clientRequestId) {
-  return `whatsapp-crm:outbound:${validateClientRequestId(clientRequestId)}`;
+  const namespace = /^[a-z0-9:-]{1,80}$/.test(process.env.CRM_OUTBOUND_NAMESPACE || '') ? process.env.CRM_OUTBOUND_NAMESPACE : 'whatsapp-crm';
+  return `${namespace}:outbound:${validateClientRequestId(clientRequestId)}`;
 }
 
 async function redisCommand(work) {

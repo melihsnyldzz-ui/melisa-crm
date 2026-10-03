@@ -842,3 +842,13 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
 }
 
 .language-translate { width: 100%; min-height: 44px; margin-top: 12px; justify-content: center; }
+.automatic-translation-toggle { display:flex; align-items:center; gap:8px; padding:6px 14px; background:#e9f4ef; color:#275447; font-size:12px; flex-shrink:0; }
+.automatic-translation-toggle input { width:16px; height:16px; }
+.erp-order-dialog { max-width:640px; max-height:90dvh; overflow:auto; }
+.erp-order-dialog label { display:grid; gap:6px; margin:12px 0; font-size:14px; }
+.erp-order-dialog input,.erp-order-dialog select { min-height:44px; max-width:100%; border:1px solid #d5e1dc; border-radius:8px; padding:10px; background:white; }
+.erp-order-dialog form { margin:14px 0; }
+.erp-order-dialog [role=alert] { color:#9b302c; }
+.catalog-action-buttons { flex-wrap:wrap; }
+@media(max-width:760px) { .erp-order-dialog { width:calc(100vw - 20px); max-height:94dvh; } .catalog-action-buttons button { min-height:44px; } }
+.test-environment-label{padding:5px 12px;background:#fff4d6;color:#715000;font-size:12px;font-weight:700}

@@ -2,7 +2,7 @@ import { env } from '../config/env.js';
 import { normalizeOutboundMedia } from '../utils/messageMedia.js';
 
 export const WAAPI_INSTANCE = '105185';
-export const WAAPI_RECIPIENT = '19999999999';
+export const WAAPI_RECIPIENT = env.waapi.recipient;
 // Operator-provisioned mapping, verified through this instance's get-lid endpoint.
 export function isWaapiTrialPeer(jid, config = env.waapi) {
   return jid === WAAPI_RECIPIENT + '@c.us' || (/^\d{10,20}@lid$/.test(config.verifiedRecipientLid || '') && jid === config.verifiedRecipientLid);

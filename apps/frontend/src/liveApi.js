@@ -430,6 +430,10 @@ async function catalogPhoto(accessToken, id, { signal: callerSignal } = {}) {
 }
 
 export const liveApi = {
+  erpDrafts: token => request('/crm/erp/drafts',token),
+  erpLogin: (token,credentials) => request('/crm/erp/login',token,{method:'POST',body:JSON.stringify(credentials)}),
+  erpCustomers: (token,erpToken,search) => request(`/crm/erp/customers?search=${encodeURIComponent(search)}`,token,{headers:{'x-erp-token':erpToken}}),
+  erpDraft: (token,erpToken,draft) => request('/crm/erp/drafts',token,{method:'POST',headers:{'x-erp-token':erpToken},body:JSON.stringify(draft),timeoutMs:45000}),
   async existingCatalogProducts(token, query={}, {signal}={}) {
     if(!token) throw Object.assign(new Error('CRM oturumu gerekli.'),{status:401});
     const q=existingQuery(query), params=new URLSearchParams({...q,page:String(q.page),limit:String(q.limit),hasImage:'true'});

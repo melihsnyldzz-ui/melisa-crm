@@ -109,6 +109,7 @@ export const env = {
     },
   },
   waapi: {
+    recipient: /^\d{10,15}$/.test(process.env.WAAPI_TEST_RECIPIENT || '') ? process.env.WAAPI_TEST_RECIPIENT : '19999999999',
     apiToken: process.env.WAAPI_API_TOKEN || '',
     verifiedRecipientLid: process.env.WAAPI_VERIFIED_RECIPIENT_LID || '',
     instanceId: process.env.WAAPI_INSTANCE_ID || '105185',

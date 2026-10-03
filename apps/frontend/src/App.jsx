@@ -18,6 +18,9 @@ import { POLL_INTERVAL, queueForegroundRead, finishForegroundRead, chatPollingPa
 import { prepareAttachment, validateSendPayload, classifySendFailure, selectedConversation, attachmentStatusText, createSendSessionScope, interruptedSendStates } from "./outboundMedia.js";
 
 import { createPreviewLedger, upsertDraftProduct } from "./orderPreview.js";
+import { nextIncomingTranslation } from "./automaticTranslation.js";
+import { selectedSaleLines, selectionMessage } from "./catalog/productActions.js";
+import ERPOrderDialog from "./ERPOrderDialog.jsx";
 import CatalogWorkspace from "./catalog/CatalogWorkspace.jsx";
 import JitsiPilot from "./video/JitsiPilot.jsx";
 import AccountInfo from "./AccountInfo.jsx";
@@ -170,7 +173,7 @@ function LoginGate({ credentials, onChange, onConnect, busy, error, retryAvailab
     <div className="login-gate">
       <section className="login-card" aria-label="Melisa CRM güvenli giriş">
         <span className="login-mark"><Butterfly size={34} weight="duotone" /></span>
-        <span className="eyebrow">MELİSA BABY · CANLI CRM</span>
+        <span className="eyebrow">{import.meta.env?.VITE_CRM_TEST === "1" ? "MELİSA BABY · TEST CRM" : "MELİSA BABY · CANLI CRM"}</span>
         <h1>CRM Yönetim Merkezi</h1>
         <p>Gerçek WhatsApp konuşmalarınıza erişmek için CRM hesabınızla giriş yapın.</p>
         {!retryAvailable ? <><label>Kullanıcı adı<input value={credentials.username} onChange={(event) => onChange({ ...credentials, username: event.target.value })} autoComplete="username" placeholder="Kullanıcı adı" autoFocus /></label>
@@ -268,6 +271,8 @@ export function App() {
   const [smallScreen, setSmallScreen] = useState(() => window.matchMedia("(max-width: 760px)").matches);
   const [translationReady, setTranslationReady] = useState(false);
   const [incomingTranslations, setIncomingTranslations] = useState({});
+  const [automaticTranslation, setAutomaticTranslation] = useState(()=>{try{return window.sessionStorage.getItem("melisa-crm-auto-translate")!=="false";}catch{return true;}});
+  const automaticTranslationBusy = useRef(false);
   const [translationResult, setTranslationResult] = useState(null);
   const [translationBusy, setTranslationBusy] = useState(false);
   const [translationError, setTranslationError] = useState("");
@@ -296,6 +301,7 @@ export function App() {
   const [selectedProductId, setSelectedProductId] = useState(productSeed[0].id);
   const [productQuantity, setProductQuantity] = useState(1);
   const [productDrafts, setProductDrafts] = useState({});
+  const [erpOrderContext,setErpOrderContext] = useState(null);
   const pendingProducts = productDrafts[String(selectedId)] || [];
   const setPendingProducts = (update) => {
     const recipient = String(selectedId);
@@ -568,6 +574,7 @@ export function App() {
     setSelectedId((current) => inboxResult.conversations?.some((item) => item.id === current) ? current : inboxResult.conversations?.[0]?.id || ""); setTranslationReady(false);
     setLoginCredentials({ username: "", password: "" });
     setLastSyncAt(new Date()); setSyncError("");
+    if(import.meta.env?.VITE_CRM_TEST === "1") void liveApi.erpDrafts(key).then(result=>{if(liveKeyRef.current===key&&sessionIdentityRef.current===identity)setDraftOrders(result.orders||[]);}).catch(()=>{});
   };
   sessionCallbacksRef.current = {
     onCommit: commitLiveSession,
@@ -822,6 +829,7 @@ export function App() {
     const isCurrent = captureUiOperation(selected.id);
     const translationKey = `${selected.id}:${message.id}`;
     const current = incomingTranslations[translationKey];
+    if (current?.loading) return;
     if (current?.translatedText) {
       setIncomingTranslations((items) => ({ ...items, [translationKey]: { ...current, hidden: !current.hidden } }));
       return;
@@ -838,6 +846,18 @@ export function App() {
       flash(messageText);
     }
   };
+  useEffect(() => {
+    if (!automaticTranslation || !liveSession || automaticTranslationBusy.current) return;
+    const message = nextIncomingTranslation(selected.messages, incomingTranslations, selected.id);
+    if (!message) return;
+    automaticTranslationBusy.current = true;
+    const isCurrent = captureUiOperation(selected.id), key = `${selected.id}:${message.id}`;
+    setIncomingTranslations(items => ({ ...items, [key]: { loading: true } }));
+    liveApi.translate(liveKey, selected.id, { mode: "incoming_to_tr", text: message.text })
+      .then(result => { if (isCurrent()) setIncomingTranslations(items => ({ ...items, [key]: { ...result, loading: false, hidden: false } })); })
+      .catch(error => { if (isCurrent()) setIncomingTranslations(items => ({ ...items, [key]: { loading: false, error: translationFailureMessage(error) } })); })
+      .finally(() => { automaticTranslationBusy.current = false; setIncomingTranslations(items => { const value = items[key]; return value?.loading ? { ...items, [key]: { loading: false, error: "Çeviri kesildi; tekrar deneyebilirsiniz." } } : { ...items }; }); });
+  }, [automaticTranslation, liveSession, liveKey, selected.id, selected.messages, incomingTranslations]);
   const translateDraft = async () => {
     if (!draft.trim()) return flash("Önce Türkçe mesajınızı yazın.");
     if (!liveSession) { setTranslationReady(true); setAiOpen(true); setRightTab("AI Çeviri"); return; }
@@ -933,6 +953,23 @@ export function App() {
     setAttachmentMenu(false); setModal("catalog-builder");
   };
   const closeCatalog = () => { catalogSessionRef.current?.close(); catalogContextRef.current=null; setModal(null); };
+  const catalogProductAction = (products,action) => {
+    if(!catalogContextCurrent())return;
+    try {
+      if(action==='order'){
+        const items=selectedSaleLines(products);
+        if(new Set(items.map(item=>item.currency)).size!==1)throw Error("Sipariş satırlarında tek para birimi seçin.");
+        const current=captureUiOperation(selected.id);
+        setErpOrderContext({recipientId:String(selected.id),items,current});
+        closeCatalog();setModal('erp-order');return;
+      }
+      const text=selectionMessage(products,action==='price');
+      const nextDraft=[draft.trim(),text].filter(Boolean).join('\n\n');
+      if(nextDraft.length>2000)throw Error('Seçim mesaj sınırını aşıyor. Daha az ürün seçin.');
+      setDraft(nextDraft);
+      closeCatalog();flash("Seçim sohbete eklendi. Göndermek için Gönder'e basın.");
+    }catch(error){flash(error.message);}
+  };
   const catalogContextCurrent = () => Boolean(catalogContextRef.current?.current() && liveSessionRef.current && liveKeyRef.current===catalogContextRef.current.key && String(selectedIdRef.current)===catalogContextRef.current.recipient);
   useEffect(() => {
     if(!catalogSource.accessExpiresAt)return;
@@ -1056,7 +1093,7 @@ export function App() {
             <div className={`queue-footer${syncStale ? " delayed" : ""}`}><span>{liveSession ? (syncStale ? "Güncelleme gecikti · bağlantıyı kontrol edin" : lastSyncAt ? `Son güncelleme ${lastSyncAt.toLocaleTimeString("tr-TR")}` : "Bağlanıyor…") : staffMode ? "Size atanan müşteriler" : filter === "Bekleyenler" ? `${visibleWaitingCount} yanıt bekliyor` : "En yeni konuşmalar üstte"}</span>{syncStale ? <Info size={16}/> : <CheckCircle size={16}/>}</div>
           </section>
 
-          <section className="chat-panel">
+          <section className="chat-panel">{import.meta.env?.VITE_CRM_TEST === "1" ? <div className="test-environment-label">TEST · Gönderim yalnız …7733 hattına</div> : null}{liveSession ? <label className="automatic-translation-toggle"><input type="checkbox" checked={automaticTranslation} onChange={event => {setAutomaticTranslation(event.target.checked);try{window.sessionStorage.setItem("melisa-crm-auto-translate",String(event.target.checked));}catch{}}} /> Gelen mesajları otomatik Türkçeye çevir</label> : null}
             <header className="chat-header"><button className="chat-back" aria-label="Mesaj listesine dön" onClick={() => { closeVideoPilot(); setMobileChatOpen(false); }}><ArrowLeft size={24}/></button><Avatar initials={selected.initials} /><button className="chat-title" onClick={() => { setRightTab("Müşteri 360"); setDesktopInspectorOpen(true); setTabletInspectorOpen(true); }}><strong>{selected.name}</strong><span>{selected.id ? <><ChannelIcon channel={selected.channel} size={14}/><span title="Telefon numarasından belirlenen ülke / bölge">{selected.country}</span>{selected.language && selected.language !== "Belirtilmedi" ? ` · ${selected.language}` : ""}</> : "Bir konuşma seçin"}</span>{selected.phone ? <small className="chat-phone-number" dir="ltr">{selected.phoneDisplay || selected.phone}</small> : selected.id ? <small className="chat-phone-number unavailable">{phoneUnavailableLabel(selected)}</small> : null}</button><div className="chat-menu-wrap"><button className="inspector-toggle" aria-label="Konuşma menüsünü aç" aria-expanded={chatMenu} onClick={() => setChatMenu((value) => !value)}><DotsThree size={27} weight="bold"/></button>{chatMenu ? <><button className="menu-dismiss" aria-label="Konuşma menüsünü kapat" onClick={() => setChatMenu(false)}/><div className="chat-menu" role="menu"><button role="menuitem" onClick={() => { setChatMenu(false); setRightTab("Müşteri 360"); setDesktopInspectorOpen(true); setTabletInspectorOpen(true); }}><UserCircle size={20}/>Müşteri bilgileri</button>{canAssign && selected.id ? <button role="menuitem" onClick={() => { setChatMenu(false); openAssignment(selected); }}><UserPlus size={20}/>Temsilci ata</button> : null}{selected.id ? <button role="menuitem" onClick={() => openVideoPilot(selected.id)}><VideoCamera size={20}/>Görüntülü görüşme · Jitsi</button> : null}<button role="menuitem" onClick={() => { setChatMenu(false); setRightTab("AI Çeviri"); setDesktopInspectorOpen(true); setTabletInspectorOpen(true); }}><Translate size={20}/>Yanıt dili ve çeviri</button><button role="menuitem" onClick={() => { setChatMenu(false); setActiveView("Ayarlar"); }}><Gear size={20}/>Bağlantı ve ayarlar</button></div></> : null}</div></header>
             <div className="chat-scroll" ref={chatScrollRef} onScroll={(event) => { const element = event.currentTarget; const away = element.scrollHeight - element.scrollTop - element.clientHeight > 120; nearBottomRef.current = !away; setShowJumpLatest(away); }}>
               {!selected.id ? <div className="empty-chat"><ChatCircleDots size={38} weight="duotone" /><strong>Konuşma seçilmedi</strong><span>Mesajları görmek için soldaki listeden bir müşteri seçin.</span></div> : <>
@@ -1099,7 +1136,8 @@ export function App() {
         </div> : <BackofficeView activeView={activeView} conversations={conversations} query={query} products={productSeed} catalogs={catalogSeed} draftOrders={draftOrders} role={role} liveSession={liveSession} onRefreshSession={refreshLivePermissions} summary={effectiveSummary} agents={agents} onOpenConversation={(id, targetFilter = "Tüm Konuşmalar") => { const conversation = conversations.find((item) => String(item.id) === String(id)); if (!conversation) return; selectConversation(conversation); setFilter(targetFilter); setActiveView("Gelen Kutusu"); }} onOpenProduct={(id) => { setSelectedProductId(id); setModal("Ürün Gönder"); }} onOpenCatalog={() => setModal("Katalog")} onOpenPrice={() => setModal("Fiyat")} onOpenVideo={openVideoPilot} onCreateDraft={() => setModal("draft")} onOpenNotifications={() => setModal("notifications")} onNotify={flash} />}
       </main>
 
-      {CATALOG_ENABLED && modal === "catalog-builder" && selected.id && liveSession && catalogContextCurrent() ? <CatalogWorkspace existingStock={CATALOG_EXISTING_STOCK_ENABLED} authMode={CATALOG_CRM_ONLY_ENABLED?"crm":"erp"} key={`${sessionIdentityRef.current}:${roleLabel}:${selected.id}`} token={liveKey} isCurrent={catalogContextCurrent} onSession={session=>{catalogSessionRef.current=session;}} onSource={setCatalogSource} onCrmExpired={()=>closeLiveSession("CRM oturumu sona erdi. Yeniden giriş yapın.")} customer={selected} identity={sessionIdentityRef.current} role={roleLabel} canAttach={Boolean(liveSession.liveSendEnabled && !selectedSendUncertain)} onClose={closeCatalog} onAttach={attachCatalogOutput} attachmentExists={Boolean(pendingAttachment)} /> : null}
+      {modal === "erp-order" && erpOrderContext?.current() && String(selected.id) === erpOrderContext.recipientId ? <ERPOrderDialog token={liveKey} conversation={selected} items={erpOrderContext.items} isCurrent={erpOrderContext.current} onClose={()=>{setModal(null);setErpOrderContext(null);}} onSaved={order=>{setDraftOrders(items=>[{...order,id:order.id||order.orderId,customer:order.customerName||selected.name,owner:userName,total:`${order.documentCurrency||""} ${Number(order.grandTotal||order.total||0).toFixed(2)}`,lines:erpOrderContext.items.length,status:"ERP TEST taslağı",updated:"Şimdi"},...items]);setModal(null);setErpOrderContext(null);flash(`ERP TEST taslağı kaydedildi: ${order.documentNo||order.orderNo||order.id}`);}}/> : null}
+      {CATALOG_ENABLED && modal === "catalog-builder" && selected.id && liveSession && catalogContextCurrent() ? <CatalogWorkspace existingStock={CATALOG_EXISTING_STOCK_ENABLED} authMode={CATALOG_CRM_ONLY_ENABLED?"crm":"erp"} key={`${sessionIdentityRef.current}:${roleLabel}:${selected.id}`} token={liveKey} isCurrent={catalogContextCurrent} onSession={session=>{catalogSessionRef.current=session;}} onSource={setCatalogSource} onCrmExpired={()=>closeLiveSession("CRM oturumu sona erdi. Yeniden giriş yapın.")} customer={selected} identity={sessionIdentityRef.current} role={roleLabel} canAttach={Boolean(liveSession.liveSendEnabled && !selectedSendUncertain)} onClose={closeCatalog} onAttach={attachCatalogOutput} onProductAction={catalogProductAction} attachmentExists={Boolean(pendingAttachment)} /> : null}
       {toast ? <div className="toast" role="status"><CheckCircle size={20} weight="fill" />{toast}</div> : null}
       {modal === "assign" ? <Modal title="Temsilci ata" onClose={() => !assignmentBusy && setModal(null)}><div className="modal-body"><div className="selected-customer"><Avatar initials={(conversations.find((item) => String(item.id) === String(assignmentTargetId)) || selected).initials} /><div><strong>{(conversations.find((item) => String(item.id) === String(assignmentTargetId)) || selected).name}</strong><span>Bu konuşmadan kim sorumlu olacak?</span></div></div><div className="assignee-list" role="radiogroup" aria-label="Sorumlu temsilci">{(liveSession ? agents.map((agent) => ({ id: String(agent.id), name: agent.name })) : teamOptions.slice(1).map((name) => ({ id: name, name }))).map((agent) => <button key={agent.id} role="radio" aria-checked={selectedAssigneeId === agent.id} className={selectedAssigneeId === agent.id ? "assignee-option selected" : "assignee-option"} onClick={() => { setSelectedAssigneeId(agent.id); setAssignmentError(""); }}><Avatar initials={agent.name.split(" ").map((part) => part[0]).join("").slice(0, 2)} compact /><span className="assignee-person"><strong>{agent.name}</strong><small>{conversations.filter((item) => item.owner === agent.name).length} konuşma</small></span><span className="assignee-check">{selectedAssigneeId === agent.id ? <Check size={16} weight="bold" /> : null}</span></button>)}</div>{assignmentError ? <p className="assignment-error" role="alert">{assignmentError}</p> : null}<div className="modal-actions"><button className="secondary-button" onClick={() => setModal(null)} disabled={assignmentBusy}>Vazgeç</button><button className="primary-button" onClick={confirmAssignment} disabled={!selectedAssigneeId || assignmentBusy}><UserPlus size={18} />{assignmentBusy ? "Atanıyor…" : "Atamayı onayla"}</button></div></div></Modal> : null}
       {!liveSession && modal === "draft" ? <Modal title="ERP Taslak Sipariş" onClose={() => setModal(null)}><div className="modal-body"><div className="safety-banner"><CheckCircle size={21} weight="fill" /><div><strong>Güvenli taslak modu</strong><span>Bu önizleme stok düşürmez, siparişi kesinleştirmez ve henüz ERP’ye veri göndermez.</span></div></div><div className="draft-summary"><span>Müşteri<strong>{selected.name}</strong></span><span>Miktar birimi<strong>Adet</strong></span><span>Ürün satırı<strong>{pendingProducts.length || "Ürün bekleniyor"}</strong></span></div>{pendingProducts.length ? <div className="draft-lines">{pendingProducts.map((product, index) => <div key={`${product.id}-${index}`}><span><Package size={18} /></span><p><strong>{product.name}</strong><small>{product.id} · {product.quantity} adet · {product.price}</small></p></div>)}</div> : <button className="add-draft-product" onClick={() => setModal("Ürün Gönder")}><Plus size={17} />Siparişe ürün seç</button>}<div className="modal-actions"><button className="secondary-button" onClick={() => setModal(null)}>Vazgeç</button><button className="primary-button" onClick={createDraftOrder}><ClipboardText size={18} />Taslak Önizleme Oluştur</button></div></div></Modal> : null}
@@ -1108,7 +1146,7 @@ export function App() {
       {!liveSession && modal === "Fiyat" ? <Modal title="Fiyat Listesi Gönder" onClose={() => setModal(null)}><div className="modal-body"><div className="selected-customer"><Avatar initials={selected.initials} /><div><strong>{selected.name}</strong><span>{selected.country} · {selected.language}</span></div></div><div className="price-preview"><span><FilePdf size={28} weight="fill" /></span><div><small>{priceListSeed.id} · {priceListSeed.updated}</small><strong>{priceListSeed.title}</strong><p>{priceListSeed.detail}</p></div><b>EUR</b></div><div className="info-box"><Translate size={18} /><span>Dosya adı ve kısa açıklama müşterinin diline göre hazırlanır. Göndermeden önce mesaj alanında görürsünüz.</span></div><div className="modal-actions"><button className="secondary-button" onClick={() => setModal(null)}>Vazgeç</button><button className="primary-button" onClick={() => addCatalog(priceListSeed)}><Paperclip size={18} />Gönderime Ekle</button></div></div></Modal> : null}
       {modal === "Video" && videoContextCurrent ? <Modal title="Görüntülü görüşme · Jitsi pilot" onClose={closeVideoPilot}><JitsiPilot key={`${videoContext.epoch}:${videoContext.recipientId}`} customer={selected} products={catalogSource.state === "ready" ? catalogSource.products : []} isCurrent={isVideoContextCurrent} onClose={closeVideoPilot} /></Modal> : null}
       {modal === "notifications" ? <Modal title="Bildirimler" onClose={() => setModal(null)}><div className="notification-center"><div className="notification-toolbar"><span>{notificationUnreadCount} okunmamış mesaj</span>{notificationUnreadCount ? <button onClick={markAllNotificationsRead}>Tümünü okundu işaretle</button> : <small>Yeni bildirim yok</small>}</div><div className="notification-list">{notificationItems.map((item) => <button key={item.id} className={item.unread ? "notification-row unread-notification" : "notification-row"} onClick={() => { if (item.conversationId) { const conversation = conversations.find((current) => String(current.id) === String(item.conversationId)); if (conversation) selectConversation(conversation); setFilter("Tüm Konuşmalar"); setActiveView("Gelen Kutusu"); setModal(null); return; } setNotifications((items) => items.map((current) => current.id === item.id ? { ...current, unread: false } : current)); }}><span className={`notification-icon ${item.type}`}>{item.type === "video" ? <PhoneCall size={20} /> : item.type === "waiting" ? <Clock size={20} /> : <UserPlus size={20} />}</span><div><strong>{item.title}</strong><p>{item.detail}</p><small>{item.time}</small></div>{item.unread ? <b /> : null}</button>)}{!notificationItems.length ? <div className="empty-state"><CheckCircle size={28} /><strong>Yeni bildirim yok</strong><span>Yeni WhatsApp mesajları burada görünür.</span></div> : null}</div>{liveSession ? <p className="notification-note">Okundu işaretleri bu CRM oturumunda saklanır; yeni mesaj gelirse bildirim yeniden görünür.</p> : null}<div className="modal-actions notification-actions"><button className="secondary-button" onClick={() => setModal(null)}>Kapat</button></div></div></Modal> : null}
-      {modal && !["catalog-builder", "assign", "draft", "Ürün Gönder", "Katalog", "Fiyat", "Video", "notifications"].includes(modal) ? <Modal title={modal} onClose={() => setModal(null)}><div className="modal-body"><div className="action-placeholder"><Package size={38} weight="duotone" /><strong>{modal} akışı hazırlanıyor</strong><span>Bu bölüm gerçek bağlantılar açılmadan önce güvenli demo alanında tutuluyor.</span></div><div className="modal-actions"><button className="secondary-button" onClick={() => setModal(null)}>Kapat</button></div></div></Modal> : null}
+      {modal && !["catalog-builder", "erp-order", "assign", "draft", "Ürün Gönder", "Katalog", "Fiyat", "Video", "notifications"].includes(modal) ? <Modal title={modal} onClose={() => setModal(null)}><div className="modal-body"><div className="action-placeholder"><Package size={38} weight="duotone" /><strong>{modal} akışı hazırlanıyor</strong><span>Bu bölüm gerçek bağlantılar açılmadan önce güvenli demo alanında tutuluyor.</span></div><div className="modal-actions"><button className="secondary-button" onClick={() => setModal(null)}>Kapat</button></div></div></Modal> : null}
     </div>
   );
 }

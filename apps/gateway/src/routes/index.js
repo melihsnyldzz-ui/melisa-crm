@@ -20,7 +20,7 @@ const catalogBinding = createCatalogRouter({
   verifyCrmContext: token => verifyCrmAccessToken(token, { includeContext: true }),
   transport: (url, options) => fetch(url, options),
   activationApproved: true,
-  uiOrigin: 'https://melisa-crm-ozel-tasarim-testi.melihsnyldzz.chatgpt.site',
+  uiOrigin: process.env.CRM_UI_ORIGIN || 'https://melisa-crm-ozel-tasarim-testi.melihsnyldzz.chatgpt.site',
   logoutOrigin: 'http://127.0.0.1:4212',
 });
 routes.use(catalogBinding.router);

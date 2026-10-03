@@ -8,7 +8,7 @@ import { clearCatalogStorage, safeCatalogStorage } from './model.js';
 import { liveApi } from '../liveApi.js';
 import './catalog.css';
 
-export function CatalogConnectionPanel({customer,source,onClose,onRead,onSignIn,onDisconnect,authMode='erp'}) {
+export function CatalogConnectionPanel({customer,source,onClose,onRead,onSignIn,onDisconnect,authMode='erp',existingStock=false}) {
   const dialog = useRef(null), form = useRef(null);
   const [clock,setClock]=useState(Date.now);
   useEffect(()=>{setClock(Date.now());if(!source.retryAt||source.retryAt<=Date.now())return;const timer=setInterval(()=>{setClock(Date.now());if(Date.now()>=source.retryAt)clearInterval(timer);},1000);return()=>clearInterval(timer);},[source.retryAt]);
@@ -44,7 +44,7 @@ export function CatalogConnectionPanel({customer,source,onClose,onRead,onSignIn,
       {authMode==='crm'?<p className="catalog-microcopy">Katalog erişimi CRM hesabınızın yetkileriyle kontrol edilir. Ek ERP girişi gerekmez.</p>:null}
       {showForm ? <form ref={form} onSubmit={submit} autoComplete="off"><label className="catalog-field">ERP kullanıcı adı<input name="username" type="text" autoComplete="off" autoCapitalize="none" spellCheck={false} required disabled={busy}/></label><label className="catalog-field">ERP şifresi<input name="password" type="password" autoComplete="off" required disabled={busy}/></label><p className="catalog-microcopy">Normal ERP hesabınızla giriş yapın. CRM, ERP şifrenizi kaydetmez. Bağlantı geçicidir; ERP kayıtları değiştirilmez.</p><button className="catalog-primary" type="submit" disabled={busy}>ERP’ye bağlan</button></form> : null}
       {!busy ? <div className="catalog-connect-actions"><button type="button" className="catalog-secondary" disabled={cooling} onClick={onRead}>{cooling?`${Math.ceil((source.retryAt-clock)/1000)} saniye sonra yeniden deneyin`:'Bağlantıyı kontrol et'}</button>{authMode==='erp'&&source.state==='uncertain'?<button type="button" className="catalog-secondary" onClick={onDisconnect}>ERP bağlantısını kapat</button>:null}</div> : null}
-      <p className="catalog-connect-limits">Fotoğraflı ve fiyatsız katalog hazırlanabilir. Güncel satış fiyatı veya stok doğrulanamadığında açıkça belirtilir; fiyatlı PDF şu anda kapalıdır. Satış fiyatlarının birimi adettir.</p>
+      <p className="catalog-connect-limits">{existingStock ? "Fotoğraflı katalog ve kayıtlı satış fiyatlarıyla PDF hazırlanabilir. Satış fiyatları adet içindir; stok ve sipariş koşullarını sipariş öncesi teyit edin." : "Fotoğraflı ve fiyatsız katalog hazırlanabilir. Güncel satış fiyatı veya stok doğrulanamadığında açıkça belirtilir; fiyatlı PDF şu anda kapalıdır. Satış fiyatlarının birimi adettir."}</p>
     </div><footer className="catalog-actions"><button type="button" className="catalog-secondary" onClick={onClose}>Konuşmaya dön</button></footer>
   </section></div>;
 }
@@ -71,5 +71,5 @@ export default function CatalogWorkspace({token,isCurrent,onClose,onSource,onSes
   const signIn = credentials => {clearCatalogStorage(safeCatalogStorage());void controller.current?.signIn(credentials);};
   const disconnect = () => {clearCatalogStorage(safeCatalogStorage());void controller.current?.disconnect();};
   if(source.state==='ready') return <CatalogBuilder {...builderProps} onPage={existingStock?readPage:undefined} products={source.products} sourceStatus={source} onClose={close} loadPhoto={photo} isContextCurrent={usable} beforeOutput={verifyOutput} onDisconnect={authMode==='erp'?disconnect:undefined}/>;
-  return <CatalogConnectionPanel customer={builderProps.customer} source={source} authMode={authMode} onClose={close} onRead={()=>void controller.current?.read()} onSignIn={signIn} onDisconnect={disconnect}/>;
+  return <CatalogConnectionPanel existingStock={existingStock} customer={builderProps.customer} source={source} authMode={authMode} onClose={close} onRead={()=>void controller.current?.read()} onSignIn={signIn} onDisconnect={disconnect}/>;
 }
