@@ -14,7 +14,7 @@ Güncelleme: **4 Ekim 2026 — ERP taslak kabulü korunur; başka kişiden gelen
 
 ## Bu tur gerçek sonuçlar ve düzeltmeler
 
-**Yeni günlük kullanım eksiği — başka kişiden gelen mesaj:** Kullanıcı WhatsApp uygulamasında yazan başka kişinin burada görünmediğini bildirdi; bu kişi 7733 test hattı değildir. Açık ekran 62400 TEST ve aramada 7733 vardı. TEST okuyucusu yalnız bu telefonun mesajlarını konuşma55'e aktarır. Daha önemlisi, kanonik `normalizeWaapiEvent` başka peer'leri `isWaapiTrialPeer` ile ignored yapar ve phone'u tek test alıcısına bağlar. Çalışan MelisaWhatsAppCrmGateway servisinin kayıtlı AppDirectory'sindeki mevcut kaynak da aynı filtreyi ve sabit 7733 alıcısını taşır (salt okunur inceleme). Bu nedenle 7733 kabulü genel müşteri gelen mesajları için yeşil sayılmaz. LIVE sağlık providerConnected/bridgeReady/sendReady=true olsa da genel mesaj alımını kanıtlamaz. Bu tur LIVE/source arşivi/provider ayarı değiştirilmedi; başka müşteriye mesaj gönderilmedi veya yeni konuşma aktarılmadı. Samsung Tailscale bağlantısı bulundu; WhatsApp'taki ilgili yazışmayı karşılaştırma henüz sürüyor. Genel inbound/exact-peer/konuşma eşleme eksikliği kapanmadan günlük mesaj akışı PASS değildir.
+**Yeni günlük kullanım eksiği — başka kişiden gelen mesaj:** Kullanıcı WhatsApp uygulamasında yazan başka kişinin burada görünmediğini bildirdi; bu kişi 7733 test hattı değildir. Açık ekran 62400 TEST ve aramada 7733 vardı. TEST okuyucusu yalnız bu telefonun mesajlarını konuşma55'e aktarır. Daha önemlisi, kanonik `normalizeWaapiEvent` başka peer'leri `isWaapiTrialPeer` ile ignored yapar ve phone'u tek test alıcısına bağlar. Çalışan MelisaWhatsAppCrmGateway servisinin kayıtlı AppDirectory'sindeki mevcut kaynak da aynı filtreyi ve sabit 7733 alıcısını taşır (salt okunur inceleme). Bu nedenle 7733 kabulü genel müşteri gelen mesajları için yeşil sayılmaz. LIVE sağlık providerConnected/bridgeReady/sendReady=true olsa da genel mesaj alımını kanıtlamaz. Bu tur LIVE/source arşivi/provider ayarı değiştirilmedi; başka müşteriye mesaj gönderilmedi veya yeni konuşma aktarılmadı. Samsung SM-N985F kablosuz ADB/Tailscale bağlantısı kuruldu ve görünür canlı WhatsApp Business ekranı açıldı. 4 Ekim 02:41–02:43 karşılaştırmasında 0817 ile biten kişinin 01:37 tarihli iki gelen mesajı telefonda görüldü. Normal CRM araması sonuç vermedi; daha kesin salt okunur Chatwoot account2 exact-phone contacts/search sonucu 0 kişi, 0 konuşma oldu. Bu yazışma CRM'e hiç aktarılmamış; yalnız UI arama sorunu değildir. Kanıtlar checkout dışındaki logs/acceptance-20261004 altında samsung-whatsapp-missing-chat.png ve missing-peer-0817-readonly-proof.json; müşteri içeriği/numarası/eşleştirme kodu Git'e eklenmedi. Genel inbound/exact-peer/konuşma eşleme eksikliği kapanmadan günlük mesaj akışı PASS değildir.
 
 **Metin:** Kullanıcı yanıtının gelmediğini bildirdi. Kapalı kanonik TEST alıcısı çalıştırıldı; Merhaba test, Kkk, Haloo normal ekranda göründü. Haloo otomatik Merhaba çevrildi. Bu TEST okuyucu davranışı tüm LIVE alıcılara genellenmez.
 
@@ -50,7 +50,7 @@ Tek güncel liste. Kritik sayım 13 başlıktaki açık sarı/kırmızı satırl
 
 | Madde | Sınıflandırma | Gerçek sonuç ve kalan somut iş |
 | --- | --- | --- |
-| Gelen/giden metin | 🔴 EKSİK / BOZUK — gerçekten geliştirme gerekiyor | 7733 gerçek gönderim/yanıt kabulü korunur. Başka kişiden yeni WhatsApp yazışması bildirilmiş; mevcut incoming normalizer yalnız test peer'ini kabul ediyor. Genel müşteri gelen mesajı ve doğru konuşmaya eşleme yolu eksik; ilgili Samsung yazışmasının karşılaştırması sürüyor. |
+| Gelen/giden metin | 🔴 EKSİK / BOZUK — gerçekten geliştirme gerekiyor | 7733 gerçek gönderim/yanıt kabulü korunur. Başka kişiden yeni WhatsApp yazışması bildirilmiş; mevcut incoming normalizer yalnız test peer'ini kabul ediyor. Genel müşteri gelen mesajı ve doğru konuşmaya eşleme yolu eksik. Samsung'da 0817 kişisinin iki mesajı görüldü; bağlı Chatwoot'ta exact-phone kişi kaydı0, konuşma0. |
 | Fotoğraf | 🟢 ÇALIŞIYOR — gerçek kullanım kanıtı var | Telefon açma yanıtı ve gelen fotoğrafı CRM'de büyütüp açma kabulü tamamlandı. |
 | PDF/dosya | 🟢 ÇALIŞIYOR — gerçek kullanım kanıtı var | PDF/TXT iki yönde açıldı/indirildi; içerikler eşleşiyor. Fiyatlı PDF de render edildi ve telefonda açıldı. Mevcut kapsam PDF/TXT. |
 | Ses/video | 🔴 EKSİK / BOZUK — gerçekten geliştirme gerekiyor | Giden ses/video seçme/validasyon/provider yolu MIME kapsamında yok. Gelen oynatıcı hazır; gerçek oynatma kabulü yok. |
@@ -73,6 +73,6 @@ Tek güncel liste. Kritik sayım 13 başlıktaki açık sarı/kırmızı satırl
 
 KALAN KRİTİK MADDE SAYISI: **6 — 3 geliştirme eksiği, 3 kullanıcı kabulü.**
 
-KULLANICININ ŞİMDİ GÖZÜYLE DENEYECEĞİ İLK ŞEY: **Samsung WhatsApp'taki görünmeyen konuşmayı açıp CRM ile karşılaştırmak; kablosuz ADB eşleştirmesi hazırlanıyor.**
+KULLANICININ ŞİMDİ GÖZÜYLE DENEYECEĞİ İLK ŞEY: **Açık Samsung WhatsApp ekranındaki 0817 konuşmasını ve CRM'de bulunmadığını görmek.**
 
 SONRAKİ TEK GELİŞTİRME İŞİ: **Genel gelen WhatsApp mesajlarını gerçek gönderen kimliğiyle doğru CRM konuşmasına alan yolu tamamlamak; 7733 gönderim sınırı ve LIVE deployment yasağı korunur.**
