@@ -39,7 +39,7 @@ Her özelliğin bitiş kriteri **gerçek kullanım kabulüdür**. Unit test, bui
 
 Bu adresler planın kontrol hedefleridir; şu anda kurulu veya erişilebilir olduklarına dair doğrulama sayılmaz. Durum panosu normal CRM ve telefon kabulünün sonucunu yansıtır.
 
-**4 Ekim 2026 gerçek TEST kaydı:** kanonik kaynakla normal CRM arayüzü `http://127.0.0.1:62400/`, gateway `62401`, katalog `62402`, eski ERP taslak adapteri `62403` üzerinde açıldı. `62094/status` hedefi bu runtime'da kurulmuş değildir; yeni kabul/gate ekranı eklenmedi. Güncel tek bitirme listesi ve 7733 telefon kabulü `CRM_STATUS.md` içindedir. Güncel kanonik ERP, eski FULL_TEST taslak adapterinin yazım hedefini reddediyor; yeni taslak sözleşmesi tamamlanmadan 8. madde PASS değildir. 3 Ekim tarihli eski runtime taslak kabulü korunur.
+**4 Ekim 2026 gerçek TEST kaydı:** kanonik kaynakla normal CRM arayüzü `http://127.0.0.1:62400/`, gateway `62401`, katalog `62402`, ERP taslak adapteri `62403` üzerinde açıldı. `62094/status` hedefi bu runtime'da kurulmuş değildir; yeni kabul/gate ekranı eklenmedi. Güncel tek bitirme listesi ve 7733 telefon kabulü `CRM_STATUS.md` içindedir. Eski FULL_TEST yazım hedefinin reddi üzerine güncel SIRKET TEST için ayrı native create/read API'si `62404`'e kuruldu (ERP `4fb9eab`, CRM `8af2134`). Audit guard uyarlaması ERP a3fa8fc ile kuruldu; mevcut ERP hesabından 2 adet / 392 TRY taslak oluşturuldu ve ayrı geri okundu. Kullanıcı doğru sonucu görüp kabul etti; 8. madde aşağıdaki dar TEST kapsamında PASS. Kapsam mevcut TEST müşteri 593 ve doğrulanmış `vega-161466 / 41140 SÜPERMİNİ` ürünüdür. 3 Ekim tarihli eski runtime taslak kabulü korunur.
 
 ## TEST’ten LIVE’a bitiş sırası
 
