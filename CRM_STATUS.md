@@ -10,9 +10,10 @@ Kritik kalan işler: Bağımsız inceleme; installer owner/path uyarlaması; ger
 
 ## Özellikler
 
-- 🟢PASS: Yerel frontend build ve 4212 HTML/JS/CSS bit eşleşmesi.
-- 🟢PASS: İzole gateway 107 + sentetik ERP contract 2 test; frontend seçili 47 test.
+- 🟡TEST BEKLİYOR: Yerel baseline build ve 4212 HTML/JS/CSS bit eşleşmesi geçti; gerçek özellik acceptance yok.
+- 🟡TEST BEKLİYOR: İzole gateway 107 + ERP mock 2, frontend 47 test geçti; gerçek işletme kabulü yok.
 - 🟡TEST BEKLİYOR: Gerçek 7733 mesaj/medya acceptance; bu görevde tüm gönderimler yasak.
 - 🟡TEST BEKLİYOR: ERP write acceptance ve rollback tatbikatı.
 - 🔴FAIL-BLOCKED: REV3 installer NORMAL_OWNER_REQUIRED; eski mutlak yol/manifest uyarlaması.
 - ⚫SONRA: Production deploy, GitHub repo/push; ayrı yetki ve inceleme sonrası.
+
