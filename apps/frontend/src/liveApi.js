@@ -8,6 +8,104 @@ const STORAGE_KEY = "melisa-crm-access-token";
 const API_ROOT = "/api/live";
 const requestControl = createRequestControl();
 
+export const ERP_ORDER_TEST_DATABASE = 'MELISA_ERP_SIRKET_TEST_20260929_01';
+export function validateErpOrderPayload(payload) {
+  const rate=payload?.exchangeRate, lines=payload?.items;
+  if (!/^[0-9a-f-]{36}$/i.test(payload?.requestId||'') || payload.conversationId !== '55' || payload.customerId !== 593 || typeof rate !== 'number' || !Number.isFinite(rate) || rate <= 0 || rate > 10000 || Number(rate.toFixed(8)) !== rate || !Array.isArray(lines) || !lines.length || lines.length > 50) throw new Error('TEST sipariş bilgileri veya kuru geçerli değil.');
+  let total=0;
+  for(const line of lines){
+    if(!/^vega-\d+$/.test(line.sourceId||'') || typeof line.stockCode !== 'string' || !line.stockCode.trim() || line.stockCode.length>120 || !Number.isSafeInteger(line.quantity) || line.quantity<1 || line.quantity>9999 || typeof line.unitPrice !== 'number' || !Number.isFinite(line.unitPrice) || line.unitPrice<=0 || line.unitPrice>1000000 || Number(line.unitPrice.toFixed(4)) !== line.unitPrice || !['TRY','USD','EUR'].includes(line.currency)) throw new Error('Ürün kodu, adet veya adet fiyatı geçerli değil.');
+    total+=line.quantity*line.unitPrice;
+  }
+  if(new Set(lines.map(line=>line.sourceId)).size!==lines.length || new Set(lines.map(line=>line.stockCode)).size!==lines.length || new Set(lines.map(line=>line.currency)).size!==1 || (lines[0].currency==='TRY' && rate!==1) || total>1e10 || !Number.isFinite(total)) throw new Error('Tek para birimi ve ayrı ürün satırları kullanın; TRY kuru 1 olmalıdır.');
+  return payload;
+}
+// Persist only the idempotency payload, scoped to the authenticated CRM actor.
+// A durable record is required before POST, so closing/reloading cannot create
+// another UUID while the first commit is still uncertain. Never stores secrets.
+export function createPendingErpOrderStore(actorKey, conversationId, storage) {
+  const key = `melisa-crm-test-order:${encodeURIComponent(actorKey)}:${encodeURIComponent(String(conversationId))}`;
+  function read() {
+    if (!actorKey || String(conversationId) !== '55') throw new Error('TEST sipariş hesap kapsamı doğrulanamadı.');
+    const text = storage.getItem(key);
+    if (!text) return null;
+    const record = JSON.parse(text);
+    if (record.version !== 1 || typeof record.nativeActorId !== 'string' || !record.nativeActorId || typeof record.resolved !== 'boolean' || !/^[0-9a-f-]{36}$/i.test(record.payload?.requestId || '') || record.payload.conversationId !== '55' || record.payload.customerId !== 593 || !Array.isArray(record.payload.items) || !record.payload.items.length) throw new Error('Önceki TEST taslağının kaydı okunamadı. Yeni sipariş gönderilmedi.');
+    validateErpOrderPayload(record.payload);
+    return record;
+  }
+  function write(record) {
+    storage.setItem(key, JSON.stringify(record));
+    if (storage.getItem(key) !== JSON.stringify(record)) throw new Error('TEST taslağı tarayıcı oturumuna kaydedilemedi. Sipariş gönderilmedi.');
+    return record;
+  }
+  function assertActor(record, nativeActorId) {
+    if (!record || !nativeActorId || record.nativeActorId !== String(nativeActorId)) throw new Error('Önceki TEST taslağı farklı ERP hesabına bağlı. Aynı ERP hesabıyla giriş yapın.');
+    return record;
+  }
+  return {
+    read, assertActor,
+    prepare(payload, nativeActorId) {
+      const previous = read();
+      if (previous) return assertActor(previous, nativeActorId);
+      if (!/^[1-9]\d*$/.test(String(nativeActorId||''))) throw new Error('ERP hesabı doğrulanamadı.');
+      validateErpOrderPayload(payload);
+      const clean = { requestId: payload.requestId, conversationId: '55', customerId: 593, exchangeRate: payload.exchangeRate, items: payload.items.map(line => ({ stockCode: line.stockCode, sourceId: line.sourceId, quantity: line.quantity, unitPrice: line.unitPrice, currency: line.currency })) };
+      return write({ version: 1, nativeActorId: String(nativeActorId), resolved: false, payload: clean });
+    },
+    resolved(nativeActorId) { const record = assertActor(read(), nativeActorId); return write({ ...record, resolved: true }); },
+    newIntent(nativeActorId) { const record = assertActor(read(), nativeActorId); if (!record.resolved) throw new Error('Önceki TEST sipariş sonucu henüz doğrulanmadı.'); storage.removeItem(key); if (storage.getItem(key) !== null) throw new Error('Yeni TEST siparişi başlatılamadı.'); },
+  };
+}
+export async function recoverPendingErpOrder({store,nativeActorId,readDetail,isCurrent}) {
+  const record=store.assertActor(store.read(),nativeActorId);
+  let receipt;
+  try { receipt=await readDetail(record.payload.requestId); }
+  catch(error) { if(error.status===404)return {record,receipt:null,missing:true}; throw error; }
+  if(!isCurrent())return {record,receipt:null,missing:false};
+  validateErpDraftReceipt(receipt,record.payload);
+  store.resolved(nativeActorId);
+  return {record,receipt,missing:false};
+}
+export async function submitPendingErpOrder({store,payload,nativeActorId,readDetail,createDraft,isCurrent}) {
+  const previous=store.read();
+  const record=store.prepare(payload,nativeActorId);
+  if(previous){
+    const recovered=await recoverPendingErpOrder({store,nativeActorId,readDetail,isCurrent});
+    if(recovered.receipt||!recovered.missing||!isCurrent())return recovered.receipt;
+    if(record.resolved)throw new Error('Doğrulanmış TEST siparişi artık okunamadı. Yeni sipariş gönderilmedi.');
+  }
+  if(!isCurrent())return null;
+  await createDraft(record.payload);
+  if(!isCurrent())return null;
+  return (await recoverPendingErpOrder({store,nativeActorId,readDetail,isCurrent})).receipt;
+}
+export function validateErpOrderContext(context, items) {
+  if (context?.database !== ERP_ORDER_TEST_DATABASE || context.environment !== 'CANONICAL_TEST' || context.purpose !== 'crm-order-draft-only' || context.customer?.id !== 593 || context.customer?.code !== 'TEST-V70-20260929-C' || !Array.isArray(context.products)) throw new Error('Kanonik ERP TEST müşteri ve ürün bağlamı doğrulanamadı.');
+  for (const item of items) {
+    const matches = context.products.filter(product => product.sourceId === item.sourceId && product.stockCode === item.stockCode && product.currency === item.currency && Number(product.unitPrice) === item.unitPrice);
+    if (matches.length !== 1) throw new Error(`${item.stockCode}: katalog ürünü, fiyatı ve para birimi TEST ERP ile tam eşleşmedi. Seçiminiz korunuyor.`);
+  }
+  return context;
+}
+export function erpOrderPayload(requestId, conversationId, context, items, quantities, exchangeRate) {
+  validateErpOrderContext(context, items);
+  if (String(conversationId) !== '55' || !items.length || items.length !== quantities.length || quantities.some(value => !Number.isSafeInteger(value) || value < 1 || value > 9999) || !Number.isFinite(exchangeRate) || exchangeRate <= 0) throw new Error('TEST konuşması, ürün adedi veya kuru doğrulanamadı.');
+  return validateErpOrderPayload({ requestId, conversationId: '55', customerId: 593, exchangeRate, items: items.map((line, index) => ({ stockCode: line.stockCode, sourceId: line.sourceId, quantity: quantities[index], unitPrice: line.unitPrice, currency: line.currency })) });
+}
+export function validateErpDraftReceipt(receipt, submitted) {
+  if (receipt?.database !== ERP_ORDER_TEST_DATABASE || receipt.requestId !== submitted.requestId || receipt.status !== 'draft' || receipt.customerId !== 593 || receipt.erpPersisted !== true || receipt.testOnly !== true || receipt.stockEffect !== false || receipt.ledgerEffect !== false || !Array.isArray(receipt.items) || receipt.items.length !== submitted.items.length || receipt.documentCurrency !== submitted.items[0].currency || Number(receipt.exchangeRate) !== submitted.exchangeRate) throw new Error('ERP kaydı yeniden okunup doğrulanamadı. Aynı taslağı yeniden kontrol edin; yeni kayıt açmayın.');
+  let total = 0;
+  for (const line of submitted.items) {
+    const matches = receipt.items.filter(item => item.stockCode === line.stockCode && item.sourceId === line.sourceId && Number(item.quantity) === line.quantity && Number(item.unitPrice) === line.unitPrice && item.currency === line.currency);
+    const lineTotal = line.quantity * line.unitPrice;
+    if (matches.length !== 1 || !Number.isFinite(Number(matches[0].lineTotal)) || Math.abs(Number(matches[0].lineTotal) - lineTotal) > 0.0001) throw new Error('ERP taslak satırları seçimle eşleşmedi. Seçiminiz korunuyor.');
+    total += lineTotal;
+  }
+  if (!Number.isFinite(Number(receipt.grandTotal)) || Math.abs(Number(receipt.grandTotal) - total) > 0.0001) throw new Error('ERP taslak toplamı seçimle eşleşmedi.');
+  return receipt;
+}
+
 export function savedAccessKey() { try { return window.sessionStorage.getItem(STORAGE_KEY) || ""; } catch { return ""; } }
 export function saveAccessKey(value) { try { value ? window.sessionStorage.setItem(STORAGE_KEY, value) : window.sessionStorage.removeItem(STORAGE_KEY); } catch { /* The active session still works in memory when storage is unavailable. */ } }
 
@@ -433,6 +531,11 @@ export const liveApi = {
   erpDrafts: token => request('/crm/erp/drafts',token),
   erpLogin: (token,credentials) => request('/crm/erp/login',token,{method:'POST',body:JSON.stringify(credentials)}),
   erpCustomers: (token,erpToken,search) => request(`/crm/erp/customers?search=${encodeURIComponent(search)}`,token,{headers:{'x-erp-token':erpToken}}),
+  erpContext: (token,erpToken) => request('/crm/erp/context',token,{headers:{'x-erp-token':erpToken}}),
+  erpDraftDetail: (token,erpToken,requestId) => {
+    if (!/^[0-9a-f-]{36}$/i.test(requestId)) throw new Error('Geçersiz TEST taslak kimliği.');
+    return request(`/crm/erp/drafts/${requestId}`,token,{headers:{'x-erp-token':erpToken},timeoutMs:45000});
+  },
   erpDraft: (token,erpToken,draft) => request('/crm/erp/drafts',token,{method:'POST',headers:{'x-erp-token':erpToken},body:JSON.stringify(draft),timeoutMs:45000}),
   async existingCatalogProducts(token, query={}, {signal}={}) {
     if(!token) throw Object.assign(new Error('CRM oturumu gerekli.'),{status:401});
