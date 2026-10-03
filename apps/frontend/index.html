@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content" />
+    <meta name="theme-color" content="#153c2e" />
+    <title>Melisa CRM · Canlı Test</title>
+  </head>
+  <body>
+    <div id="root"><div style="font:16px system-ui;min-height:90vh;display:grid;place-content:center;text-align:center;color:#254c31;background:#f5f7f2;padding:20px"><strong>Melisa Baby CRM</strong><p id="boot-status">Konuşma ekranı hazırlanıyor…</p><button id="boot-retry" hidden style="padding:14px 20px;border:0;border-radius:10px;background:#17694f;color:white;font:inherit" onclick="location.reload()">Yeniden aç</button><noscript>CRM’yi kullanmak için tarayıcınızda JavaScript açık olmalı.</noscript></div></div>
+    <script>setTimeout(function(){var status=document.getElementById('boot-status');if(status){status.textContent='Bağlantı tamamlanamadı. Yeniden deneyebilirsiniz.';document.getElementById('boot-retry').hidden=false;}},12000);</script>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

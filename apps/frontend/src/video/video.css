@@ -1,0 +1,32 @@
+.modal:has(.jitsi-pilot) { max-height: min(880px, calc(100dvh - 32px)); display: flex; flex-direction: column; }
+.modal:has(.jitsi-pilot) .modal-header { flex: 0 0 auto; }
+.modal:has(.jitsi-pilot) .jitsi-pilot { overflow-y: auto; }
+.jitsi-pilot { display: flex; flex-direction: column; gap: 14px; color: #263c36; font-size: 14px; }
+.jitsi-pilot button, .jitsi-pilot .pilot-join { min-height: 44px; }
+.pilot-recipient { padding: 12px; display: flex; flex-direction: column; gap: 5px; background: #f0f5f2; border-radius: 10px; overflow-wrap: anywhere; }
+.pilot-label, .pilot-recipient small { font-size: 12px; color: #566d63; }
+.pilot-recipient strong { font-size: 17px; }
+.pilot-heading { display: flex; align-items: center; gap: 12px; color: #187953; }
+.pilot-heading h3, .pilot-heading p { margin: 0; }
+.pilot-heading h3 { font-size: 18px; }
+.pilot-heading p { margin-top: 5px; font-size: 13px; color: #566d63; }
+.pilot-disclosure { margin: 0; line-height: 1.55; }
+.pilot-preview { display: flex; flex-direction: column; gap: 8px; font-weight: 600; }
+.pilot-preview textarea { resize: vertical; width: 100%; min-height: 175px; box-sizing: border-box; padding: 12px; border: 1px solid #ccd8d2; border-radius: 9px; font-family: inherit; font-size: 14px; line-height: 1.55; color: #263c36; background: #fafcfb; }
+.pilot-consent { display: flex; gap: 10px; align-items: flex-start; min-height: 44px; line-height: 1.5; cursor: pointer; }
+.pilot-consent input, .pilot-products input { min-width: 19px; min-height: 19px; accent-color: #187953; margin-top: 3px; }
+.pilot-join { display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; }
+.pilot-muted-note, .pilot-feedback { color: #566d63; font-size: 12px; line-height: 1.5; }
+.pilot-feedback:empty { display: none; }
+.pilot-quote { border-top: 1px solid #dbe5df; padding-top: 10px; }
+.pilot-quote summary { min-height: 44px; display: list-item; padding: 11px 0; cursor: pointer; font-weight: 600; }
+.pilot-quote p { color: #566d63; font-size: 12px; line-height: 1.5; }
+.pilot-quote > label { display: flex; flex-direction: column; gap: 6px; }
+.pilot-quote > label input { min-height: 44px; padding: 8px 10px; border: 1px solid #ccd8d2; border-radius: 8px; font-size: 16px; }
+.pilot-products { margin-top: 10px; max-height: 230px; overflow-y: auto; }
+.pilot-products label { display: flex; gap: 10px; min-height: 44px; padding: 10px 0; border-bottom: 1px solid #e5ece8; cursor: pointer; }
+.pilot-products span { display: flex; flex-direction: column; gap: 4px; }
+.pilot-products small { color: #566d63; }
+.pilot-draft-label { overflow-wrap: anywhere; }
+.jitsi-pilot .modal-actions { margin-top: 0; }
+@media (max-width: 760px) { .pilot-preview textarea { font-size: 16px; } .jitsi-pilot { padding: 16px; } }
