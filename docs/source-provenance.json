@@ -1,0 +1,777 @@
+[
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-09-30\\task-3\\CRM_LOCAL_DEV\\local-catalog-media-dev\\frontend-verified-4076f103-2026-10-01T15-46-50-851Z\\source\\src\\accountIdentity.js",
+    "target": "apps/frontend/src/accountIdentity.js",
+    "sha256": "080c3e6d03618bd0f6697021897e7087c305185d59d67c4e0b3c81a5099f56f5"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-09-30\\task-3\\CRM_LOCAL_DEV\\local-catalog-media-dev\\frontend-verified-4076f103-2026-10-01T15-46-50-851Z\\source\\src\\AccountInfo.jsx",
+    "target": "apps/frontend/src/AccountInfo.jsx",
+    "sha256": "1b9a7a8e3982153fe977dedc7cd977d42583e0234ab2367dcbffd57f5a470f09"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-09-30\\task-3\\CRM_LOCAL_DEV\\local-catalog-media-dev\\frontend-verified-4076f103-2026-10-01T15-46-50-851Z\\source\\src\\App.jsx",
+    "target": "apps/frontend/src/App.jsx",
+    "sha256": "4c94efd3639043c41235783a11e9ab53cbe363a79d51601a57badb63786cb97d"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-09-30\\task-3\\CRM_LOCAL_DEV\\local-catalog-media-dev\\frontend-verified-4076f103-2026-10-01T15-46-50-851Z\\source\\src\\catalog\\catalog.css",
+    "target": "apps/frontend/src/catalog/catalog.css",
+    "sha256": "632263573551c6bc4e590eed08286e56c16bb07cb854bcb8f60b3504c6ecf0b4"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-09-30\\task-3\\CRM_LOCAL_DEV\\local-catalog-media-dev\\frontend-verified-4076f103-2026-10-01T15-46-50-851Z\\source\\src\\catalog\\CatalogBuilder.jsx",
+    "target": "apps/frontend/src/catalog/CatalogBuilder.jsx",
+    "sha256": "e9876ef62a460c157ce6a320c9c54f8f1a3c5533f028fce29907175070bdb79b"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-09-30\\task-3\\CRM_LOCAL_DEV\\local-catalog-media-dev\\frontend-verified-4076f103-2026-10-01T15-46-50-851Z\\source\\src\\catalog\\CatalogWorkspace.jsx",
+    "target": "apps/frontend/src/catalog/CatalogWorkspace.jsx",
+    "sha256": "e0bfbe6e390e5f8d36efbc46a67743409b9398ff9e75e11eb581aa40b76ac64e"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-09-30\\task-3\\CRM_LOCAL_DEV\\local-catalog-media-dev\\frontend-verified-4076f103-2026-10-01T15-46-50-851Z\\source\\src\\catalog\\existingSession.js",
+    "target": "apps/frontend/src/catalog/existingSession.js",
+    "sha256": "9f4286a168541b428d0d639f4efa0a10c7b11a0d5d6e63419f792ee665792202"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-09-30\\task-3\\CRM_LOCAL_DEV\\local-catalog-media-dev\\frontend-verified-4076f103-2026-10-01T15-46-50-851Z\\source\\src\\catalog\\existingStock.js",
+    "target": "apps/frontend/src/catalog/existingStock.js",
+    "sha256": "48911239b4af138cd9b61fde4d7755c88c71685d352d5f5af5f8648a91c4a270"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-09-30\\task-3\\CRM_LOCAL_DEV\\local-catalog-media-dev\\frontend-verified-4076f103-2026-10-01T15-46-50-851Z\\source\\src\\catalog\\exports.js",
+    "target": "apps/frontend/src/catalog/exports.js",
+    "sha256": "fd6d0a065e5f0eff09119307d73aeb500eb5883a9dabc69a7e0dada90c463ef0"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-09-30\\task-3\\CRM_LOCAL_DEV\\local-catalog-media-dev\\frontend-verified-4076f103-2026-10-01T15-46-50-851Z\\source\\src\\catalog\\font.js",
+    "target": "apps/frontend/src/catalog/font.js",
+    "sha256": "1cde08d0272978d93ad7e7c0f386c45200c618058384aabba79449a0147b69ac"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-09-30\\task-3\\CRM_LOCAL_DEV\\local-catalog-media-dev\\frontend-verified-4076f103-2026-10-01T15-46-50-851Z\\source\\src\\catalog\\liveFields.js",
+    "target": "apps/frontend/src/catalog/liveFields.js",
+    "sha256": "77e9ea307d09cec61c8dcae5869f9a803d90593e16495684470c34edb1be46ba"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-09-30\\task-3\\CRM_LOCAL_DEV\\local-catalog-media-dev\\frontend-verified-4076f103-2026-10-01T15-46-50-851Z\\source\\src\\catalog\\logout.js",
+    "target": "apps/frontend/src/catalog/logout.js",
+    "sha256": "ffb78c55f65f9bf88701fed8b48596d7515d419a63b5474b301d9d0b16253e05"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-09-30\\task-3\\CRM_LOCAL_DEV\\local-catalog-media-dev\\frontend-verified-4076f103-2026-10-01T15-46-50-851Z\\source\\src\\catalog\\model.js",
+    "target": "apps/frontend/src/catalog/model.js",
+    "sha256": "5142206df1a7dbfba2a916551591ff23bf347ae37af05c0e887768abb9d37a2c"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-09-30\\task-3\\CRM_LOCAL_DEV\\local-catalog-media-dev\\frontend-verified-4076f103-2026-10-01T15-46-50-851Z\\source\\src\\catalog\\model.test.js",
+    "target": "apps/frontend/src/catalog/model.test.js",
+    "sha256": "e56afaaa71383a67787bfde1965bd5ef89e827ef204c496224b8a136d39c1508"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-09-30\\task-3\\CRM_LOCAL_DEV\\local-catalog-media-dev\\frontend-verified-4076f103-2026-10-01T15-46-50-851Z\\source\\src\\catalog\\photoCache.js",
+    "target": "apps/frontend/src/catalog/photoCache.js",
+    "sha256": "5c254179b89fafe94d1c6687391fe1ed025c7b677eee2ada2634f94e18fbfcd8"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-09-30\\task-3\\CRM_LOCAL_DEV\\local-catalog-media-dev\\frontend-verified-4076f103-2026-10-01T15-46-50-851Z\\source\\src\\catalog\\session.js",
+    "target": "apps/frontend/src/catalog/session.js",
+    "sha256": "46a33e840e5395ecad1660c036d33d56fdc9c11bd96329467fef8c9e40791b0e"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-09-30\\task-3\\CRM_LOCAL_DEV\\local-catalog-media-dev\\frontend-verified-4076f103-2026-10-01T15-46-50-851Z\\source\\src\\catalog\\source.js",
+    "target": "apps/frontend/src/catalog/source.js",
+    "sha256": "72ec8e912da20b6f9aa6635093d135958389f11a586f9fd4f40955a391694d20"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-09-30\\task-3\\CRM_LOCAL_DEV\\local-catalog-media-dev\\frontend-verified-4076f103-2026-10-01T15-46-50-851Z\\source\\src\\contactIdentity.js",
+    "target": "apps/frontend/src/contactIdentity.js",
+    "sha256": "f16149f52b9c829882464b9732d13cf7f6d5095372eaddd2b388ff1d8dd8f3ae"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-09-30\\task-3\\CRM_LOCAL_DEV\\local-catalog-media-dev\\frontend-verified-4076f103-2026-10-01T15-46-50-851Z\\source\\src\\CustomerPhone.jsx",
+    "target": "apps/frontend/src/CustomerPhone.jsx",
+    "sha256": "86e2838b1c6a87071b9abc1b09cb049350cc793e1e72604b248e5d102eb531fc"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-09-30\\task-3\\CRM_LOCAL_DEV\\local-catalog-media-dev\\frontend-verified-4076f103-2026-10-01T15-46-50-851Z\\source\\src\\experience.css",
+    "target": "apps/frontend/src/experience.css",
+    "sha256": "81688ec46aac8746b2ece11b8f537ce5e708a9de9949b4af6c241d3f8e3c39f2"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-09-30\\task-3\\CRM_LOCAL_DEV\\local-catalog-media-dev\\frontend-verified-4076f103-2026-10-01T15-46-50-851Z\\source\\src\\liveApi.js",
+    "target": "apps/frontend/src/liveApi.js",
+    "sha256": "0f1af0ae8a860175b89caaca6a5bb47acc3555f05aec89b476f0ef9c3cdf1725"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-09-30\\task-3\\CRM_LOCAL_DEV\\local-catalog-media-dev\\frontend-verified-4076f103-2026-10-01T15-46-50-851Z\\source\\src\\main.jsx",
+    "target": "apps/frontend/src/main.jsx",
+    "sha256": "00fb1bff88f997cd7104ad763929e40090cb06f1af13df721aa5a54837c804da"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-09-30\\task-3\\CRM_LOCAL_DEV\\local-catalog-media-dev\\frontend-verified-4076f103-2026-10-01T15-46-50-851Z\\source\\src\\outboundMedia.js",
+    "target": "apps/frontend/src/outboundMedia.js",
+    "sha256": "264ecbc3cbc4851f118f19901b479b0d44970a6e1f37305096f0c496881611a9"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-09-30\\task-3\\CRM_LOCAL_DEV\\local-catalog-media-dev\\frontend-verified-4076f103-2026-10-01T15-46-50-851Z\\source\\src\\permissionRefresh.js",
+    "target": "apps/frontend/src/permissionRefresh.js",
+    "sha256": "4378c900687c7a6c3e24079c5e7f05469b25ea2e6f9f0cf52847a04d72c43844"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-09-30\\task-3\\CRM_LOCAL_DEV\\local-catalog-media-dev\\frontend-verified-4076f103-2026-10-01T15-46-50-851Z\\source\\src\\releaseCapabilities.js",
+    "target": "apps/frontend/src/releaseCapabilities.js",
+    "sha256": "aff91b95e55971b3df4b478fd0b94c96ebd78d082ba92535c35891597427e636"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-09-30\\task-3\\CRM_LOCAL_DEV\\local-catalog-media-dev\\frontend-verified-4076f103-2026-10-01T15-46-50-851Z\\source\\src\\requestControl.js",
+    "target": "apps/frontend/src/requestControl.js",
+    "sha256": "f43dd208e40979e484de3d69cea3891f4370a784e137dc1df59712990802d680"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-09-30\\task-3\\CRM_LOCAL_DEV\\local-catalog-media-dev\\frontend-verified-4076f103-2026-10-01T15-46-50-851Z\\source\\src\\sessionLoader.js",
+    "target": "apps/frontend/src/sessionLoader.js",
+    "sha256": "059e0b36312d2a617c28bad549c385902e40fc0ef1ca6caca22ccc12a23792f2"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-09-30\\task-3\\CRM_LOCAL_DEV\\local-catalog-media-dev\\frontend-verified-4076f103-2026-10-01T15-46-50-851Z\\source\\src\\styles.css",
+    "target": "apps/frontend/src/styles.css",
+    "sha256": "179d188ca59af3caabf1bf8bb13b71f688bf08ce1241b6ff761d47369ab76197"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-09-30\\task-3\\CRM_LOCAL_DEV\\local-catalog-media-dev\\frontend-verified-4076f103-2026-10-01T15-46-50-851Z\\source\\src\\video\\JitsiPilot.jsx",
+    "target": "apps/frontend/src/video/JitsiPilot.jsx",
+    "sha256": "466d78dd034a31c56d6d87e029127629bb992db2d37bdb0650da3917ed45c75a"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-09-30\\task-3\\CRM_LOCAL_DEV\\local-catalog-media-dev\\frontend-verified-4076f103-2026-10-01T15-46-50-851Z\\source\\src\\video\\pilot.js",
+    "target": "apps/frontend/src/video/pilot.js",
+    "sha256": "cf1c6c2bcc90a6a52c54bded047b60f2e9b1b311cfec364c66b7da7768087726"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-09-30\\task-3\\CRM_LOCAL_DEV\\local-catalog-media-dev\\frontend-verified-4076f103-2026-10-01T15-46-50-851Z\\source\\src\\video\\video.css",
+    "target": "apps/frontend/src/video/video.css",
+    "sha256": "422068ce483573c1bd0c2111e849374ff8fe23e684dc64d3ba44711199396e79"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-09-30\\task-3\\CRM_LOCAL_DEV\\local-catalog-media-dev\\frontend-verified-4076f103-2026-10-01T15-46-50-851Z\\source\\src\\whatsapp.css",
+    "target": "apps/frontend/src/whatsapp.css",
+    "sha256": "f1dae3f57ebb23f8f87b00c71b30095d2b4e7e3a70ef0bb35d3a3d528e6ed4d0"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-09-30\\task-3\\CRM_LOCAL_DEV\\local-catalog-media-dev\\frontend-verified-4076f103-2026-10-01T15-46-50-851Z\\source\\scripts\\prepare-sites-build.mjs",
+    "target": "apps/frontend/scripts/prepare-sites-build.mjs",
+    "sha256": "b6a6adaa4fab3234676116dd1c9cb6611275ab9d92dd26f5bf402393e3744bf6"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-09-30\\task-3\\CRM_LOCAL_DEV\\local-catalog-media-dev\\frontend-verified-4076f103-2026-10-01T15-46-50-851Z\\source\\worker\\index.js",
+    "target": "apps/frontend/worker/index.js",
+    "sha256": "cfe7aef1e722a7ed873aa61dd5145c3055af7e610dec364d5ef82e80ea723ebe"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-09-30\\task-3\\CRM_LOCAL_DEV\\local-catalog-media-dev\\frontend-verified-4076f103-2026-10-01T15-46-50-851Z\\source\\tests\\account-identity.test.mjs",
+    "target": "apps/frontend/tests/account-identity.test.mjs",
+    "sha256": "92a38e3e5be94b4c00ba29444a3973ec1bbba17e8f41704ce7a231786655ed28"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-09-30\\task-3\\CRM_LOCAL_DEV\\local-catalog-media-dev\\frontend-verified-4076f103-2026-10-01T15-46-50-851Z\\source\\tests\\catalog-api.test.mjs",
+    "target": "apps/frontend/tests/catalog-api.test.mjs",
+    "sha256": "c3a69965a13b517d645409d3a2dce730ab80024ed092dae20b6d0c3380278987"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-09-30\\task-3\\CRM_LOCAL_DEV\\local-catalog-media-dev\\frontend-verified-4076f103-2026-10-01T15-46-50-851Z\\source\\tests\\catalog-auth-api.test.mjs",
+    "target": "apps/frontend/tests/catalog-auth-api.test.mjs",
+    "sha256": "147c28ba327bbdee1849fb4653bcb475a7ae203dbdb4fe43714124e873ab78bf"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-09-30\\task-3\\CRM_LOCAL_DEV\\local-catalog-media-dev\\frontend-verified-4076f103-2026-10-01T15-46-50-851Z\\source\\tests\\catalog-logout.test.mjs",
+    "target": "apps/frontend/tests/catalog-logout.test.mjs",
+    "sha256": "cad0063e5ec00a5d5eddabe91dc9045a785b0722acb3fbea863c645b0851e188"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-09-30\\task-3\\CRM_LOCAL_DEV\\local-catalog-media-dev\\frontend-verified-4076f103-2026-10-01T15-46-50-851Z\\source\\tests\\catalog-origin-worker.test.mjs",
+    "target": "apps/frontend/tests/catalog-origin-worker.test.mjs",
+    "sha256": "06733d100b70286e76134ac5dcd02bb28e176df5bbce0aae0f1abfb0a85294bd"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-09-30\\task-3\\CRM_LOCAL_DEV\\local-catalog-media-dev\\frontend-verified-4076f103-2026-10-01T15-46-50-851Z\\source\\tests\\catalog-session.test.mjs",
+    "target": "apps/frontend/tests/catalog-session.test.mjs",
+    "sha256": "462f9b89dd28745e878a656391164776bfacac38cff85bc709c0debb5ef7cadc"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-09-30\\task-3\\CRM_LOCAL_DEV\\local-catalog-media-dev\\frontend-verified-4076f103-2026-10-01T15-46-50-851Z\\source\\tests\\catalog-source.test.mjs",
+    "target": "apps/frontend/tests/catalog-source.test.mjs",
+    "sha256": "48b7ba53b339ee054f1281c81e2379b7ee27c24ef6db4c6af48a587be5765b8d"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-09-30\\task-3\\CRM_LOCAL_DEV\\local-catalog-media-dev\\frontend-verified-4076f103-2026-10-01T15-46-50-851Z\\source\\tests\\catalog-ui.test.mjs",
+    "target": "apps/frontend/tests/catalog-ui.test.mjs",
+    "sha256": "fc36303a7b9f0bcc222e3062fee86826b9f5b6aeff112b4d4ff19b249734a39e"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-09-30\\task-3\\CRM_LOCAL_DEV\\local-catalog-media-dev\\frontend-verified-4076f103-2026-10-01T15-46-50-851Z\\source\\tests\\contact-identity.test.mjs",
+    "target": "apps/frontend/tests/contact-identity.test.mjs",
+    "sha256": "a365eae6ebe258e177ede20daac967f2440186dee39e49ef22f3f6ac5cd85721"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-09-30\\task-3\\CRM_LOCAL_DEV\\local-catalog-media-dev\\frontend-verified-4076f103-2026-10-01T15-46-50-851Z\\source\\tests\\existing-stock-recovery.test.mjs",
+    "target": "apps/frontend/tests/existing-stock-recovery.test.mjs",
+    "sha256": "9ef9b8102fafab4e535762c84b7d10e41de9a0c545ca01e2a9547e1849379611"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-09-30\\task-3\\CRM_LOCAL_DEV\\local-catalog-media-dev\\frontend-verified-4076f103-2026-10-01T15-46-50-851Z\\source\\tests\\gateway.test.mjs",
+    "target": "apps/frontend/tests/gateway.test.mjs",
+    "sha256": "3eab3a51230b3d697ecfd25a4ce9a566bf1bcb71077aa0ee29dc0d002400bbcf"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-09-30\\task-3\\CRM_LOCAL_DEV\\local-catalog-media-dev\\frontend-verified-4076f103-2026-10-01T15-46-50-851Z\\source\\tests\\live-media.test.mjs",
+    "target": "apps/frontend/tests/live-media.test.mjs",
+    "sha256": "13d178c2ac61e6909a319f082929d9554c08559a4a4950e5340e647680c02c47"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-09-30\\task-3\\CRM_LOCAL_DEV\\local-catalog-media-dev\\frontend-verified-4076f103-2026-10-01T15-46-50-851Z\\source\\tests\\outbound-media.test.mjs",
+    "target": "apps/frontend/tests/outbound-media.test.mjs",
+    "sha256": "414517a7c5536531d06fb5a638d3966a215d14dc9a949d8400c6e07ca107f72f"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-09-30\\task-3\\CRM_LOCAL_DEV\\local-catalog-media-dev\\frontend-verified-4076f103-2026-10-01T15-46-50-851Z\\source\\tests\\permission-refresh.test.mjs",
+    "target": "apps/frontend/tests/permission-refresh.test.mjs",
+    "sha256": "dcb1d373054867ef203af0b167c98de34be931b6d20f1bf566967e2d5a98deac"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-09-30\\task-3\\CRM_LOCAL_DEV\\local-catalog-media-dev\\frontend-verified-4076f103-2026-10-01T15-46-50-851Z\\source\\tests\\request-control.test.mjs",
+    "target": "apps/frontend/tests/request-control.test.mjs",
+    "sha256": "9fe755334efbb5f727cfc73bddc2954514a2b6d159f6fe865a5c5b4ebd928128"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-09-30\\task-3\\CRM_LOCAL_DEV\\local-catalog-media-dev\\frontend-verified-4076f103-2026-10-01T15-46-50-851Z\\source\\tests\\session-loader.test.mjs",
+    "target": "apps/frontend/tests/session-loader.test.mjs",
+    "sha256": "d7f45530d2ea9510cd83433e05bb7ef5e5219d1d22b79e468346cbfffa4a9e60"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-09-30\\task-3\\CRM_LOCAL_DEV\\local-catalog-media-dev\\frontend-verified-4076f103-2026-10-01T15-46-50-851Z\\source\\tests\\sites-worker.test.mjs",
+    "target": "apps/frontend/tests/sites-worker.test.mjs",
+    "sha256": "5ccd41d2170c008f55a2cf0a549f07bbf974c1eb01842cc3639d5ca5117f3784"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-09-30\\task-3\\CRM_LOCAL_DEV\\local-catalog-media-dev\\frontend-verified-4076f103-2026-10-01T15-46-50-851Z\\source\\tests\\translation-back.test.mjs",
+    "target": "apps/frontend/tests/translation-back.test.mjs",
+    "sha256": "5a7a1e99272f384cc983a24696afcc58d2a299f3b35476a8b195feb68dc2fad2"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-09-30\\task-3\\CRM_LOCAL_DEV\\local-catalog-media-dev\\frontend-verified-4076f103-2026-10-01T15-46-50-851Z\\source\\tests\\video-pilot.test.mjs",
+    "target": "apps/frontend/tests/video-pilot.test.mjs",
+    "sha256": "2b2da7b37e52818fe1cd6dac4a2e5bd09bb99fd4929601ee9bfa3cb106974efc"
+  },
+  {
+    "source": "C:/Users/Xaser/Documents/Codex/2026-09-30/task-3/CRM_LOCAL_DEV/local-catalog-media-dev/frontend-verified-4076f103-2026-10-01T15-46-50-851Z/source/package.json",
+    "target": "apps/frontend/package.json",
+    "sha256": "0dbec982fb71ee9ef25d5d0fc9f502ecc3072d46cc2a00430295a4b53129d985"
+  },
+  {
+    "source": "C:/Users/Xaser/Documents/Codex/2026-09-30/task-3/CRM_LOCAL_DEV/local-catalog-media-dev/frontend-verified-4076f103-2026-10-01T15-46-50-851Z/source/package-lock.json",
+    "target": "apps/frontend/package-lock.json",
+    "sha256": "9064a36a0c86464db93cc261ffedbc92a87ea2092315e207301ca8a8aa6d4d24"
+  },
+  {
+    "source": "C:/Users/Xaser/Documents/Codex/2026-09-30/task-3/CRM_LOCAL_DEV/local-catalog-media-dev/frontend-verified-4076f103-2026-10-01T15-46-50-851Z/source/index.html",
+    "target": "apps/frontend/index.html",
+    "sha256": "2a7fa423fc8c8c953b4de489415835842d074cacc88e81913e620494e9151166"
+  },
+  {
+    "source": "C:/Users/Xaser/Documents/Codex/2026-09-30/task-3/CRM_LOCAL_DEV/local-catalog-media-dev/frontend-verified-4076f103-2026-10-01T15-46-50-851Z/source/vite.config.mjs",
+    "target": "apps/frontend/vite.config.mjs",
+    "sha256": "5f20ad6ef5aa89956c8791d8caefa224bc80718ca38df213b5e0c9c883d4bfee"
+  },
+  {
+    "source": "C:/Users/Xaser/Documents/Codex/2026-09-30/task-3/CRM_LOCAL_DEV/local-catalog-media-dev/frontend-verified-4076f103-2026-10-01T15-46-50-851Z/source/.openai/hosting.json",
+    "target": "apps/frontend/.openai/hosting.json",
+    "sha256": "3e6283e8f821a3824a1955f9630fb3a178cf0115b598dba20b10f656cacb86e3"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-09-30\\task-3\\CRM_LOCAL_DEV\\local-catalog-media-dev\\frontend-verified-4076f103-2026-10-01T15-46-50-851Z\\source\\public\\chat-wallpaper.png",
+    "target": "apps/frontend/public/chat-wallpaper.png",
+    "sha256": "d2d0d58bf737f6080e529f122f0b557bb33ec8ff3fcc2c60f6cbfc0ffc6de197"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\app.js",
+    "target": "apps/gateway/src/app.js",
+    "sha256": "53f6e2cdb57078bb06cc2e7559a8b4b9ef0dce11c8b59d65d23da52c20181e11"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\config\\env.js",
+    "target": "apps/gateway/src/config/env.js",
+    "sha256": "10a733dff1937a4ed6f1b72d53b1514b493e7d46f2e98f91e23b38a53aa6ea33"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\controllers\\agentController.js",
+    "target": "apps/gateway/src/controllers/agentController.js",
+    "sha256": "5e43cfac039809cd9c6dd0585951bfae48212de294dd159934412534eb390fb8"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\controllers\\authController.js",
+    "target": "apps/gateway/src/controllers/authController.js",
+    "sha256": "22fa2afd1504cbd4a1743828fe65923ccc7f162e4e4b67aedd816a4b4bff5e90"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\controllers\\contactController.js",
+    "target": "apps/gateway/src/controllers/contactController.js",
+    "sha256": "3631cf6339cfc2d1f6fccb93fe74062a1f45f87598e316452f0531705d59041f"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\controllers\\conversationController.js",
+    "target": "apps/gateway/src/controllers/conversationController.js",
+    "sha256": "2833061d37f25d427e340f3115302d22d6e08daaf86330c081ae6f511653034f"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\controllers\\healthController.js",
+    "target": "apps/gateway/src/controllers/healthController.js",
+    "sha256": "8e5c5266591e06aa381f763205e8b98c3a6e298ff8249bb40e02744df71ee863"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\controllers\\inboxController.js",
+    "target": "apps/gateway/src/controllers/inboxController.js",
+    "sha256": "0f5a40c2c4a57d4a8a20127e8fae54150319095abdb78717d7acb4a9505b4f4b"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\controllers\\integrationController.js",
+    "target": "apps/gateway/src/controllers/integrationController.js",
+    "sha256": "40816c7c083d8a5667bcf772742777cfd2c187282aac8fce6a6484c7431481c3"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\controllers\\mediaController.js",
+    "target": "apps/gateway/src/controllers/mediaController.js",
+    "sha256": "f46b34810f76c4a9b7d5cce50c3eb65f65434787a4fa675baf4f63a5e23eb187"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\controllers\\sendController.js",
+    "target": "apps/gateway/src/controllers/sendController.js",
+    "sha256": "b97feee968b8f423acaa48438f11e9534a5a67878cc2b97eaeef87e3239699dc"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\controllers\\translationController.js",
+    "target": "apps/gateway/src/controllers/translationController.js",
+    "sha256": "fb1d99cc8079616e0ca042f5f20f8b14b5ef643be81db37e32d493b7a34133d8"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\controllers\\webhookController.js",
+    "target": "apps/gateway/src/controllers/webhookController.js",
+    "sha256": "b311f82748a9bd609ae2ca694da144c16bba7ae630eabb82990769de56f91dd0"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\middleware\\auth.js",
+    "target": "apps/gateway/src/middleware/auth.js",
+    "sha256": "b3d2dd1660f26482f111081901a56c4962d80e49c01c890d3c396b6b7520cda9"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\middleware\\catalogReadBudget.mjs",
+    "target": "apps/gateway/src/middleware/catalogReadBudget.mjs",
+    "sha256": "4aef38e0ebca2da54aeb189e027c6262037b8ebb6d3095e2c3db06f28fca426b"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\middleware\\errorHandler.js",
+    "target": "apps/gateway/src/middleware/errorHandler.js",
+    "sha256": "d42a1829edb285882893188771a9c7e5813ba4ea3d1a0c6512466974badaa2ad"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\middleware\\notFound.js",
+    "target": "apps/gateway/src/middleware/notFound.js",
+    "sha256": "2a7ef849d06c477d4d4aeb35b099e45d1deebd6e610bc0a2bd153a4d3b97d1c5"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\middleware\\requestContext.js",
+    "target": "apps/gateway/src/middleware/requestContext.js",
+    "sha256": "49d18d2caf579f3740374209841873da19d5765dca4533efe2bfd87a2965795c"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\middleware\\security.js",
+    "target": "apps/gateway/src/middleware/security.js",
+    "sha256": "e96658de6d8c0e9892c5e92d6892477dcbd33961de953c703c3e668eb6578a51"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\middleware\\webhookSecurity.js",
+    "target": "apps/gateway/src/middleware/webhookSecurity.js",
+    "sha256": "9f74e106baabe2f378d38e8b88f7e6a37f894a1e5eb09f635cf763c475da9ad7"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\middleware\\webhookSecurity.test.js",
+    "target": "apps/gateway/src/middleware/webhookSecurity.test.js",
+    "sha256": "a6cde0af8399a4532a503dcb4db12919025482a7cdb6c43418517b80bfb68e10"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\providers\\chatwootProvider.js",
+    "target": "apps/gateway/src/providers/chatwootProvider.js",
+    "sha256": "862fed3723dc3b779d6e52b0bb68d591bceabcbd60bd9235e1643616cd8742b8"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\providers\\chatwootProvider.test.js",
+    "target": "apps/gateway/src/providers/chatwootProvider.test.js",
+    "sha256": "a141425a497192b41fbef77c2395716cb91b10b8bf4f53434e3975a7329774f9"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\providers\\evolutionProvider.js",
+    "target": "apps/gateway/src/providers/evolutionProvider.js",
+    "sha256": "c342f983016acb064de26b54cb034bd3ab0625db0e41048b68cb13ce62c0a403"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\providers\\evolutionProvider.test.js",
+    "target": "apps/gateway/src/providers/evolutionProvider.test.js",
+    "sha256": "24a5827715afc52f2c43a422549232638846acf1241e6da27f133da1c2668e1b"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\providers\\index.js",
+    "target": "apps/gateway/src/providers/index.js",
+    "sha256": "7188d51cc0a527a24cb1cc1754b0ac7f869f7499c3c36221034b073f5074cab7"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\providers\\waapiProvider.js",
+    "target": "apps/gateway/src/providers/waapiProvider.js",
+    "sha256": "fe8438bb6e4a8dd8fbb0af71b812a9d12ca2baaeedc12880b4b70bb1e80af04d"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\providers\\waapiProvider.test.js",
+    "target": "apps/gateway/src/providers/waapiProvider.test.js",
+    "sha256": "719b24506baff7dbf69eac8d24c4984007d5394eacd2b6710a0cce090e5dfec2"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\providers\\whatsappProvider.js",
+    "target": "apps/gateway/src/providers/whatsappProvider.js",
+    "sha256": "6cac68646850eb47cc6ff1245430d316fb3afc83547ccb2db042d412009621d5"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\repositories\\crmRepository.js",
+    "target": "apps/gateway/src/repositories/crmRepository.js",
+    "sha256": "53fd29d6cb6c7587b48122341846ede12e485b4ffe6146b6569da1837f721b49"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\routes\\agentRoutes.js",
+    "target": "apps/gateway/src/routes/agentRoutes.js",
+    "sha256": "ce911e1a8b2078f0ee193d7e002e56e635304c40b9f65499c57ea617cb574ef2"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\routes\\authRoutes.js",
+    "target": "apps/gateway/src/routes/authRoutes.js",
+    "sha256": "89732e220f41bfce033efc31b5ed7d81b496b0424f0f3d30c71eaaa2abedacd9"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\routes\\authRoutes.test.js",
+    "target": "apps/gateway/src/routes/authRoutes.test.js",
+    "sha256": "b2a9edcb4f9cdaccb78166c7b6aea00f99611b8d93cf0003045c9cfd7585058b"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\routes\\contactRoutes.js",
+    "target": "apps/gateway/src/routes/contactRoutes.js",
+    "sha256": "3a33bb1fe39a477057367855a47fa0cac39d80bdfd0f34604fe01f3ece18521c"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\routes\\conversationRoutes.js",
+    "target": "apps/gateway/src/routes/conversationRoutes.js",
+    "sha256": "82dd74c645d7ecafc15ef7db192ef9fef900265ce021fa0fcf636c483be60d09"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\routes\\healthRoutes.js",
+    "target": "apps/gateway/src/routes/healthRoutes.js",
+    "sha256": "18e7365338d5d992ef1e01295e0231ea6d1e174f84d772817d9105642f9f9be7"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\routes\\inboxRoutes.js",
+    "target": "apps/gateway/src/routes/inboxRoutes.js",
+    "sha256": "e7e60b885aa95d3db4a8db1b0f119fe8c8fdbc197549fdcca473eba549ef0de6"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\routes\\index.js",
+    "target": "apps/gateway/src/routes/index.js",
+    "sha256": "c1a6ed3952cb27df74f98bc3337c7d7a1ef2160f6a8598bc8c0a917329937b2b"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\routes\\integrationRoutes.js",
+    "target": "apps/gateway/src/routes/integrationRoutes.js",
+    "sha256": "cbb71b9083f1f891538209633a076caaa801017bec0da198cf34b9c05ba642c9"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\routes\\mediaRoutes.js",
+    "target": "apps/gateway/src/routes/mediaRoutes.js",
+    "sha256": "cdf63b188206100fb21bd6ce760fa25866d94f6ca7f7f02da5019c08cb3bef92"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\routes\\sendRoutes.js",
+    "target": "apps/gateway/src/routes/sendRoutes.js",
+    "sha256": "b10d211dae0c6806f7e08bc36702966f829167cacceeefe23c6d9fc588c9a360"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\routes\\translationRoutes.test.js",
+    "target": "apps/gateway/src/routes/translationRoutes.test.js",
+    "sha256": "22695bf571db19e2d8f740f6bd438d9fdba9493fdf185bcb8d859079b42f1891"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\routes\\waapiWebhookRoutes.js",
+    "target": "apps/gateway/src/routes/waapiWebhookRoutes.js",
+    "sha256": "c13eadb017382f52ccd83893c9a962bcb7fe3efe8c884a1ddecb515f512832ae"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\routes\\waapiWebhookRoutes.test.js",
+    "target": "apps/gateway/src/routes/waapiWebhookRoutes.test.js",
+    "sha256": "62c17233c2939ffb47719a0e0a70356cf199db04f63a574f9533387ac4d4fe73"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\routes\\webhookRoutes.js",
+    "target": "apps/gateway/src/routes/webhookRoutes.js",
+    "sha256": "41ba2c900ff6dcdd55d8fc489dd7eed5ce3dc5a0172891935d81cb63e9ecb321"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\server.js",
+    "target": "apps/gateway/src/server.js",
+    "sha256": "951c26d7b684334dc0c67414cb3d6243c65ee99368ede37c2ebd17424afe124b"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\services\\autoReplyService.js",
+    "target": "apps/gateway/src/services/autoReplyService.js",
+    "sha256": "ceb12238572556fec5fdd85a72bd818081b0bfdf496e4394a4afc623c9d5c56f"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\services\\autoReplyService.test.js",
+    "target": "apps/gateway/src/services/autoReplyService.test.js",
+    "sha256": "3ddfc12bddb2741d4dff605b9b3d431decfd6a930abb3aa091de0f5d3bb1c364"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\services\\catalogBridge.mjs",
+    "target": "apps/gateway/src/services/catalogBridge.mjs",
+    "sha256": "42e12601e53328828de40d980c2ab4d0117d3d598212f1a10963ca27d8f64aef"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\services\\catalogRouter.mjs",
+    "target": "apps/gateway/src/services/catalogRouter.mjs",
+    "sha256": "f11a410651d7245a29ee01b73751f55e7d74fe9133dc0ae433264f97dee5f853"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\services\\chatwootApiService.js",
+    "target": "apps/gateway/src/services/chatwootApiService.js",
+    "sha256": "460e7a2583c6fab59f4f78953589ac423c6b8287e6e0520e3932e253f4d8a7fe"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\services\\chatwootConversationService.js",
+    "target": "apps/gateway/src/services/chatwootConversationService.js",
+    "sha256": "42a3812102d3d16ad74116948e745f11307410a9c130010a60c38b8c7810ea41"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\services\\chatwootConversationService.test.js",
+    "target": "apps/gateway/src/services/chatwootConversationService.test.js",
+    "sha256": "f18c5ebd83f5e211a81372a8d5e57de370032bfdd0a015fa55056e9ebeb0ee99"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\services\\chatwootDeliveryProofService.js",
+    "target": "apps/gateway/src/services/chatwootDeliveryProofService.js",
+    "sha256": "59d5340f0e6d497524980b5502bed15dea7de097251198cb72699ff48c264390"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\services\\chatwootInboxService.js",
+    "target": "apps/gateway/src/services/chatwootInboxService.js",
+    "sha256": "a1a0bccdb9053ed6c93eb735a4ce804240ac42e489553082d29439c1c8b5a265"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\services\\chatwootInboxService.test.js",
+    "target": "apps/gateway/src/services/chatwootInboxService.test.js",
+    "sha256": "e4a01fcee7627035e0f141e7d49de14379e7585b81252cf6a5a5dbddfe042a44"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\services\\chatwootPersonnelMappingService.js",
+    "target": "apps/gateway/src/services/chatwootPersonnelMappingService.js",
+    "sha256": "a1c8de8811ecfb2165b9e242c138d15490af38895867a0e35877207aa46c563e"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\services\\chatwootPersonnelMappingService.test.js",
+    "target": "apps/gateway/src/services/chatwootPersonnelMappingService.test.js",
+    "sha256": "f83ca5e494c6c912cc5bce766ac8fdbf2a88945269c6f9de5d9131d806e2248a"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\services\\chatwootWorkflowService.js",
+    "target": "apps/gateway/src/services/chatwootWorkflowService.js",
+    "sha256": "cac4c8a9c8fa4223965fd2d6d56557395c408b90764d43f4b025758bd6fa5a76"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\services\\chatwootWorkflowService.test.js",
+    "target": "apps/gateway/src/services/chatwootWorkflowService.test.js",
+    "sha256": "cf920850b79d0904196800487eadce1b9225493a71b4a62f552cfea132374851"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\services\\crmAuthService.js",
+    "target": "apps/gateway/src/services/crmAuthService.js",
+    "sha256": "d1403e669b6625751bf084a2e90cfba92b8b59673b55416545f704423eaa02e2"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\services\\crmAuthService.test.js",
+    "target": "apps/gateway/src/services/crmAuthService.test.js",
+    "sha256": "41083d311468a273994fb8c370fa5aafa660c582eb86b7f95d72311ccd0df8a1"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\services\\crmCatalogAccess.mjs",
+    "target": "apps/gateway/src/services/crmCatalogAccess.mjs",
+    "sha256": "e38836799a5d0146186a392a678f02bc6e63215ffddc92bcd81b1ec43cfacaba"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\services\\db.js",
+    "target": "apps/gateway/src/services/db.js",
+    "sha256": "4289628badc99b6a399fcf1db99265156d2b96693bfe2aeb097efe6c51830225"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\services\\erpSourceContract.mjs",
+    "target": "apps/gateway/src/services/erpSourceContract.mjs",
+    "sha256": "deceaedf3b1e1f043496aae2418a0ca35412c8f6293b48aec41c6eaa9d126e7f"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\services\\healthService.js",
+    "target": "apps/gateway/src/services/healthService.js",
+    "sha256": "8be79b47a2d52fafda5959df8389882393e78758ec779f8ac43ca8240a48a86d"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\services\\idempotencyStore.js",
+    "target": "apps/gateway/src/services/idempotencyStore.js",
+    "sha256": "360c8fd9b65544f6f1ed92df3b5a8492c3b4acb4cde96d07c547ed400dd740f6"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\services\\inboxService.js",
+    "target": "apps/gateway/src/services/inboxService.js",
+    "sha256": "8124636bf4b508a1052351e64323d886eac355aa535159bc2d63b783fa5f308e"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\services\\mediaService.js",
+    "target": "apps/gateway/src/services/mediaService.js",
+    "sha256": "dcf31ff188b58c9a1b3bd9d3d157d519f1b2433ac61cb1b12cb13f979ab61075"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\services\\mediaService.test.js",
+    "target": "apps/gateway/src/services/mediaService.test.js",
+    "sha256": "137062fed63ca49442b7cf58ea442e827f9c0eb2f2444440f703c740dd96012a"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\services\\outboundAttemptService.js",
+    "target": "apps/gateway/src/services/outboundAttemptService.js",
+    "sha256": "01a9708ee03b536f6acb3afdd7941c06d195c323a801af008faab69067f71c15"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\services\\sendService.js",
+    "target": "apps/gateway/src/services/sendService.js",
+    "sha256": "16535ae66274d548f2244f05d668794ad103bc99dfac7388ddf077ca3422b67a"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\services\\sendService.test.js",
+    "target": "apps/gateway/src/services/sendService.test.js",
+    "sha256": "65ec1e422d5f40307a8953e946c14add555e99258f8312f269e090677e8fd129"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\services\\translationService.js",
+    "target": "apps/gateway/src/services/translationService.js",
+    "sha256": "6e7b2070a4d3565ccce8ad234fe6455c9b5e5d3f8eb05d74b0af1634eabd259e"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\services\\translationService.test.js",
+    "target": "apps/gateway/src/services/translationService.test.js",
+    "sha256": "2b8f75cd395f07803a5a2cefdb71b7076eace2a8916421e0d3fb4483946c25b9"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\services\\userErpBinding.mjs",
+    "target": "apps/gateway/src/services/userErpBinding.mjs",
+    "sha256": "14056f4ebdfd41ccece9cc136a0f8923be5b01d353583b85970ea8e8e72c1857"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\services\\waapiBridge.test.js",
+    "target": "apps/gateway/src/services/waapiBridge.test.js",
+    "sha256": "4bf4d8c66008eb846243e4109f357ff990bcd664337a2e42544233d585ffabe7"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\services\\waapiChatwootBridge.js",
+    "target": "apps/gateway/src/services/waapiChatwootBridge.js",
+    "sha256": "857798c527e937f474ffc64c2b3955ec5f2c91d434c0faa861a59661f88b2398"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\services\\waapiJournal.js",
+    "target": "apps/gateway/src/services/waapiJournal.js",
+    "sha256": "d350d839244d5e95b7086b06d4576b6bf4b1dc1921534582f3120a6e3175decb"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\services\\waapiReadiness.js",
+    "target": "apps/gateway/src/services/waapiReadiness.js",
+    "sha256": "ff4dd855d24452e7b2cb7518f46e55a40a082a43486a9c34c8ade9df3e04bb1c"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\services\\waapiReceiptService.js",
+    "target": "apps/gateway/src/services/waapiReceiptService.js",
+    "sha256": "c7f0fbcb269deadc5c0f4c6fcf5bd9831e7aabd1a2db5181201cac0bdba15b3a"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\services\\waapiSend.test.js",
+    "target": "apps/gateway/src/services/waapiSend.test.js",
+    "sha256": "919569a07fa89e05bf3481e69d971793c0934a8f2f3153d2aebd3ec58ef3be1d"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\services\\waapiWebhookService.js",
+    "target": "apps/gateway/src/services/waapiWebhookService.js",
+    "sha256": "bf150658c2ab5b1a9d0274b69acbe4d368e7fcb005e97c0246ac0dbf03a0b33e"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\utils\\logger.js",
+    "target": "apps/gateway/src/utils/logger.js",
+    "sha256": "8f1ae30270a2adbae081fd6d848f8e174272b4e5504d803876e8f7d2e6b2713c"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\utils\\phoneIdentity.js",
+    "target": "apps/gateway/src/utils/phoneIdentity.js",
+    "sha256": "6c09447815963dea4bfa11ef5ad502af616586d00c24af9102d6165ea6f2bed0"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\utils\\phoneIdentity.test.js",
+    "target": "apps/gateway/src/utils/phoneIdentity.test.js",
+    "sha256": "cb1193a98996a64cc913ce50f989cbd1f19234308bd979fb523c3fb8529e3555"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\utils\\response.js",
+    "target": "apps/gateway/src/utils/response.js",
+    "sha256": "32ac96368edc5d005445a2a703c9c3b07bd18e53e807393866581c427edf408f"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-05-20\\melisa-mini-erp-temiz-repoyu-bu\\melisa-erp-v2\\apps\\whatsapp-crm-api\\src\\utils\\safeRequestPath.js",
+    "target": "apps/gateway/src/utils/safeRequestPath.js",
+    "sha256": "2ad20def94411caf07578db77c08ddeed685e8369f2e9871c669007ff63f328a"
+  },
+  {
+    "source": "C:/Users/Xaser/Documents/Codex/2026-05-20/melisa-mini-erp-temiz-repoyu-bu/melisa-erp-v2/apps/whatsapp-crm-api/package.json",
+    "target": "apps/gateway/package.json",
+    "sha256": "2b18bbbf23848035e40286b62c3e8ddfda8e00fca81abc3fe16b631901ad4739"
+  },
+  {
+    "source": "C:/Users/Xaser/Documents/Codex/2026-05-20/melisa-mini-erp-temiz-repoyu-bu/melisa-erp-v2/apps/whatsapp-crm-api/package-lock.json",
+    "target": "apps/gateway/package-lock.json",
+    "sha256": "c487dc65e3a107f5235408fad3523c8242a4c01b62c7475154ad4ae41a627b96"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-09-30\\task-3\\CRM_LOCAL_DEV\\local-catalog-media-dev\\frontend-verified-4076f103-2026-10-01T15-46-50-851Z\\source\\server\\audit.mjs",
+    "target": "apps/frontend/server/audit.mjs",
+    "sha256": "354e7b72e76fb89e0c37b62a15c388c9217214badb70c2eba1a0baac5c42a725"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-09-30\\task-3\\CRM_LOCAL_DEV\\local-catalog-media-dev\\frontend-verified-4076f103-2026-10-01T15-46-50-851Z\\source\\server\\chatwoot.mjs",
+    "target": "apps/frontend/server/chatwoot.mjs",
+    "sha256": "6c772d4c17976ad9d39a0fb252edd5d9cd8bf7d42c804f3c2bbd41e6f74b6bdf"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-09-30\\task-3\\CRM_LOCAL_DEV\\local-catalog-media-dev\\frontend-verified-4076f103-2026-10-01T15-46-50-851Z\\source\\server\\config.mjs",
+    "target": "apps/frontend/server/config.mjs",
+    "sha256": "b864538e25e13589d63f8aa873458070c45165d058aded8789208563c8daa72b"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-09-30\\task-3\\CRM_LOCAL_DEV\\local-catalog-media-dev\\frontend-verified-4076f103-2026-10-01T15-46-50-851Z\\source\\server\\index.mjs",
+    "target": "apps/frontend/server/index.mjs",
+    "sha256": "af4bd4f72be87e715f9c2c577c021988ddf0d9f8a866e108ac0637d71db3f778"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-09-30\\task-3\\CRM_LOCAL_DEV\\local-catalog-media-dev\\frontend-verified-4076f103-2026-10-01T15-46-50-851Z\\source\\server\\normalize.mjs",
+    "target": "apps/frontend/server/normalize.mjs",
+    "sha256": "aa0f2245fc8fa79fccf5ba4d9ca26f5a5c6bfd4d0e8fc531a19809b469be8fd4"
+  },
+  {
+    "source": "C:\\Users\\Xaser\\Documents\\Codex\\2026-09-30\\task-3\\CRM_LOCAL_DEV\\local-catalog-media-dev\\frontend-verified-4076f103-2026-10-01T15-46-50-851Z\\source\\server\\security.mjs",
+    "target": "apps/frontend/server/security.mjs",
+    "sha256": "24cfd1cd661da2067281fecea8af023ccc967632f0dd84a0512fa907f3eedd08"
+  }
+]

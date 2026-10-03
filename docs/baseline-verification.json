@@ -1,0 +1,44 @@
+{
+  "sourceFiles": 155,
+  "sourceAndServingFilesPreserved": true,
+  "privacyAdaptation": [
+    "apps\\gateway\\src\\providers\\evolutionProvider.test.js",
+    "apps\\gateway\\src\\providers\\waapiProvider.js",
+    "apps\\gateway\\src\\providers\\waapiProvider.test.js",
+    "apps\\gateway\\src\\services\\waapiBridge.test.js",
+    "apps\\gateway\\src\\services\\waapiSend.test.js"
+  ],
+  "comparison": [
+    {
+      "filename": "index.html",
+      "httpStatus": 404,
+      "httpSha256": "920b8d07262e4e924669c0e38ef57e0da66b68c9d387248d83a9aa19be7c96c4",
+      "recordedSha256": "da9b1352730964a00829e68577d60f86eecedf406983f108c240a6047cea9e75",
+      "httpMatchesRecorded": false,
+      "rebuiltSha256": "da9b1352730964a00829e68577d60f86eecedf406983f108c240a6047cea9e75",
+      "rootHttpStatus": 200,
+      "rootHttpSha256": "da9b1352730964a00829e68577d60f86eecedf406983f108c240a6047cea9e75"
+    },
+    {
+      "filename": "assets/index-79qPSkkc.js",
+      "httpStatus": 200,
+      "httpSha256": "a4cb34aadef83077e63f418ad6aedb8c8cbb6d62b5d61107f0cf6ed180b15ac4",
+      "recordedSha256": "a4cb34aadef83077e63f418ad6aedb8c8cbb6d62b5d61107f0cf6ed180b15ac4",
+      "httpMatchesRecorded": true,
+      "rebuiltSha256": "a4cb34aadef83077e63f418ad6aedb8c8cbb6d62b5d61107f0cf6ed180b15ac4"
+    },
+    {
+      "filename": "assets/index-BTpmXybC.css",
+      "httpStatus": 200,
+      "httpSha256": "e76aa968f08d65c097059a343aaba78fb47f0679b071994b49d022d65fd34f6f",
+      "recordedSha256": "e76aa968f08d65c097059a343aaba78fb47f0679b071994b49d022d65fd34f6f",
+      "httpMatchesRecorded": true,
+      "rebuiltSha256": "e76aa968f08d65c097059a343aaba78fb47f0679b071994b49d022d65fd34f6f"
+    }
+  ],
+  "dependencyVerification": {
+    "method": "local dependency copy; offline npm ci failed ENOTCACHED; registry install interrupted",
+    "lockMatched": 91,
+    "optionalMissing": 49
+  }
+}
