@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { buildQuote, salesError, trustedProducts, validatePolicy, validateProposal } from './policy.mjs';
+import { buildQuote, modelPolicy, policyFacts, salesError, trustedProducts, validatePolicy, validateProposal } from './policy.mjs';
 import { MAX_RECOMMENDATIONS, validateRecordedSnapshot } from './recordedCatalog.mjs';
 
 export const proposalSchema = {
@@ -32,7 +32,9 @@ const instructions = [
   'You may recommend at most three recordedProducts by ID. Their price cards are built by application code; do not write numeric prices in reply or summaryTr.',
   'A false priceAvailable or null currency is unknown. Do not infer, convert or invent prices, including numbers in conversation history. Recorded products cannot authorize quote, reservation, order or shipping.',
   'For quote supply productId and quantity in pieces only; application code calculates money. Do not calculate prices in prose.',
-  'If minimumOrder is null, do not invent a minimum and do not quote. A currency mismatch requires staff, not an invented conversion.',
+  'Minimum amounts are deliberately withheld; the reviewed policy card contains the exact values. Never write numeric minimums in reply or summaryTr, including customer history amounts.',
+  'minimumOrderMode=unconfigured means unknown, not zero or no minimum. none is an explicit owner decision with no global minimum. amount means a configured minimum; refer to the policy card instead of stating its amount. Currency mismatch requires staff, never an invented conversion.',
+  'Country rules are not selected or verified for this customer. Do not infer destination from phone, language or text. Ask for the destination country and require staff confirmation before applying a country exception or quoting. Unknown shipping terms require staff confirmation; do not invent carriers, dates, charges, Incoterms or discount exceptions.',
   'When staff is requested, a policy exception is needed or a dispute arises, use handoff with a short reason.',
   'An empty lines array is required unless action is quote. All output is an internal suggestion awaiting staff review.',
 ].join('\n');
@@ -98,7 +100,7 @@ export function conversationSnapshot(conversation) {
 }
 
 /** No provider, ERP or database write dependency exists in this module. */
-export async function prepareSalesDraft({ conversation, policy: rawPolicy = {}, products: rawProducts = [], recordedCatalog,
+export async function prepareSalesDraft({ conversation, policy: rawPolicy = {}, policyRevision, products: rawProducts = [], recordedCatalog,
   requireRecordedSelection = false }, dependencies) {
   if (typeof dependencies?.generate !== 'function' || typeof dependencies?.readCurrentConversation !== 'function') {
     throw salesError('AI_DEPENDENCY_MISSING', 503);
@@ -114,7 +116,7 @@ export async function prepareSalesDraft({ conversation, policy: rawPolicy = {}, 
     + 'A genuine request for human help may use handoff with empty productIds; do not force unrelated products. '
     + 'Do not answer with reply and empty productIds. Refer to the reviewed product card instead of writing any numeric price.' : ''),
     schema: recordedProposalSchema(recorded.products, required),
-    context: { policy, products, recordedProducts: recorded.products.map(({ salePrice, ...product }) => ({ ...product, priceAvailable: salePrice !== null })), catalogFacts: recorded.facts,
+    context: { policy: modelPolicy(policy), products, recordedProducts: recorded.products.map(({ salePrice, ...product }) => ({ ...product, priceAvailable: salePrice !== null })), catalogFacts: recorded.facts,
       recentMessages: snapshot.messages.map(({ direction, text }) => ({ direction, text })) } };
   let proposal;
   for (let attempt = 0; attempt < 2; attempt++) {
@@ -148,7 +150,8 @@ export async function prepareSalesDraft({ conversation, policy: rawPolicy = {}, 
   if (proposal.action === 'quote') quote = buildQuote(proposal.lines, products, policy);
   return { ...proposal, quote, conversationId: snapshot.id, conversationRevision: snapshot.revision,
     recommendedProducts: [], catalogFacts: recorded.facts,
-    policyVersion: policy.version, generatedAt: new Date(clock()).toISOString(), mode: 'copilot',
+    policyVersion: policy.version, policyFacts: { ...policyFacts(policy), revision: policyRevision
+      ?? createHash('sha256').update(JSON.stringify(policyFacts(policy))).digest('hex') }, generatedAt: new Date(clock()).toISOString(), mode: 'copilot',
     requiresHumanReview: true, autoSend: false, erpWrite: false,
     warning: 'AI metni personel önerisidir. Yapılandırılmış kontroller serbest metindeki tüm iddiaları doğrulamaz. Göndermeden önce inceleyin.' };
 }

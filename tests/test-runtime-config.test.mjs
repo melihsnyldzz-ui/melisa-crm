@@ -60,9 +60,9 @@ test('catalog authentication uses the explicit TEST gateway; default origin stay
   }
 });
 
-test('TEST copilot activation cannot be inherited or broadened by baseline dotenv',()=>{
+test('TEST copilot activation and rule storage cannot be inherited or broadened by baseline dotenv',()=>{
   for(const mode of [undefined,'off','copilot']){
-    const env={CRM_BASELINE_ENV:'synthetic-private-config',...(mode?{CRM_AI_SALES_MODE:mode}:{})};
+    const env={CRM_BASELINE_ENV:'synthetic-private-config',CRM_AI_SALES_RULES_FILE:path.resolve('live-runtime','sales-rules.json'),...(mode?{CRM_AI_SALES_MODE:mode}:{})};
     configureTestServerEnvironment(path.resolve('fixture-crm','melisa-crm'),{env,loadBaseline:()=>{
       Object.assign(env,{CRM_AI_SALES_MODE:'copilot',CRM_AI_SALES_CONVERSATION_ID:'777',CRM_AI_SALES_RULES_FILE:'unapproved-policy'});
       return {parsed:{}};
@@ -70,6 +70,6 @@ test('TEST copilot activation cannot be inherited or broadened by baseline doten
     assert.equal(env.CRM_AI_SALES_MODE,mode==='copilot'?'copilot':'off');
     assert.equal(env.CRM_AI_SALES_CONVERSATION_ID,'55');
     assert.equal(env.CRM_AI_SALES_TEST_PEER,'905387217733');
-    assert.equal(env.CRM_AI_SALES_RULES_FILE,'');
+    assert.equal(env.CRM_AI_SALES_RULES_FILE,path.resolve('fixture-crm','runtime','test-completion','ai-sales-rules.json'));
   }
 });

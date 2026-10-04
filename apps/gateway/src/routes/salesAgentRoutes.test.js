@@ -1,5 +1,9 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { mkdtemp, writeFile, rm } from 'node:fs/promises';
+import { writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join, dirname, basename, resolve } from 'node:path';
 import { createApp } from '../app.js';
 import { env } from '../config/env.js';
 import { authenticateCrmUser, createPasswordHash, verifyCrmAccessToken } from '../services/crmAuthService.js';
@@ -164,6 +168,40 @@ test('real sales-draft route uses auth, trusted Chatwoot DTO and suggestion-only
       const serialized = JSON.stringify(modelBody);
       assert.ok(!serialized.includes('CLIENT_HISTORY_SENTINEL')); assert.ok(!serialized.includes('CLIENT_COUNTRY_SENTINEL'));
       assert.ok(!serialized.includes('PRIVATE_NOTE_SENTINEL')); assert.ok(!serialized.includes('905387217733'));
+    });
+    await t.test('real route policy revision matches reader GET, amounts remain server cards and changes invalidate drafts', async () => {
+      const directory = await mkdtemp(join(tmpdir(), 'crm-sales-policy-preview-fixture-'));
+      const path = join(directory, 'rules.json');
+      const policy = { version: 'fixture-business-v1', minimumOrderMode: 'amount', minimumOrder: { amountMinor: 123456, currency: 'EUR' },
+        countryRules: [{ country: 'Irak', minimumOrderMode: 'amount', minimumOrder: { amountMinor: 789123, currency: 'USD' }, notes: 'Personel teyidi.' }],
+        shippingTerms: '', salesNotes: '', telegramUrl: null };
+      try {
+        reset(); await writeFile(path, JSON.stringify(policy)); process.env.CRM_AI_SALES_RULES_FILE = path;
+        const reader = await guardedFetch(`http://127.0.0.1:${server.address().port}/crm/sales-rules`, {
+          headers: { authorization: `Bearer ${token('personel')}` },
+        });
+        assert.equal(reader.status, 200); const current = (await reader.json()).data;
+        assert.equal(current.writable, false);
+        const result = await request();
+        assert.equal(result.status, 200); assert.equal(result.body.data.policyFacts.revision, current.revision);
+        assert.equal(result.body.data.policyFacts.minimumOrder.amountMinor, 123456);
+        assert.equal(result.body.data.policyFacts.countryRules[0].minimumOrder.amountMinor, 789123);
+        assert.equal(result.body.data.policyFacts.requiresStaffConfirmation, true);
+        const context = JSON.parse(modelBody.input[1].content);
+        assert.equal(context.policy.minimumOrderMode, 'amount'); assert.equal(context.policy.countrySelection, 'unverified');
+        assert.equal(JSON.stringify(context.policy).includes('123456'), false);
+        assert.equal(JSON.stringify(context.policy).includes('789123'), false);
+        assert.equal(modelCalls, 2); assert.deepEqual(result.body.data.recommendedProducts, []);
+        reset(); afterModel = () => writeFileSync(path, JSON.stringify({ ...policy, salesNotes: 'Owner changed terms.' }));
+        const stale = await request({ body: { catalogSearch: '41140' } });
+        assert.equal(stale.status, 409); assert.equal(stale.body.error.code, 'AI_POLICY_CHANGED');
+        assert.equal(stale.body.data, undefined); assert.equal(modelCalls, 1);
+      } finally {
+        delete process.env.CRM_AI_SALES_RULES_FILE;
+        assert.equal(dirname(resolve(directory)), resolve(tmpdir()));
+        assert.match(basename(directory), /^crm-sales-policy-preview-fixture-/);
+        await rm(directory, { recursive: true, force: true });
+      }
     });
     await t.test('real DTO assignment changed during model invalidates a patron suggestion', async () => {
       reset(); afterModel = () => { assignment = 4; };

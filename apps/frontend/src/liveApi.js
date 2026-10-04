@@ -614,6 +614,8 @@ export const liveApi = {
     return { ...result, message: result.message ? normalizeMessage({ ...result.message, direction: "outgoing" }) : null };
   },
   assign: (token, id, agentId) => request(`/crm/conversations/${id}/assign`, token, { method: "POST", body: JSON.stringify({ agentId }) }),
+  salesRules: (token, {signal}={}) => request('/crm/sales-rules', token, {signal,preserveAuthDenial:true,redirect:'error'}),
+  saveSalesRules: (token, {policy,revision}, {signal}={}) => request('/crm/sales-rules', token, {method:'PUT',body:JSON.stringify({policy,revision}),signal,preserveAuthDenial:true,redirect:'error'}),
   salesDraft: (token, id, {signal,catalogSearch=''} = {}) => {
     if(typeof catalogSearch!=='string'||catalogSearch.trim().length>120)throw new Error('Ürün araması en fazla 120 karakter olabilir.');
     return request(`/crm/conversations/${encodeURIComponent(String(id))}/sales-draft`, token, { method: 'POST', body: JSON.stringify(catalogSearch.trim()?{catalogSearch:catalogSearch.trim()}:{}), signal, timeoutMs: 90000, preserveAuthDenial: true, redirect: 'error' });

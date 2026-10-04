@@ -1,5 +1,6 @@
 import { conversationSnapshot, prepareSalesDraft } from './agent.mjs';
-import { salesError, validatePolicy } from './policy.mjs';
+import { createHash } from 'node:crypto';
+import { editablePolicy, salesError, validatePolicy } from './policy.mjs';
 import { searchSchema, validateCatalogSearch, validateSearchPlan } from './recordedCatalog.mjs';
 
 /** Authenticated caller scope is forwarded on BOTH reads; request-body facts/rules are ignored. */
@@ -45,11 +46,24 @@ export function createSalesPreview({ getMode, loadPolicy, readConversation, gene
       checkPeer(current);
     };
     checkSettings();
-    const rawPolicy = await loadPolicy();
+    const readPolicy = async () => {
+      const loaded = await loadPolicy();
+      const wrapped = loaded && Object.hasOwn(loaded, 'policy') && Object.hasOwn(loaded, 'revision');
+      const policy = wrapped ? loaded.policy : loaded;
+      const normalized = editablePolicy(policy);
+      const revision = wrapped ? loaded.revision : createHash('sha256').update(JSON.stringify(normalized)).digest('hex');
+      if (typeof revision !== 'string' || !/^[a-f0-9]{64}$/.test(revision)) throw salesError('AI_POLICY_INVALID');
+      return { policy, revision };
+    };
+    const initialPolicy = await readPolicy();
+    const rawPolicy = initialPolicy.policy;
     checkSettings();
     const policyFingerprint = JSON.stringify(validatePolicy(rawPolicy));
     const checkPolicy = async () => {
-      if (JSON.stringify(validatePolicy(await loadPolicy())) !== policyFingerprint) throw salesError('AI_POLICY_CHANGED', 409);
+      const current = await readPolicy();
+      if (current.revision !== initialPolicy.revision || JSON.stringify(validatePolicy(current.policy)) !== policyFingerprint) {
+        throw salesError('AI_POLICY_CHANGED', 409);
+      }
       checkSettings();
     };
     const conversation = await readConversation({ conversationId, user: checkSettings() });
@@ -95,7 +109,7 @@ export function createSalesPreview({ getMode, loadPolicy, readConversation, gene
       // A catalog wait cannot leave a personnel suggestion using a stale conversation assignment.
       if (queries.length) await readCurrentConversation(conversationId);
     }
-    const result = await prepareSalesDraft({ conversation, policy: rawPolicy, products: [], recordedCatalog,
+    const result = await prepareSalesDraft({ conversation, policy: rawPolicy, policyRevision: initialPolicy.revision, products: [], recordedCatalog,
       requireRecordedSelection: catalogSearch !== undefined }, {
       now,
       generate: request => {

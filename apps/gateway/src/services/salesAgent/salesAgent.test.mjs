@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
-import { validatePolicy, trustedProducts, buildQuote, validateProposal } from './policy.mjs';
+import { validatePolicy, trustedProducts, buildQuote, validateProposal, editablePolicy } from './policy.mjs';
 import { prepareSalesDraft, conversationSnapshot } from './agent.mjs';
 import { createSalesPreview } from './preview.mjs';
 import { createSalesGenerator } from './responses.mjs';
@@ -120,6 +120,64 @@ test('changed conversation invalidates the pending draft', async () => {
 test('changed owner invalidates the pending draft', async () => {
   const changed = conversation(); changed.owner = 'Different staff';
   await assert.rejects(prepareSalesDraft({ conversation: conversation() }, deps({ readCurrentConversation: async () => changed })), errorCode('AI_CONVERSATION_CHANGED'));
+});
+
+test('minimum modes distinguish unknown, explicit no global minimum and legacy amount', () => {
+  assert.equal(validatePolicy().minimumOrderMode, 'unconfigured');
+  assert.equal(validatePolicy(policyInput()).minimumOrderMode, 'amount');
+  assert.equal(validatePolicy({ minimumOrderMode: 'none' }).minimumOrderMode, 'none');
+  for (const value of [
+    { minimumOrderMode: 'none', minimumOrder: policyInput().minimumOrder },
+    { minimumOrderMode: 'unconfigured', minimumOrder: policyInput().minimumOrder },
+    { minimumOrderMode: 'amount', minimumOrder: null }, { minimumOrderMode: 'anything' },
+  ]) assert.throws(() => validatePolicy(value), errorCode('AI_POLICY_INVALID'));
+});
+
+test('explicit no-global-minimum still enforces verified series, stock and never reserves/writes', () => {
+  const rules = validatePolicy({ minimumOrderMode: 'none' });
+  const quote = buildQuote(quoteLines(4), catalog(), rules);
+  assert.equal(quote.totalMinor, 10_000);
+  assert.equal(quote.stockReserved, false); assert.equal(quote.orderCreated, false);
+  assert.throws(() => buildQuote(quoteLines(3), catalog(), rules), errorCode('AI_SERIES_REQUIRED'));
+  assert.throws(() => buildQuote(quoteLines(104), catalog(), rules), errorCode('AI_STOCK_INSUFFICIENT'));
+});
+
+test('country exceptions cannot be automatically selected by language or phone for a quote', () => {
+  const rules = validatePolicy({ minimumOrderMode: 'none', countryRules: [
+    { country: 'Irak', minimumOrderMode: 'amount', minimumOrder: { amountMinor: 100_000, currency: 'USD' }, notes: 'Personel teyidi.' },
+  ] });
+  assert.throws(() => buildQuote(quoteLines(), catalog(), rules), errorCode('AI_COUNTRY_REQUIRES_HUMAN'));
+  assert.equal(rules.discountAllowed, false);
+  assert.throws(() => validatePolicy({ countryRules: [{ country: 'Irak' }, { country: 'IRAK' }] }), errorCode('AI_POLICY_INVALID'));
+  assert.throws(() => validatePolicy({ countryRules: [{ country: 'Irak', discountAllowed: true }] }), errorCode('AI_POLICY_INVALID'));
+  assert.throws(() => validatePolicy({ shippingTerms: 'x'.repeat(2001) }), errorCode('AI_POLICY_INVALID'));
+  assert.throws(() => validatePolicy({ salesNotes: '\u0000' }), errorCode('AI_POLICY_INVALID'));
+});
+
+test('server policy card keeps exact minimums; model gets mode/currency but never numeric amounts', async () => {
+  let request;
+  const input = { version: 'fixture-policy-v2', minimumOrderMode: 'amount', minimumOrder: { amountMinor: 123456, currency: 'EUR' },
+    countryRules: [{ country: 'Irak', minimumOrderMode: 'amount', minimumOrder: { amountMinor: 789123, currency: 'USD' },
+      notes: 'En az 7891.23 USD için personel teyidi.' }], shippingTerms: 'Taşıyıcı ve ücret personel tarafından teyit edilir.',
+    salesNotes: 'İndirim önerilmez.', telegramUrl: null };
+  const revision = 'a'.repeat(64);
+  const result = await prepareSalesDraft({ conversation: conversation(), policy: input, policyRevision: revision },
+    deps({ generate: async value => { request = value; return proposal(); } }));
+  assert.deepEqual(Object.fromEntries(Object.keys(editablePolicy(input)).map(key => [key, result.policyFacts[key]])), editablePolicy(input));
+  assert.equal(result.policyFacts.minimumOrder.amountMinor, 123456);
+  assert.equal(result.policyFacts.countryRules[0].minimumOrder.amountMinor, 789123);
+  assert.equal(result.policyFacts.revision, revision);
+  assert.equal(result.policyFacts.requiresStaffConfirmation, true);
+  assert.equal(result.policyFacts.countrySelection, 'unverified');
+  const serialized = JSON.stringify(request.context.policy);
+  for (const amount of ['123456', '789123', '7891.23']) assert.equal(serialized.includes(amount), false);
+  assert.equal(request.context.policy.minimumOrderMode, 'amount');
+  assert.equal(request.context.policy.minimumCurrency, 'EUR');
+  assert.equal(request.context.policy.countryRules[0].country, 'Irak');
+  assert.equal(request.context.policy.countryRules[0].minimumCurrency, 'USD');
+  assert.match(request.instructions, /Do not infer destination from phone, language or text/);
+  assert.match(request.instructions, /Never write numeric minimums/);
+  assert.equal(result.action, 'reply'); assert.deepEqual(result.recommendedProducts, []);
 });
 for (const field of ['assignedUserId', 'assignedUserName', 'chatwootAgentId']) {
   test(`real Chatwoot DTO ${field} change invalidates pending draft`, async () => {

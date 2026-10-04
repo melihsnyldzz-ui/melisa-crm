@@ -1,4 +1,5 @@
 import {normalizeSalesProducts, assertSalesProductCurrent, salesProductDraft} from './salesProducts.js';
+import {normalizeSalesPolicyFacts,normalizeSalesRules} from './salesRules.js';
 const TEST_PHONE = '905387217733';
 
 export function salesDraftContextKey(context) {
@@ -21,7 +22,7 @@ export function validateSalesDraft(result, conversationId, now=Date.now()) {
       || typeof result.summaryTr !== 'string' || !result.summaryTr.trim() || result.summaryTr.length > 1500
       || !Number.isFinite(Date.parse(result.generatedAt))) throw Object.assign(new Error('Öneri yanıtı doğrulanamadı.'), {code: 'AI_RESPONSE_INVALID'});
   // Only text meant for staff review enters UI state. No arbitrary server metadata.
-  return { reply: result.reply, summaryTr: result.summaryTr, action: result.action, ...normalizeSalesProducts(result,now) };
+  return { reply: result.reply, summaryTr: result.summaryTr, action: result.action, ...normalizeSalesProducts(result,now), ...(result.policyFacts===undefined?{}:{policyFacts:normalizeSalesPolicyFacts(result.policyFacts)}) };
 }
 
 export function salesDraftFailureMessage(error) {
@@ -35,22 +36,42 @@ export function salesDraftFailureMessage(error) {
   if (error?.code === 'CRM_REQUEST_TIMEOUT') return 'Öneri zamanında hazırlanamadı. Yeniden deneyebilirsiniz.';
   if (error?.code === 'AI_RESPONSE_INVALID') return 'Öneri yanıtı doğrulanamadı. Mesaj taslağınız korunuyor.';
   if (error?.code === 'AI_PRODUCT_CHANGED') return 'Ürün bilgileri veya fiyatı değişti. Güncel bir öneri alın; mesaj taslağınız korunuyor.';
-  if (error?.code === 'AI_DRAFT_CHANGED') return 'Mesaj taslağınız kontrol sırasında değişti. Yeni metniniz korundu; ürünü yeniden inceleyin.';
+  if (error?.code === 'AI_DRAFT_CHANGED') return 'Mesaj taslağınız kontrol sırasında değişti. Yeni metniniz korundu; öneriyi yeniden inceleyin.';
+  if (error?.code === 'AI_POLICY_CHANGED') return 'Satış kuralları değişti. Güncel bir öneri alın; mesaj taslağınız korunuyor.';
   if (error?.code === 'AI_DRAFT_TOO_LONG') return 'Ürün bilgisi mevcut mesajla 2000 karakteri aşıyor. Önce mesajı kısaltın.';
   return 'Satış önerisi şu anda hazırlanamadı. Mesaj taslağınız korunuyor.';
 }
 
 /** Review-only lifecycle. No message-send or ERP capability is accepted here. */
-export function createSalesDraftFlow({ getContext, generate, onChange, readProduct, getDraft=()=>'', now=Date.now, schedule=setTimeout, unschedule=clearTimeout }) {
+export function createSalesDraftFlow({ getContext, generate, onChange, readProduct, readPolicy, getDraft=()=>'', now=Date.now, schedule=setTimeout, unschedule=clearTimeout }) {
   let active = null, preview = null, expiryTimer=null;
   const emit = state => onChange(state);
   const current = key => Boolean(key && key === salesDraftContextKey(getContext()));
-  const publicPreview = () => preview ? {reply:preview.reply,summaryTr:preview.summaryTr,action:preview.action,recommendedProducts:preview.recommendedProducts,catalogFacts:preview.catalogFacts} : null;
+  const publicPreview = () => preview ? {reply:preview.reply,summaryTr:preview.summaryTr,action:preview.action,recommendedProducts:preview.recommendedProducts,catalogFacts:preview.catalogFacts,policyFacts:preview.policyFacts} : null;
   const fresh = () => !preview?.catalogFacts || Date.parse(preview.catalogFacts.expiresAt)>now();
   function clear(error = '') {
     unschedule(expiryTimer);expiryTimer=null;
     active?.controller.abort(); active = null; preview = null;
     emit({ busy: false, preview: null, error });
+  }
+  async function verifyPolicy(run,ownPreview,existingText) {
+    if(typeof readPolicy!=='function')throw Object.assign(new Error(),{code:'AI_RESPONSE_INVALID'});
+    const record=normalizeSalesRules(await readPolicy(getContext().token,{signal:run.controller.signal}));
+    if(active!==run||run.controller.signal.aborted||preview!==ownPreview||!current(run.key)||!fresh())return false;
+    if(getDraft()!==existingText)throw Object.assign(new Error(),{code:'AI_DRAFT_CHANGED'});
+    if(record.revision!==ownPreview.policyFacts.revision)throw Object.assign(new Error(),{code:'AI_POLICY_CHANGED'});
+    return true;
+  }
+  async function takeReviewedText(existingText) {
+    const ownPreview=preview,run={key:preview.key,controller:new AbortController()};active=run;
+    emit({busy:true,preview:publicPreview(),error:'',policyChecking:true});
+    try {
+      if(!await verifyPolicy(run,ownPreview,existingText))return null;
+      const draft=existingText.trim()?`${existingText}\n\n${preview.reply}`:preview.reply;
+      if(draft.length>2000){active=null;emit({busy:false,preview:publicPreview(),error:'Mevcut mesaj ve öneri 2000 karakteri aşıyor. Önce mesajı kısaltın.'});return null;}
+      clear();return draft;
+    } catch(error){if(active===run&&!run.controller.signal.aborted&&current(run.key))clear(salesDraftFailureMessage(error));return null;}
+    finally{if(active===run){active=null;if(!current(run.key)||!fresh())clear('Öneri artık güncel değil. Yeni bir öneri alın.');}}
   }
   return {
     close: () => clear(),
@@ -69,6 +90,9 @@ export function createSalesDraftFlow({ getContext, generate, onChange, readProdu
       try {
         const result = await generate(context.token, String(context.conversation.id), { signal: run.controller.signal, ...(catalogSearch.trim()?{catalogSearch:catalogSearch.trim()}:{}) });
         if (active !== run || run.controller.signal.aborted || !current(key)) return false;
+        // Production supplies readPolicy and must receive server-owned rules. Legacy
+        // text-only offline fixtures without that dependency retain their old path.
+        if(typeof readPolicy==='function'&&result.policyFacts===undefined)throw Object.assign(new Error(),{code:'AI_RESPONSE_INVALID'});
         preview = { key, ...validateSalesDraft(result, context.conversation.id,now()) };
         if(preview.catalogFacts) expiryTimer=schedule(()=>clear('Ürün okuma süresi doldu. Güncel bir öneri alın.'),Date.parse(preview.catalogFacts.expiresAt)-now());
         emit({ busy: false, preview: publicPreview(), error: '' });
@@ -86,6 +110,7 @@ export function createSalesDraftFlow({ getContext, generate, onChange, readProdu
     takeDraft(existingText = '') {
       if(active)return null;
       if (!preview || !current(preview.key) || !fresh()) { clear('Öneri artık güncel değil. Yeni bir öneri alın.'); return null; }
+      if(preview.policyFacts)return takeReviewedText(existingText);
       const draft = existingText.trim() ? `${existingText}\n\n${preview.reply}` : preview.reply;
       if (draft.length > 2000) { emit({ busy: false, preview: publicPreview(), error: 'Mevcut mesaj ve öneri 2000 karakteri aşıyor. Önce mesajı kısaltın.' }); return null; }
       clear();
@@ -103,6 +128,7 @@ export function createSalesDraftFlow({ getContext, generate, onChange, readProdu
         if(active!==run||run.controller.signal.aborted||preview!==ownPreview||!current(run.key)||!fresh())return null;
         if(getDraft()!==existingText)throw Object.assign(new Error(),{code:'AI_DRAFT_CHANGED'});
         assertSalesProductCurrent(envelope,product,now());
+        if(ownPreview.policyFacts&&!await verifyPolicy(run,ownPreview,existingText))return null;
         const draft=salesProductDraft(product,action,existingText);
         clear();return draft;
       } catch(error) {

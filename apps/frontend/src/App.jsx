@@ -26,6 +26,7 @@ import JitsiPilot from "./video/JitsiPilot.jsx";
 import AccountInfo from "./AccountInfo.jsx";
 import SalesSuggestion from "./SalesSuggestion.jsx";
 import { createSalesDraftFlow, salesDraftContextKey } from "./lib/salesDraft.js";
+import SalesRulesSettings from "./SalesRulesSettings.jsx";
 import { isMobilePreviewPath, accountIdentityKey } from "./accountIdentity.js";
 import { clearCatalogStorage, safeCatalogStorage } from "./catalog/model.js";
 import { catalogSource as initialCatalogSource } from "./catalog/source.js";
@@ -474,7 +475,8 @@ export function App() {
     canSend: liveSessionRef.current?.canSend === true, blocked: salesDraftContextRef.current.blocked || sendInFlightRef.current,
     conversation: selectedConversation(conversationsRef.current, selectedIdRef.current),
   });
-  if (!salesDraftFlowRef.current) salesDraftFlowRef.current = createSalesDraftFlow({ getContext: currentSalesContext, generate: (...args) => liveApi.salesDraft(...args), readProduct: (...args)=>liveApi.existingCatalogProduct(...args),getDraft:()=>draftRef.current,onChange: setSalesSuggestion });
+  const currentSalesRulesContext = () => ({token:liveKeyRef.current,identity:sessionIdentityRef.current,epoch:sendScopeRef.current.capture(),role:liveSessionRef.current?.role});
+  if (!salesDraftFlowRef.current) salesDraftFlowRef.current = createSalesDraftFlow({ getContext: currentSalesContext, generate: (...args) => liveApi.salesDraft(...args), readProduct: (...args)=>liveApi.existingCatalogProduct(...args),readPolicy:(...args)=>liveApi.salesRules(...args),getDraft:()=>draftRef.current,onChange: setSalesSuggestion });
   const salesContextKey = salesDraftContextKey(currentSalesContext());
   useEffect(() => { salesDraftFlowRef.current.synchronize(); }, [salesContextKey, selected]);
   useEffect(() => () => salesDraftFlowRef.current.close(), []);
@@ -909,9 +911,10 @@ export function App() {
       setTranslationError(messageText); flash(messageText);
     } finally { if (isCurrent() && run === outgoingTranslationRunRef.current) setTranslationBusy(false); }
   };
-  const takeSalesDraft = () => {
-    const nextDraft = salesDraftFlowRef.current.takeDraft(draftRef.current);
-    if (nextDraft === null) return;
+  const takeSalesDraft = async () => {
+    const isCurrent=captureUiOperation(selected.id),existingDraft=draftRef.current;
+    const nextDraft = await salesDraftFlowRef.current.takeDraft(existingDraft);
+    if (nextDraft === null||!isCurrent()||draftRef.current!==existingDraft) return;
     setDraft(nextDraft); setTranslationReady(false); setTranslationResult(null); setTranslationError('');
     composerRef.current?.focus(); flash('Öneri mesaj taslağına eklendi. Göndermeden önce düzenleyebilirsiniz.');
   };
@@ -1174,7 +1177,7 @@ export function App() {
             <div className="inspector-tabs" role="tablist">{["AI Çeviri", "Müşteri 360"].map((tab) => <button key={tab} role="tab" aria-selected={rightTab === tab} className={rightTab === tab ? "active" : ""} onClick={() => setRightTab(tab)}>{tab === "Müşteri 360" ? "Müşteri" : "Çeviri"}</button>)}</div>
             {rightTab === "AI Çeviri" ? <div className="inspector-content"><div className="assistant-status"><span className="assistant-icon"><Sparkle size={22} weight="fill" /></span><div><strong>Çeviri yardımcısı</strong><p>Gelen yabancı mesajları Türkçeye, yazdığınız mesajları müşterinin diline çevirir.</p></div><b>{translationBusy ? "Çalışıyor" : liveSession ? "İstekle" : "Demo"}</b></div><div className="language-section"><label htmlFor="target-language">Yanıt dili</label><div className="language-select"><span className="country-code">{selected.code}</span><select id="target-language" value={targetLanguage} onChange={(event) => { setTargetLanguage(event.target.value); setTranslationReady(false); setTranslationResult(null); }}><option value="auto">Otomatik algıla</option><option value="en">İngilizce</option><option value="fr">Fransızca</option><option value="ar">Arapça</option><option value="de">Almanca</option><option value="it">İtalyanca</option><option value="es">İspanyolca</option><option value="bg">Bulgarca</option><option value="ru">Rusça</option><option value="ro">Romence</option><option value="sq">Arnavutça</option></select><CaretDown size={15} /></div><button className="primary-button language-translate" disabled={!draft.trim() || translationBusy} onClick={() => { setTabletInspectorOpen(false); setDesktopInspectorOpen(false); translateDraft(); }}><Translate size={18}/>{translationBusy ? "Çevriliyor…" : "Mesajı bu dile çevir"}</button></div><div className="info-box"><Sparkle size={18} weight="fill" /><span>{liveSession ? "Çeviri yalnız siz istediğinizde çalışır. Sonuç önce gösterilir; hiçbir mesaj otomatik gönderilmez." : "Demo çevirisini göndermeden önce kontrol edin."}</span></div><CustomerSummary selected={selected} onAssign={() => openAssignment(selected)} canAssign={canAssign} /></div> : <div className="inspector-content customer-full"><CustomerSummary selected={selected} onAssign={() => openAssignment(selected)} canAssign={canAssign} expanded /></div>}
           </aside>
-        </div> : <BackofficeView activeView={activeView} conversations={conversations} query={query} products={productSeed} catalogs={catalogSeed} draftOrders={draftOrders} role={role} liveSession={liveSession} onRefreshSession={refreshLivePermissions} summary={effectiveSummary} agents={agents} onOpenConversation={(id, targetFilter = "Tüm Konuşmalar") => { const conversation = conversations.find((item) => String(item.id) === String(id)); if (!conversation) return; selectConversation(conversation); setFilter(targetFilter); setActiveView("Gelen Kutusu"); }} onOpenProduct={(id) => { setSelectedProductId(id); setModal("Ürün Gönder"); }} onOpenCatalog={() => setModal("Katalog")} onOpenPrice={() => setModal("Fiyat")} onOpenVideo={openVideoPilot} onCreateDraft={() => setModal("draft")} onOpenNotifications={() => setModal("notifications")} onNotify={flash} />}
+        </div> : <BackofficeView activeView={activeView} conversations={conversations} query={query} products={productSeed} catalogs={catalogSeed} draftOrders={draftOrders} role={role} liveSession={liveSession} getSalesRulesContext={currentSalesRulesContext} onRefreshSession={refreshLivePermissions} summary={effectiveSummary} agents={agents} onOpenConversation={(id, targetFilter = "Tüm Konuşmalar") => { const conversation = conversations.find((item) => String(item.id) === String(id)); if (!conversation) return; selectConversation(conversation); setFilter(targetFilter); setActiveView("Gelen Kutusu"); }} onOpenProduct={(id) => { setSelectedProductId(id); setModal("Ürün Gönder"); }} onOpenCatalog={() => setModal("Katalog")} onOpenPrice={() => setModal("Fiyat")} onOpenVideo={openVideoPilot} onCreateDraft={() => setModal("draft")} onOpenNotifications={() => setModal("notifications")} onNotify={flash} />}
       </main>
 
       {modal === "erp-order" && erpOrderContext?.current() && String(selected.id) === erpOrderContext.recipientId ? <ERPOrderDialog token={liveKey} actorKey={sessionIdentityRef.current} conversation={selected} items={erpOrderContext.items} isCurrent={erpOrderContext.current} onClose={()=>{setModal(null);setErpOrderContext(null);}} onSaved={order=>{setDraftOrders(items=>[{...order,id:order.id||order.orderId,customer:order.customerName||selected.name,owner:userName,total:`${order.documentCurrency||""} ${Number(order.grandTotal||order.total||0).toFixed(2)}`,lines:order.items.length,status:"ERP TEST taslağı",updated:"Şimdi"},...items.filter(item=>String(item.id)!==String(order.id||order.orderId))]);flash(`ERP TEST taslağı yeniden okundu: ${order.documentNo||order.orderNo||order.id}`);}}/> : null}
@@ -1192,7 +1195,7 @@ export function App() {
   );
 }
 
-function BackofficeView({ activeView, conversations, query, products, catalogs, draftOrders, role, liveSession, onRefreshSession, summary, agents, onOpenConversation, onOpenProduct, onOpenCatalog, onOpenPrice, onOpenVideo, onCreateDraft, onOpenNotifications, onNotify }) {
+function BackofficeView({ activeView, conversations, query, products, catalogs, draftOrders, role, liveSession, getSalesRulesContext, onRefreshSession, summary, agents, onOpenConversation, onOpenProduct, onOpenCatalog, onOpenPrice, onOpenVideo, onCreateDraft, onOpenNotifications, onNotify }) {
   const visibleCustomers = conversations.filter((item) => matchesContactSearch(item, query));
   const unassigned = conversations.filter((item) => item.owner === "Atanmamış");
   const waiting = conversations.filter((item) => item.waitingForReply === true);
@@ -1267,8 +1270,9 @@ function BackofficeView({ activeView, conversations, query, products, catalogs, 
       <PageHeading eyebrow="WHATSAPP CRM" title="Ayarlar" text="Mesajlaşma, çeviri ve hesap bağlantısı." />
       {isLive ? <AccountInfo identity={liveSession.accountIdentity} /> : null}
       {isLive ? <ConnectionStatusCard session={liveSession} onRefreshSession={onRefreshSession} /> : null}
+      {isLive ? <SalesRulesSettings key={getSalesRulesContext().identity} getContext={getSalesRulesContext} /> : null}
       <div className="integration-grid crm-only"><IntegrationCard icon={<WhatsappLogo size={25} weight="fill" />} title="Şirket WhatsApp Hattı" detail="Melisa Baby müşteri görüşmeleri" state={isLive ? (liveSession.liveSendEnabled ? "Gönderim açık" : "Gelen bağlı") : "Demo"} tone="green" bullets={isLive ? ["Gelen konuşmalar canlı görüntüleniyor", liveSession.liveSendEnabled ? "Bu hesabın mesaj gönderme yetkisi açık" : "Bu oturumda gönderim izni etkin değil", "Mesajlar yalnız siz gönderdiğinizde iletilir"] : ["Demo konuşma verisi", "Gerçek mesaj gönderilmez", "Bağlantı kurulmadan güvenli kullanım"]} onAction={() => onNotify(isLive ? (liveSession.liveSendEnabled ? "WhatsApp gönderimi yetkili kullanıcılar için açık." : "Hesap iznini ve bağlantıyı bu ekrandan kontrol edebilirsiniz.") : "Demo bağlantı ayrıntıları gösterildi.")} /><IntegrationCard icon={<Sparkle size={25} weight="fill" />} title="AI Çeviri" detail="Gelen mesaj → Türkçe · Yanıt → müşteri dili" state={isLive ? "Sunucu kontrollü" : "Demo"} tone="blue" bullets={isLive ? ["Gelen mesajı Türkçeye çevir", "Gelen mesajın aslı korunur", "Sonuç onaylanmadan taslağa alınmaz ve gönderilmez"] : ["Demo çeviri önizlemesi", "Çeviri kullanıcı onayından sonra kullanılır", "Otomatik mesaj gönderilmez"]} onAction={() => onNotify(isLive ? "AI çeviri konuşma ekranındaki düğmelerle isteğe bağlı çalışır." : "Demo çeviri önizlemesi açık.")} /></div>
-      <div className="data-card settings-card"><div className="data-card-heading"><div><strong>Güvenlik ve çalışma kuralları</strong><span>WhatsApp CRM başlangıç modu</span></div></div>{[["CRM açılışı", "Doğrudan Mesajlarım / Gelen Kutusu"], ["Yeni müşteriler", "Atanmamışlar havuzuna düşer"], ["Bilgisayardan mesaj", isLive ? (liveSession.liveSendEnabled ? "Bu oturumda açık" : "Bu oturumda kapalı") : "Yalnız Müdür ve Patron"], ["Müşteri atama", (isLive ? (liveSession.assignmentEnabled ? "Bu oturumda açık" : "Bu oturumda kapalı") : "Müdür, Patron ve yetkili personel")], ["Ürün, fiyat ve ERP", "Bu aşamada kullanılmıyor"]].map(([key, value]) => <div className="setting-row" key={key}><span>{key}</span><strong>{value}</strong><CheckCircle size={18} weight="fill" /></div>)}</div>
+      <div className="data-card settings-card"><div className="data-card-heading"><div><strong>Güvenlik ve çalışma kuralları</strong><span>WhatsApp CRM başlangıç modu</span></div></div>{[["CRM açılışı", "Doğrudan Mesajlarım / Gelen Kutusu"], ["Yeni müşteriler", "Atanmamışlar havuzuna düşer"], ["Bilgisayardan mesaj", isLive ? (liveSession.liveSendEnabled ? "Bu oturumda açık" : "Bu oturumda kapalı") : "Yalnız Müdür ve Patron"], ["Müşteri atama", (isLive ? (liveSession.assignmentEnabled ? "Bu oturumda açık" : "Bu oturumda kapalı") : "Müdür, Patron ve yetkili personel")], ["Ürün, fiyat ve ERP", "Katalogdan ürün ve fiyat mesajı, ERP TEST taslak siparişi kullanılabilir"]].map(([key, value]) => <div className="setting-row" key={key}><span>{key}</span><strong>{value}</strong><CheckCircle size={18} weight="fill" /></div>)}</div>
     </section>
   );
 }

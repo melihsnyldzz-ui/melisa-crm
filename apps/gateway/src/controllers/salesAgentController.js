@@ -1,4 +1,3 @@
-import { readFile, stat } from 'node:fs/promises';
 import { env } from '../config/env.js';
 import { getChatwootConversationDetail } from '../services/chatwootInboxService.js';
 import { createSalesPreview } from '../services/salesAgent/preview.mjs';
@@ -10,6 +9,7 @@ import { ok } from '../utils/response.js';
 import { createCrmCatalogReader } from '../services/catalogRouter.mjs';
 import { catalogAccess } from '../services/crmCatalogAccess.mjs';
 import { createSalesCatalogAdapter } from '../services/salesAgent/catalogAdapter.mjs';
+import { salesPolicyStore } from '../services/salesAgent/policyStore.mjs';
 
 const readCatalog = createCrmCatalogReader({ activationApproved: true,
   verifyCrmContext: token => verifyCrmAccessToken(token, { includeContext: true }),
@@ -17,15 +17,51 @@ const readCatalog = createCrmCatalogReader({ activationApproved: true,
 });
 
 async function loadServerPolicy() {
-  const path = process.env.CRM_AI_SALES_RULES_FILE;
-  if (!path) return {}; // No unapproved global MOQ or invented Telegram link.
+  return salesPolicyStore.read();
+}
+
+function policyAccess(req, ownerOnly = false) {
+  const authorization = req.get('authorization') || '';
+  return () => {
+    const [type, token] = authorization.split(' ');
+    if (type !== 'Bearer' || !token) throw salesError('AI_AUTH_REQUIRED', 401);
+    const user = verifyCrmAccessToken(token);
+    assertCrmPermission(user, ownerOnly ? 'crm.manage' : 'crm.view');
+    if (ownerOnly && user.role !== 'patron') throw salesError('AI_POLICY_OWNER_REQUIRED', 403);
+    return user;
+  };
+}
+
+function safePolicyError(error) {
+  const code = typeof error?.code === 'string' && /^(AI_|AUTH_|WHATSAPP_CRM_)[A-Z0-9_]+$/.test(error.code)
+    ? error.code : 'AI_POLICY_UNAVAILABLE';
+  const statusCode = Number.isInteger(error?.statusCode) && error.statusCode >= 400 && error.statusCode <= 599
+    ? error.statusCode : 503;
+  return Object.assign(new Error(statusCode === 403 ? 'Satış kurallarını yalnız patron düzenleyebilir.'
+    : statusCode === 409 ? 'Satış kuralları değişti. Güncel kuralları yeniden açın.'
+      : 'Satış kuralları şu anda kullanılamıyor.'), { code, statusCode });
+}
+
+export async function getSalesRules(req, res, next) {
   try {
-    const metadata = await stat(path);
-    if (!metadata.isFile() || metadata.size > 16_384) throw new Error('invalid policy file');
-    const text = await readFile(path, 'utf8');
-    if (Buffer.byteLength(text) > 16_384) throw new Error('policy too large');
-    return JSON.parse(text);
-  } catch { throw salesError('AI_POLICY_FILE_INVALID', 503); }
+    const assertAccess = policyAccess(req);
+    const result = await salesPolicyStore.read({ assertAccess });
+    const user = assertAccess();
+    return ok(res, { ...result, writable: user.role === 'patron' && result.configured && Boolean(process.env.CRM_AI_SALES_RULES_FILE) });
+  } catch (error) { return next(safePolicyError(error)); }
+}
+
+export async function putSalesRules(req, res, next) {
+  try {
+    const assertOwner = policyAccess(req, true);
+    assertOwner();
+    if (!req.body || typeof req.body !== 'object' || Array.isArray(req.body)
+        || Object.keys(req.body).sort().join(',') !== 'policy,revision') throw salesError('AI_POLICY_INVALID');
+    const assertAccess = assertOwner;
+    const result = await salesPolicyStore.write({ ...req.body, assertAccess });
+    assertAccess();
+    return ok(res, { ...result, writable: true });
+  } catch (error) { return next(safePolicyError(error)); }
 }
 
 export async function postConversationSalesDraft(req, res, next) {

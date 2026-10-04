@@ -7,9 +7,12 @@ import {
 import { requireCrmAuth, requireCrmPermission } from '../middleware/auth.js';
 import { crmTranslationRateLimit } from '../middleware/security.js';
 import { postConversationTranslation } from '../controllers/translationController.js';
-import { postConversationSalesDraft } from '../controllers/salesAgentController.js';
+import { getSalesRules, putSalesRules, postConversationSalesDraft } from '../controllers/salesAgentController.js';
 
 export const conversationRoutes = Router();
+
+conversationRoutes.get('/crm/sales-rules', requireCrmAuth, requireCrmPermission('crm.view'), getSalesRules);
+conversationRoutes.put('/crm/sales-rules', requireCrmAuth, requireCrmPermission('crm.manage'), putSalesRules);
 
 conversationRoutes.get(
   '/crm/conversations/:conversationId',
