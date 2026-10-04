@@ -32,4 +32,4 @@ jobs:
             node --check "$file"
           done
       - name: Run isolated tests without provider credentials or dependency installation
-        run: node --import ./tests/offline-test-guard.mjs --test apps/gateway/src/services/salesAgent/salesAgent.test.mjs
+        run: node --import ./tests/offline-test-guard.mjs --test apps/gateway/src/services/salesAgent/salesAgent.test.mjs apps/gateway/src/services/salesAgent/recordedCatalog.test.mjs

@@ -474,7 +474,7 @@ export function App() {
     canSend: liveSessionRef.current?.canSend === true, blocked: salesDraftContextRef.current.blocked || sendInFlightRef.current,
     conversation: selectedConversation(conversationsRef.current, selectedIdRef.current),
   });
-  if (!salesDraftFlowRef.current) salesDraftFlowRef.current = createSalesDraftFlow({ getContext: currentSalesContext, generate: (...args) => liveApi.salesDraft(...args), onChange: setSalesSuggestion });
+  if (!salesDraftFlowRef.current) salesDraftFlowRef.current = createSalesDraftFlow({ getContext: currentSalesContext, generate: (...args) => liveApi.salesDraft(...args), readProduct: (...args)=>liveApi.existingCatalogProduct(...args),getDraft:()=>draftRef.current,onChange: setSalesSuggestion });
   const salesContextKey = salesDraftContextKey(currentSalesContext());
   useEffect(() => { salesDraftFlowRef.current.synchronize(); }, [salesContextKey, selected]);
   useEffect(() => () => salesDraftFlowRef.current.close(), []);
@@ -915,6 +915,13 @@ export function App() {
     setDraft(nextDraft); setTranslationReady(false); setTranslationResult(null); setTranslationError('');
     composerRef.current?.focus(); flash('Öneri mesaj taslağına eklendi. Göndermeden önce düzenleyebilirsiniz.');
   };
+  const takeSalesProduct = async (id,action) => {
+    const isCurrent=captureUiOperation(selected.id),existingDraft=draftRef.current;
+    const nextDraft=await salesDraftFlowRef.current.takeProductDraft(id,action);
+    if(nextDraft===null||!isCurrent()||draftRef.current!==existingDraft)return;
+    setDraft(nextDraft);setTranslationReady(false);setTranslationResult(null);setTranslationError('');
+    composerRef.current?.focus();flash('Ürün seçimi mesaj taslağına eklendi. Göndermeden önce inceleyebilirsiniz.');
+  };
   const addSelectedProduct = () => {
     const product = productSeed.find((item) => item.id === selectedProductId);
     if (!product) return;
@@ -1146,7 +1153,7 @@ export function App() {
             </div>
             {showJumpLatest && selected.id ? <button className="jump-latest" onClick={() => scrollToLatest()}><ArrowRight size={16} />En yeni mesaja git</button> : null}
             <div className="composer-area">
-              {liveSession && selected.id ? <SalesSuggestion state={salesSuggestion} allowed={Boolean(salesContextKey)} onRequest={() => void salesDraftFlowRef.current.start()} onTakeDraft={takeSalesDraft} onClose={() => salesDraftFlowRef.current.close()} /> : null}
+              {liveSession && selected.id ? <SalesSuggestion key={`${sessionIdentityRef.current}:${selected.id}`} state={salesSuggestion} allowed={Boolean(salesContextKey)} token={liveKey} isCurrent={() => salesDraftFlowRef.current.isPreviewCurrent()} onInvalidate={error=>salesDraftFlowRef.current.invalidate(error)} onRequest={catalogSearch => void salesDraftFlowRef.current.start({catalogSearch})} onTakeDraft={takeSalesDraft} onTakeProduct={takeSalesProduct} onClose={() => salesDraftFlowRef.current.close()} /> : null}
               {false && <div className="quick-actions">{quickActions.map(([label, Icon]) => <button key={label} onClick={() => setModal(label)} disabled={Boolean(liveSession)} title={liveSession ? "Canlı görüntülü görüşme henüz bağlı değil" : undefined}><Icon size={18} />{label}</button>)}</div>}
               {pendingProducts.length ? <div className="pending-products"><div><strong>Gönderime eklendi</strong><span>Müşteriye göndermeden önce kontrol edin.</span></div>{pendingProducts.map((product, index) => <div className="pending-product" key={`${product.id}-${index}`}><span><Package size={20} weight="duotone" /></span><p><strong>{product.name}</strong><small>{product.id} · {product.price} · {product.quantity} adet</small></p><button aria-label={`${product.name} ürününü kaldır`} onClick={() => setPendingProducts((items) => items.filter((_, itemIndex) => itemIndex !== index))}><X size={17} /></button></div>)}</div> : null}
               {pendingCatalogs.length ? <div className="pending-catalogs">{pendingCatalogs.map((catalog, index) => <div className="pending-catalog" key={catalog.id}><span><BookOpen size={20} weight="duotone" /></span><p><strong>{catalog.title}</strong><small>{catalog.detail}</small></p><button aria-label={`${catalog.title} kataloğunu kaldır`} onClick={() => setPendingCatalogs((items) => items.filter((_, itemIndex) => itemIndex !== index))}><X size={17} /></button></div>)}</div> : null}

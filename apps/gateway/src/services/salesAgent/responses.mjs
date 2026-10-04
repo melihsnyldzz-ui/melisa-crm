@@ -1,7 +1,7 @@
 import { salesError } from './policy.mjs';
 
 /** Explicitly invoked server-side only. Credentials and raw provider errors are never returned. */
-export function createSalesGenerator({ apiKey, model, timeoutMs = 20_000 }, fetchImpl = globalThis.fetch) {
+export function createSalesGenerator({ apiKey, model, timeoutMs = 20_000, signal }, fetchImpl = globalThis.fetch) {
   if (typeof apiKey !== 'string' || !apiKey.trim() || typeof model !== 'string' || !model.trim()) {
     throw salesError('AI_SALES_NOT_CONFIGURED', 503);
   }
@@ -13,7 +13,7 @@ export function createSalesGenerator({ apiKey, model, timeoutMs = 20_000 }, fetc
     const timeout = setTimeout(() => controller.abort(), timeoutMs);
     try {
       const response = await fetchImpl('https://api.openai.com/v1/responses', {
-        method: 'POST', redirect: 'error', signal: controller.signal,
+        method: 'POST', redirect: 'error', signal: signal ? AbortSignal.any([signal, controller.signal]) : controller.signal,
         headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({ model, store: false, max_output_tokens: 3000,
           input: [{ role: 'system', content: instructions }, { role: 'user', content: JSON.stringify(context) }],
@@ -28,6 +28,7 @@ export function createSalesGenerator({ apiKey, model, timeoutMs = 20_000 }, fetc
       if (!text || text.length > 20_000) throw salesError('AI_SALES_RESPONSE_INVALID', 502);
       try { return JSON.parse(text); } catch { throw salesError('AI_SALES_RESPONSE_INVALID', 502); }
     } catch (error) {
+      if (signal?.aborted) throw salesError('AI_SALES_CANCELLED', 499);
       if (typeof error?.code === 'string' && error.code.startsWith('AI_')) throw error;
       throw salesError(error?.name === 'AbortError' ? 'AI_SALES_TIMEOUT' : 'AI_SALES_NETWORK_FAILED', error?.name === 'AbortError' ? 504 : 502);
     } finally { clearTimeout(timeout); }

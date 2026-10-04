@@ -1,5 +1,21 @@
 import {createCatalogBridge,CATALOG_RESPONSE_GUARD} from './catalogBridge.mjs';
 import {catalogAccess} from './crmCatalogAccess.mjs';
+export function createCrmCatalogReader({verifyCrmContext,transport,activationApproved=false,
+  access=catalogAccess,photoCrmAuthorization=false}={}) {
+  if(typeof verifyCrmContext!=='function')throw Error('REVIEWED_GATEWAY_HOOKS_REQUIRED');
+  const context=request=>{
+    const header=request.headers.get('authorization')||'';
+    if(!/^Bearer [^\s]+$/.test(header))throw Object.assign(Error('CURRENT_CRM_SESSION_REQUIRED'),{status:401});
+    return verifyCrmContext(header.slice(7));
+  };
+  return createCatalogBridge({deploymentApproved:activationApproved,transport,photoCrmAuthorization,
+    authorizeCrm:async request=>{
+      const current=context(request),header=request.headers.get('authorization');
+      return {...current.user,catalogReadApproved:access.base(current.user),catalogReadRevoked:access.isRevoked(current.user,header)};
+    },
+    resolveCrmReadSession:async(_actor,request)=>access.lease(context(request),request,verifyCrmContext),
+  });
+}
 export function createCatalogRouter({Router,verifyCrmContext,transport,activationApproved=false,uiOrigin,logoutOrigin=null,access=catalogAccess,photoCrmAuthorization=false}={}) {
   if(typeof Router!=='function'||typeof verifyCrmContext!=='function')throw Error('REVIEWED_GATEWAY_HOOKS_REQUIRED');
   if(logoutOrigin!==null&&logoutOrigin!=='http://127.0.0.1:4212')throw Error('EXACT_LOCAL_LOGOUT_ORIGIN_REQUIRED');
@@ -10,13 +26,7 @@ export function createCatalogRouter({Router,verifyCrmContext,transport,activatio
     if(!/^Bearer [^\s]+$/.test(header))throw Object.assign(Error('CURRENT_CRM_SESSION_REQUIRED'),{status:401});
     return verifyCrmContext(header.slice(7));
   };
-  const bridge=createCatalogBridge({deploymentApproved:activationApproved,transport,photoCrmAuthorization,
-    authorizeCrm:async request=>{
-      const current=context(request),header=request.headers.get('authorization');
-      return {...current.user,catalogReadApproved:access.base(current.user),catalogReadRevoked:access.isRevoked(current.user,header)};
-    },
-    resolveCrmReadSession:async(_actor,request)=>access.lease(context(request),request,verifyCrmContext),
-  });
+  const bridge=createCrmCatalogReader({verifyCrmContext,transport,activationApproved,access,photoCrmAuthorization});
   const auth=async request=>{
     if(!activationApproved)return fail(503,'BRIDGE_NOT_DEPLOYED');
     const signOut=new URL(request.url).pathname==='/crm/catalog/auth/sign-out';

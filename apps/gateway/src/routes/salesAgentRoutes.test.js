@@ -2,7 +2,9 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { createApp } from '../app.js';
 import { env } from '../config/env.js';
-import { authenticateCrmUser, createPasswordHash } from '../services/crmAuthService.js';
+import { authenticateCrmUser, createPasswordHash, verifyCrmAccessToken } from '../services/crmAuthService.js';
+import { ERP_ORIGIN } from '../services/erpSourceContract.mjs';
+import { catalogAccess } from '../services/crmCatalogAccess.mjs';
 
 test('real sales-draft route uses auth, trusted Chatwoot DTO and suggestion-only Responses', async t => {
   const original = { auth: { ...env.auth }, chatwoot: { ...env.chatwoot },
@@ -26,10 +28,12 @@ test('real sales-draft route uses auth, trusted Chatwoot DTO and suggestion-only
   delete process.env.CRM_AI_SALES_RULES_FILE;
 
   let assignment = 3, modelCalls = 0, conversationReads = 0, modelBody, modelFailure = null,
-    afterModel = () => {}, duringFirstRead = () => {}, duringSecondRead = () => {}, chatwootFailure = false, phone = '+905387217733';
+    afterModel = () => {}, duringFirstRead = () => {}, duringSecondRead = () => {}, chatwootFailure = false, phone = '+905387217733',
+    plannerQueries = [], catalogReads = 0, catalogFailure = false, price = 196, afterCatalog = () => {},
+    selectProducts = false, priceChangesOnReadback = false, newMessage = false;
   const draft = () => ({ action: 'reply', reply: 'Which age range do you need?',
     summaryTr: 'Yaş aralığı soruluyor.', productIds: [], lines: [], handoffReason: '' });
-  const json = data => new Response(JSON.stringify(data), { status: 200 });
+  const json = data => new Response(JSON.stringify(data), { status: 200, headers: { 'content-type': 'application/json' } });
   globalThis.fetch = async (input, options = {}) => {
     const url = String(input);
     if (url === 'https://api.openai.com/v1/responses') {
@@ -38,9 +42,31 @@ test('real sales-draft route uses auth, trusted Chatwoot DTO and suggestion-only
       assert.equal(options.method, 'POST');
       assert.equal(options.redirect, 'error');
       if (modelFailure) return new Response('RAW_PROVIDER_INTERNAL_SENTINEL', { status: modelFailure });
+      const planner = Boolean(modelBody.text.format.schema.properties.queries);
       afterModel();
       return json({ status: 'completed', output: [{ type: 'message',
-        content: [{ type: 'output_text', text: JSON.stringify(draft()) }] }] });
+        content: [{ type: 'output_text', text: JSON.stringify(planner ? { queries: plannerQueries }
+          : selectProducts ? { ...draft(), action: 'recommend', productIds: ['vega-101'] } : draft()) }] }] });
+    }
+    const catalogUrl = new URL(url);
+    if (catalogUrl.origin === new URL(ERP_ORIGIN).origin && catalogUrl.pathname.startsWith('/api/crm-catalog/products')) {
+      catalogReads++;
+      assert.equal(options.method, 'GET');
+      if (catalogFailure) return new Response('RAW_CATALOG_FAILURE', { status: 503 });
+      const actor = verifyCrmAccessToken(options.headers.authorization.slice(7));
+      const single = catalogUrl.pathname.endsWith('/vega-101');
+      const product = { id: 'vega-101', stockCode: '41140', productName: 'Synthetic catalog fixture',
+        salePrice: single && priceChangesOnReadback ? price + 1 : price, currency: 'TRY',
+        stockQuantity: 99, isPassive: false, isActive: true, imageUrl: '/uploads/vega-products/fixture.jpg' };
+      const filters = { search: catalogUrl.searchParams.get('search') || '', brand: null, category: null, hasImage: false };
+      const metadata = { source: 'crm-existing-stock-select-only', sourceDatabaseVerified: true,
+        productDatabaseVerified: true, imageDatabaseVerified: true, imageDatabaseName: 'MELISA_ERP_V2',
+        productDatabaseName: 'VEGA2026', verifiedCrmActorId: actor.id, verifiedCrmRole: actor.role,
+        page: 1, limit: 8, total: 1, totalPages: 1, hasNextPage: false, hasPreviousPage: false,
+        totalPhotoEligible: 1, photoEligibility: 'guarded-existing-ui-reference', filters,
+        facets: { scope: 'current-query-excluding-own-facet', brands: [], categories: [] } };
+      afterCatalog();
+      return json({ success: true, data: single ? product : [product], meta: metadata });
     }
     if (url.startsWith('http://sales-chatwoot.invalid/')) {
       assert.equal(options.method || 'GET', 'GET', 'AI must never send or write to Chatwoot');
@@ -48,6 +74,7 @@ test('real sales-draft route uses auth, trusted Chatwoot DTO and suggestion-only
       if (url.endsWith('/conversations/55/messages')) return json({ payload: [
         { id: 101, content: 'I need baby clothing for my shop.', message_type: 0, created_at: 1700000000 },
         { id: 102, content: 'PRIVATE_NOTE_SENTINEL', private: true, message_type: 1, created_at: 1700000001 },
+        ...(newMessage ? [{ id: 103, content: 'New customer need', message_type: 0, created_at: 1700000002 }] : []),
       ] });
       if (url.endsWith('/conversations/55')) {
         conversationReads++;
@@ -75,6 +102,8 @@ test('real sales-draft route uses auth, trusted Chatwoot DTO and suggestion-only
     assignment = 3; modelCalls = 0; conversationReads = 0; modelBody = null;
     modelFailure = null; afterModel = () => {}; chatwootFailure = false;
     duringFirstRead = () => {}; duringSecondRead = () => {}; phone = '+905387217733';
+    plannerQueries = []; catalogReads = 0; catalogFailure = false; price = 196; afterCatalog = () => {};
+    selectProducts = false; priceChangesOnReadback = false; newMessage = false;
     process.env.CRM_AI_SALES_MODE = 'copilot'; process.env.CRM_AI_SALES_CONVERSATION_ID = '55';
     process.env.CRM_AI_SALES_TEST_PEER = '905387217733';
     env.auth.personnelCanSend = false;
@@ -117,7 +146,8 @@ test('real sales-draft route uses auth, trusted Chatwoot DTO and suggestion-only
       reset();
       const result = await request({ body: { messages: ['CLIENT_HISTORY_SENTINEL'],
         products: [{ unitPriceMinor: 1 }], policy: { autoSend: true }, country: 'CLIENT_COUNTRY_SENTINEL' } });
-      assert.equal(result.status, 200); assert.equal(conversationReads, 2); assert.equal(modelCalls, 1);
+      assert.equal(result.status, 200); assert.equal(conversationReads, 3); assert.equal(modelCalls, 2);
+      assert.equal(catalogReads, 0); assert.deepEqual(result.body.data.recommendedProducts, []);
       assert.equal(result.body.data.reply, draft().reply); assert.equal(result.body.data.requiresHumanReview, true);
       assert.equal(result.body.data.autoSend, false); assert.equal(result.body.data.erpWrite, false);
       assert.equal(result.body.data.conversationId, '55'); assert.match(result.body.data.conversationRevision, /^[a-f0-9]{64}$/);
@@ -195,6 +225,57 @@ test('real sales-draft route uses auth, trusted Chatwoot DTO and suggestion-only
       const result = await request();
       assert.equal(result.status, 503); assert.equal(result.body.error.code, 'AI_SALES_DISABLED');
       assert.equal(conversationReads, 0); assert.equal(modelCalls, 0);
+    });
+    await t.test('human search locator uses real guarded catalog and re-read price cards without planner', async () => {
+      reset(); selectProducts = true;
+      const result = await request({ body: { catalogSearch: '41140', salePrice: 1, products: [{ id: 'forged' }] } });
+      assert.equal(result.status, 200); assert.equal(modelCalls, 1); assert.equal(catalogReads, 2);
+      assert.deepEqual(result.body.data.recommendedProducts, [{ id: 'vega-101', stockCode: '41140',
+        productName: 'Synthetic catalog fixture', salePrice: 196, currency: 'TRY', priceBasis: 'per-item', photoEligible: true }]);
+      assert.equal(result.body.data.catalogFacts.stockFreshness, 'unverified');
+      assert.equal(result.body.data.catalogFacts.seriesVerified, false);
+      assert.equal(Date.parse(result.body.data.catalogFacts.expiresAt) - Date.parse(result.body.data.catalogFacts.fetchedAt), 300_000);
+      assert.deepEqual(JSON.parse(modelBody.input[1].content).catalogSelectors, ['41140']);
+      assert.equal(JSON.parse(modelBody.input[1].content).recordedProducts[0].salePrice, 196);
+      assert.equal(JSON.parse(modelBody.input[1].content).recordedProducts[0].stockQuantity, undefined);
+    });
+    await t.test('conversation-driven planner is bounded and feeds the same trusted catalog path', async () => {
+      reset(); plannerQueries = ['41140']; selectProducts = true;
+      const result = await request();
+      assert.equal(result.status, 200); assert.equal(modelCalls, 2); assert.equal(catalogReads, 2);
+      assert.equal(result.body.data.recommendedProducts[0].stockCode, '41140');
+    });
+    await t.test('catalog outage for requested products fails explicitly before proposal call', async () => {
+      reset(); catalogFailure = true;
+      const result = await request({ body: { catalogSearch: '41140' } });
+      assert.equal(result.status, 502); assert.equal(result.body.error.code, 'AI_CATALOG_UNAVAILABLE');
+      assert.equal(modelCalls, 0); assert.ok(!JSON.stringify(result.body).includes('RAW_CATALOG_FAILURE'));
+    });
+    await t.test('price changed on ID readback rejects stale proposed card', async () => {
+      reset(); selectProducts = true; priceChangesOnReadback = true;
+      const result = await request({ body: { catalogSearch: '41140' } });
+      assert.equal(result.status, 409); assert.equal(result.body.error.code, 'AI_CATALOG_CHANGED');
+      assert.equal(modelCalls, 1); assert.equal(catalogReads, 2);
+    });
+    await t.test('assignment changed while catalog waits stops before proposal model', async () => {
+      reset(); afterCatalog = () => { assignment = 4; };
+      const result = await request({ body: { catalogSearch: '41140' } });
+      assert.equal(result.status, 409); assert.equal(result.body.error.code, 'AI_CONVERSATION_CHANGED');
+      assert.equal(modelCalls, 0);
+    });
+    await t.test('new incoming message while catalog waits stops before proposal model', async () => {
+      reset(); afterCatalog = () => { newMessage = true; };
+      const result = await request({ body: { catalogSearch: '41140' } });
+      assert.equal(result.status, 409); assert.equal(result.body.error.code, 'AI_CONVERSATION_CHANGED');
+      assert.equal(modelCalls, 0);
+    });
+    await t.test('catalog sign-out during guarded read stops before model', async () => {
+      reset(); const authorization = `Bearer ${token('patron')}`;
+      afterCatalog = () => catalogAccess.revoke(verifyCrmAccessToken(authorization.slice(7), { includeContext: true }),
+        new Request('http://127.0.0.1/crm/catalog/auth/sign-out', { headers: { authorization } }));
+      const result = await request({ authorization, body: { catalogSearch: '41140' } });
+      assert.equal(result.status, 401); assert.equal(result.body.error.code, 'AI_CATALOG_ACCESS_REVOKED');
+      assert.equal(modelCalls, 0);
     });
   } finally {
     globalThis.fetch = guardedFetch;

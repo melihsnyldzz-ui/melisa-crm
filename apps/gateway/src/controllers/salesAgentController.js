@@ -7,6 +7,14 @@ import { salesError } from '../services/salesAgent/policy.mjs';
 import { assertConversationAccess, assertCrmPermission, verifyCrmAccessToken } from '../services/crmAuthService.js';
 import { resolvePhoneIdentity } from '../utils/phoneIdentity.js';
 import { ok } from '../utils/response.js';
+import { createCrmCatalogReader } from '../services/catalogRouter.mjs';
+import { catalogAccess } from '../services/crmCatalogAccess.mjs';
+import { createSalesCatalogAdapter } from '../services/salesAgent/catalogAdapter.mjs';
+
+const readCatalog = createCrmCatalogReader({ activationApproved: true,
+  verifyCrmContext: token => verifyCrmAccessToken(token, { includeContext: true }),
+  transport: (url, options) => fetch(url, options),
+});
 
 async function loadServerPolicy() {
   const path = process.env.CRM_AI_SALES_RULES_FILE;
@@ -21,8 +29,23 @@ async function loadServerPolicy() {
 }
 
 export async function postConversationSalesDraft(req, res, next) {
+  const controller = new AbortController();
+  const close = () => { if (!res.writableEnded) controller.abort(); };
+  req.once('aborted', close); res.once('close', close);
   try {
     if (process.env.CRM_AI_SALES_MODE !== 'copilot') throw salesError('AI_SALES_DISABLED', 503);
+    const authorization = req.get('authorization') || '';
+    const getCurrentUser = () => {
+      const [type, token] = authorization.split(' ');
+      if (type !== 'Bearer' || !token) throw salesError('AI_AUTH_REQUIRED', 401);
+      const currentUser = verifyCrmAccessToken(token);
+      assertCrmPermission(currentUser, 'crm.send');
+      if (!catalogAccess.canRead(currentUser, authorization)) throw salesError('AI_CATALOG_ACCESS_REVOKED', 401);
+      if (controller.signal.aborted) throw salesError('AI_SALES_CANCELLED', 499);
+      return currentUser;
+    };
+    const catalogAdapter = createSalesCatalogAdapter({ readCatalog, authorization, signal: controller.signal,
+      assertAccess: getCurrentUser });
     const preview = createSalesPreview({
       getMode: () => process.env.CRM_AI_SALES_MODE,
       getAllowedConversationId: () => process.env.CRM_AI_SALES_CONVERSATION_ID,
@@ -30,19 +53,17 @@ export async function postConversationSalesDraft(req, res, next) {
       normalizePhone: value => typeof value === 'string' && /^[+0-9 ()-]+$/.test(value)
         ? resolvePhoneIdentity(value).normalizedPhone : '',
       assertConversationAccess,
-      getCurrentUser: () => {
-        const [type, token] = (req.get('authorization') || '').split(' ');
-        if (type !== 'Bearer' || !token) throw salesError('AI_AUTH_REQUIRED', 401);
-        const currentUser = verifyCrmAccessToken(token);
-        assertCrmPermission(currentUser, 'crm.send');
-        return currentUser;
-      },
+      getCurrentUser,
+      catalogAdapter,
       loadPolicy: loadServerPolicy,
       readConversation: getChatwootConversationDetail,
       generate: request => createSalesGenerator({ apiKey: env.translation.apiKey, model: env.translation.model,
-        timeoutMs: Math.min(env.translation.timeoutMs || 20_000, 60_000) })(request),
+        timeoutMs: Math.min(env.translation.timeoutMs || 20_000, 60_000), signal: controller.signal })(request),
     });
-    const result = await preview({ conversationId: req.params.conversationId, user: req.user });
+    const result = await preview({ conversationId: req.params.conversationId, user: req.user,
+      ...(Object.hasOwn(req.body || {}, 'catalogSearch') ? { catalogSearch: req.body.catalogSearch } : {}) });
+    getCurrentUser();
+    if (controller.signal.aborted) return;
     return ok(res, result, { source: 'ai-sales-copilot', readOnly: true, autoSend: false, erpWrite: false });
   } catch (error) {
     // No raw upstream message/body/metadata reaches the shared HTTP error handler.
@@ -58,5 +79,5 @@ export async function postConversationSalesDraft(req, res, next) {
         : 'Satış önerisi şu anda oluşturulamıyor. Bir süre sonra yeniden deneyin.'),
     { code: known ? error.code : 'AI_SALES_UNAVAILABLE', statusCode });
     return next(safe);
-  }
+  } finally { req.removeListener('aborted', close); res.removeListener('close', close); }
 }

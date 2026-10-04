@@ -546,6 +546,11 @@ export const liveApi = {
     if(!existingId(id))throw Object.assign(new Error('Ürün kimliği doğrulanamadı.'),{code:'CATALOG_CONTRACT_INVALID'});
     return catalogPhoto(token,id,options);
   },
+  existingCatalogProduct(token,id,{signal}={}) {
+    if(!token)throw Object.assign(new Error('CRM oturumu gerekli.'),{status:401});
+    if(!existingId(id))throw Object.assign(new Error('Ürün kimliği doğrulanamadı.'),{code:'CATALOG_CONTRACT_INVALID'});
+    return request(`/crm/catalog/products/${encodeURIComponent(id)}`,token,{preserveEnvelope:true,preserveAuthDenial:true,redirect:'error',signal});
+  },
   async catalogSignIn(token, { username, password }, {signal} = {}) {
     if (!token) throw Object.assign(new Error("CRM oturumu gerekli."), {status:401});
     if (typeof username !== "string" || !username.trim() || typeof password !== "string" || !password) throw new Error("ERP kullanıcı adı ve şifre gerekli.");
@@ -609,7 +614,10 @@ export const liveApi = {
     return { ...result, message: result.message ? normalizeMessage({ ...result.message, direction: "outgoing" }) : null };
   },
   assign: (token, id, agentId) => request(`/crm/conversations/${id}/assign`, token, { method: "POST", body: JSON.stringify({ agentId }) }),
-  salesDraft: (token, id, {signal} = {}) => request(`/crm/conversations/${encodeURIComponent(String(id))}/sales-draft`, token, { method: 'POST', body: '{}', signal, timeoutMs: 60000, preserveAuthDenial: true, redirect: 'error' }),
+  salesDraft: (token, id, {signal,catalogSearch=''} = {}) => {
+    if(typeof catalogSearch!=='string'||catalogSearch.trim().length>120)throw new Error('Ürün araması en fazla 120 karakter olabilir.');
+    return request(`/crm/conversations/${encodeURIComponent(String(id))}/sales-draft`, token, { method: 'POST', body: JSON.stringify(catalogSearch.trim()?{catalogSearch:catalogSearch.trim()}:{}), signal, timeoutMs: 90000, preserveAuthDenial: true, redirect: 'error' });
+  },
   async translate(token, id, { mode, text, targetLanguage }) {
     const body = { mode, text };
     if (mode === "incoming_to_tr") targetLanguage = "tr";
