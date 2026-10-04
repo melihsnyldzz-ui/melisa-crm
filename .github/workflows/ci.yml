@@ -42,6 +42,22 @@ jobs:
       - name: Run all offline frontend, gateway and contract tests
         run: node scripts/ci/run-tests.mjs
 
+  windows-startup-test:
+    name: windows-startup-test
+    runs-on: windows-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Use Node.js 24
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '24'
+      - name: Check Windows PowerShell startup contracts without installing tasks
+        run: node --import ./tests/offline-test-guard.mjs --test tests/test-session-launcher.test.mjs
+
   secret-scan:
     name: secret-scan
     runs-on: ubuntu-latest

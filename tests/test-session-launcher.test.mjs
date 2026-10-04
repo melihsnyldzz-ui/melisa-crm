@@ -1,5 +1,5 @@
 import './offline-test-guard.mjs';
-import test from 'node:test';
+import nodeTest from 'node:test';
 import assert from 'node:assert/strict';
 import {execFileSync} from 'node:child_process';
 import path from 'node:path';
@@ -9,6 +9,7 @@ import os from 'node:os';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const ps=path.join(process.env.SystemRoot || 'C:\\Windows','System32/WindowsPowerShell/v1.0/powershell.exe');
+const test=(name,body)=>nodeTest(name,{skip:process.platform !== 'win32' ? 'Windows PowerShell 5 launcher acceptance runs in the Windows CI job' : false},body);
 function run(body){
   const script=path.join(root,'deploy/test-session-launcher.ps1').replaceAll("'","''");
   return execFileSync(ps,['-NoProfile','-NonInteractive','-Command',`. '${script}' -Library; ${body}`],{encoding:'utf8'}).trim();
