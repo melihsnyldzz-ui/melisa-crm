@@ -1,5 +1,19 @@
 # Melisa Satış Asistanı — Güncel entegrasyon
 
+4 Ekim2026,22:20: mevcut kullanıcı onaylı7733/konuşma55 TEST copilot, sunucunun okuduğu konuşmaya ve mevcut ERP katalog okuyucusuna bağlandı. 7e966c5 gerçek aday/ürün kartı/fotoğraf/kayıtlı fiyat bağlantısı;4f17b98 gerçek modelde görülen boş seçim ve fiyat metni düzeltmesidir. Kod mevcut feature/PR3'te; main veya LIVE'a alınmadı.
+
+- Varsayılan arama son20 herkese açık metinden en çok2 kısa sorgu üretir. İsteğe bağlı ürün/kod yalnız arama konumlandırıcısıdır; tarayıcıdan ürün/fiyat/iş kuralı alınmaz. En çok8 aday/3 kart; seçilen ürün ayrıca geri okunur.
+- `recordedProducts` yalnız gerçek ürün adı/kodu/para birimi/fiyat-var bilgisiyle model bağlamındadır; sayısal satış fiyatı modele verilmez. `recommendedProducts` fiyatı ERP kayıtlarından sunucu oluşturur. Mevcut korumalı fotoğraf yolu kullanılır; stok güncelliği ve seri doğrulanmış değildir. Bunlar güvenilir tam quote veya ERP yazım yetkisi değildir.
+- Manuel eşleşen arama: gerçek kimlikli recommend veya gerekçeli handoff; reply+boş kimlik başarılı sonuç olamaz. Para birimli sayısal fiyat metni ve eksik seçim için yalnız bir düzeltici deneme; önce konuşma/yetki/atama/kapsam/katalog/süre yeniden okunur. Bozuk JSON, ağ veya provider hatası tekrar denenmez.
+- Normal CRM'de41140/196TRY ve976×1600 fotoğraf gerçek modelle görüldü; ürün/fiyat eylemleri kaydı yeniden okuyarak mevcut metni koruyan taslağa aktardı. Gönderim0/ERPwrite0. Kaynaksız kalite iddiası prompt düzeltmesi sonrası aynı denemede kayboldu; serbest metin yine insan tarafından incelenir.
+- Gerçek ülke/MOQ/kargo/indirim kuralları A02; müşteri dili/mevcut ERP formu bağlamı A05; kullanıcı A04 ekran kabulü bekler. Örnek1000USD politika evrensel işletme kararı değildir. Varsayılanoff; özel TEST config copilot yalnız gerçek7733 telefonunu kullanır. Credential sunucu belleğindedir; browser/repo/loga taşınmaz.
+
+4f17b98 exact source CI ve AI offlineSUCCESS, hedefli130/130 kontrol ve bağımsız inceleme tamam. Teknik sonuç kullanıcı kabulü değildir. Tek güncel sayım CRM_FINISH_PLAN.md/CRM_STATUS.md'de tutulur.
+
+## Tarihsel entegrasyon kaydı — önceki products=[] kısıtı artık güncel değildir
+
+# Melisa Satış Asistanı — Önceki entegrasyon
+
 4 Ekim2026: PR6 V1 çekirdeği mevcut feature'a cca48e1 ile alındı;743c6ae normal CRM öneri ekranı ve gerçek erişim/atama bağlamını bağladı. Kullanıcı mevcut anahtarı yalnız7733 TEST için onayladı. Normal CRM'de gerçek OpenAI cevabı → Türkçe özet/inceleme → düzenlenebilir mesaj taslağı aktarımı çalıştı; gönderim0, ERPwrite0. Kullanıcı ekran kabulü bekler. Ana durum ve sayım yalnız CRM_FINISH_PLAN.md / CRM_STATUS.md'dedir.
 
 Güncel DTO ataması modelden önce/sonra ve tarayıcı öneri kimliğinde doğrulanır. Yeni yetki/telefon/konuşma/taslak/ek değişiminde eski öneri uygulanmaz. Gerçek Express route offline sınır testleri ve bağımsız reviewer tamam; açık P0/P1/P2 bulgu0. 9fe215f exacthead CRM CI ve AI offlineSUCCESS; bu teknik sonuç gerçek ürün/fiyat önerisi kabulü değildir.

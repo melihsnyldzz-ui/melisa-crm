@@ -1,5 +1,31 @@
 # MELISA CRM — Güncel Durum
 
+Güncelleme: **4 Ekim 2026, 22:20 — gerçek ERP ürün/fiyat önerisi ve tablet düzeni**. Tek finish tree: [CRM_FINISH_PLAN.md](CRM_FINISH_PLAN.md). **11 tamam /11 kısmi /3 açık; toplam25, ilerleme%44. Kalan14**. A04 kod ve gerçek TEST kullanımı hazır; kullanıcı kabulü beklediği için sarıdır. Eski kabul edilmiş baseline yeniden açılmadı.
+
+## Şu anda doğrulanmış sonuç
+
+- Normal7733/konuşma55 ekranında gerçek OpenAI önerisi mevcut ERP read bağlantısından **41140 SÜPERMİNİ / BÜYÜK ÇİÇEKLER 2 Lİ TAKIM /196TRY adet fiyatı** seçti; korumalı fotoğraf **976×1600** olarak açıldı. Demo ürün veya modelin uydurduğu fiyat kullanılmadı.
+- **Fiyatı taslağa al** ve **Ürün bilgisini taslağa al** ayrı gerçek kayıt okumalarından sonra düzenlenebilir mesaja aktardı. İnsan metni korundu. WhatsApp gönderimi0 ve ERP yazımı0; önceki392TRY taslak kabulü tekrar denenmedi.
+- İlk gerçek model denemesi doğru196TRY metniyle reply+boş ürün kimlikleri verdi; kart oluşmadı. 4f17b98 manuel ürün seçiminde gerçek kimlikleri zorunlu tuttu, sayısal kayıtlı fiyatı model bağlamından çıkardı ve fiyat metnini reddetti. En fazla bir düzeltici deneme; öncesinde güncel konuşma/yetki/katalog erişimi/süre yeniden doğrulanır. Gerekçeli insan devri ürünsüz kalabilir; bozuk JSON/ağ hatası bu nedenle tekrar denenmez.
+- İkinci gerçek çıktıda kaynaksız “yüksek kaliteli malzeme” ifadesi görüldü. Kaynak adı/kodu dışında malzeme, kalite, yaş, beden veya uygunluk çıkarmama talimatı eklendi; sonraki gerçek çıktıda bu iddia yoktu. İnsan incelemesi sürer; bütün serbest metinlerin otomatik doğru olduğu veya yabancı dil kalitesi kabul edilmiş sayılmaz.
+- 1440/1024/390 ürün kartı kontrolünde yatay taşma0; ürün/fiyat düğmeleri44px. İlk1024 görüntüsündeki boş alan gerçek eski CSS çakışmasına işaret etti: tablet sidebar tam ekran bir bloktu, sohbet odaklanınca ekran üstüne kayıyordu. Normal761+ düzenin grid olmasıyla dar düzeltme yapıldı; mobil/compact davranışı korunur. Yeni build sonrası1024 root grid/56px rail/top0 ve sohbet aynı ekranda;1440 grid/64px rail ve390 mobil listeden sohbet açılışı doğrulandı. Üçünde yatay taşma0; fiziksel mobil kabulü değildir.
+- Sahipliği/portları/kaynak/TEST DB kimliği doğrulanmış gateway55972→61388→2464 supervisor65784 tarafından açıldı. Katalog61612, ERP adapter65064/native57636 korundu; LIVE servis Running/Auto görüldü ve restart edilmedi. Özel kanıtlar repo dışında `logs/acceptance-20261004/ai-catalog-*`.
+- Genel müşteri gelen mesaj kabulü, personelin kendi hesabı/üç rol, fiziksel mobil, gerçek Windows logon, geniş ERP eşlemesi ve paket/rollback açık kapsam olarak korunur. AI ülke/MOQ/kargo kuralları henüz işletme kararıyla belirlenmedi. Kayıtlı fiyat güncel satılabilir stok/seri/teslim taahhüdü değildir.
+
+## GitHub / teknik teslim
+
+- Kanonik origin, aktif `codex/crm-agents-on-completion-20261003`, [PR3](https://github.com/melihsnyldzz-ui/melisa-crm/pull/3); kaynak7e966c5 + düzeltme4f17b98777af476628d1b6652b77c2c04936b8bb. Tablet ve bu durum kaydı aynı PR'nin sonraki teslimidir; main merge/LIVE deploy yok.
+- **4f17b98 exact source HEAD** [CRM CI37227776400](https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/37227776400) ve [AI offline37227776397](https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/37227776397) SUCCESS. Son tablet/doküman HEAD sonucu [PR3 Checks](https://github.com/melihsnyldzz-ui/melisa-crm/pull/3/checks) üzerinden izlenir; eski HEAD sonucu yeni HEAD için PASS sayılmaz.
+- Backend130/130 hedefli offline kontrol geçti; bağımsız reviewer129/129 +son prompt testi1/1 ve7 ek iptal/yetki sınırı kontrolü yaptı, sayımlar örtüşür. Bulunan boş-recommend düzeltme sorunu giderildi; son kaynak review açık P0/P1/P2 bulgu0. Frontend ilk40/40 kontrol ve TEST buildleri başarılı; son tablet build12,98sn. Bunlar kullanıcı kabulü yerine sayılmadı.
+
+**TEST: http://127.0.0.1:62400/**. Kontrol: (1)7733 ve41140 ile Satış önerisi al; (2)fotoğraf/kod/196TRY adet fiyatını gör; (3)ürün/fiyat düğmesi taslağa aktarırken mevcut metni korusun; (4)Gönder'e basılmadan mesaj oluşmasın. A04 kullanıcı kabulü sorusu bekliyor. Samsung ADB62400 erişim yönlendirmesi önceki otomatik onay denetiminde “policy tarafından engellendi”; kurulmadı, açık erişim onayı bekliyor.
+
+**Sıradaki tek geliştirme: A02 gerçek ülke/MOQ/kargo/indirim kurallarını mevcut insan denetimli AI önerisine bağlamak.** İşletme kararı bulunmadan evrensel1000USD/1000EUR kuralı uydurulmaz; mevcut örnek JSON etkin politika değildir.
+
+## Tarihsel durum — 4 Ekim 2026, 21:30; aşağıdaki kayıt güncel değildir
+
+# MELISA CRM — Güncel Durum (21:30 tarihsel kaydı)
+
 Güncelleme: **4 Ekim 2026, 21:30 — gerçek AI cevap önerisi ve sahipliği doğrulanmış TEST otomatik başlatma teslimi**. Tek finish tree: [CRM_FINISH_PLAN.md](CRM_FINISH_PLAN.md). **11 tamam / 10 kısmi / 4 açık; toplam25, ilerleme%44. Kalan14** (4 geliştirme +10 kısmi/kabul/onay). Tamamlanan kullanım baseline'ı tekrar açılmadı. İlk geniş özet24 sayımı hatalıydı; gerçek25 yaprak bağımsız satır sayımıyla düzeltildi, kalan14 değişmedi.
 
 ## Şu anda doğrulanmış sonuç
