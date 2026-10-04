@@ -19,20 +19,35 @@ function Get-SwitchTask($Config,$ConfigFile) {
     return $task
 }
 function Assert-SwitchLauncher($Process,$Config,$ConfigFile) {
-    if (!$Process) {return}
+    if (!$Process) {return $null}
+    $current=Get-TestProcess $Process.ProcessId
+    if (!$current) {return $null}
+    if ($current.CreationDate -ne $Process.CreationDate) {throw 'TEST_SWITCH_LAUNCHER_PID_REUSED'}
     $shell=Join-Path $env:SystemRoot 'System32/WindowsPowerShell/v1.0/powershell.exe'
     $launcher=Join-Path $Config.RepoRoot 'deploy/test-session-launcher.ps1'
-    $sid=Invoke-CimMethod -InputObject $Process -MethodName GetOwnerSid
+    try {$sid=Invoke-CimMethod -InputObject $current -MethodName GetOwnerSid}
+    catch {
+        # Stopping the scheduled task can remove this exact launcher between CIM calls.
+        # Tolerate only a fresh missing PID, never an owner failure on a live/reused PID.
+        $after=Get-TestProcess $current.ProcessId
+        if (!$after) {return $null}
+        if ($after.CreationDate -ne $Process.CreationDate) {throw 'TEST_SWITCH_LAUNCHER_PID_REUSED'}
+        throw
+    }
+    $verified=Get-TestProcess $current.ProcessId
+    if (!$verified) {return $null}
+    if ($verified.CreationDate -ne $Process.CreationDate) {throw 'TEST_SWITCH_LAUNCHER_PID_REUSED'}
     $scriptPattern='(?:^|\s)"?'+[regex]::Escape($launcher)+'"?(?:\s|$)'
     $configPattern='(?:^|\s)-ConfigPath\s+"?'+[regex]::Escape($ConfigFile)+'"?(?:\s|$)'
-    if ($sid.ReturnValue -ne 0 -or $sid.Sid -ne $Config.OwnerSid -or !(Same-Path $Process.ExecutablePath $shell) -or $Process.CommandLine -notmatch $scriptPattern -or $Process.CommandLine -notmatch $configPattern) {throw 'TEST_SWITCH_LAUNCHER_IDENTITY_MISMATCH'}
+    if ($sid.ReturnValue -ne 0 -or $sid.Sid -ne $Config.OwnerSid -or !(Same-Path $verified.ExecutablePath $shell) -or $verified.CommandLine -notmatch $scriptPattern -or $verified.CommandLine -notmatch $configPattern) {throw 'TEST_SWITCH_LAUNCHER_IDENTITY_MISMATCH'}
+    return $verified
 }
 function Get-SwitchLaunchers($Config,$ConfigFile) {
     $launcher=Join-Path $Config.RepoRoot 'deploy/test-session-launcher.ps1'
     $processes=@(Get-CimInstance Win32_Process -Filter "Name='powershell.exe'" | Where-Object {$_.CommandLine -match [regex]::Escape($launcher)})
-    foreach ($p in $processes) {Assert-SwitchLauncher $p $Config $ConfigFile}
-    if ($processes.Count -gt 1) {throw 'TEST_SWITCH_DUPLICATE_LAUNCHER'}
-    return $processes
+    $verified=@(foreach ($p in $processes) {$alive=Assert-SwitchLauncher $p $Config $ConfigFile; if ($alive) {$alive}})
+    if ($verified.Count -gt 1) {throw 'TEST_SWITCH_DUPLICATE_LAUNCHER'}
+    return $verified
 }
 function Get-SwitchNative($Config) {
     Assert-NativeHealth $Config
@@ -65,11 +80,16 @@ function Stop-SwitchCrm($Config,$ConfigFile,$History,$Phase) {
     Assert-TestListeners $listeners $expected
     Stop-ScheduledTask -InputObject $task
     foreach ($snapshot in $launchers) {
-        $current=Get-TestProcess $snapshot.ProcessId
+        $current=Assert-SwitchLauncher $snapshot $Config $ConfigFile
         if ($current) {
-            Assert-SwitchLauncher $current $Config $ConfigFile
-            if ($current.CreationDate -ne $snapshot.CreationDate) {throw 'TEST_SWITCH_LAUNCHER_PID_REUSED'}
-            Stop-Process -Id $current.ProcessId -ErrorAction Stop
+            try {Stop-Process -Id $current.ProcessId -ErrorAction Stop}
+            catch {
+                $after=Get-TestProcess $current.ProcessId
+                if ($after) {
+                    if ($after.CreationDate -ne $snapshot.CreationDate) {throw 'TEST_SWITCH_LAUNCHER_PID_REUSED'}
+                    throw
+                }
+            }
         }
     }
     if (@(Get-SwitchLaunchers $Config $ConfigFile).Count) {throw 'TEST_SWITCH_WATCHDOG_DID_NOT_STOP'}
