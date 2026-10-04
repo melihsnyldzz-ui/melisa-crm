@@ -609,6 +609,7 @@ export const liveApi = {
     return { ...result, message: result.message ? normalizeMessage({ ...result.message, direction: "outgoing" }) : null };
   },
   assign: (token, id, agentId) => request(`/crm/conversations/${id}/assign`, token, { method: "POST", body: JSON.stringify({ agentId }) }),
+  salesDraft: (token, id, {signal} = {}) => request(`/crm/conversations/${encodeURIComponent(String(id))}/sales-draft`, token, { method: 'POST', body: '{}', signal, timeoutMs: 60000, preserveAuthDenial: true, redirect: 'error' }),
   async translate(token, id, { mode, text, targetLanguage }) {
     const body = { mode, text };
     if (mode === "incoming_to_tr") targetLanguage = "tr";

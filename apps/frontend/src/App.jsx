@@ -24,6 +24,8 @@ import ERPOrderDialog from "./ERPOrderDialog.jsx";
 import CatalogWorkspace from "./catalog/CatalogWorkspace.jsx";
 import JitsiPilot from "./video/JitsiPilot.jsx";
 import AccountInfo from "./AccountInfo.jsx";
+import SalesSuggestion from "./SalesSuggestion.jsx";
+import { createSalesDraftFlow, salesDraftContextKey } from "./lib/salesDraft.js";
 import { isMobilePreviewPath, accountIdentityKey } from "./accountIdentity.js";
 import { clearCatalogStorage, safeCatalogStorage } from "./catalog/model.js";
 import { catalogSource as initialCatalogSource } from "./catalog/source.js";
@@ -265,6 +267,9 @@ export function App() {
   const [drafts, setDrafts] = useState({});
   const [attachments, setAttachments] = useState({});
   const [sendStates, setSendStates] = useState({});
+  const [salesSuggestion, setSalesSuggestion] = useState({busy:false,preview:null,error:''});
+  const salesDraftFlowRef = useRef(null);
+  const salesDraftContextRef = useRef(null);
   const [attachmentMenu, setAttachmentMenu] = useState(false);
   const [chatMenu, setChatMenu] = useState(false);
   const [countryFilterOpen, setCountryFilterOpen] = useState(false);
@@ -463,6 +468,16 @@ export function App() {
   const effectiveSummary = useMemo(() => effectiveInboxSummary(summary, conversations), [summary, conversations]);
   const inboxView = activeView === "Gelen Kutusu" || activeView === "Konuşmalar";
   const selectedSendUncertain = Boolean(uncertainSends[selected.id]);
+  salesDraftContextRef.current = { blocked: liveBusy || selectedSendUncertain, testOnly: import.meta.env?.VITE_CRM_TEST === '1' };
+  const currentSalesContext = () => ({ ...salesDraftContextRef.current,
+    token: liveKeyRef.current, identity: sessionIdentityRef.current, epoch: sendScopeRef.current.capture(), uiEpoch: uiOperationEpochRef.current,
+    canSend: liveSessionRef.current?.canSend === true, blocked: salesDraftContextRef.current.blocked || sendInFlightRef.current,
+    conversation: selectedConversation(conversationsRef.current, selectedIdRef.current),
+  });
+  if (!salesDraftFlowRef.current) salesDraftFlowRef.current = createSalesDraftFlow({ getContext: currentSalesContext, generate: (...args) => liveApi.salesDraft(...args), onChange: setSalesSuggestion });
+  const salesContextKey = salesDraftContextKey(currentSalesContext());
+  useEffect(() => { salesDraftFlowRef.current.synchronize(); }, [salesContextKey, selected]);
+  useEffect(() => () => salesDraftFlowRef.current.close(), []);
   const selectedMessageRevision = conversationRevision(selected);
   const selectedHistoryRevision = `${selected.id}:${selected.messages?.length || 0}:${selected.messages?.at(-1)?.id || ""}:${sentMessages.length}`;
   const syncStale = Boolean(syncError || (lastSyncAt && statusClock - lastSyncAt.getTime() > POLL_INTERVAL.inbox * 2 + 5000));
@@ -505,7 +520,7 @@ export function App() {
 
   const selectConversation = useCallback((conversation) => {
     if (!conversation?.id) return;
-    uiOperationEpochRef.current++; setTranslationBusy(false);
+    uiOperationEpochRef.current++; setTranslationBusy(false); salesDraftFlowRef.current?.close();
     setIncomingTranslations(items => Object.fromEntries(Object.entries(items).filter(([, item]) => !item.loading)));
     closeVideoPilot(); setSelectedId(conversation.id); setAttachmentMenu(false); setChatMenu(false); setDesktopInspectorOpen(false);
     setTranslatedIncoming(false);
@@ -548,6 +563,7 @@ export function App() {
   }, []);
 
   const closeLiveSession = (message = "", clearReceipts = false) => {
+    salesDraftFlowRef.current?.close();
     const closingKey = liveKeyRef.current;
     sessionLoaderRef.current?.invalidate(); permissionRefreshRef.current?.invalidate();
     uiOperationEpochRef.current++;
@@ -573,6 +589,7 @@ export function App() {
   const commitLiveSession = ({ key, session: sessionResult, inbox: inboxResult, agents: agentsResult }) => {
     const identity = accountIdentityKey(sessionResult.accountIdentity);
     if (!identity) throw new Error("CRM kullanıcı kimliği sunucu tarafından bildirilmedi.");
+    if (sessionIdentityRef.current !== identity || liveKeyRef.current !== key) salesDraftFlowRef.current?.close();
     if (sessionIdentityRef.current !== identity) { setProductDrafts({}); setDraftOrders([]); orderPreviewLedgerRef.current.clear(); }
     if (sessionIdentityRef.current && sessionIdentityRef.current !== identity) { setProductDrafts({}); setDraftOrders([]); orderPreviewLedgerRef.current.clear(); uiOperationEpochRef.current++; setIncomingTranslations({}); clearCatalogStorage(safeCatalogStorage()); setModal(null); catalogSessionRef.current?.close(); setCatalogSource(initialCatalogSource); sendScopeRef.current.invalidate(); sendInFlightRef.current = false; setDrafts({}); setAttachments({}); attachmentRef.current = {}; setSendStates({}); readReceiptsRef.current = {}; setReadReceipts({}); }
     sessionIdentityRef.current = identity;
@@ -892,6 +909,12 @@ export function App() {
       setTranslationError(messageText); flash(messageText);
     } finally { if (isCurrent() && run === outgoingTranslationRunRef.current) setTranslationBusy(false); }
   };
+  const takeSalesDraft = () => {
+    const nextDraft = salesDraftFlowRef.current.takeDraft(draftRef.current);
+    if (nextDraft === null) return;
+    setDraft(nextDraft); setTranslationReady(false); setTranslationResult(null); setTranslationError('');
+    composerRef.current?.focus(); flash('Öneri mesaj taslağına eklendi. Göndermeden önce düzenleyebilirsiniz.');
+  };
   const addSelectedProduct = () => {
     const product = productSeed.find((item) => item.id === selectedProductId);
     if (!product) return;
@@ -1123,6 +1146,7 @@ export function App() {
             </div>
             {showJumpLatest && selected.id ? <button className="jump-latest" onClick={() => scrollToLatest()}><ArrowRight size={16} />En yeni mesaja git</button> : null}
             <div className="composer-area">
+              {liveSession && selected.id ? <SalesSuggestion state={salesSuggestion} allowed={Boolean(salesContextKey)} onRequest={() => void salesDraftFlowRef.current.start()} onTakeDraft={takeSalesDraft} onClose={() => salesDraftFlowRef.current.close()} /> : null}
               {false && <div className="quick-actions">{quickActions.map(([label, Icon]) => <button key={label} onClick={() => setModal(label)} disabled={Boolean(liveSession)} title={liveSession ? "Canlı görüntülü görüşme henüz bağlı değil" : undefined}><Icon size={18} />{label}</button>)}</div>}
               {pendingProducts.length ? <div className="pending-products"><div><strong>Gönderime eklendi</strong><span>Müşteriye göndermeden önce kontrol edin.</span></div>{pendingProducts.map((product, index) => <div className="pending-product" key={`${product.id}-${index}`}><span><Package size={20} weight="duotone" /></span><p><strong>{product.name}</strong><small>{product.id} · {product.price} · {product.quantity} adet</small></p><button aria-label={`${product.name} ürününü kaldır`} onClick={() => setPendingProducts((items) => items.filter((_, itemIndex) => itemIndex !== index))}><X size={17} /></button></div>)}</div> : null}
               {pendingCatalogs.length ? <div className="pending-catalogs">{pendingCatalogs.map((catalog, index) => <div className="pending-catalog" key={catalog.id}><span><BookOpen size={20} weight="duotone" /></span><p><strong>{catalog.title}</strong><small>{catalog.detail}</small></p><button aria-label={`${catalog.title} kataloğunu kaldır`} onClick={() => setPendingCatalogs((items) => items.filter((_, itemIndex) => itemIndex !== index))}><X size={17} /></button></div>)}</div> : null}

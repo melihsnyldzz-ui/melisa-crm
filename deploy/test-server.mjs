@@ -10,6 +10,9 @@ export function configureTestServerEnvironment(repoRoot,{env=process.env,loadBas
 if (!env.CRM_BASELINE_ENV) throw Error('CRM_BASELINE_ENV_REQUIRED');
 // Capture the validated TEST locations before baseline dotenv can override them.
 const {runtime,logs}=resolveTestDirectories(repoRoot,env);
+// AI activation is explicit for this TEST session, never inherited from baseline dotenv.
+const salesMode=env.CRM_AI_SALES_MODE==='copilot'?'copilot':'off';
+const salesRules=env.CRM_AI_SALES_RULES_FILE||'';
 // Read the existing protected configuration in process memory; never copy or log it.
 const loaded=loadBaseline({ path: env.CRM_BASELINE_ENV, processEnv:env, override: true, quiet: true });
 if(loaded?.error)throw Error('CRM_BASELINE_ENV_UNAVAILABLE');
@@ -26,6 +29,9 @@ Object.assign(env, {
   CRM_ERP_CATALOG_PHOTO_CRM_AUTH: 'true',
   CRM_TEST_RUNTIME_DIR:runtime, CRM_TEST_LOG_DIR:logs,
   CRM_WAAPI_JOURNAL_DIR: path.join(runtime,'waapi'),
+  CRM_AI_SALES_MODE:salesMode, CRM_AI_SALES_CONVERSATION_ID:'55',
+  CRM_AI_SALES_TEST_PEER:'905387217733',
+  CRM_AI_SALES_RULES_FILE:salesRules,
 });
 }
 async function startTestServer(){

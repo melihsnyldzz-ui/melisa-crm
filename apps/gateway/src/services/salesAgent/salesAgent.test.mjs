@@ -121,6 +121,15 @@ test('changed owner invalidates the pending draft', async () => {
   const changed = conversation(); changed.owner = 'Different staff';
   await assert.rejects(prepareSalesDraft({ conversation: conversation() }, deps({ readCurrentConversation: async () => changed })), errorCode('AI_CONVERSATION_CHANGED'));
 });
+for (const field of ['assignedUserId', 'assignedUserName', 'chatwootAgentId']) {
+  test(`real Chatwoot DTO ${field} change invalidates pending draft`, async () => {
+    const initial = { ...conversation(), assignedUserId: 'staff-1', assignedUserName: 'Staff', chatwootAgentId: 3 };
+    const changed = { ...initial, [field]: field === 'chatwootAgentId' ? 4 : 'different-staff' };
+    await assert.rejects(prepareSalesDraft({ conversation: initial }, deps({
+      readCurrentConversation: async () => changed,
+    })), errorCode('AI_CONVERSATION_CHANGED'));
+  });
+}
 test('model cannot recommend a product absent from the trusted catalog', async () => {
   await assert.rejects(prepareSalesDraft({ conversation: conversation() }, deps({ generate: async () => proposal({ action: 'recommend', productIds: ['invented'] }) })), errorCode('AI_PRODUCT_UNKNOWN'));
 });
@@ -165,6 +174,68 @@ test('changed policy invalidates pending draft even if version was not bumped', 
 test('mode switched off while generating invalidates result', async () => {
   let mode = 'copilot';
   await assert.rejects(createSalesPreview(previewDeps({ getMode: () => mode, generate: async () => { mode = 'off'; return proposal(); } }))({ conversationId: 'fixture-conversation', user: {} }), errorCode('AI_SALES_DISABLED'));
+});
+test('server conversation scope blocks all reads and model calls for other conversations', async () => {
+  let calls = 0;
+  const preview = createSalesPreview(previewDeps({ getAllowedConversationId: () => '55',
+    readConversation: async () => { calls++; return conversation(); },
+    generate: async () => { calls++; return proposal(); },
+  }));
+  await assert.rejects(preview({ conversationId: '56', user: {} }), errorCode('AI_SALES_CONVERSATION_FORBIDDEN'));
+  assert.equal(calls, 0);
+});
+test('malformed server scope does not silently allow all conversations', async () => {
+  for (const configuredId of [' ', '0', '55,56', '9007199254740992']) {
+    await assert.rejects(createSalesPreview(previewDeps({ getAllowedConversationId: () => configuredId }))({
+      conversationId: 'fixture-conversation', user: {},
+    }), errorCode('AI_SALES_SCOPE_INVALID'));
+  }
+});
+test('server scope changed while generating rejects pending response', async () => {
+  let scope = '55';
+  await assert.rejects(createSalesPreview(previewDeps({ getAllowedConversationId: () => scope,
+    readConversation: async () => ({ ...conversation(), id: 55 }),
+    generate: async () => { scope = undefined; return proposal(); },
+  }))({ conversationId: '55', user: {} }), errorCode('AI_SALES_SCOPE_CHANGED'));
+});
+test('settings changed during initial policy load stop before conversation/model', async () => {
+  let mode = 'copilot', calls = 0;
+  await assert.rejects(createSalesPreview(previewDeps({ getMode: () => mode,
+    loadPolicy: async () => { mode = 'off'; return {}; },
+    readConversation: async () => { calls++; return conversation(); },
+    generate: async () => { calls++; return proposal(); },
+  }))({ conversationId: 'fixture-conversation', user: {} }), errorCode('AI_SALES_DISABLED'));
+  assert.equal(calls, 0);
+});
+test('policy changed during final awaited conversation read rejects result', async () => {
+  let changed = false, reads = 0;
+  await assert.rejects(createSalesPreview(previewDeps({
+    loadPolicy: async () => changed ? policyInput() : {},
+    readConversation: async () => { if (++reads === 2) changed = true; return conversation(); },
+  }))({ conversationId: 'fixture-conversation', user: {} }), errorCode('AI_POLICY_CHANGED'));
+  assert.equal(reads, 2);
+});
+test('test phone scope changed during final read rejects result', async () => {
+  let peer = '18880000001', reads = 0;
+  await assert.rejects(createSalesPreview(previewDeps({ getAllowedTestPeer: () => peer,
+    normalizePhone: value => value,
+    readConversation: async () => { if (++reads === 2) peer = undefined; return { ...conversation(), phone: '18880000001' }; },
+  }))({ conversationId: 'fixture-conversation', user: {} }), errorCode('AI_SALES_SCOPE_CHANGED'));
+});
+test('latest caller binding is checked against last trusted DTO after final policy await', async () => {
+  let policyReads = 0, currentAgent = 3;
+  const user = { id: 'fixture-staff', chatwootAgentId: 3 };
+  await assert.rejects(createSalesPreview(previewDeps({
+    getCurrentUser: () => ({ ...user, chatwootAgentId: currentAgent }),
+    loadPolicy: async () => { if (++policyReads === 5) currentAgent = 4; return {}; },
+    readConversation: async () => ({ ...conversation(), chatwootAgentId: 3 }),
+    assertConversationAccess: (caller, dto) => {
+      if (caller.chatwootAgentId !== dto.chatwootAgentId) throw Object.assign(new Error('Forbidden'), {
+        code: 'WHATSAPP_CRM_CONVERSATION_FORBIDDEN', statusCode: 403,
+      });
+    },
+  }))({ conversationId: 'fixture-conversation', user }), errorCode('WHATSAPP_CRM_CONVERSATION_FORBIDDEN'));
+  assert.equal(policyReads, 5);
 });
 
 const modelRequest = { instructions: 'Synthetic rules', schema: { type: 'object' }, context: { fixture: true } };

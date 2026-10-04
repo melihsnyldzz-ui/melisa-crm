@@ -44,6 +44,9 @@ export function conversationSnapshot(conversation) {
   if (!messages.some(message => message.direction === 'incoming')) throw salesError('AI_INCOMING_REQUIRED');
   const snapshot = { id: String(conversation.id), messages, owner: String(conversation.owner ?? ''),
     ownerId: String(conversation.ownerId ?? ''), assigneeId: String(conversation.assigneeId ?? ''),
+    assignedUserId: String(conversation.assignedUserId ?? ''),
+    assignedUserName: String(conversation.assignedUserName ?? ''),
+    chatwootAgentId: String(conversation.chatwootAgentId ?? ''),
     status: String(conversation.status ?? '') };
   return { ...snapshot, revision: createHash('sha256').update(JSON.stringify(snapshot)).digest('hex') };
 }

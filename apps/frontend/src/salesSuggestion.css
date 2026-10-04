@@ -1,0 +1,16 @@
+.sales-suggestion { min-width:0; margin-bottom:8px; }
+.sales-suggestion button { min-height:44px; border-radius:10px; font:inherit; cursor:pointer; }
+.sales-suggestion button:disabled { cursor:default; opacity:.55; }
+.sales-suggestion button:focus-visible, .sales-suggestion strong:focus-visible { outline:3px solid #187f70; outline-offset:2px; }
+.sales-suggestion-trigger { display:inline-flex; align-items:center; gap:8px; padding:8px 12px; background:#eef6f2; color:#255d4f; border:1px solid #d8e7de; }
+.sales-suggestion-panel { margin-top:8px; padding:12px; border:1px solid #d8e7de; border-radius:12px; background:#fff; color:#233138; overflow-wrap:anywhere; }
+.sales-suggestion-panel header { display:flex; justify-content:space-between; align-items:center; gap:8px; }
+.sales-suggestion-panel header button { flex:none; width:44px; display:grid; place-items:center; background:#f3f5f4; }
+.sales-suggestion-panel p { margin:8px 0; font-size:14px; line-height:1.55; white-space:pre-wrap; }
+.sales-suggestion-copy { max-height:260px; overflow:auto; overscroll-behavior:contain; }
+.sales-suggestion-copy h4 { margin:12px 0 4px; font-size:13px; color:#567167; }
+.sales-suggestion-panel .sales-suggestion-note { font-size:12px; color:#567167; }
+.sales-suggestion-panel .sales-suggestion-error { color:#a33d3d; }
+.sales-suggestion-take { margin-top:12px; padding:8px 14px; background:#187f70; color:#fff; }
+.sales-suggestion-panel small { display:block; margin-top:8px; line-height:1.5; color:#567167; }
+@media(max-width:760px) { .sales-suggestion-panel { padding:10px; } .sales-suggestion-copy { max-height:180px; } .sales-suggestion-take { width:100%; } }
