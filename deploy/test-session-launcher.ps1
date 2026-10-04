@@ -6,6 +6,12 @@ function Same-Path($A, $B) {
     if (!$A -or !$B) { return $false }
     return [IO.Path]::GetFullPath($A).TrimEnd('\','/').Equals([IO.Path]::GetFullPath($B).TrimEnd('\','/'), [StringComparison]::OrdinalIgnoreCase)
 }
+function Get-TestFileSha256($Path) {
+    $stream=[IO.File]::OpenRead($Path)
+    $sha=[Security.Cryptography.SHA256]::Create()
+    try { return [BitConverter]::ToString($sha.ComputeHash($stream)).Replace('-','') }
+    finally { $sha.Dispose(); $stream.Dispose() }
+}
 function Get-TestMutexName($Root, $OwnerSid) {
     $canonical = [IO.Path]::GetFullPath($Root.Replace('/','\')).TrimEnd('\').ToLowerInvariant()
     $sha = [Security.Cryptography.SHA256]::Create()
@@ -24,11 +30,39 @@ function Outside-Checkout($Path, $Root) {
     $r = [IO.Path]::GetFullPath($Root).TrimEnd('\','/')
     return !(Same-Path $p $r) -and !$p.StartsWith($r + '\', [StringComparison]::OrdinalIgnoreCase)
 }
+function Get-TestExecutionRoot($Config) {
+    $property=$Config.PSObject.Properties['PackageRoot']
+    if ($property -and $property.Value) { return [IO.Path]::GetFullPath($property.Value) }
+    return [IO.Path]::GetFullPath($Config.RepoRoot)
+}
+function Set-TestPackageEnvironment($Config) {
+    $property=$Config.PSObject.Properties['PackageRoot']
+    if ($property -and $property.Value) {
+        $env:CRM_TEST_PACKAGE_ROOT=Get-TestExecutionRoot $Config
+        $env:CRM_TEST_PACKAGE_MANIFEST_SHA256=$Config.PackageManifestSha256
+    } else {
+        $env:CRM_TEST_PACKAGE_ROOT=''
+        $env:CRM_TEST_PACKAGE_MANIFEST_SHA256=''
+    }
+}
+function Assert-TestPackage($Config) {
+    $property=$Config.PSObject.Properties['PackageRoot']
+    if (!$property -or !$property.Value) { return }
+    $verifier=Join-Path $Config.RepoRoot 'deploy/test-package.mjs'
+    if (!(Test-Path -LiteralPath $verifier)) { throw 'TEST_PACKAGE_VERIFIER_MISSING' }
+    # Invoke the canonical verifier with the pinned Node; package scripts cannot authorize themselves.
+    try {
+        $result=& $Config.NodePath $verifier verify --package-root $Config.PackageRoot --manifest-sha256 $Config.PackageManifestSha256
+        if ($LASTEXITCODE -ne 0) { throw 'TEST_PACKAGE_VERIFICATION_FAILED' }
+        $verified=($result -join "`n") | ConvertFrom-Json
+        if (!$verified -or $verified -isnot [pscustomobject]) { throw 'TEST_PACKAGE_VERIFICATION_FAILED' }
+    } catch { throw 'TEST_PACKAGE_VERIFICATION_FAILED' }
+}
 function Read-TestConfig($File) {
     if (![IO.Path]::IsPathRooted($File)) { throw 'CONFIG_ABSOLUTE_PATH_REQUIRED' }
     $c = Get-Content -LiteralPath $File -Raw | ConvertFrom-Json
     $keys = @('RepoRoot','NodePath','BaselineEnv','ErpApiRoot','ErpBaselineEnv','PhotoRoot','RuntimeDir','LogDir','NativeRelease','NativeConfig')
-    $allowed = $keys + @('OwnerSid','NodeSha256','NativeSourceCommit','NativePackageId','ExpectedDatabase','TaskName','AISalesMode')
+    $allowed = $keys + @('OwnerSid','NodeSha256','NativeSourceCommit','NativePackageId','ExpectedDatabase','TaskName','AISalesMode','PackageRoot','PackageManifestSha256')
     foreach ($property in $c.PSObject.Properties.Name) { if ($property -notin $allowed) { throw 'CONFIG_UNKNOWN_FIELD' } }
     $aiProperty=$c.PSObject.Properties['AISalesMode']
     if (!$aiProperty) { $c | Add-Member -NotePropertyName AISalesMode -NotePropertyValue 'off' }
@@ -41,13 +75,22 @@ function Read-TestConfig($File) {
     foreach ($key in @('OwnerSid','NodeSha256','NativeSourceCommit','NativePackageId','ExpectedDatabase','TaskName')) {
         if (!$c.$key) { throw ('CONFIG_FIELD_REQUIRED_' + $key) }
     }
+    $packageRoot=$c.PSObject.Properties['PackageRoot']; $packageHash=$c.PSObject.Properties['PackageManifestSha256']
+    if ([bool]$packageRoot -ne [bool]$packageHash) { throw 'CONFIG_PACKAGE_PAIR_REQUIRED' }
+    if ($packageRoot) {
+        if (!$packageRoot.Value -or ![IO.Path]::IsPathRooted($packageRoot.Value) -or !$packageHash.Value -or $packageHash.Value -notmatch '^[a-fA-F0-9]{64}$') { throw 'CONFIG_PACKAGE_IDENTITY_REQUIRED' }
+        if ($packageRoot.Value.Contains('"') -or $packageRoot.Value.Contains("`r") -or $packageRoot.Value.Contains("`n")) { throw 'CONFIG_PATH_CHARACTERS_REJECTED' }
+        if (!(Test-Path -LiteralPath $packageRoot.Value -PathType Container)) { throw 'CONFIG_PACKAGE_ROOT_MISSING' }
+        if (!(Outside-Checkout $packageRoot.Value $c.RepoRoot) -or !(Outside-Checkout $c.RepoRoot $packageRoot.Value)) { throw 'CONFIG_PACKAGE_INSIDE_CHECKOUT' }
+    }
     foreach ($p in @($File,$c.RuntimeDir,$c.LogDir,$c.BaselineEnv,$c.ErpBaselineEnv,$c.NativeConfig)) {
         if (!(Outside-Checkout $p $c.RepoRoot)) { throw 'PRIVATE_STATE_INSIDE_CHECKOUT' }
+        if ($packageRoot -and !(Outside-Checkout $p $packageRoot.Value)) { throw 'PRIVATE_STATE_INSIDE_PACKAGE' }
     }
     if ($c.TaskName -notmatch '^Melisa-CRM-TEST-[A-Za-z0-9_-]+$') { throw 'TEST_TASK_NAME_REQUIRED' }
     if ($c.ExpectedDatabase -ne 'MELISA_ERP_SIRKET_TEST_20260929_01' -or $c.NativePackageId -notlike 'CRM-ORDER-DRAFT-TEST-*') { throw 'TEST_NATIVE_SCOPE_REQUIRED' }
     if ([Security.Principal.WindowsIdentity]::GetCurrent().User.Value -ne $c.OwnerSid) { throw 'TEST_OWNER_MISMATCH' }
-    if ((Get-FileHash -LiteralPath $c.NodePath -Algorithm SHA256).Hash -ne $c.NodeSha256) { throw 'TEST_NODE_HASH_MISMATCH' }
+    if ((Get-TestFileSha256 $c.NodePath) -ne $c.NodeSha256) { throw 'TEST_NODE_HASH_MISMATCH' }
     $origin = & git -C $c.RepoRoot config --get remote.origin.url
     if ($LASTEXITCODE -ne 0 -or $origin -ne 'https://github.com/melihsnyldzz-ui/melisa-crm.git') { throw 'TEST_CHECKOUT_ORIGIN_MISMATCH' }
     $pushOrigin = & git -C $c.RepoRoot remote get-url --push origin
@@ -55,6 +98,7 @@ function Read-TestConfig($File) {
     if (!(Test-Path -LiteralPath (Join-Path $c.RepoRoot 'deploy/test-supervisor.mjs'))) { throw 'TEST_CHECKOUT_ENTRY_MISSING' }
     $manifest = Get-Content -LiteralPath (Join-Path $c.NativeRelease 'release-manifest.json') -Raw | ConvertFrom-Json
     if ($manifest.sourceCommit -ne $c.NativeSourceCommit -or $manifest.packageId -ne $c.NativePackageId) { throw 'TEST_NATIVE_RELEASE_MISMATCH' }
+    Assert-TestPackage $c
     return $c
 }
 function Get-TestProcess($ProcessId) {
@@ -83,13 +127,15 @@ function Read-SupervisorIdentity($Config) {
     $file = Join-Path $Config.RuntimeDir 'processes.json'
     if (!(Test-Path -LiteralPath $file)) { return $null }
     $r = Get-Content -LiteralPath $file -Raw | ConvertFrom-Json
-    if (!(Same-Path $r.root $Config.RepoRoot) -or !(Same-Path $r.executable $Config.NodePath) -or !(Same-Path $r.runtime $Config.RuntimeDir) -or !(Same-Path $r.logs $Config.LogDir)) { throw 'TEST_SUPERVISOR_RECORD_MISMATCH' }
-    $super = Assert-OwnedProcess $r.supervisor $Config (Join-Path $Config.RepoRoot 'deploy/test-supervisor.mjs') 0 $true
+    $executionRoot=Get-TestExecutionRoot $Config
+    if (!(Same-Path $r.root $executionRoot) -or !(Same-Path $r.executable $Config.NodePath) -or !(Same-Path $r.runtime $Config.RuntimeDir) -or !(Same-Path $r.logs $Config.LogDir)) { throw 'TEST_SUPERVISOR_RECORD_MISMATCH' }
+    $allowRelative=Same-Path $executionRoot $Config.RepoRoot
+    $super = Assert-OwnedProcess $r.supervisor $Config (Join-Path $executionRoot 'deploy/test-supervisor.mjs') 0 $allowRelative
     $children = @{}
     foreach ($name in @('test-server.mjs','test-erp-catalog.mjs','test-erp-orders.mjs')) {
         $property = $r.children.PSObject.Properties[$name]
         if (!$property) { continue }
-        $child = Assert-OwnedProcess $property.Value $Config (Join-Path $Config.RepoRoot ('deploy/' + $name)) $r.supervisor
+        $child = Assert-OwnedProcess $property.Value $Config (Join-Path $executionRoot ('deploy/' + $name)) $r.supervisor
         if ($child) {
             if ($child.CreationDate.ToUniversalTime() -lt ([datetime]$r.startedAt).ToUniversalTime().AddSeconds(-10)) { throw 'TEST_CHILD_PID_REUSED' }
             $children[$name] = $child
@@ -99,9 +145,43 @@ function Read-SupervisorIdentity($Config) {
         $created = $super.CreationDate.ToUniversalTime()
         if ([Math]::Abs(($created - ([datetime]$r.startedAt).ToUniversalTime()).TotalSeconds) -gt 10) { throw 'TEST_SUPERVISOR_PID_REUSED' }
         # A relative supervisor command is accepted only with its validated child chain.
-        if ($super.CommandLine -notmatch [regex]::Escape((Join-Path $Config.RepoRoot 'deploy/test-supervisor.mjs')) -and $children.Count -eq 0) { throw 'TEST_RELATIVE_SUPERVISOR_UNPROVEN' }
+        if ($super.CommandLine -notmatch [regex]::Escape((Join-Path $executionRoot 'deploy/test-supervisor.mjs')) -and $children.Count -eq 0) { throw 'TEST_RELATIVE_SUPERVISOR_UNPROVEN' }
     }
     return @{Record=$r; Supervisor=$super; Children=$children}
+}
+function Get-TestExpectedPorts($Identity) {
+    $expected=@{}
+    if ($Identity) {
+        foreach ($pair in @(@('test-server.mjs',62400),@('test-server.mjs',62401),@('test-erp-catalog.mjs',62402),@('test-erp-orders.mjs',62403))) {
+            if ($Identity.Children.ContainsKey($pair[0])) { $expected[[int]$pair[1]]=$Identity.Children[$pair[0]].ProcessId }
+        }
+    }
+    return $expected
+}
+function Assert-TestSessionListeners($Listeners, $Expected, $Identity, $Config, $NativeSnapshot) {
+    try {
+        Assert-TestListeners $Listeners $Expected
+        return @{Identity=$Identity;Listeners=$Listeners;Expected=$Expected}
+    } catch {
+        if ($_.Exception.Message -ne 'TEST_FOREIGN_PORT_OWNER') { throw }
+        # One atomic record/listener refresh handles only a verified child restart under the same supervisor.
+        if (!$Identity -or !$Identity.Supervisor) { throw 'TEST_FOREIGN_PORT_OWNER' }
+        $fresh=Read-SupervisorIdentity $Config
+        if (!$fresh -or !$fresh.Supervisor -or $fresh.Supervisor.ProcessId -ne $Identity.Supervisor.ProcessId -or $fresh.Supervisor.CreationDate -ne $Identity.Supervisor.CreationDate) { throw 'TEST_FOREIGN_PORT_OWNER' }
+        $freshExpected=Get-TestExpectedPorts $fresh
+        if ($Expected.ContainsKey(62404)) {
+            if (!$NativeSnapshot -or $NativeSnapshot.ProcessId -ne $Expected[62404]) { throw 'TEST_FOREIGN_PORT_OWNER' }
+            $nativeScript=Join-Path $Config.NativeRelease 'apps/api/start-crm-order-test.mjs'
+            $native=Assert-OwnedProcess $NativeSnapshot.ProcessId $Config $nativeScript
+            if (!$native -or $native.CreationDate -ne $NativeSnapshot.CreationDate -or $native.CommandLine -notmatch ('(?:^|\s)"?' + [regex]::Escape($Config.NativeConfig) + '"?(?:\s|$)')) { throw 'TEST_FOREIGN_PORT_OWNER' }
+            $freshExpected[62404]=$native.ProcessId
+        }
+        $freshListeners=Get-TestListeners
+        $super=Assert-OwnedProcess $fresh.Supervisor.ProcessId $Config (Join-Path (Get-TestExecutionRoot $Config) 'deploy/test-supervisor.mjs') 0 (Same-Path (Get-TestExecutionRoot $Config) $Config.RepoRoot)
+        if (!$super -or $super.CreationDate -ne $Identity.Supervisor.CreationDate) { throw 'TEST_FOREIGN_PORT_OWNER' }
+        Assert-TestListeners $freshListeners $freshExpected
+        return @{Identity=$fresh;Listeners=$freshListeners;Expected=$freshExpected}
+    }
 }
 function Assert-NativeHealth($Config) {
     $h = Invoke-RestMethod -Uri 'http://127.0.0.1:62404/test-health' -TimeoutSec 5
@@ -153,13 +233,14 @@ function Assert-PendingSupervisorPorts($Listeners, $Snapshot, $Config, $NativeId
     foreach ($l in $Listeners) {
         if ($l.LocalPort -eq 62404) { continue }
         $name=switch ([int]$l.LocalPort) {62400 {'test-server.mjs'} 62401 {'test-server.mjs'} 62402 {'test-erp-catalog.mjs'} 62403 {'test-erp-orders.mjs'} default {throw 'TEST_FOREIGN_PORT_OWNER'}}
-        $child=Assert-OwnedProcess $l.OwningProcess $Config (Join-Path $Config.RepoRoot ('deploy/'+$name)) $Snapshot.ProcessId
+        $child=Assert-OwnedProcess $l.OwningProcess $Config (Join-Path (Get-TestExecutionRoot $Config) ('deploy/'+$name)) $Snapshot.ProcessId
         if (!$child -or $child.CreationDate -lt $Snapshot.CreationDate) { throw 'TEST_PENDING_CHILD_IDENTITY_MISMATCH' }
         $expected[[int]$l.LocalPort]=$child.ProcessId
     }
     Assert-TestListeners $Listeners $expected
 }
 function Start-TestNode($Config, $Script, $WorkingDirectory, $Arguments, $Label) {
+    if ($Label -eq 'supervisor') { Assert-TestPackage $Config }
     $args = '"' + $Script + '"'
     foreach ($a in $Arguments) { if ($a.Contains('"')) { throw 'TEST_ARGUMENT_QUOTE_REJECTED' }; $args += ' "' + $a + '"' }
     return Start-Process -FilePath $Config.NodePath -ArgumentList $args -WorkingDirectory $WorkingDirectory -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $Config.LogDir ($Label + '.out.log')) -RedirectStandardError (Join-Path $Config.LogDir ($Label + '.err.log'))
@@ -170,6 +251,8 @@ function Invoke-TestSession($Config) {
     try {
         try { $held = $mutex.WaitOne(0) } catch [Threading.AbandonedMutexException] { $held = $true }
         if (!$held) { return }
+        $executionRoot=Get-TestExecutionRoot $Config
+        Set-TestPackageEnvironment $Config
         New-Item -ItemType Directory -Force -Path $Config.RuntimeDir,$Config.LogDir | Out-Null
         $env:CRM_BASELINE_ENV=$Config.BaselineEnv; $env:CRM_ERP_API_ROOT=$Config.ErpApiRoot
         $env:CRM_ERP_BASELINE_ENV=$Config.ErpBaselineEnv; $env:CRM_ERP_PHOTO_ROOT=$Config.PhotoRoot
@@ -194,7 +277,7 @@ function Invoke-TestSession($Config) {
         while ($true) {
             $identity=Read-SupervisorIdentity $Config
             if ($pendingSupervisor) {
-                $pending=Assert-OwnedProcess $pendingSupervisor.ProcessId $Config (Join-Path $Config.RepoRoot 'deploy/test-supervisor.mjs')
+                $pending=Assert-OwnedProcess $pendingSupervisor.ProcessId $Config (Join-Path $executionRoot 'deploy/test-supervisor.mjs')
                 if ($pending -and $pending.CreationDate -ne $pendingSupervisor.CreationDate) { throw 'TEST_PENDING_SUPERVISOR_PID_REUSED' }
                 $ready=$identity -and $identity.Supervisor -and $identity.Supervisor.ProcessId -eq $pendingSupervisor.ProcessId
                 $decision=Get-ReadinessDecision ([bool]$pending) ([bool]$ready) ((Get-Date)-$pendingSince).TotalSeconds 60
@@ -203,31 +286,30 @@ function Invoke-TestSession($Config) {
                     Start-Sleep -Seconds 2; continue
                 }
                 if ($decision -eq 'recover') {
-                    Stop-VerifiedTestProcess $pendingSupervisor $Config (Join-Path $Config.RepoRoot 'deploy/test-supervisor.mjs')
+                    Stop-VerifiedTestProcess $pendingSupervisor $Config (Join-Path $executionRoot 'deploy/test-supervisor.mjs')
                     # Child orphan recovery needs the existing supervisor identity record.
                     if (@(Get-TestListeners | Where-Object {$_.LocalPort -ne 62404}).Count -and (!$identity -or $identity.Record.supervisor -ne $pendingSupervisor.ProcessId)) { throw 'TEST_PENDING_CHILD_RECORD_REQUIRED' }
                 }
                 $pendingSupervisor=$null; $pendingSince=$null
                 if ($decision -eq 'recover') { continue }
             }
-            $expected=@{}
-            if ($identity) {
-                foreach ($pair in @(@('test-server.mjs',62400),@('test-server.mjs',62401),@('test-erp-catalog.mjs',62402),@('test-erp-orders.mjs',62403))) {
-                    if ($identity.Children.ContainsKey($pair[0])) { $expected[[int]$pair[1]]=$identity.Children[$pair[0]].ProcessId }
-                }
-            }
+            $expected=Get-TestExpectedPorts $identity
             $listeners=Get-TestListeners
+            $nativeSnapshot=$null
             $nativeListeners=@($listeners | Where-Object {$_.LocalPort -eq 62404})
             if ($nativeListeners.Count) {
                 $nativeId=$nativeListeners[0].OwningProcess
                 $native=Assert-OwnedProcess $nativeId $Config $nativeScript
                 if (!$native -or $native.CommandLine -notmatch ('(?:^|\s)"?' + [regex]::Escape($Config.NativeConfig) + '"?(?:\s|$)')) { throw 'TEST_NATIVE_CONFIG_ARGUMENT_MISMATCH' }
+                $nativeSnapshot=$native
                 $expected[62404]=$nativeId
             } elseif ($nativeId) {
                 $native=Assert-OwnedProcess $nativeId $Config $nativeScript
                 if (!$native) { $nativeId=0 }
+                $nativeSnapshot=$native
             }
-            Assert-TestListeners $listeners $expected
+            $checked=Assert-TestSessionListeners $listeners $expected $identity $Config $nativeSnapshot
+            $identity=$checked.Identity; $listeners=$checked.Listeners; $expected=$checked.Expected
             if (!$nativeId) {
                 $native=Start-TestNode $Config $nativeScript (Join-Path $Config.NativeRelease 'apps/api') @($Config.NativeConfig) 'native-draft'
                 $nativeId=$native.Id
@@ -252,13 +334,13 @@ function Invoke-TestSession($Config) {
                 if ($identity) {
                     foreach ($name in $identity.Children.Keys) {
                         $child=$identity.Children[$name]
-                        $verified=Assert-OwnedProcess $child.ProcessId $Config (Join-Path $Config.RepoRoot ('deploy/' + $name)) $identity.Record.supervisor
+                        $verified=Assert-OwnedProcess $child.ProcessId $Config (Join-Path $executionRoot ('deploy/' + $name)) $identity.Record.supervisor
                         if ($verified -and $verified.CreationDate -eq $child.CreationDate) { Stop-Process -Id $child.ProcessId -ErrorAction Stop }
                     }
                 }
                 if (@(Get-TestListeners | Where-Object {$_.LocalPort -ne 62404}).Count) { throw 'TEST_CRM_PORTS_NOT_FREE' }
-                $started=Start-TestNode $Config (Join-Path $Config.RepoRoot 'deploy/test-supervisor.mjs') $Config.RepoRoot @() 'supervisor'
-                $pendingSupervisor=Assert-OwnedProcess $started.Id $Config (Join-Path $Config.RepoRoot 'deploy/test-supervisor.mjs')
+                $started=Start-TestNode $Config (Join-Path $executionRoot 'deploy/test-supervisor.mjs') $executionRoot @() 'supervisor'
+                $pendingSupervisor=Assert-OwnedProcess $started.Id $Config (Join-Path $executionRoot 'deploy/test-supervisor.mjs')
                 if (!$pendingSupervisor) { throw 'TEST_SUPERVISOR_START_FAILED' }
                 $pendingSince=Get-Date
                 Start-Sleep -Seconds 5
@@ -267,4 +349,17 @@ function Invoke-TestSession($Config) {
         }
     } finally { if ($held) { $mutex.ReleaseMutex() }; $mutex.Dispose() }
 }
-if (!$Library) { try { Invoke-TestSession (Read-TestConfig $ConfigPath) } catch { $code=$_.Exception.GetType().Name; if ($_.Exception.Message -match '^[A-Z][A-Z0-9_]+$') {$code=$_.Exception.Message}; Write-Error ('TEST_SESSION_FAILED: ' + $code); exit 1 } }
+function Write-TestSessionFailure($Config, $Exception) {
+    $code=$Exception.GetType().Name
+    if ($Exception.Message -cmatch '^[A-Z][A-Z0-9_]{0,120}$') { $code=$Exception.Message }
+    # Only a successfully validated config may provide the log path. Never persist raw errors.
+    if ($Config -and (Test-Path -LiteralPath $Config.LogDir -PathType Container)) {
+        try { Write-TestIdentityAtomic (Join-Path $Config.LogDir 'test-session-last-error.json') @{occurredAt=(Get-Date).ToUniversalTime().ToString('o');code=$code} } catch {}
+    }
+    return $code
+}
+if (!$Library) {
+    $validatedConfig=$null
+    try { $validatedConfig=Read-TestConfig $ConfigPath; Invoke-TestSession $validatedConfig }
+    catch { $code=Write-TestSessionFailure $validatedConfig $_.Exception; Write-Error ('TEST_SESSION_FAILED: ' + $code); exit 1 }
+}

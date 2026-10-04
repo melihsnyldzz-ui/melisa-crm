@@ -56,7 +56,7 @@ jobs:
         with:
           node-version: '24'
       - name: Check Windows PowerShell startup contracts without installing tasks
-        run: node --import ./tests/offline-test-guard.mjs --test tests/test-session-launcher.test.mjs
+        run: node --import ./tests/offline-test-guard.mjs --test tests/test-session-launcher.test.mjs tests/test-package-switch.test.mjs
 
   secret-scan:
     name: secret-scan

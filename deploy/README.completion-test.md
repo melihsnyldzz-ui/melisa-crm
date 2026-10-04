@@ -2,6 +2,29 @@
 
 Current source branch: codex/crm-agents-on-completion-20261003, PR3, based on feature/crm-completion. Existing LIVE runtimes remain separate. Current acceptance is in CRM_STATUS.md; historical evidence below keeps its original date/scope.
 
+## Immutable TEST package and rollback — 2026-10-04
+
+The existing scheduled task continues to execute the canonical source launcher. `RepoRoot` remains the canonical Git/origin and mutex identity. Optional `PackageRoot` and `PackageManifestSha256` must be supplied together; only CRM supervisor/child scripts and their working directories move to the verified package. Missing or invalid package identity never falls back to the source checkout. Runtime, journals, AI rules, logs and protected config remain outside both roots. Native ERP62404 and the existing ERP reader release remain separate.
+
+Create a package from a clean feature checkout and a full committed source revision:
+
+```powershell
+node .\deploy\test-package.mjs create --commit <full-40-character-commit>
+node .\deploy\test-package.mjs verify --package-root <absolute-package-directory> --manifest-sha256 <manifest-sha256>
+```
+
+The creator selects tracked Git blobs, installs locked public dependencies with offline npm ci / ignore-scripts, and builds a fresh VITE_CRM_TEST frontend in staging. It does not copy ignored node_modules or private environment files. A cache miss is a preparation failure, not permission for silent network/copy fallback. Final packages are new `releases/crm-test-<full-commit>` directories; existing destinations are not overwritten. Every payload/dependency file has a size and SHA256 in `release-manifest.json`, with source Git blob hashes and build/lock metadata. The package hash is the SHA256 of this manifest; no ZIP archive is claimed. Files become read-only. Administrator modification is still possible, so startup and new-package child recovery recheck the pinned inventory rather than treating a directory name as proof.
+
+Use the owned TEST transition helper with the same private startup config:
+
+```powershell
+powershell.exe -NoProfile -NonInteractive -File .\deploy\switch-test-package.ps1 -ConfigPath <existing-private-startup-config> -PackageRoot <verified-package-directory> -PackageManifestSha256 <manifest-sha256>
+```
+
+It validates the canonical task/owner/Node, current CRM process chain and native identity, saves the previous config reference, stops only that TEST watchdog/supervisor/CRM children, and archives only the supervisor identity record. It atomically selects the package and starts the same scheduled task, waiting for the new owned chain and unchanged native PID/creation identity. Journal, AI policy, native identity and DB records are not reverted. Normal readiness failure attempts the previous validated config; a changed config or foreign process requires operator inspection. Timestamp/code/phase metadata stays outside Git. This helper does not perform LIVE deployment, DB restore or native-service restart.
+
+Actual A→B→A→B evidence, package hashes, external ERP release references and normal CRM use belong in CRM_STATUS.md and the outside-Git acceptance log. Creating or verifying a package alone does not prove rollback. The historical A package may predate per-child package verification; it is verified by the canonical launcher before startup and must not be modified while running.
+
 ## Windows user-logon startup — 2026-10-04
 
 The installed `Melisa-CRM-TEST-Completion` task runs `test-session-launcher.ps1` as the existing user with an interactive LOGON trigger, Limited privilege, one-instance policy and bounded startup recovery. It adopts only processes matching the configured owner SID, pinned Node executable/hash, exact script/config, creation time and loopback ports. The launcher watches the CRM supervisor and the separate native ERP draft process; it does not restart LIVE services. Native `/test-health` must identify the configured package/source and the exact bounded TEST database before adoption. An identity mismatch fails closed; a transient connection failure has a readiness window before an identically revalidated process may be recovered.
@@ -23,7 +46,7 @@ Current acceptance: native ERP and CRM supervisor were stopped separately after 
 
 ## Human-reviewed AI TEST setting
 
-`AISalesMode` in the outside-Git startup config defaults to `off`; only `off` and `copilot` are allowed. The user authorized reuse of the existing server-side OpenAI key for the7733 TEST suggestion scope. The installed config selects `copilot`; the gateway forces conversation55 **and** the actual trusted DTO phone7733. The baseline env cannot broaden this scope. Policy remains unset; trusted full-quote products=[] is preserved. The existing authenticated ERP read supplies recorded product cards/photos/per-item sale prices; source stock freshness and series remain unverified. The model receives product ID/code/name, currency and priceAvailable, not numeric prices. Selected records are read again before cards and before product/price-to-draft. Explicit staff selectors are search locators only. Real7733 TEST card/photo and both draft actions worked; user acceptance is pending. Country/MOQ/shipping rules and foreign-language copy remain separate open work. Human review and a separate normal Send click are required; no autonomous send or ERP write exists.
+`AISalesMode` in the outside-Git startup config defaults to `off`; only `off` and `copilot` are allowed. The user authorized reuse of the existing server-side OpenAI key for the7733 TEST suggestion scope. The installed config selects `copilot`; the gateway forces conversation55 **and** the actual trusted DTO phone7733. The baseline env cannot broaden this scope. The TEST policy JSON exists with unconfigured business values; patron management and the rule card worked, while real MOQ/country/shipping values and user acceptance remain pending. Trusted full-quote products=[] is preserved. The existing authenticated ERP read supplies recorded product cards/photos/per-item sale prices; source stock freshness and series remain unverified. The model receives product ID/code/name, currency and priceAvailable, not numeric prices or minimum amounts. Selected records and the current policy revision are read again before draft use. Real7733 TEST card/photo and both draft actions worked; user acceptance is pending. Foreign-language copy remains separate open work. Human review and a separate normal Send click are required; no autonomous send or ERP write exists.
 
 ## Supervisor and existing ERP contract
 

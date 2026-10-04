@@ -3,8 +3,17 @@ import path from 'node:path';
 import net from 'node:net';
 import {spawn} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
+import {verifyTestPackage} from './test-package.mjs';
 
 const root=fileURLToPath(new URL('../',import.meta.url));
+export function assertTestExecutionPackage(executionRoot,env=process.env,verify=verifyTestPackage){
+  const packageRoot=env.CRM_TEST_PACKAGE_ROOT||'',pin=(env.CRM_TEST_PACKAGE_MANIFEST_SHA256||'').toLowerCase();
+  if(!packageRoot&&!pin)return;
+  if(!packageRoot||!pin||!/^[a-f0-9]{64}$/.test(pin))throw Error('TEST_PACKAGE_ENVIRONMENT_PAIR_REQUIRED');
+  const normalized=path.resolve(packageRoot),actual=path.resolve(executionRoot);
+  if((process.platform==='win32'?normalized.toLowerCase()!==actual.toLowerCase():normalized!==actual))throw Error('TEST_PACKAGE_EXECUTION_ROOT_MISMATCH');
+  return verify({packageRoot:normalized,manifestSha256:pin});
+}
 export function resolveTestDirectories(repoRoot,env=process.env){
   const checkout=path.resolve(repoRoot),parent=path.dirname(checkout);
   const runtime=path.resolve(env.CRM_TEST_RUNTIME_DIR||path.join(parent,'runtime','test-completion'));
@@ -34,11 +43,13 @@ export async function startTestSupervisor(){
   }
   function start(file){
     if(stopping)return;
+    // A finalized package is never rebuilt in place. Recheck before every child recovery.
+    assertTestExecutionPackage(root);
     const log=fs.openSync(path.join(logs,file+'.log'),'a');
     const child=spawn(process.execPath,[path.join(root,'deploy',file)],{cwd:root,env:process.env,windowsHide:true,stdio:['ignore',log,log]});
     fs.closeSync(log);children.set(file,child);persist();
     child.once('error',error=>{console.error('TEST_CHILD_START_FAILED',file,error.code);});
-    child.once('close',()=>{children.delete(file);persist();if(!stopping)setTimeout(()=>start(file),3000);});
+    child.once('close',()=>{children.delete(file);persist();if(!stopping)setTimeout(()=>{try{start(file)}catch(error){console.error('TEST_PACKAGE_RECOVERY_REJECTED',error.code||error.message);stop()}},3000);});
   }
   for(const file of ['test-erp-catalog.mjs','test-erp-orders.mjs','test-server.mjs'])start(file);
   function stop(){stopping=true;persist();for(const child of children.values())child.kill();setTimeout(()=>process.exit(0),1000).unref();}
