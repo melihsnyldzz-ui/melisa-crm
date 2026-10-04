@@ -18,6 +18,8 @@ Her adım: **eksiği bul → düzelt → TEST’e kur → gerekli otomatik kontr
 
 **4 Ekim 2026 ses/video hazırlığı:** Giden ses/video seçimi, yerel oynatıcı, MIME/uzantı/içerik doğrulaması ve native provider gönderim desteği tamamlanıp kanonik TEST’e kuruldu. Yeni sekmede CRM girişi ve Samsung kilidi kullanıcı adımı beklediğinden gerçek gönderim/iki yönlü oynatma yapılmadı; sarı kullanıcı kabulü, PASS değildir. Sonraki tek geliştirme eksiği Windows TEST supervisor/UI/gateway/adapter autostart zinciridir. Ses/video gerçek kabulü yalnız 7733 konuşmasından sürdürülür; mevcut yeşiller yeniden açılmaz.
 
+**4 Ekim 2026, 19:34–19:41 ses/video gerçek kabulü:** Normal CRM’den yalnız 7733’e MP3 ve MP4 gönderildi; kullanıcı ikisini telefonda açtığını doğrulayıp geri gönderdi. Gelen dosyalar doğru konuşmada sonuna kadar hatasız oynatıldı; ses/video gerçek MP3/MP4 kapsamında PASS. Önceki giriş/kilit bekleyen hazırlık kaydı tarihsel olarak korunur. Tek güncel liste `CRM_STATUS.md`: kalan5 kritik, Windows autostart geliştirmesi ve dört kullanıcı kabulü. Sonraki tek geliştirme işi Windows TEST supervisor/UI/gateway/adapter otomatik açılışıdır.
+
 ## Öncelik sırası ve gerçek kullanım kabulü
 
 Baseline’da zaten çalışan madde korunur; eksik olanlar sırayla ele alınır. Aşağıdaki tablo bir tamamlandı listesi değildir.

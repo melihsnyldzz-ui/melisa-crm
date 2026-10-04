@@ -1,6 +1,6 @@
 # MELISA CRM — Güncel Durum
 
-Güncelleme: **4 Ekim 2026 — ses/video gönderme kodu TEST’e kuruldu; gerçek oynatma kabulü bekliyor**. İş sırası: [CRM_FINISH_PLAN.md](CRM_FINISH_PLAN.md).
+Güncelleme: **4 Ekim 2026 — ses/video iki yönde gerçek kullanımla kabul edildi**. İş sırası: [CRM_FINISH_PLAN.md](CRM_FINISH_PLAN.md).
 
 Çalışan CRM baseline korunmuştur. Bu tur yalnız 7733 test hattıyla gerçek yazışma yapıldı; explorer, frontend/backend ve bağımsız reviewer kullanıldı. HTTP 200, build ve unit test tek başına yeşil gerekçe değildir. LIVE deployment yapılmadı, başka müşteriye mesaj gönderilmedi.
 
@@ -74,6 +74,12 @@ Bu tur staged/history secret scanner çıkış1 verdi: aynı iki eski localhost 
 
 Önceki Chrome sekmesinin kontrol bağlantısı kullanılamadığı için görünür yeni **http://127.0.0.1:62400/** sekmesi açıldı; yeni sekme giriş ekranında. Kullanıcıdan mevcut hesabıyla ekrandan giriş yapması istendi; parola alınmadı. Samsung ADB bağlı, canlı ekran **66344** cevap veriyor; güç bağlı/Awake/StayOn doğrulandı, telefon kilit ekranında. Kullanıcıdan kilidi kendi açması istendi. Bu tur normal CRM’den gerçek ses/video gönderimi, WhatsApp teslimi veya iki yönde oynatma henüz yapılmadı; bu nedenle madde sarı, yeşil değildir. TEST ve telefon ekranı açık bırakıldı; reboot sonrası otomatik bağlantı iddia edilmez.
 
+**Ses/video gerçek kabulü — 4 Ekim 2026, 19:34–19:41:** Kullanıcı normal Chrome CRM oturumuna giriş yaptı ve Samsung kilidini açtı. Kanonik TEST UI/gateway 62400/62401 / **39528** ve supervisor **61508** kimliği tekrar doğrulandı; kaynak **a063e94**, çalışma ağacı temizdi. Normal ek menüsünden gerçek MP3 ve MP4 seçildi; yerel önizlemeler **3,030125 / 4 saniye** sonuna kadar hatasız oynadı. Yalnız 7733 konuşmasına birer kez gönderildi; kalıcı Chatwoot konuşma55/inbox1 kayıtları **12036 audio/mpeg 24.241 byte**, **12037 video/mp4 140.460 byte**, provider kimliği ve gerçek attachment URL taşıyor. İlk optimistic balonun URL beklemesi kaynak incelemesinde normal çıktı; sonraki sohbet okumasında kalıcı oynatıcılar geldi, bu tur yeni kaynak hatası bulunmadı.
+
+Samsung SM-N985F, kullanıcının verdiği güncel kablosuz porttan yeniden bağlandı; cevap veren canlı ekran **60604**, güç bağlı/Awake/StayOn doğrulandı. WhatsApp konuşmasında iki yeni medya görüldü; ses oynatma kontrolü açıldı. Kullanıcı **“İkisi açıldı; geri gönderiyorum”** diyerek kendi 7733 hattında ses/video açma kabulünü verdi ve iki dosyayı geri gönderdi. Gelen **12038 video/mp4 140.168 byte**, **12039 audio/mpeg 24.241 byte** doğru konuşmaya birer kez alındı. Normal CRM’de gelen video **4,02322 saniye**, gelen ses **3,030125 saniye** oynatıldı; currentTime=duration, ended=true, error=null. WhatsApp video işlemesi sonrası byte/süre farkı var; video bit eşitliği iddia edilmez. Gerçek format kabulü MP3 ses ve MP4 videodur; diğer ses formatları için ayrı codec/telefon kabulü iddia edilmez.
+
+Kanıtlar checkout dışında `logs/acceptance-20261004/audio-video-chatwoot-proof.json`, `audio-video-browser-playback-proof.json`, `crm-incoming-audio-video-played.jpg` ve Samsung medya görüntüleridir; credential/müşteri içeriği/medya Git’e eklenmedi. CRM ve telefon canlı ekranı açık bırakıldı. LIVE deployment, başka müşteriye gönderim veya ERP taslak oluşturma yapılmadı. Bu tur yalnız gerçek kabul ve durum belgeleri güncellendi; yeni frontend build/restart gerekmedi. Önceki teknik review/build sonuçları korunur, gerçek oynatma kabulünün yerine kullanılmadı.
+
 ## CRM BİTİRME LİSTESİ
 
 Tek güncel liste. Kritik sayım 13 başlıktaki açık sarı/kırmızı satırların toplamıdır; aynı kabul/restart ikinci kez sayılmaz.
@@ -83,7 +89,7 @@ Tek güncel liste. Kritik sayım 13 başlıktaki açık sarı/kırmızı satırl
 | Gelen/giden metin | 🟡 KULLANICI KABULÜ BEKLİYOR — kod hazır ama benim gözümle doğrulamam gerekiyor | Genel kimlik/kişi/konuşma eşlemesi hazır; 0817 LID doğru telefona salt okunur çözüldü. Yeni 7733 yanıtı doğru konuşmada tek kez görüldü, restart sonrası korundu. Inbox728/atanmamış621 tam yüklendi. Kalan: genel müşterinin gerçek webhook → CRM ekranı alımını kabul etmek. Başka müşteri aktarılmadı, LIVE güncellenmedi; bu nedenle genel metin yeşil değildir. |
 | Fotoğraf | 🟢 ÇALIŞIYOR — gerçek kullanım kanıtı var | Telefon açma yanıtı ve gelen fotoğrafı CRM'de büyütüp açma kabulü tamamlandı. |
 | PDF/dosya | 🟢 ÇALIŞIYOR — gerçek kullanım kanıtı var | PDF/TXT iki yönde açıldı/indirildi; içerikler eşleşiyor. Fiyatlı PDF de render edildi ve telefonda açıldı. Mevcut kapsam PDF/TXT. |
-| Ses/video | 🟡 KULLANICI KABULÜ BEKLİYOR — kod hazır ama benim gözümle doğrulamam gerekiyor | Normal menüde MP3/M4A/OGG/WAV ses ve MP4 video seçimi, yerel oynatıcı, içerik/uzantı doğrulaması ve provider ses/video yolu hazır; TEST build’i kuruldu. Gelen oynatıcı korunuyor. Kalan: CRM girişinden sonra yalnız 7733’e gerçek gönderme, telefonda açıp oynatma, geri gönderileni CRM’de oynatma. Bu tur gerçek gönderim henüz yapılmadı. |
+| Ses/video | 🟢 ÇALIŞIYOR — gerçek kullanım kanıtı var | Normal menüden MP3 ses ve MP4 video seçildi, önizlemeler oynadı, yalnız 7733’e ulaştı. Kullanıcı ikisinin telefonda açıldığını kabul edip geri gönderdi; gelen ikisi doğru CRM konuşmasında sonuna kadar hatasız oynadı. Gerçek format kabulü MP3/MP4; diğer ses codec’leri için ayrı telefon kabulü iddia edilmez. |
 | Atanmamışlar ve konuşma atama | 🟡 KULLANICI KABULÜ BEKLİYOR — kod hazır ama benim gözümle doğrulamam gerekiyor | Filtre, gerçek atama ve geri alma görüldü. Kalan: atanmamış test konuşmasını personele atayıp aynı personelin hesabında görmek. |
 | Patron/müdür/personel yetkileri | 🟡 KULLANICI KABULÜ BEKLİYOR — kod hazır ama benim gözümle doğrulamam gerekiyor | Patron oturumu kullanıldı; rol/konuşma sınırları hazır. Üç mevcut hesapla görünürlük/gönderim/atama kabulü yapılmadı. |
 | Otomatik çeviri | 🟢 ÇALIŞIYOR — gerçek kullanım kanıtı var | Haloo → Merhaba gerçek gelen mesajda otomatik göründü; önceki giden çeviri kabulü korunur. Tüm dillerin kalite kabulü iddia edilmez. |
@@ -101,8 +107,8 @@ Tek güncel liste. Kritik sayım 13 başlıktaki açık sarı/kırmızı satırl
 
 3 Ekim ilk incelemesinde TEST 62094/4212/62400–62403 kapalıydı; o anda açık diye sunulmadı. Sonraki açık kullanıcı yetkisiyle 4 Ekim bu kaynak TEST'i açıldı ve yukarıdaki gerçek kabul kaydedildi. Eski eksik PDF indirme/telefon kabulü kapandı; güncel ERP sözleşmesi de yukarıdaki dar TEST kapsamıyla kabul edildi. Fiziksel mobil CRM ve Windows açılışı hâlâ açıktır. [docs/BASELINE.md](docs/BASELINE.md) ve [docs/REV3_VALIDATION.md](docs/REV3_VALIDATION.md) eski kapsam kanıtı olarak korunur.
 
-KALAN KRİTİK MADDE SAYISI: **6 — 1 geliştirme eksiği, 5 kullanıcı kabulü.**
+KALAN KRİTİK MADDE SAYISI: **5 — 1 geliştirme eksiği, 4 kullanıcı kabulü.**
 
-KULLANICININ ŞİMDİ GÖZÜYLE DENEYECEĞİ İLK ŞEY: **Yeni açık TEST CRM sekmesine mevcut hesabıyla giriş yapmak ve Samsung kilidini açmak; ardından yalnız 7733 konuşmasında ses/video gönderip iki yönde oynatmak.**
+KULLANICININ ŞİMDİ GÖZÜYLE DENEYECEĞİ İLK ŞEY: **7733 test konuşmasını personele atayıp aynı personelin kendi CRM hesabında konuşmayı gördüğünü doğrulamak.**
 
 SONRAKİ TEK GELİŞTİRME İŞİ: **Windows açılışında TEST supervisor/UI/gateway/adapter zincirinin otomatik çalışmasını kurmak ve gerçek restart/logoff sonucunu doğrulamak.**
