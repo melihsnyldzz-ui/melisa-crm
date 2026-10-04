@@ -7,6 +7,7 @@ import {
 import { requireCrmAuth, requireCrmPermission } from '../middleware/auth.js';
 import { crmTranslationRateLimit } from '../middleware/security.js';
 import { postConversationTranslation } from '../controllers/translationController.js';
+import { postConversationSalesDraft } from '../controllers/salesAgentController.js';
 
 export const conversationRoutes = Router();
 
@@ -37,4 +38,13 @@ conversationRoutes.post(
   requireCrmPermission('crm.view'),
   crmTranslationRateLimit,
   postConversationTranslation,
+);
+
+// Suggestion-only endpoint. Shares the existing per-user AI rate limit; never sends.
+conversationRoutes.post(
+  '/crm/conversations/:conversationId/sales-draft',
+  requireCrmAuth,
+  requireCrmPermission('crm.send'),
+  crmTranslationRateLimit,
+  postConversationSalesDraft,
 );
