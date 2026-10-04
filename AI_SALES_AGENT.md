@@ -1,3 +1,12 @@
+# Melisa Satış Asistanı — Güncel entegrasyon
+
+4 Ekim2026: PR6 V1 çekirdeği mevcut feature'a cca48e1 ile alındı;743c6ae normal CRM öneri ekranı ve gerçek erişim/atama bağlamını bağladı. Kullanıcı mevcut anahtarı yalnız7733 TEST için onayladı. Normal CRM'de gerçek OpenAI cevabı → Türkçe özet/inceleme → düzenlenebilir mesaj taslağı aktarımı çalıştı; gönderim0, ERPwrite0. Kullanıcı ekran kabulü bekler. Ana durum ve sayım yalnız CRM_FINISH_PLAN.md / CRM_STATUS.md'dedir.
+
+Güncel DTO ataması modelden önce/sonra ve tarayıcı öneri kimliğinde doğrulanır. Yeni yetki/telefon/konuşma/taslak/ek değişiminde eski öneri uygulanmaz. Gerçek Express route offline sınır testleri ve bağımsız reviewer tamam; açık P0/P1/P2 bulgu0. 9fe215f exacthead CRM CI ve AI offlineSUCCESS; bu teknik sonuç gerçek ürün/fiyat önerisi kabulü değildir.
+
+Endpoint **products=[]** olarak kalır: yalnız karşılama/ihtiyaç metni. Evrensel MOQ/kargo/ülke politikası veya gerçek stok/seri doğrulanmış değildir; örnek eski1000USD JSON etkin politika yapılmadı. Gerçek katalog/kayıtlı fiyat bağlamı A04, yabancı dil/ERP bağlam kabulü A05'te açık. Varsayılanoff; TEST startup-config AISalesMode=copilot seçimi yalnız konuşma55 ve gerçek7733 DTO telefonu için etkin. Credential sunucu belleğinde mevcut çeviri ayarından okunur; browser/repo/loga yazılmaz. İnsan Gönder'e basana kadar WhatsApp mesajı oluşmaz.
+
+## Tarihsel V1 teslim kaydı — aşağıdaki “yapılmadı” ifadeleri kendi zamanına aittir
 # Melisa Satış Asistanı — V1 geliştirme kaydı
 
 Tarih: 4 Ekim 2026. Durum: **PARTIAL — sunucu tarafı copilot çekirdeği; CRM ekranı ve gerçek kullanım kabulü bekliyor.**
