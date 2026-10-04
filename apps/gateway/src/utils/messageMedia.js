@@ -6,6 +6,8 @@ const extensions = new Map([
   ['application/msword', ['doc']],
   ['application/vnd.openxmlformats-officedocument.wordprocessingml.document', ['docx']],
   ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', ['xlsx']],
+  ['audio/mpeg', ['mp3']], ['audio/mp4', ['m4a', 'mp4']], ['audio/ogg', ['ogg', 'opus']], ['audio/wav', ['wav']],
+  ['video/mp4', ['mp4']],
 ]);
 function invalid(code = 'MEDIA_INVALID') {
   return Object.assign(new Error('Mesaj dosyasi gecersiz veya desteklenmiyor.'), {
@@ -34,8 +36,9 @@ export function normalizeOutboundMedia(media) {
   const bytes = decodeCanonicalBase64(match[2]);
   assertMediaFormat(bytes, mimeType);
   if (media.asDocument !== undefined && typeof media.asDocument !== 'boolean') throw invalid();
-  const asDocument = media.asDocument === true || !mimeType.startsWith('image/') || mimeType === 'image/webp';
-  const mediaType = mimeType.startsWith('image/') && !asDocument ? 'image' : 'document';
+  const nativeType = mimeType.startsWith('image/') ? 'image' : mimeType.startsWith('audio/') ? 'audio' : mimeType.startsWith('video/') ? 'video' : 'document';
+  const asDocument = media.asDocument === true || nativeType === 'document' || mimeType === 'image/webp';
+  const mediaType = asDocument ? 'document' : nativeType;
   let fileName = String(media.fileName || `attachment.${extensions.get(mimeType)[0]}`)
     .replace(/[^\p{L}\p{N}._-]/gu, '_').slice(0, 120);
   const extension = fileName.match(/\.([a-z0-9]+)$/i)?.[1]?.toLowerCase();

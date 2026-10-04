@@ -16,6 +16,8 @@ Her adım: **eksiği bul → düzelt → TEST’e kur → gerekli otomatik kontr
 
 **4 Ekim 2026 kaynak düzeltmesi:** Genel gelen kimlik/kişi/konuşma eşlemesi tamamlandı; belirsiz LID, eksik kişi araması, farklı kişiyle karışma, kapalı görüşme ve tekrar aktarım durumları korundu. 0817 sağlayıcı kaydı yeni kodla doğru telefona salt okunur çözüldü; başka müşteri aktarımı yapılmadı. Yeni 7733 gerçek yanıtı “Kimlik testi 0320” normal CRM'de doğru konuşmaya bir kez geldi ve TEST restart sonrası korundu. Gelen TEST kapsamı da yalnız 7733; LIVE webhook/deployment aynı kaldı. Genel müşterinin gerçek CRM alımı bu yüzden kullanıcı kabulü bekler, tüm metin maddesi yeşil değildir. Eski 500 ham kayıt sınırı ve hareketli sayfa sırasının konuşma gizlemesi aynı inbox düzeltmesinde ele alındı; gerçek ekranın güncel sonucu ve kalan tek liste `CRM_STATUS.md` içindedir. Bu kod kabul hazırlığı tamamlandığında sonraki tek geliştirme işi giden ses/video yoludur; personel/rol/mobil kabulleri ayrı açık adımlardır.
 
+**4 Ekim 2026 ses/video hazırlığı:** Giden ses/video seçimi, yerel oynatıcı, MIME/uzantı/içerik doğrulaması ve native provider gönderim desteği tamamlanıp kanonik TEST’e kuruldu. Yeni sekmede CRM girişi ve Samsung kilidi kullanıcı adımı beklediğinden gerçek gönderim/iki yönlü oynatma yapılmadı; sarı kullanıcı kabulü, PASS değildir. Sonraki tek geliştirme eksiği Windows TEST supervisor/UI/gateway/adapter autostart zinciridir. Ses/video gerçek kabulü yalnız 7733 konuşmasından sürdürülür; mevcut yeşiller yeniden açılmaz.
+
 ## Öncelik sırası ve gerçek kullanım kabulü
 
 Baseline’da zaten çalışan madde korunur; eksik olanlar sırayla ele alınır. Aşağıdaki tablo bir tamamlandı listesi değildir.

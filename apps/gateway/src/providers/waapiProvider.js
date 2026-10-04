@@ -104,9 +104,10 @@ export class WaapiProvider {
     const id = message?.id || message?._data?.id;
     if (!id?._serialized || id.fromMe !== true || !isWaapiTrialPeer(id.remote, this.config)) throw waapiError('WAAPI_MESSAGE_ID_UNCONFIRMED', true, 502);
     return { provider: 'waapi', providerMessageId: id._serialized, text, direction: 'outgoing',
-      messageType: attachment ? (attachment.mediaType === 'image' ? 'image' : 'file') : 'text',
+      messageType: attachment ? (['image', 'audio', 'video'].includes(attachment.mediaType) ? attachment.mediaType : 'file') : 'text',
       ...(attachment ? { media: { mimeType: attachment.mimeType, fileName: attachment.fileName, byteLength: attachment.byteLength,
-        asDocument: attachment.asDocument, quality: attachment.asDocument ? 'original-file-requested' : 'provider-image-processing' } } : {}),
+        asDocument: attachment.asDocument, quality: attachment.asDocument ? 'original-file-requested'
+          : attachment.mediaType === 'image' ? 'provider-image-processing' : 'provider-media-processing' } } : {}),
       sentAt: new Date(this.now()).toISOString(), status: 'accepted',
       providerAccepted: true, delivered: false, read: false };
   }

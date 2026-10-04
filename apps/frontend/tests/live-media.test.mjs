@@ -23,6 +23,18 @@ test("ordinary text and non-image attachments remain unchanged", () => {
   assert.equal(conversation.messages[0].attachments[0].type, "file");
 });
 
+test("audio/video received or confirmed by the server retain playable URLs and media labels", () => {
+  for (const [mimeType,type,label] of [["audio/mpeg","audio","Sesli mesaj"],["audio/mp4","audio","Sesli mesaj"],["audio/ogg","audio","Sesli mesaj"],["audio/wav","audio","Sesli mesaj"],["video/mp4","video","Video"]]) {
+    for (const messageType of ["incoming","outgoing"]) {
+      const {messages}=normalizeConversation({messages:[{id:"media",messageType,content:"",attachments:[{type:mimeType,url:"https://example.test/protected-media",fileName:"selected-file"}]}]});
+      assert.equal(messages[0].attachments[0].type,type);
+      assert.equal(messages[0].attachments[0].url,"https://example.test/protected-media");
+      assert.equal(messages[0].previewText,label);
+      assert.equal(messages[0].direction,messageType);
+    }
+  }
+});
+
 test("a new outgoing message does not undo an incoming message's read state", () => {
   const conversation = { id: "55", unread: 1, lastMessageAt: "2026-09-28T17:00:00Z", preview: "Hello", messages: [
     { id: "incoming-1", direction: "incoming", createdAt: "2026-09-28T17:00:00Z" },
