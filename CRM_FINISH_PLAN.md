@@ -14,6 +14,8 @@ Mevcut çalışan CRM baseline kabul edilir. Çalışan özellikler yeniden ispa
 
 Her adım: **eksiği bul → düzelt → TEST’e kur → gerekli otomatik kontrolü yap → gerçek kullanım kabulüyle PASS yap → sıradakine geç.** Değişiklikten etkilenen akış veya somut bir regresyon şüphesi için hedefli kontrol yapılabilir; bu, tüm baseline’ı yeniden kanıtlama döngüsüne dönüşmez.
 
+**4 Ekim 2026 kaynak düzeltmesi:** Genel gelen kimlik/kişi/konuşma eşlemesi tamamlandı; belirsiz LID, eksik kişi araması, farklı kişiyle karışma, kapalı görüşme ve tekrar aktarım durumları korundu. 0817 sağlayıcı kaydı yeni kodla doğru telefona salt okunur çözüldü; başka müşteri aktarımı yapılmadı. Yeni 7733 gerçek yanıtı “Kimlik testi 0320” normal CRM'de doğru konuşmaya bir kez geldi ve TEST restart sonrası korundu. Gelen TEST kapsamı da yalnız 7733; LIVE webhook/deployment aynı kaldı. Genel müşterinin gerçek CRM alımı bu yüzden kullanıcı kabulü bekler, tüm metin maddesi yeşil değildir. Eski 500 ham kayıt sınırı ve hareketli sayfa sırasının konuşma gizlemesi aynı inbox düzeltmesinde ele alındı; gerçek ekranın güncel sonucu ve kalan tek liste `CRM_STATUS.md` içindedir. Bu kod kabul hazırlığı tamamlandığında sonraki tek geliştirme işi giden ses/video yoludur; personel/rol/mobil kabulleri ayrı açık adımlardır.
+
 ## Öncelik sırası ve gerçek kullanım kabulü
 
 Baseline’da zaten çalışan madde korunur; eksik olanlar sırayla ele alınır. Aşağıdaki tablo bir tamamlandı listesi değildir.

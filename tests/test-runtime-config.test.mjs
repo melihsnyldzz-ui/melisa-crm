@@ -36,6 +36,8 @@ test('baseline dotenv cannot route TEST journal or runtime into LIVE locations',
     assert.equal(env.CRM_TEST_RUNTIME_DIR,expectedRuntime);assert.equal(env.CRM_WAAPI_JOURNAL_DIR,path.join(expectedRuntime,'waapi'));
     assert.equal(env.CRM_TEST_LOG_DIR,path.resolve('fixture-crm','logs','test-completion'));
     assert.equal(env.WHATSAPP_ALLOWED_TEST_NUMBERS,'905387217733');assert.equal(env.WHATSAPP_TEST_NUMBER_ONLY,'true');
+    assert.equal(env.WAAPI_INCOMING_TEST_ONLY,'true');
+    assert.equal(env.CHATWOOT_INBOX_FALLBACK_ENABLED,'false');
     assert.equal(env.CRM_ERP_CATALOG_ORIGIN,'http://127.0.0.1:62402');assert.equal(env.CRM_ERP_CATALOG_PHOTO_CRM_AUTH,'true');
   }
   let loaded=false;

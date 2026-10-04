@@ -17,6 +17,7 @@ export class WaapiProvider {
   constructor({ config = env.waapi, fetchFn = (...args) => fetch(...args), now = Date.now } = {}) {
     this.config = config; this.fetchFn = fetchFn; this.now = now;
     this.cached = null; this.pending = null; this.calls = []; this.generation = 0;
+    this.incomingPhones = new Map(); this.incomingLookups = new Map();
   }
   invalidate() { this.cached = null; this.generation++; }
   connected() { return Boolean(this.cached?.value.providerConnected && this.now() - this.cached.at < 60000); }
@@ -61,6 +62,31 @@ export class WaapiProvider {
       this.cached = { at: this.now(), value }; return value;
     })();
     try { return await this.pending; } finally { this.pending = null; }
+  }
+  async resolveIncomingPhone(jid) {
+    if (typeof jid !== 'string') throw waapiError('WAAPI_INCOMING_IDENTITY_INVALID', false, 400);
+    if (/^[1-9]\d{6,14}@c\.us$/.test(jid)) return jid.slice(0, -5);
+    if (!/^[1-9]\d{9,19}@lid$/.test(jid)) throw waapiError('WAAPI_INCOMING_IDENTITY_INVALID', false, 400);
+    const cached = this.incomingPhones.get(jid);
+    if (cached && this.now() - cached.at < 600000) return cached.phone;
+    if (this.incomingLookups.has(jid)) return this.incomingLookups.get(jid);
+    const lookup = (async () => {
+      // This provider action is a read-only identity lookup. Never trust webhook display names or LID digits as a phone.
+      const result = await this.request('action/get-lid', { contactIds: [jid] });
+      const contacts = result?.data?.data?.contacts;
+      if (result?.status !== 'success' || result.data?.status !== 'success'
+        || String(result.data?.instanceId) !== WAAPI_INSTANCE || !Array.isArray(contacts) || contacts.length !== 1
+        || contacts[0]?.lid !== jid || typeof contacts[0]?.pn !== 'string' || !/^[1-9]\d{6,14}@c\.us$/.test(contacts[0].pn)
+        || (result.data.data.count !== undefined && result.data.data.count !== 1)) {
+        throw waapiError('WAAPI_INCOMING_IDENTITY_UNCONFIRMED', false, 502);
+      }
+      const phone = contacts[0].pn.slice(0, -5);
+      if (this.incomingPhones.size >= 256) this.incomingPhones.delete(this.incomingPhones.keys().next().value);
+      this.incomingPhones.set(jid, { phone, at: this.now() });
+      return phone;
+    })();
+    this.incomingLookups.set(jid, lookup);
+    try { return await lookup; } finally { this.incomingLookups.delete(jid); }
   }
   async sendMessage({ phone, text, media, remoteJid }) {
     if (phone !== WAAPI_RECIPIENT || /@(g.us|broadcast|newsletter)$/.test(remoteJid || '')) throw waapiError('WAAPI_RECIPIENT_NOT_ALLOWED', false, 403);

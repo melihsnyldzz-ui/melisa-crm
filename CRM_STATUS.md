@@ -1,6 +1,6 @@
 # MELISA CRM — Güncel Durum
 
-Güncelleme: **4 Ekim 2026 — ERP taslak kabulü korunur; görünmeyen yazışma telefon ve sağlayıcıyla karşılaştırıldı**. İş sırası: [CRM_FINISH_PLAN.md](CRM_FINISH_PLAN.md).
+Güncelleme: **4 Ekim 2026 — gelen kimlik eşlemesi düzeltildi; yeni 7733 yanıtı doğru konuşmada görüldü**. İş sırası: [CRM_FINISH_PLAN.md](CRM_FINISH_PLAN.md).
 
 Çalışan CRM baseline korunmuştur. Bu tur yalnız 7733 test hattıyla gerçek yazışma yapıldı; explorer, frontend/backend ve bağımsız reviewer kullanıldı. HTTP 200, build ve unit test tek başına yeşil gerekçe değildir. LIVE deployment yapılmadı, başka müşteriye mesaj gönderilmedi.
 
@@ -13,6 +13,12 @@ Güncelleme: **4 Ekim 2026 — ERP taslak kabulü korunur; görünmeyen yazışm
 - Katalog gerçek Vega ürünleri ve MELISA_ERP_V2 aktif-primary fotoğraf metadata'sını salt okunur kullanır. Mevcut fotoğraf dosyaları değiştirilmedi. Güncel kanonik ERP release kaynakları kullanıldı.
 
 ## Bu tur gerçek sonuçlar ve düzeltmeler
+
+**Gelen kimlik düzeltmesi, 03:10–03:22:** Genel gelen metin yolu tek test kişisine bağlanmıyor; doğrudan telefon veya sağlayıcının aynı instance için doğruladığı LID → telefon eşlemesi kullanılıyor. Çelişen/belirsiz kimlik kişi veya konuşma oluşturmuyor. Kişi aramasının bütün sayfaları okunuyor; aynı telefona ait birden fazla kayıt ve eksik arama sonucu engelleniyor. Yeni mesaj açık konuşmaya gider; kapalı konuşmanın eski tekrar kaydı yeni boş konuşma oluşturmaz. Journal, yeniden deneme ve mesajın aynı konuşmaya tek kez aktarılması korunuyor. [WAAPI kimlik kaynağı](https://waapi.readme.io/reference/get-lid), [Chatwoot sayfalı kişi araması](https://developers.chatwoot.com/api-reference/contacts/search-contacts).
+
+0817 kişisinin mevcut sağlayıcı kaydı yeni kanonik kodla **salt okunur** işlendi: LID doğru telefona çözüldü, incoming olarak kabul edildi; **Chatwoot yazımı0, gönderim0**. Bu kişinin CRM ekranına aktarılması veya LIVE webhook teslimi denenmedi. TEST kurulumu gelen okuyucu/webhook'u da yalnız 7733 ile sınırlar; genel kaynak yolu hazır olması bu izolasyonu kaldırmaz. LIVE değiştirilmedi.
+
+**Gerçek yeni TEST yazışması, 03:20–03:22:** Normal CRM'den yalnız 7733 hattına kimlik testi mesajı gönderildi. Kullanıcının **“Kimlik testi 0320”** yanıtı Samsung WhatsApp ekranında ve normal CRM konuşma55'te görüldü. Salt okunur geri kontrol doğru telefon/inbox1, gönderilen1/gelen1 kayıt ve gelen kaydın doğrulanmış test LID'sini gösterdi. Bu, yeni kodun gerçek test yanıtını doğru konuşmaya almasını kanıtlar; diğer müşterilerin genel alımı için kullanıcı kabulü değildir. Kanıt: checkout dışındaki `logs/acceptance-20261004/inbound-identity-readonly-proof.json`, `inbound-7733-regression-proof.json`, `samsung-inbound-7733-proof.png`, `crm-inbound-7733-proof.png`.
 
 **Yeni günlük kullanım eksiği — başka kişiden gelen mesaj:** Kullanıcı WhatsApp uygulamasında yazan başka kişinin burada görünmediğini bildirdi; bu kişi 7733 test hattı değildir. Açık ekran 62400 TEST ve aramada 7733 vardı. TEST okuyucusu yalnız bu telefonun mesajlarını konuşma55'e aktarır. Daha önemlisi, kanonik `normalizeWaapiEvent` başka peer'leri `isWaapiTrialPeer` ile ignored yapar ve phone'u tek test alıcısına bağlar. Çalışan MelisaWhatsAppCrmGateway servisinin kayıtlı AppDirectory'sindeki mevcut kaynak da aynı filtreyi ve sabit 7733 alıcısını taşır (salt okunur inceleme). Bu nedenle 7733 kabulü genel müşteri gelen mesajları için yeşil sayılmaz. LIVE sağlık providerConnected/bridgeReady/sendReady=true olsa da genel mesaj alımını kanıtlamaz. Bu tur LIVE/source arşivi/provider ayarı değiştirilmedi; başka müşteriye mesaj gönderilmedi veya yeni konuşma aktarılmadı. Samsung SM-N985F kablosuz ADB/Tailscale bağlantısı kuruldu ve görünür canlı WhatsApp Business ekranı açıldı. 4 Ekim 02:41–02:43 karşılaştırmasında 0817 ile biten kişinin 01:37 tarihli iki gelen mesajı telefonda görüldü. Normal CRM araması sonuç vermedi; daha kesin salt okunur Chatwoot account2 exact-phone contacts/search sonucu 0 kişi, 0 konuşma oldu. Telefon numarasıyla eşleşen kişi/konuşma bulunmadı; kaynakta ayrıca genel alım engeli doğrulandı. Farklı bir LID kimliği altında hiç kayıt olmadığı bu aramayla kanıtlanmış değildir. Kanıtlar checkout dışındaki logs/acceptance-20261004 altında samsung-whatsapp-missing-chat.png ve missing-peer-0817-readonly-proof.json; müşteri içeriği/numarası/eşleştirme kodu Git'e eklenmedi. Genel inbound/exact-peer/konuşma eşleme eksikliği kapanmadan günlük mesaj akışı PASS değildir.
 
@@ -48,13 +54,23 @@ Yeni akış ayrı CRM ve ERP yetkilerini doğrular; SQL yazımı yalnız draft p
 
 Yerel görsel kanıtlar C:\Sirket\CRM\logs\acceptance-20261004 altında: gelen metin/fotoğraf/PDF, mobil görünüm, katalog önizleme, indirilen PDF render ve telefon kabul ekranı. Dosyalar/müşteri verisi Git'e eklenmez. [İndirilen gerçek fiyatlı PDF](C:/Users/Xaser/Downloads/melisa-katalog-tr-TRY.pdf).
 
+**Inbox gerçek düzeltmesi ve son kabul, 03:40–03:52:** İlk yeni kontrol, Chatwoot'un hareketli sayfalarında tekrar dönen konuşmayı hatalı saydı; mevcut yerel fallback bunu HTTP200/boş listeye çevirdi. Gerçek ekran denemesi bu regresyonu yakaladı ve düzeltildi. Varsayılan sırayla 731 ham kayıttan 729 benzersiz kayıt/726 müşteri; ilk 500 ham kayıtta yalnız 496 müşteri bulunuyordu. Eski tarama sınırı yaklaşık 230 müşteri konuşmasını gizliyordu. Sabit oluşturulma sırasıyla 30 sayfa **731/731 ayrı kayıt**, grup filtresiyle **728 müşteri** salt okunur doğrulandı. Sayfalar bu sırayla okunur, CRM listesi son etkinliğe göre yeniden sıralanır. Kısmi örtüşmeler tekilleştirilir; gerçek tekrarlayan/bozuk/eksik sayfa başarılı sonuç olarak saklanmaz. Ham tarama için ayrı 80 sayfa/2000 kayıt sınırı vardır; aşılırsa sessiz kısmi liste verilmez. [Chatwoot sıralama kaynağı](https://raw.githubusercontent.com/chatwoot/chatwoot/develop/app/services/conversations/sort_service.rb).
+
+Yönetim hesapları aynı tamamlanmış ham listeyi en çok 20 saniye paylaşır; personel tamamlanmış veya devam eden başka liste okumasını paylaşmaz. Mesajlar sonraki okumada yeniden alınır. Bağlantı/hesap ve inbox kapsamı değişirse eski sonuç döndürülmez. TEST'te yerel inbox fallback kapatıldı; bağlantı hatası artık boş liste gibi sunulmaz. LIVE ayarı korunur.
+
+Son kanonik TEST child **32948**, supervisor **60204**; katalog31916/ERP adapter55364 ve Samsung canlı ekranı korundu. Normal CRM'de kalan sayfalar tamamlandı: **728 konuşma / 621 atanmamış**, “Yükleniyor” ve “Diğer konuşmalar alınamadı” uyarısı yok. 03:50 sonrası ölçülen 24 inbox okuması 1,8–24,3 saniye, hata0; bunlar genel performans garantisi değildir. “Kimlik testi 0320” aynı test konuşmasında görünür; 03:51 geri kontrolünde gelen1/giden1, tekrar kayıt0. Bu liste yükleme ve test yanıtı sonucu gerçek ekran kanıtıdır; personelin kendi hesabında atama veya genel müşterinin yeni gelen mesaj kabulü değildir. Samsung ADB bağlı, canlı ekran cevap veriyor, güç bağlı/Awake/StayOn doğrulandı.
+
+Yeni kimlik/normalizer/bridge/TEST kapsamı için **74/74** hedefli korumalı offline kontrol geçti. Son inbox+atama/auth kontrolleri **44/44**, bağımsız son inbox/auth/atama/runtime incelemesi **46/46** geçti; bu sayımlarda örtüşen testler vardır. Açık P0/P1/P2 review bulgusu yok. Frontend/dependency değiştirilmedi; bu tur yeni frontend build gerekmiyor. Kaynak sözdizimi/diff ve commit öncesi secret kontrolü ayrıca uygulanır; hiçbiri gerçek kabul yerine sayılmaz. Son özel kanıtlar: `inbox-stable-pages-metadata-proof.json`, `inbox-728-ui-acceptance-proof.json`, `crm-inbox-728-and-inbound-proof.png`; eski başarısız ve baseline kanıtları korunur, müşteri verileri Git'e eklenmez.
+
+**Secret kontrolünün sınırı:** Mevcut scanner çıkış1 verdi: iki eski localhost credential-URL **reddetme testinin** staged/history kopyalarını dört kez işaretliyor. `tests/test-runtime-config.test.mjs` ve `tests/test-catalog-photo-auth.test.mjs` içindeki sentetik `user:secret` örnekleri önceki HEAD'de de aynıdır; yeni credential-URL eklenmedi. Bu dört kayıt gerçek credential bulgusu değildir. Diğer secret kurallarında bulgu0; scanner PASS diye raporlanmadı ve kural gevşetilmedi. CRM PR için otomatik GitHub check tanımlı değildir; yerel ve bağımsız test/gerçek ekran kanıtı yukarıdadır.
+
 ## CRM BİTİRME LİSTESİ
 
 Tek güncel liste. Kritik sayım 13 başlıktaki açık sarı/kırmızı satırların toplamıdır; aynı kabul/restart ikinci kez sayılmaz.
 
 | Madde | Sınıflandırma | Gerçek sonuç ve kalan somut iş |
 | --- | --- | --- |
-| Gelen/giden metin | 🔴 EKSİK / BOZUK — gerçekten geliştirme gerekiyor | 7733 gerçek gönderim/yanıt kabulü korunur. Samsung'da 0817 kişisinin iki mesajı görüldü; sağlayıcıda gelen kayıtlar var, `@lid` kimlikleri mevcut test-peer filtresince reddediliyor. Chatwoot exact-phone kişi kaydı0, konuşma0. Genel gelen mesajı doğrulanmış gönderen kimliğiyle doğru konuşmaya eşleme yolu eksik; webhook teslimi ayrıca doğrulanmadı. |
+| Gelen/giden metin | 🟡 KULLANICI KABULÜ BEKLİYOR — kod hazır ama benim gözümle doğrulamam gerekiyor | Genel kimlik/kişi/konuşma eşlemesi hazır; 0817 LID doğru telefona salt okunur çözüldü. Yeni 7733 yanıtı doğru konuşmada tek kez görüldü, restart sonrası korundu. Inbox728/atanmamış621 tam yüklendi. Kalan: genel müşterinin gerçek webhook → CRM ekranı alımını kabul etmek. Başka müşteri aktarılmadı, LIVE güncellenmedi; bu nedenle genel metin yeşil değildir. |
 | Fotoğraf | 🟢 ÇALIŞIYOR — gerçek kullanım kanıtı var | Telefon açma yanıtı ve gelen fotoğrafı CRM'de büyütüp açma kabulü tamamlandı. |
 | PDF/dosya | 🟢 ÇALIŞIYOR — gerçek kullanım kanıtı var | PDF/TXT iki yönde açıldı/indirildi; içerikler eşleşiyor. Fiyatlı PDF de render edildi ve telefonda açıldı. Mevcut kapsam PDF/TXT. |
 | Ses/video | 🔴 EKSİK / BOZUK — gerçekten geliştirme gerekiyor | Giden ses/video seçme/validasyon/provider yolu MIME kapsamında yok. Gelen oynatıcı hazır; gerçek oynatma kabulü yok. |
@@ -75,8 +91,8 @@ Tek güncel liste. Kritik sayım 13 başlıktaki açık sarı/kırmızı satırl
 
 3 Ekim ilk incelemesinde TEST 62094/4212/62400–62403 kapalıydı; o anda açık diye sunulmadı. Sonraki açık kullanıcı yetkisiyle 4 Ekim bu kaynak TEST'i açıldı ve yukarıdaki gerçek kabul kaydedildi. Eski eksik PDF indirme/telefon kabulü kapandı; güncel ERP sözleşmesi de yukarıdaki dar TEST kapsamıyla kabul edildi. Fiziksel mobil CRM ve Windows açılışı hâlâ açıktır. [docs/BASELINE.md](docs/BASELINE.md) ve [docs/REV3_VALIDATION.md](docs/REV3_VALIDATION.md) eski kapsam kanıtı olarak korunur.
 
-KALAN KRİTİK MADDE SAYISI: **6 — 3 geliştirme eksiği, 3 kullanıcı kabulü.**
+KALAN KRİTİK MADDE SAYISI: **6 — 2 geliştirme eksiği, 4 kullanıcı kabulü.**
 
-KULLANICININ ŞİMDİ GÖZÜYLE DENEYECEĞİ İLK ŞEY: **Açık kalan Samsung WhatsApp ekranındaki 0817 konuşmasını CRM aramasıyla karşılaştırmak; mesaj sağlayıcıda var, CRM'de telefonuyla eşleşen kişi/konuşma bulunamadı.**
+KULLANICININ ŞİMDİ GÖZÜYLE DENEYECEĞİ İLK ŞEY: **Açık TEST CRM'de 7733 konuşmasındaki “Kimlik testi 0320” yanıtını ve 728 konuşma/621 atanmamış sonucunu görmek; Samsung ekranı bağlı ve açık.**
 
-SONRAKİ TEK GELİŞTİRME İŞİ: **Genel gelen WhatsApp mesajlarını gerçek gönderen kimliğiyle doğru CRM konuşmasına alan yolu tamamlamak; 7733 gönderim sınırı ve LIVE deployment yasağı korunur.**
+SONRAKİ TEK GELİŞTİRME İŞİ: **Giden ses/video seçme, doğrulama ve gönderim yolunu yalnız 7733 TEST akışında tamamlamak.**
