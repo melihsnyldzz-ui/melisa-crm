@@ -5,6 +5,7 @@ import { env } from '../config/env.js';
 import { authenticateCrmUser, createPasswordHash, verifyCrmAccessToken } from '../services/crmAuthService.js';
 import { ERP_ORIGIN } from '../services/erpSourceContract.mjs';
 import { catalogAccess } from '../services/crmCatalogAccess.mjs';
+import { crmTranslationRateLimit } from '../middleware/security.js';
 
 test('real sales-draft route uses auth, trusted Chatwoot DTO and suggestion-only Responses', async t => {
   const original = { auth: { ...env.auth }, chatwoot: { ...env.chatwoot },
@@ -30,7 +31,7 @@ test('real sales-draft route uses auth, trusted Chatwoot DTO and suggestion-only
   let assignment = 3, modelCalls = 0, conversationReads = 0, modelBody, modelFailure = null,
     afterModel = () => {}, duringFirstRead = () => {}, duringSecondRead = () => {}, chatwootFailure = false, phone = '+905387217733',
     plannerQueries = [], catalogReads = 0, catalogFailure = false, price = 196, afterCatalog = () => {},
-    selectProducts = false, priceChangesOnReadback = false, newMessage = false;
+    selectProducts = false, priceChangesOnReadback = false, newMessage = false, proposalSequence = [], proposalCalls = 0;
   const draft = () => ({ action: 'reply', reply: 'Which age range do you need?',
     summaryTr: 'Yaş aralığı soruluyor.', productIds: [], lines: [], handoffReason: '' });
   const json = data => new Response(JSON.stringify(data), { status: 200, headers: { 'content-type': 'application/json' } });
@@ -44,9 +45,10 @@ test('real sales-draft route uses auth, trusted Chatwoot DTO and suggestion-only
       if (modelFailure) return new Response('RAW_PROVIDER_INTERNAL_SENTINEL', { status: modelFailure });
       const planner = Boolean(modelBody.text.format.schema.properties.queries);
       afterModel();
+      const generated = planner ? { queries: plannerQueries } : proposalSequence[proposalCalls++]
+        || (selectProducts ? { ...draft(), action: 'recommend', productIds: ['vega-101'] } : draft());
       return json({ status: 'completed', output: [{ type: 'message',
-        content: [{ type: 'output_text', text: JSON.stringify(planner ? { queries: plannerQueries }
-          : selectProducts ? { ...draft(), action: 'recommend', productIds: ['vega-101'] } : draft()) }] }] });
+        content: [{ type: 'output_text', text: JSON.stringify(generated) }] }] });
     }
     const catalogUrl = new URL(url);
     if (catalogUrl.origin === new URL(ERP_ORIGIN).origin && catalogUrl.pathname.startsWith('/api/crm-catalog/products')) {
@@ -99,11 +101,15 @@ test('real sales-draft route uses auth, trusted Chatwoot DTO and suggestion-only
     return { status: response.status, body: await response.json() };
   };
   const reset = () => {
+    // Independent HTTP cases must not consume each other's production-configured per-user budget.
+    crmTranslationRateLimit.resetKey('crm-translation:sales-patron');
+    crmTranslationRateLimit.resetKey('crm-translation:sales-personel');
     assignment = 3; modelCalls = 0; conversationReads = 0; modelBody = null;
     modelFailure = null; afterModel = () => {}; chatwootFailure = false;
     duringFirstRead = () => {}; duringSecondRead = () => {}; phone = '+905387217733';
     plannerQueries = []; catalogReads = 0; catalogFailure = false; price = 196; afterCatalog = () => {};
     selectProducts = false; priceChangesOnReadback = false; newMessage = false;
+    proposalSequence = []; proposalCalls = 0;
     process.env.CRM_AI_SALES_MODE = 'copilot'; process.env.CRM_AI_SALES_CONVERSATION_ID = '55';
     process.env.CRM_AI_SALES_TEST_PEER = '905387217733';
     env.auth.personnelCanSend = false;
@@ -236,7 +242,8 @@ test('real sales-draft route uses auth, trusted Chatwoot DTO and suggestion-only
       assert.equal(result.body.data.catalogFacts.seriesVerified, false);
       assert.equal(Date.parse(result.body.data.catalogFacts.expiresAt) - Date.parse(result.body.data.catalogFacts.fetchedAt), 300_000);
       assert.deepEqual(JSON.parse(modelBody.input[1].content).catalogSelectors, ['41140']);
-      assert.equal(JSON.parse(modelBody.input[1].content).recordedProducts[0].salePrice, 196);
+      assert.equal(JSON.parse(modelBody.input[1].content).recordedProducts[0].salePrice, undefined);
+      assert.equal(JSON.parse(modelBody.input[1].content).recordedProducts[0].priceAvailable, true);
       assert.equal(JSON.parse(modelBody.input[1].content).recordedProducts[0].stockQuantity, undefined);
     });
     await t.test('conversation-driven planner is bounded and feeds the same trusted catalog path', async () => {
@@ -244,6 +251,38 @@ test('real sales-draft route uses auth, trusted Chatwoot DTO and suggestion-only
       const result = await request();
       assert.equal(result.status, 200); assert.equal(modelCalls, 2); assert.equal(catalogReads, 2);
       assert.equal(result.body.data.recommendedProducts[0].stockCode, '41140');
+    });
+    await t.test('real observed manual-search reply without cards is corrected once into an authoritative card', async () => {
+      reset(); selectProducts = true;
+      proposalSequence = [{ ...draft(), reply: 'This costs 196 TRY.', summaryTr: 'Fiyatı 196 TRY.' },
+        { ...draft(), action: 'recommend', productIds: ['vega-101'] }];
+      const result = await request({ body: { catalogSearch: '41140' } });
+      assert.equal(result.status, 200); assert.equal(modelCalls, 2); assert.equal(proposalCalls, 2);
+      assert.equal(result.body.data.recommendedProducts[0].salePrice, 196);
+      assert.equal(result.body.data.action, 'recommend'); assert.equal(result.body.data.reply.includes('196'), false);
+      assert.deepEqual(modelBody.text.format.schema.properties.productIds.items.enum, ['vega-101']);
+    });
+    await t.test('schema-valid manual recommend with empty IDs is corrected before returning a product card', async () => {
+      reset(); selectProducts = true;
+      proposalSequence = [{ ...draft(), action: 'recommend', productIds: [] },
+        { ...draft(), action: 'recommend', productIds: ['vega-101'] }];
+      const result = await request({ body: { catalogSearch: '41140' } });
+      assert.equal(result.status, 200); assert.equal(modelCalls, 2); assert.equal(proposalCalls, 2);
+      assert.equal(result.body.data.recommendedProducts[0].stockCode, '41140');
+      assert.equal(result.body.data.recommendedProducts[0].salePrice, 196);
+    });
+    await t.test('persistent model price prose never becomes successful preview and has at most one correction', async () => {
+      reset(); selectProducts = true;
+      proposalSequence = Array.from({ length: 2 }, () => ({ ...draft(), action: 'recommend', productIds: ['vega-101'], reply: '196 TRY per piece.' }));
+      const result = await request({ body: { catalogSearch: '41140' } });
+      assert.equal(result.status, 502); assert.equal(result.body.error.code, 'AI_PRICE_PROSE_FORBIDDEN');
+      assert.equal(modelCalls, 2); assert.equal(catalogReads, 1); assert.equal(result.body.data, undefined);
+    });
+    await t.test('fresh conversation change before correction blocks the second proposal call', async () => {
+      reset(); afterModel = () => { assignment = 4; };
+      const result = await request({ body: { catalogSearch: '41140' } });
+      assert.equal(result.status, 409); assert.equal(result.body.error.code, 'AI_CONVERSATION_CHANGED');
+      assert.equal(modelCalls, 1); assert.equal(proposalCalls, 1);
     });
     await t.test('catalog outage for requested products fails explicitly before proposal call', async () => {
       reset(); catalogFailure = true;

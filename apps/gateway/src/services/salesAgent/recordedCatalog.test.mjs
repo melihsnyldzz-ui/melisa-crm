@@ -3,7 +3,7 @@ import test from 'node:test';
 import { CATALOG_RESPONSE_GUARD } from '../catalogBridge.mjs';
 import { createSalesCatalogAdapter } from './catalogAdapter.mjs';
 import { recordedProduct, validateRecordedCatalog, validateSearchPlan, recordedCatalogFacts } from './recordedCatalog.mjs';
-import { prepareSalesDraft } from './agent.mjs';
+import { containsNumericPriceProse, prepareSalesDraft } from './agent.mjs';
 import { createSalesPreview } from './preview.mjs';
 
 const now = 1_800_000_000_000;
@@ -125,6 +125,100 @@ test('recorded recommendation is allowed, but recorded stock/series cannot autho
     policy: { minimumOrder: { amountMinor: 1, currency: 'TRY' } } }, { ...dependencies,
     generate: async () => proposal({ action: 'quote', lines: [{ productId: 'vega-101', quantity: 1 }] }),
   }), code('AI_RECORDED_QUOTE_FORBIDDEN'));
+});
+test('manual real-candidate request constrains schema to actual IDs and withholds numeric price from model', async () => {
+  let request;
+  const result = await prepareSalesDraft({ conversation: conversation(), recordedCatalog: snapshot(), requireRecordedSelection: true }, {
+    now: () => now, readCurrentConversation: async () => conversation(), generate: async value => { request = value; return proposal(); },
+  });
+  assert.deepEqual(request.schema.properties.action.enum, ['recommend', 'handoff']);
+  assert.equal(request.schema.properties.productIds.minItems, 0); assert.equal(request.schema.properties.productIds.maxItems, 3);
+  assert.deepEqual(request.schema.properties.productIds.items.enum, ['vega-101']);
+  assert.equal(request.context.recordedProducts[0].salePrice, undefined);
+  assert.equal(request.context.recordedProducts[0].priceAvailable, true); assert.equal(result.productIds[0], 'vega-101');
+});
+test('recorded product prompt limits descriptions to source name/code and carries no fabricated attributes', async () => {
+  let request;
+  const catalog = { ...snapshot(), products: [recordedProduct(row({ material: 'UNVERIFIED_FABRIC',
+    quality: 'UNVERIFIED_QUALITY', ageRange: 'UNVERIFIED_AGE', color: 'UNVERIFIED_COLOR' }))] };
+  await prepareSalesDraft({ conversation: conversation(), recordedCatalog: catalog, requireRecordedSelection: true }, {
+    now: () => now, readCurrentConversation: async () => conversation(),
+    generate: async value => { request = value; return proposal(); },
+  });
+  const product = request.context.recordedProducts[0];
+  assert.equal(product.stockCode, '41140'); assert.equal(product.productName, row().productName);
+  assert.equal(product.priceAvailable, true); assert.equal(product.currency, 'TRY');
+  const context = JSON.stringify(request.context);
+  for (const unknown of ['UNVERIFIED_FABRIC', 'UNVERIFIED_QUALITY', 'UNVERIFIED_AGE', 'UNVERIFIED_COLOR']) {
+    assert.equal(context.includes(unknown), false);
+  }
+  assert.match(request.instructions, /only the supplied stockCode and literal productName/);
+  assert.match(request.instructions, /Do not invent fabric, material, composition, quality, baby suitability, age range, sizes or colors/);
+  assert.match(request.instructions, /not independent verification of material, quality or suitability/);
+  assert.match(request.instructions, /both reply and summaryTr/);
+});
+test('genuine manual-search handoff can have a reason and no forced product card', async () => {
+  let models = 0;
+  const result = await prepareSalesDraft({ conversation: conversation(), recordedCatalog: snapshot(), requireRecordedSelection: true }, {
+    now: () => now, readCurrentConversation: async () => conversation(),
+    generate: async () => { models++; return proposal({ action: 'handoff', productIds: [], handoffReason: 'Customer asked for a person.' }); },
+  });
+  assert.equal(result.action, 'handoff'); assert.deepEqual(result.productIds, []); assert.equal(models, 1);
+});
+test('observed reply/no-card plus numeric price bug receives one guarded semantic correction', async () => {
+  const events = []; let models = 0;
+  const result = await prepareSalesDraft({ conversation: conversation(), recordedCatalog: snapshot(), requireRecordedSelection: true }, {
+    now: () => now,
+    readCurrentConversation: async () => { events.push('read'); return conversation(); },
+    generate: async request => {
+      events.push('model'); models++;
+      if (models === 1) return proposal({ action: 'reply', reply: 'The price is 196 TRY.', summaryTr: 'Fiyatı 196 TRY.', productIds: [] });
+      assert.match(request.instructions, /Corrective attempt/); assert.ok(!request.instructions.includes('The price is 196 TRY.'));
+      return proposal();
+    },
+  });
+  assert.equal(models, 2); assert.deepEqual(events, ['model', 'read', 'model', 'read']);
+  assert.equal(result.action, 'recommend'); assert.deepEqual(result.productIds, ['vega-101']);
+});
+test('schema-valid recommend with empty IDs receives one guarded selection correction', async () => {
+  const events = []; let models = 0;
+  const result = await prepareSalesDraft({ conversation: conversation(), recordedCatalog: snapshot(), requireRecordedSelection: true }, {
+    now: () => now,
+    readCurrentConversation: async () => { events.push('read'); return conversation(); },
+    generate: async () => { models++; events.push('model'); return models === 1 ? proposal({ productIds: [] }) : proposal(); },
+  });
+  assert.equal(models, 2); assert.deepEqual(events, ['model', 'read', 'model', 'read']);
+  assert.deepEqual(result.productIds, ['vega-101']);
+});
+test('malformed empty recommendation is not mistaken for a retriable semantic error', async () => {
+  let models = 0, reads = 0;
+  await assert.rejects(prepareSalesDraft({ conversation: conversation(), recordedCatalog: snapshot(), requireRecordedSelection: true }, {
+    now: () => now, readCurrentConversation: async () => { reads++; return conversation(); },
+    generate: async () => { models++; return proposal({ productIds: [], inventedPrice: 1 }); },
+  }), code('AI_PROPOSAL_INVALID'));
+  assert.equal(models, 1); assert.equal(reads, 0);
+});
+test('second invalid price claim fails with no third generation or synthetic card', async () => {
+  let models = 0;
+  await assert.rejects(prepareSalesDraft({ conversation: conversation(), recordedCatalog: snapshot(), requireRecordedSelection: true }, {
+    now: () => now, readCurrentConversation: async () => conversation(),
+    generate: async () => { models++; return proposal({ reply: '196 TRY per piece' }); },
+  }), code('AI_PRICE_PROSE_FORBIDDEN'));
+  assert.equal(models, 2);
+});
+test('conversation changed before corrective retry stops after one model call', async () => {
+  let models = 0;
+  await assert.rejects(prepareSalesDraft({ conversation: conversation(), recordedCatalog: snapshot(), requireRecordedSelection: true }, {
+    now: () => now, readCurrentConversation: async () => ({ ...conversation(), chatwootAgentId: 4 }),
+    generate: async () => { models++; return proposal({ action: 'reply', productIds: [] }); },
+  }), code('AI_CONVERSATION_CHANGED'));
+  assert.equal(models, 1);
+});
+test('numeric price prose detector covers currencies and allows ordinary product code/quantity', () => {
+  for (const text of ['196 TRY', 'TRY 196', '196 TL', '₺196', '196 €', '$196.00', '١٩٦ ليرة', '196 dollars']) {
+    assert.equal(containsNumericPriceProse(text), true, text);
+  }
+  for (const text of ['Product 41140', '2 pieces', 'Please review the recorded price card.']) assert.equal(containsNumericPriceProse(text), false);
 });
 test('conversation change while catalog search waits stops before proposal model', async () => {
   let changed = false, modelCalls = 0;

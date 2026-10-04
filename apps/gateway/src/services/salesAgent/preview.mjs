@@ -95,7 +95,8 @@ export function createSalesPreview({ getMode, loadPolicy, readConversation, gene
       // A catalog wait cannot leave a personnel suggestion using a stale conversation assignment.
       if (queries.length) await readCurrentConversation(conversationId);
     }
-    const result = await prepareSalesDraft({ conversation, policy: rawPolicy, products: [], recordedCatalog }, {
+    const result = await prepareSalesDraft({ conversation, policy: rawPolicy, products: [], recordedCatalog,
+      requireRecordedSelection: catalogSearch !== undefined }, {
       now,
       generate: request => {
         checkReadAccess(latestConversation);

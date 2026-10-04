@@ -25,14 +25,56 @@ const instructions = [
   'Never promise a catalog/file was sent or an order/reservation/payment exists. No tool in this request performs such actions.',
   'If a Telegram URL is configured, offer that approved link instead of promising to send a catalog. Never invent a URL.',
   'Use only supplied product IDs. Both products and recordedProducts empty means no recommendations, prices or quote action.',
-  'recordedProducts contain recorded per-item prices only, never verified live stock or series. Do not claim availability, stock quantities, sizes, series counts or current/final prices.',
+  'recordedProducts identify ERP products and whether a recorded per-item price is available. Numeric prices are intentionally withheld; application code builds price cards. They never verify live stock or series. Do not claim availability, stock quantities, sizes, series counts or current/final prices.',
+  'For recordedProducts, supported product descriptions are only the supplied stockCode and literal productName. priceAvailable and currency only indicate whether a recorded per-item price card can be shown.',
+  'Do not invent fabric, material, composition, quality, baby suitability, age range, sizes or colors. Do not infer these from the seller being a baby clothing wholesaler. Words in a productName are a catalog name, not independent verification of material, quality or suitability.',
+  'Base the reply on the supplied product name and code, refer to its reviewed card, and ask which customer needs are still missing. Keep unsupported product descriptions out of both reply and summaryTr.',
   'You may recommend at most three recordedProducts by ID. Their price cards are built by application code; do not write numeric prices in reply or summaryTr.',
-  'A null recorded price/currency is unknown. Do not infer, convert or invent it. Recorded products cannot authorize quote, reservation, order or shipping.',
+  'A false priceAvailable or null currency is unknown. Do not infer, convert or invent prices, including numbers in conversation history. Recorded products cannot authorize quote, reservation, order or shipping.',
   'For quote supply productId and quantity in pieces only; application code calculates money. Do not calculate prices in prose.',
   'If minimumOrder is null, do not invent a minimum and do not quote. A currency mismatch requires staff, not an invented conversion.',
   'When staff is requested, a policy exception is needed or a dispute arises, use handoff with a short reason.',
   'An empty lines array is required unless action is quote. All output is an internal suggestion awaiting staff review.',
 ].join('\n');
+
+export function containsNumericPriceProse(text) {
+  const currency = '(?:TRY|TL|USD|EUR|dollars?|euros?|liras?|Turkish\\s+lira|Türk\\s+liras[ıi]|دولار|ليرة|يورو|₺|\\$|€)';
+  const number = '\\p{Nd}+(?:[.,]\\p{Nd}+)*';
+  return new RegExp(`${number}[\\s:=-]{0,8}${currency}(?![\\p{L}\\p{N}])|(?<![\\p{L}\\p{N}])${currency}[\\s:=-]{0,8}${number}`, 'iu')
+    .test(String(text || '').normalize('NFKC'));
+}
+
+function recordedProposalSchema(products, required) {
+  const schema = structuredClone(proposalSchema);
+  if (required) {
+    schema.properties.action.enum = ['recommend', 'handoff'];
+    schema.properties.productIds = { type: 'array', minItems: 0, maxItems: MAX_RECOMMENDATIONS,
+      items: { type: 'string', enum: products.map(product => product.id) } };
+    schema.properties.lines.maxItems = 0;
+  }
+  return schema;
+}
+
+function validateRecordedSemantics(proposal, recorded, required, hasRecordedCatalog) {
+  const ids = new Set(recorded.products.map(product => product.id));
+  if (required && (!['recommend', 'handoff'].includes(proposal.action)
+      || (proposal.action === 'recommend' && proposal.productIds.length < 1) || proposal.productIds.length > MAX_RECOMMENDATIONS
+      || proposal.productIds.some(id => !ids.has(id)))) throw salesError('AI_RECORDED_SELECTION_REQUIRED', 502);
+  if (hasRecordedCatalog && (containsNumericPriceProse(proposal.reply) || containsNumericPriceProse(proposal.summaryTr))) {
+    throw salesError('AI_PRICE_PROSE_FORBIDDEN', 502);
+  }
+  return proposal;
+}
+
+function validateCandidateProposal(value, required) {
+  // The manual schema permits empty IDs for handoff. A structurally valid recommend+[]
+  // is a selection semantic error, so it must reach the one-correction guard below.
+  if (required && value && typeof value === 'object' && !Array.isArray(value)
+      && value.action === 'recommend' && Array.isArray(value.productIds) && value.productIds.length === 0) {
+    return { ...validateProposal({ ...value, action: 'reply' }), action: 'recommend' };
+  }
+  return validateProposal(value);
+}
 
 /** Minimize customer data: no phone, email, private notes, attachments or arbitrary metadata. */
 export function conversationSnapshot(conversation) {
@@ -56,7 +98,8 @@ export function conversationSnapshot(conversation) {
 }
 
 /** No provider, ERP or database write dependency exists in this module. */
-export async function prepareSalesDraft({ conversation, policy: rawPolicy = {}, products: rawProducts = [], recordedCatalog }, dependencies) {
+export async function prepareSalesDraft({ conversation, policy: rawPolicy = {}, products: rawProducts = [], recordedCatalog,
+  requireRecordedSelection = false }, dependencies) {
   if (typeof dependencies?.generate !== 'function' || typeof dependencies?.readCurrentConversation !== 'function') {
     throw salesError('AI_DEPENDENCY_MISSING', 503);
   }
@@ -65,10 +108,31 @@ export async function prepareSalesDraft({ conversation, policy: rawPolicy = {}, 
   const products = trustedProducts(rawProducts, clock());
   const recorded = validateRecordedSnapshot(recordedCatalog, clock());
   const snapshot = conversationSnapshot(conversation);
-  const request = { instructions, schema: proposalSchema,
-    context: { policy, products, recordedProducts: recorded.products, catalogFacts: recorded.facts,
+  const required = requireRecordedSelection && recorded.products.length > 0;
+  const request = { instructions: instructions + (required ? '\nStaff explicitly selected a catalog search with matching real products. '
+    + 'For recommend, select at least one and at most three relevant supplied product IDs. Action must be recommend, or handoff with a genuine reason. '
+    + 'A genuine request for human help may use handoff with empty productIds; do not force unrelated products. '
+    + 'Do not answer with reply and empty productIds. Refer to the reviewed product card instead of writing any numeric price.' : ''),
+    schema: recordedProposalSchema(recorded.products, required),
+    context: { policy, products, recordedProducts: recorded.products.map(({ salePrice, ...product }) => ({ ...product, priceAvailable: salePrice !== null })), catalogFacts: recorded.facts,
       recentMessages: snapshot.messages.map(({ direction, text }) => ({ direction, text })) } };
-  const proposal = validateProposal(await dependencies.generate(structuredClone(request)));
+  let proposal;
+  for (let attempt = 0; attempt < 2; attempt++) {
+    const generated = validateCandidateProposal(await dependencies.generate(structuredClone(attempt === 0 ? request : {
+      ...request, instructions: request.instructions + '\nCorrective attempt: numeric currency amounts in reply or summaryTr are forbidden, '
+        + 'even when they appeared in earlier messages. Use only product IDs allowed by this schema and refer to the price card. '
+        + 'Keep the reply useful in the customer language and the summary in Turkish. Do not include an unverified numeric price.',
+    })), required);
+    try { proposal = validateRecordedSemantics(generated, recorded, required, Boolean(recordedCatalog)); break; }
+    catch (error) {
+      if (attempt !== 0 || !['AI_RECORDED_SELECTION_REQUIRED', 'AI_PRICE_PROSE_FORBIDDEN'].includes(error.code)) throw error;
+      // At most one semantic correction. Provider/network/JSON failures are never retried here.
+      const beforeRetry = conversationSnapshot(await dependencies.readCurrentConversation(snapshot.id));
+      if (beforeRetry.revision !== snapshot.revision) throw salesError('AI_CONVERSATION_CHANGED', 409);
+      trustedProducts(products, clock());
+      validateRecordedSnapshot(recordedCatalog, clock());
+    }
+  }
   const current = conversationSnapshot(await dependencies.readCurrentConversation(snapshot.id));
   if (current.revision !== snapshot.revision) throw salesError('AI_CONVERSATION_CHANGED', 409);
   // Recheck freshness AFTER a potentially slow model request, not only before it.
