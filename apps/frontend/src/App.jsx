@@ -287,6 +287,10 @@ export function App() {
   const sendState = sendStates[selectedId];
   const draft = drafts[selectedId] || "";
   const applyStoredDrafts = (result) => { setDrafts(result.drafts); setDraftStorageWarning(!result.persisted); };
+  const forgetDraft = (id) => {
+    if (textDraftStorageRef.current.isActive()) applyStoredDrafts(textDraftStorageRef.current.forget(id));
+    else setDrafts((current) => { const next = { ...current }; delete next[id]; return next; });
+  };
   const setDraft = (value) => {
     if (!liveMode || !liveSessionRef.current?.canSend) { setDrafts((current) => ({ ...current, [selectedId]: value })); return; }
     applyStoredDrafts(textDraftStorageRef.current.set(selectedConversation(conversationsRef.current, selectedId), value));
@@ -785,7 +789,7 @@ export function App() {
         if (!currentRead()) return;
         if (error.status === 401) closeLiveSession("Oturumunuz sona erdi. Mesaj taslağınız korunuyor; yeniden giriş yapın.");
         else if (error.status === 403 || error.status === 404) {
-          applyStoredDrafts(textDraftStorageRef.current.forget(selectedId));
+          forgetDraft(selectedId);
           setConversations((items) => items.filter((item) => item.id !== selectedId));
           setSelectedId(""); setMobileChatOpen(false);
         } else setSyncError(error.status === 429 ? error.message : "Konuşma güncellenemedi");

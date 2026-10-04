@@ -12,7 +12,7 @@ const frontend=fileURLToPath(new URL('../',import.meta.url)), temporary=frontend
 const actor=()=>({accountIdentity:{id:42},role:'mudur',canSend:true,chatwootAgentId:7,liveSendEnabled:true,displayName:'Synthetic account'});
 const row=(id='55')=>({id,phone:'+905387217733',channel:'whatsapp',assignedUserId:7,owner:'Synthetic staff',name:'Synthetic fixture',initials:'SF',country:'',code:'TR',messages:[],preview:'',unread:0});
 const storage=()=>{const values=new Map();return {getItem:key=>values.get(key)??null,setItem:(key,value)=>values.set(key,value),removeItem:key=>values.delete(key)};};
-const fakeWindow=sessionStorage=>({location:{pathname:'/',search:''},crypto:{randomUUID},sessionStorage,localStorage:{getItem:()=>null,setItem(){}},matchMedia:()=>({matches:false}),dispatchEvent(){},setTimeout:()=>0,clearTimeout(){}});
+const fakeWindow=sessionStorage=>({location:{pathname:'/',search:''},crypto:{randomUUID},sessionStorage,localStorage:{getItem:()=>null,setItem(){}},matchMedia:()=>({matches:false}),dispatchEvent(){},setTimeout:()=>0,clearTimeout(){},setInterval:()=>0,clearInterval(){},addEventListener(){},removeEventListener(){}});
 const settle=async()=>{await Promise.resolve();await Promise.resolve();};
 async function bundle(file,instrument=false){
  await build({absWorkingDir:frontend,tsconfigRaw:{},entryPoints:[frontend+'src/App.jsx'],outfile:file,bundle:true,platform:'node',format:'esm',jsx:'automatic',define:{'import.meta.env.DEV':'false','import.meta.env.VITE_CRM_TEST':'"1"'},external:['react','@phosphor-icons/react'],loader:{'.css':'empty'},plugins:instrument?[{name:'isolated-app-handler-harness',setup(build){
@@ -21,14 +21,15 @@ async function bundle(file,instrument=false){
  }}]:[]});
 }
 async function fixture(run){
- mkdirSync(temporary,{recursive:true});const file=temporary+'text-draft-handlers-'+randomUUID()+'.mjs', previous={window:globalThis.window,hooks:globalThis.__draftHooks,harness:globalThis.__draftHarness};
+ mkdirSync(temporary,{recursive:true});const file=temporary+'text-draft-handlers-'+randomUUID()+'.mjs', previous={window:globalThis.window,document:globalThis.document,hooks:globalThis.__draftHooks,harness:globalThis.__draftHarness};
  const local=storage(),values=[],effects=[];let cursor=0;
  globalThis.window=fakeWindow(local);
+ globalThis.document={visibilityState:'visible',addEventListener(){},removeEventListener(){}};
  globalThis.__draftHooks={useState(initial){const i=cursor++;if(!(i in values))values[i]=typeof initial==='function'?initial():initial;return [values[i],update=>{values[i]=typeof update==='function'?update(values[i]):update;}];},useRef(initial){const i=cursor++;if(!(i in values))values[i]={current:initial};return values[i];},useMemo:fn=>fn(),useCallback:fn=>fn,useEffect:fn=>effects.push(fn)};
- const harness=globalThis.__draftHarness={api:{erpDrafts:async()=>({orders:[]}),catalogSignOut:async()=>({}),session:async()=>actor(),send:async()=>({message:{id:'synthetic-accepted',direction:'outgoing',text:'sent'}})},actions:null};
+ const harness=globalThis.__draftHarness={api:{erpDrafts:async()=>({orders:[]}),catalogSignOut:async()=>({}),session:async()=>actor(),conversation:async()=>({conversation:row()}),send:async()=>({message:{id:'synthetic-accepted',direction:'outgoing',text:'sent'}})},actions:null};
  try{await bundle(file,true);const {App}=await import(pathToFileURL(file).href);const render=()=>{cursor=0;effects.length=0;return App();};const connect=(session=actor(),rows=[row(),row('56')])=>{harness.actions.commitLiveSession({key:'synthetic-session',session,inbox:{conversations:rows,summary:{total:rows.length}},agents:{agents:[]}});return render();};
-  render();await run({local,harness,render,connect,pollDrafts:()=>effects.filter(fn=>String(fn).includes('textDraftStorageRef.current.synchronize')).forEach(fn=>fn())});
- }finally{globalThis.window=previous.window;globalThis.__draftHooks=previous.hooks;globalThis.__draftHarness=previous.harness;rmSync(file,{force:true});}
+  render();await run({local,harness,render,connect,pollDrafts:()=>effects.filter(fn=>String(fn).includes('textDraftStorageRef.current.synchronize')).forEach(fn=>fn()),pollConversation:()=>effects.filter(fn=>String(fn).includes('const refreshConversation = async')).forEach(fn=>fn())});
+ }finally{globalThis.window=previous.window;globalThis.document=previous.document;globalThis.__draftHooks=previous.hooks;globalThis.__draftHarness=previous.harness;rmSync(file,{force:true});}
 }
 function find(tree,predicate){if(!tree||typeof tree!=='object')return null;if(predicate(tree))return tree;for(const child of React.Children.toArray(tree.props?.children)){const found=find(child,predicate);if(found)return found;}return null;}
 const composer=tree=>find(tree,node=>node.type==='textarea'&&node.props['aria-label']==='Mesajınız');
@@ -55,3 +56,11 @@ test('actual App late send cannot erase human edits and permission loss purges s
  h.connect();h.harness.actions.setDraft('captured text');h.render();let resolve;h.harness.api.send=()=>new Promise(yes=>{resolve=yes;});const sending=h.harness.actions.sendMessage();h.harness.actions.setDraft('new human text');h.render();resolve({message:{id:'synthetic'}});await sending;assert.equal(composer(h.render()).props.value,'new human text');
  h.harness.api.session=async()=>({...actor(),canSend:false,liveSendEnabled:false});await h.harness.actions.refreshLivePermissions();h.render();assert.equal(h.local.getItem(TEXT_DRAFT_STORAGE_KEY),null);
 }));
+test('actual App view-only conversation 403/404 removes only that RAM draft and preserves the other chat',async()=>{
+ for(const status of [403,404])await fixture(async h=>{
+  h.connect({...actor(),canSend:false,liveSendEnabled:false});h.harness.actions.setDraft('first private RAM draft');h.render();
+  h.harness.actions.selectConversation(row('56'));h.render();h.harness.actions.setDraft('second RAM draft');h.render();h.harness.actions.selectConversation(row());h.render();
+  h.harness.api.conversation=async()=>{throw Object.assign(new Error('synthetic access loss'),{status});};h.pollConversation();await settle();assert.equal(composer(h.render()).props.value,'');
+  h.harness.actions.selectConversation(row('56'));assert.equal(composer(h.render()).props.value,'second RAM draft');assert.equal(h.local.getItem(TEXT_DRAFT_STORAGE_KEY),null);
+ });
+});
