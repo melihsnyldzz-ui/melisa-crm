@@ -6,7 +6,7 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import {execFileSync,spawnSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
-import {allowedSourcePath,CRM_SOURCE_ORIGIN,inventoryPackage,offlineBuildEnvironment,pinnedNpmCliCandidates,resolvePinnedNpmCli,safePackagePath,selectPackageSource,TEST_PACKAGE_MANIFEST,validateLockedDependencies,verifyGitPackageSource,verifyTestPackage} from '../deploy/test-package.mjs';
+import {allowedSourcePath,CRM_SOURCE_ORIGIN,inventoryPackage,offlineBuildEnvironment,pinnedNpmCliCandidates,projectLockedRuntimeDocumentation,resolvePinnedNpmCli,safePackagePath,selectPackageSource,TEST_PACKAGE_MANIFEST,validateLockedDependencies,verifyGitPackageSource,verifyTestPackage} from '../deploy/test-package.mjs';
 
 const digest=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
 const blob=bytes=>crypto.createHash('sha1').update(`blob ${bytes.length}\0`).update(bytes).digest('hex');
@@ -107,4 +107,27 @@ test('isolated Git fixture enforces exact source origin, full commit, feature br
   git(['remote','set-url','origin','https://example.invalid/wrong.git']);assert.throws(()=>verifyGitPackageSource(f.root,commit),{code:'PACKAGE_ORIGIN_REJECTED'});git(['remote','set-url','origin',CRM_SOURCE_ORIGIN]);
   f.write('untracked-private.txt','synthetic only');assert.throws(()=>verifyGitPackageSource(f.root,commit),{code:'PACKAGE_DIRTY_CHECKOUT'});fs.unlinkSync(path.join(f.root,'untracked-private.txt'));
   git(['checkout','--detach',commit]);assert.throws(()=>verifyGitPackageSource(f.root,commit),{code:'PACKAGE_FEATURE_BRANCH_REQUIRED'});
+});
+function documentationFixture(t){
+  const f=fixture(t),packageName='apps/gateway/node_modules/dotenv/';
+  f.write(packageName+'package.json',JSON.stringify({name:'dotenv',version:'16.4.7',main:'lib/main.js'}));f.write(packageName+'LICENSE','Synthetic public license');
+  const example='```env\nPRIVATE_KEY="-----BEGIN '+'RSA PRIVATE KEY-----\n...\n-----END '+'RSA PRIVATE KEY-----"\n```';
+  for(const name of ['README.md','README-es.md'])f.write(packageName+name,example);
+  return{...f,packageName,example};
+}
+test('runtime projection removes only two locked dotenv distribution docs while keeping lock, package, license and runtime bytes',t=>{
+  const f=documentationFixture(t),keep=['apps/gateway/package-lock.json',f.packageName+'package.json',f.packageName+'LICENSE',f.packageName+'lib/main.js'];
+  const before=keep.map(name=>digest(fs.readFileSync(path.join(f.root,name))));assert.throws(()=>inventoryPackage(f.root),{code:'PACKAGE_SECRET_CONTENT_REJECTED'});
+  const report=projectLockedRuntimeDocumentation(f.root);assert.equal(report.version,'16.4.7');assert.equal(report.dependency,'dotenv');assert.deepEqual(report.removed.map(row=>row.path),[f.packageName+'README.md',f.packageName+'README-es.md']);assert.ok(report.removed.every(row=>row.sha256===digest(f.example)&&row.size===Buffer.byteLength(f.example)));
+  assert.deepEqual(keep.map(name=>digest(fs.readFileSync(path.join(f.root,name)))),before);assert.equal(inventoryPackage(f.root).files.some(row=>row.path===f.packageName+'README.md'),false);
+  f.write(f.packageName+'README.md',f.example);assert.throws(()=>inventoryPackage(f.root),{code:'PACKAGE_SECRET_CONTENT_REJECTED'});
+});
+test('projection leaves other dependency docs and runtime key examples subject to the same strict scanner',t=>{
+  for(const name of ['apps/gateway/node_modules/other/README.md','apps/gateway/node_modules/dotenv/lib/key-example.js']){
+    const f=documentationFixture(t);f.write(name,f.example);projectLockedRuntimeDocumentation(f.root);assert.equal(fs.existsSync(path.join(f.root,name)),true);assert.throws(()=>inventoryPackage(f.root),{code:'PACKAGE_SECRET_CONTENT_REJECTED'});
+  }
+});
+test('documentation projection rejects changed package provenance and hardlinked target before deleting either file',t=>{
+  const f=documentationFixture(t);f.write(f.packageName+'package.json',JSON.stringify({name:'dotenv',version:'other',main:'lib/main.js'}));assert.throws(()=>projectLockedRuntimeDocumentation(f.root),{code:'PACKAGE_DOCUMENTATION_PROVENANCE_REJECTED'});assert.equal(fs.existsSync(path.join(f.root,f.packageName+'README.md')),true);
+  f.write(f.packageName+'package.json',JSON.stringify({name:'dotenv',version:'16.4.7',main:'lib/main.js'}));fs.linkSync(path.join(f.root,f.packageName+'README-es.md'),path.join(f.root,'linked-doc.md'));assert.throws(()=>projectLockedRuntimeDocumentation(f.root),{code:'PACKAGE_LINK_OR_SPECIAL_FILE_REJECTED'});assert.equal(fs.existsSync(path.join(f.root,f.packageName+'README.md')),true);assert.equal(fs.existsSync(path.join(f.root,f.packageName+'README-es.md')),true);
 });

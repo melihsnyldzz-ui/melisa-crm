@@ -80,6 +80,30 @@ function readInventory(directory,windowsChecked=false) {
   return {files:rows,directories};
 }
 export function inventoryPackage(directory){return readInventory(directory);}
+/** Omit two shipped documentation examples; the payload scanner stays strict. */
+export function projectLockedRuntimeDocumentation(staging){
+  assertPathAncestors(staging);assertWindowsReparse(staging);
+  const dependencyRoot=path.join(staging,'apps/gateway/node_modules/dotenv');
+  assertPathAncestors(dependencyRoot);
+  const lock=JSON.parse(fs.readFileSync(path.join(staging,'apps/gateway/package-lock.json'),'utf8'));
+  const packageFile=path.join(dependencyRoot,'package.json'),installed=JSON.parse(fs.readFileSync(packageFile,'utf8'));
+  const locked=lock?.packages?.['node_modules/dotenv'];
+  if(installed.name!=='dotenv'||typeof locked?.version!=='string'||installed.version!==locked.version||installed.main!=='lib/main.js'||!/^https:\/\/registry\.npmjs\.org\/dotenv\/-\/dotenv-[^/?#]+\.tgz$/.test(locked.resolved||'')||!/^sha512-[A-Za-z0-9+/]+={0,2}$/.test(locked.integrity||''))failure('PACKAGE_DOCUMENTATION_PROVENANCE_REJECTED');
+  const removed=[];
+  for(const relative of ['apps/gateway/node_modules/dotenv/README.md','apps/gateway/node_modules/dotenv/README-es.md']){
+    const absolute=path.resolve(staging,relative);
+    if(!within(staging,absolute)||samePath(staging,absolute))failure('PACKAGE_STAGING_BOUNDARY_REJECTED');
+    assertPathAncestors(path.dirname(absolute));
+    const stat=fs.lstatSync(absolute);
+    if(!stat.isFile()||stat.isSymbolicLink()||stat.nlink!==1||!samePath(fs.realpathSync.native(absolute),absolute))failure('PACKAGE_LINK_OR_SPECIAL_FILE_REJECTED');
+    const bytes=fs.readFileSync(absolute);
+    removed.push({path:relative,size:bytes.length,sha256:hash(bytes)});
+  }
+  // Verify every target before the first unlink; paths are exact, never a glob.
+  for(const row of removed){const absolute=path.join(staging,row.path),stat=fs.lstatSync(absolute);if(!stat.isFile()||stat.isSymbolicLink()||stat.nlink!==1||!samePath(fs.realpathSync.native(absolute),absolute)||stat.size!==row.size||hash(fs.readFileSync(absolute))!==row.sha256)failure('PACKAGE_DOCUMENTATION_CHANGED');}
+  for(const row of removed)fs.unlinkSync(path.join(staging,row.path));
+  return {dependency:'dotenv',version:locked.version,lockedIntegrity:locked.integrity,removed};
+}
 function keysOnly(value,keys){return value&&typeof value==='object'&&!Array.isArray(value)&&Object.keys(value).sort().join(',')===[...keys].sort().join(',');}
 export function validateLockedDependencies(lock,manifest) {
   if(lock?.lockfileVersion!==3||!lock.packages||!lock.packages['']||lock.name!==manifest?.name)failure('PACKAGE_LOCK_REJECTED');
@@ -210,6 +234,7 @@ export function createTestPackage({repoRoot=canonicalRoot,commit,releasesRoot=pa
     if(!within(staging,buildDeps)||samePath(staging,buildDeps))failure('PACKAGE_STAGING_BOUNDARY_REJECTED');
     fs.rmSync(buildDeps,{recursive:true});
     for(const file of [env.npm_config_userconfig,env.npm_config_globalconfig]){if(!within(staging,file)||samePath(staging,file))failure('PACKAGE_STAGING_BOUNDARY_REJECTED');fs.unlinkSync(file);}
+    projectLockedRuntimeDocumentation(staging);
     const files=inventoryPackage(staging).files;
     for(const row of files)if(!allowedPayloadPath(row.path))failure('PACKAGE_UNEXPECTED_PAYLOAD');
     const manifest={schemaVersion:1,kind:'melisa-crm-test-package',environment:'TEST',source:{repository:CRM_SOURCE_ORIGIN,commit,tree},build:{viteCrmTest:true,nodeVersion:process.version,platform:process.platform,arch:process.arch,dependencyInstall:'npm-ci-offline-ignore-scripts'},locks,entrypoints:{supervisor:'deploy/test-supervisor.mjs',server:'deploy/test-server.mjs'},externalDependencies:['private-test-configuration','canonical-erp-test-api-root','canonical-erp-test-order-service'],files,sourceFiles};
