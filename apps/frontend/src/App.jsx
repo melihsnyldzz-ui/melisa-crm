@@ -33,6 +33,7 @@ import { catalogSource as initialCatalogSource } from "./catalog/source.js";
 import { closeCatalogSession } from "./catalog/logout.js";
 import { createSessionLoader, sessionReadIsCurrent } from "./sessionLoader.js";
 import { CATALOG_ENABLED, CATALOG_CRM_ONLY_ENABLED, CATALOG_EXISTING_STOCK_ENABLED } from "./releaseCapabilities.js";
+import { createTextDraftStorage, textDraftActorScope } from "./lib/textDraftStorage.js";
 
 const team = ["Atanmamış", "Ahmet Yılmaz", "Zeynep Kaya", "Murat Demir", "Merve Demir"];
 
@@ -265,7 +266,11 @@ export function App() {
   const [translatedIncoming, setTranslatedIncoming] = useState(false);
   const [aiOpen, setAiOpen] = useState(true);
   const [tone, setTone] = useState("Profesyonel");
-  const [drafts, setDrafts] = useState({});
+  const [draftState, setDrafts] = useState({});
+  const [draftStorageWarning, setDraftStorageWarning] = useState(false);
+  const textDraftStorageRef = useRef(null);
+  if (!textDraftStorageRef.current) textDraftStorageRef.current = createTextDraftStorage();
+  const drafts = liveMode && textDraftStorageRef.current.isActive() ? textDraftStorageRef.current.visibleDrafts(conversations) : draftState;
   const [attachments, setAttachments] = useState({});
   const [sendStates, setSendStates] = useState({});
   const [salesSuggestion, setSalesSuggestion] = useState({busy:false,preview:null,error:''});
@@ -281,7 +286,11 @@ export function App() {
   const pendingAttachment = attachments[selectedId];
   const sendState = sendStates[selectedId];
   const draft = drafts[selectedId] || "";
-  const setDraft = (value) => setDrafts((current) => ({ ...current, [selectedId]: value }));
+  const applyStoredDrafts = (result) => { setDrafts(result.drafts); setDraftStorageWarning(!result.persisted); };
+  const setDraft = (value) => {
+    if (!liveMode || !liveSessionRef.current?.canSend) { setDrafts((current) => ({ ...current, [selectedId]: value })); return; }
+    applyStoredDrafts(textDraftStorageRef.current.set(selectedConversation(conversationsRef.current, selectedId), value));
+  };
   const [compactMode, setCompactMode] = useState(() => { if (isMobilePreviewPath(window.location.pathname)) return true; try { return window.localStorage.getItem("melisa-crm-layout") === "terminal"; } catch { return false; } });
   const [mobileChatOpen, setMobileChatOpen] = useState(false);
   const [smallScreen, setSmallScreen] = useState(() => window.matchMedia("(max-width: 760px)").matches);
@@ -481,6 +490,9 @@ export function App() {
   useEffect(() => { salesDraftFlowRef.current.synchronize(); }, [salesContextKey, selected]);
   useEffect(() => () => salesDraftFlowRef.current.close(), []);
   const selectedMessageRevision = conversationRevision(selected);
+  useEffect(() => {
+    if (liveMode && liveSessionRef.current && textDraftStorageRef.current.isActive()) applyStoredDrafts(textDraftStorageRef.current.synchronize(conversations));
+  }, [conversations, liveSession, liveMode]);
   const selectedHistoryRevision = `${selected.id}:${selected.messages?.length || 0}:${selected.messages?.at(-1)?.id || ""}:${sentMessages.length}`;
   const syncStale = Boolean(syncError || (lastSyncAt && statusClock - lastSyncAt.getTime() > POLL_INTERVAL.inbox * 2 + 5000));
 
@@ -565,6 +577,8 @@ export function App() {
   }, []);
 
   const closeLiveSession = (message = "", clearReceipts = false) => {
+    if (clearReceipts) applyStoredDrafts(textDraftStorageRef.current.clear());
+    else textDraftStorageRef.current.suspend();
     salesDraftFlowRef.current?.close();
     const closingKey = liveKeyRef.current;
     sessionLoaderRef.current?.invalidate(); permissionRefreshRef.current?.invalidate();
@@ -596,6 +610,7 @@ export function App() {
     if (sessionIdentityRef.current && sessionIdentityRef.current !== identity) { setProductDrafts({}); setDraftOrders([]); orderPreviewLedgerRef.current.clear(); uiOperationEpochRef.current++; setIncomingTranslations({}); clearCatalogStorage(safeCatalogStorage()); setModal(null); catalogSessionRef.current?.close(); setCatalogSource(initialCatalogSource); sendScopeRef.current.invalidate(); sendInFlightRef.current = false; setDrafts({}); setAttachments({}); attachmentRef.current = {}; setSendStates({}); readReceiptsRef.current = {}; setReadReceipts({}); }
     sessionIdentityRef.current = identity;
     const visibleConversations = applyReadReceipts(sortInboxByActivity(inboxResult.conversations || []), readReceiptsRef.current);
+    applyStoredDrafts(textDraftStorageRef.current.activate(sessionResult, visibleConversations));
     liveKeyRef.current = key; liveSessionRef.current = sessionResult; conversationsRef.current = visibleConversations;
     saveAccessKey(key); setLiveKey(key); setLiveSession(sessionResult); setRole(sessionResult.displayName);
     setAgents(agentsResult.agents || []); setSummary(effectiveInboxSummary(inboxResult.summary || {}, visibleConversations)); setConversations(visibleConversations);
@@ -607,7 +622,7 @@ export function App() {
   };
   sessionCallbacksRef.current = {
     onCommit: commitLiveSession,
-    onError: error => { if (error.status === 401 || error.status === 403) closeLiveSession(error.message || "CRM oturumu doğrulanamadı."); else setLiveError(error.message || "CRM bağlantısı kurulamadı."); },
+    onError: error => { if (error.status === 401 || error.status === 403) closeLiveSession(error.message || "CRM oturumu doğrulanamadı.", error.status === 403); else setLiveError(error.message || "CRM bağlantısı kurulamadı."); },
     onBusy: setLiveBusy,
   };
   if (!sessionLoaderRef.current) sessionLoaderRef.current = createSessionLoader({
@@ -629,8 +644,8 @@ export function App() {
     getGeneration: () => sendScopeRef.current.capture(),
     fetchSession: (key, options) => liveApi.session(key, options),
     onSession: next => {
-      if (accountIdentityKey(next.accountIdentity) !== sessionIdentityRef.current || next.role !== liveSessionRef.current?.role) {
-        closeLiveSession("Hesap veya yetki kapsamınız değişti. Yeniden giriş yapın.");
+      if (accountIdentityKey(next.accountIdentity) !== sessionIdentityRef.current || next.role !== liveSessionRef.current?.role || textDraftActorScope(next) !== textDraftActorScope(liveSessionRef.current)) {
+        closeLiveSession("Hesap veya yetki kapsamınız değişti. Yeniden giriş yapın.", true);
         return;
       }
       liveSessionRef.current = next; setLiveSession(next);
@@ -770,6 +785,7 @@ export function App() {
         if (!currentRead()) return;
         if (error.status === 401) closeLiveSession("Oturumunuz sona erdi. Mesaj taslağınız korunuyor; yeniden giriş yapın.");
         else if (error.status === 403 || error.status === 404) {
+          applyStoredDrafts(textDraftStorageRef.current.forget(selectedId));
           setConversations((items) => items.filter((item) => item.id !== selectedId));
           setSelectedId(""); setMobileChatOpen(false);
         } else setSyncError(error.status === 429 ? error.message : "Konuşma güncellenemedi");
@@ -1036,6 +1052,8 @@ export function App() {
     if (selectedSendUncertain || sendInFlightRef.current || pendingAttachment?.state === "reading" || pendingAttachment?.state === "error") return;
     if (!selected.id || String(selected.id) !== String(selectedId) || (!draft.trim() && !pendingAttachment && !pendingProducts.length && !pendingCatalogs.length)) return;
     const conversationId = selected.id;
+    const sendingDraft = draft;
+    const sendingDraftActor = textDraftActorScope(liveSessionRef.current);
     const selectedMedia = pendingAttachment?.state === "ready" ? pendingAttachment : null;
     const productLines = pendingProducts.map((product) => `${product.name} · ${product.id} · ${product.price} · ${product.quantity} adet`).join("\n");
     const catalogLines = pendingCatalogs.map((catalog) => `${catalog.title}: ${catalog.link}`).join("\n");
@@ -1059,7 +1077,7 @@ export function App() {
         clearThisLock();
         setConversations((items) => items.map((item) => item.id === conversationId ? { ...item, messages: message ? [...(item.messages || []), message] : item.messages, preview: content || attachmentMediaLabel(media), waitingForReply: false } : item));
         nearBottomRef.current = true;
-        setDrafts((items) => ({ ...items, [conversationId]: "" })); updateAttachment(conversationId, null);
+        applyStoredDrafts(textDraftStorageRef.current.clearSent(selected, sendingDraft, sendingDraftActor)); updateAttachment(conversationId, null);
         setPendingProducts([]); setPendingCatalogs([]); setTranslationReady(false);
         setSendStates((items) => ({ ...items, [conversationId]: { state: "sent", text: "Gönderim sunucu tarafından kabul edildi" } }));
       } catch (error) {
@@ -1169,6 +1187,7 @@ export function App() {
               {sendState ? <div className={`send-state ${sendState.state}`} role={sendState.state === "failed" || sendState.state === "uncertain" ? "alert" : "status"}>{sendState.state === "sending" ? <ArrowClockwise size={16}/> : sendState.state === "sent" ? <Check size={16}/> : <Info size={16}/>}<span>{sendState.text}</span></div> : null}
               {selectedSendUncertain && !["uncertain", "sending"].includes(sendState?.state) ? <p className="approval-note send-warning" role="alert">Önceki mesajın teslimi doğrulanamadı. Tekrar göndermeden önce konuşmayı kontrol edin.</p> : liveSession && (!liveSession.liveSendEnabled || permissionCheck.error) ? <div className="send-permission-notice" role="status"><span>{permissionCheck.busy ? "Gönderim izni kontrol ediliyor…" : permissionCheck.error || (liveSession.liveSendState === "unknown" ? "Sunucu bu hesabın gönderim durumunu bildirmedi." : liveSession.liveSendState === "forbidden" ? "Bu hesabın mesaj gönderme yetkisi yok." : "Sunucu bu hesap için gönderimi kapalı bildiriyor.")}</span><button type="button" onClick={() => refreshLivePermissions().catch(() => {})} disabled={permissionCheck.busy}><ArrowClockwise size={17}/>{permissionCheck.busy ? "Kontrol ediliyor…" : "Gönderim iznini yenile"}</button></div> : null}
 
+              {liveSession && draftStorageWarning ? <p className="approval-note send-warning" role="status">Mesaj taslağı bu sekmede kaydedilemedi. Yenilemeden önce metni kopyalayın.</p> : null}
             </div>
           </section>
 
