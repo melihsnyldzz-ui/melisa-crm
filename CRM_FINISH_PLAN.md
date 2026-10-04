@@ -1,5 +1,59 @@
 # MELISA CRM — Ana Bitiş Planı
 
+Güncel ana hedef: **4 Ekim 2026 — günlük CRM + mobil + ERP + insan denetimli AI satış + kontrollü yayın**. Bu dosyadaki aşağıdaki ağaç tek güncel finish tree'dir. Eski kayıtlar en altta tarihsel kanıttır; ikinci güncel iş listesi değildir.
+
+**Tamamlanan: 8 / Kısmi: 10 / Açık: 6 / Toplam: 24. Genel ilerleme: %33 tamamen tamamlanmış (8/24).** Kısmi maddeler yüzdeye tamam sayılmaz. **Kalan açık madde sayısı: 16** = 6 geliştirme eksiği + 10 kısmi/kabul/onay adımı. Önceki günlük CRM sayacı 5, daha dar 13 başlığa aittir; AI/yayın kapsamı eklenince tarihsel kalır.
+
+🟢 tamam: gereken gerçek kullanım veya ilgili teslim kanıtı var. 🟡 kısmi / kullanıcı kabulü bekliyor. 🔴 açık / bozuk: somut geliştirme/kurulum gerekiyor. HTTP 200, build ve unit test tek başına bir kullanım akışını yeşil yapmaz.
+
+## Tek finish tree
+
+| Kimlik | Modül / iş | Durum | Doğrulanmış sonuç ve kalan bitiş ölçütü |
+| --- | --- | --- | --- |
+| I01 | Inbox, gelen/giden metin, geçmiş ve yeni mesaj | 🟡 kısmi / kullanıcı kabulü bekliyor | 7733 yeni yanıtı doğru konuşmada bir kez; tam liste 728 / atanmamış621 gerçek ekranda. Genel kimlik kodu hazır; 7733 dışı yeni mesajın normal CRM alımı kabul edilmedi, LIVE eski filtrede. Başka müşteriye yazmadan yetkili genel inbound kabulü ve değişen akış kontrolü gerekir. |
+| I02 | Fotoğraf ve açma | 🟢 tamam | İki yönlü fotoğraf gerçek decode ve kullanıcı kabulü, 4 Ekim. |
+| I03 | PDF/dosya, açma/indirme | 🟢 tamam | İki yönlü PDF/TXT indirme, render/okuma, hash ve kullanıcı kabulü. Her Office formatı için kapsam iddiası yok. |
+| I04 | Ses/video ve oynatma | 🟢 tamam | 19:34–19:41 MP3/MP4 gönder/al; kullanıcı telefonda açtı, gelenler CRM'de sonuna kadar hatasız oynadı. |
+| C01 | Atanmamışlar, müşteri bilgisi, atama ve doğru personel ekranı | 🟡 kısmi / kullanıcı kabulü bekliyor | Test konuşması Ahmet'e atanıp Semih'e geri alındı; atanmamış filtresi doğru. Personelin kendi hesabında konuşma/müşteri/geçmiş görmesi kabul edilmedi. |
+| C02 | Patron/müdür/personel yetkileri | 🟡 kısmi / kullanıcı kabulü bekliyor | Kod/korumalı testler hazır, patron kullanımı var; üç gerçek rol hesabında görünüm/gönderim/atama kabulü gerekir. |
+| T01 | Otomatik çeviri, dil ve manuel kontrol | 🟢 tamam | Gelen Haloo→Merhaba ve önceki gerçek giden çeviri kabulü korunur; bütün dil kalitesi garantisi yok. AI müşteri dili ayrı A05'tedir. |
+| K01 | Gerçek katalog, arama/filtre, görsel/bilgi | 🟢 tamam | 1085 ERP read ürün referansı, ilk sayfa12/12 fotoğraf; normal UI ürün seçimi ve gerçek PDF/telefon kabulü. |
+| K02 | Ürün gönderme | 🟢 tamam | 41140 doğru görsel/bilgi ile fiyatlı ürün PDF'si telefonda kabul edildi. |
+| K03 | Fiyat ve doğru para birimi | 🟢 tamam | Kayıtlı196 TRY/adet normal mesaj ve PDF'de kullanıcı kabulü. Stok/teslim taahhüdü değildir. |
+| E01 | CRM→ERP taslak: mevcut doğrulanmış müşteri/ürün kapsamı | 🟢 tamam | Müşteri593, ürün41140/native301982, 2×196=392 TRY; draft id4 ayrı GET readback ile kullanıcı kabulü. Aynı UUID tek sipariş/audit; stok/cari etkisi0. |
+| E02 | Günlük ERP müşteri/ürün eşleme kapsamı | 🔴 açık / bozuk | Güncel native sözleşmede yalnız bir TEST müşteri/ürünü provision edilmiş. İsim benzerliğine dayanmadan gerçek kart kimlikleriyle kapsam genişletme, mevcut sözleşme/ERP işiyle uzlaştırma ve TEST readback gerekir. |
+| A01 | Açık AI V1 çekirdeğini mevcut CRM ile uzlaştırma | 🟡 kısmi / kullanıcı kabulü bekliyor | PR6/09b6083 ayrı dal, 54 offline test. Gerçek DTO atama alanları snapshot'a bağlanmamış; entegrasyon ve bağımsız inceleme gerekir. |
+| A02 | Gerçek satış kuralları: ülke/MOQ/kargo/indirim | 🔴 açık / bozuk | Sürümlü kural çekirdeği var; örnek politika etkin işletme kararı değildir. İşletme kuralları ve sade yönetim/override tamamlanmalı; uydurma kargo/stok/taahhüt yok. |
+| A03 | Normal sohbette cevap önerisi→incele→taslağa aktar | 🔴 açık / bozuk | PR6 frontend içermiyor. İnsan tarafından görünür/denetlenebilir normal akış ve eski öneri geçersizleştirme gerekir; otomatik müşteri gönderimi yok. |
+| A04 | Güvenilir gerçek ürün/katalog/fiyat önerisi | 🔴 açık / bozuk | PR6 endpoint products=[]; mevcut ERP kayıtlı fiyat kullanılabilir, stockFreshness=unverified ve seri bilgisi doğrulanmamış. Güvenilir DTO bağlantısı, doğru para birimi ve açık veri sınırları gerekir. |
+| A05 | AI müşteri dili, mevcut taslak bağlamı ve gerçek kabul | 🟡 kısmi / kullanıcı kabulü bekliyor | Dil/insan kontrolü/erpWrite=false çekirdekte; gerçek model/normal ekran/7733 kabulü yok. Mevcut dil tercihi ve mevcut ERP formuna insan kontrollü aktarım kabulü gerekir. |
+| U01 | Sade/premium masaüstü ve 1440/1024/390 UX | 🟡 kısmi / kullanıcı kabulü bekliyor | Normal sohbet/medya/katalog çalışıyor, önceki390 görünümü var. Üç genişlikte hedefli görsel inceleme, dokunma alanları ve gerçek bulunan UX eksikleri tamamlanmalı. Teknik/debug metni normal akıştan kaldırılır. |
+| M01 | Fiziksel telefonda bütün CRM akışları | 🟡 kısmi / kullanıcı kabulü bekliyor | Fiziksel WhatsApp medya kabulü mobil CRM kabulü değildir. TEST UI loopback; mevcut güvenli erişimle telefon CRM müşteri/sohbet/medya/ürün/fiyat/çeviri/atama/ERP akışlarının kabulü gerekir. |
+| O01 | Child restart sonrası normal kullanım | 🟢 tamam | TEST UI/gateway/katalog child'ları supervisor tarafından yeniden açıldı, mevcut konuşma/atama/dosyalar/katalog/yanıt gerçek ekranda korundu. |
+| O02 | Windows otomatik açılış ve bağımlılık zinciri | 🔴 açık / bozuk | CRM supervisor ve ayrı native ERP62404 Windows autostart kurulu değil. Frontend/gateway/katalog/ERP read/draft/Chatwoot health-log zinciri, doğru owner/config, restart ve logon/reboot koşulu tamamlanmalı. |
+| R01 | Mevcut uygulama HEAD'i için GitHub CI | 🟡 kısmi / kullanıcı kabulü bekliyor | PR5/main8e861aa hazır CI araçları mevcut feature'a seçilerek alınıyor; mevcut uygulama head quality-build-test/secret-scan sonucunu bekler. Eski PR4/5 yeşili bu head için kanıt değildir. |
+| R02 | Değişmez TEST paketi ve uygulanabilir rollback hazırlığı | 🔴 açık / bozuk | PR4/5 runbook var; güncel paket/hash ve TEST rollback tatbikatı yok. Kabul edilmiş baseline'a dokunmadan paket/kimlik/geri dönüş somutlaştırılmalı. |
+| R03 | Kabul edilmiş sürümü main/tag/release'e almak | 🟡 kısmi / kullanıcı kabulü bekliyor | Uygulama PR3 feature/crm-completion tabanında; main otomatik merge edilmez. Açık kritik işler/kabul ve exact CI bittikten sonra somut PR/commit için kullanıcı onayı gerekir. |
+| R04 | Kontrollü LIVE geçiş ve gerçek rollback kabulü | 🟡 kısmi / kullanıcı kabulü bekliyor | LIVE değişmedi. Kabul edilmiş paket, önceki paket/config/kimlik ve bakım kapsamı hazırlanıp kullanıcı onayı sonrası uygulanır; yapılmadan BİTTİ denmez. |
+
+## Güncel dallar ve teslim sırası
+
+Kanonik kök `C:\Sirket\CRM\melisa-crm`, fetch/push origin `https://github.com/melihsnyldzz-ui/melisa-crm.git`; aktif dal `codex/crm-agents-on-completion-20261003`, [PR3](https://github.com/melihsnyldzz-ui/melisa-crm/pull/3), gerçek kabul kaynak HEAD446ac3a. Main8e861aa/PR5 yalnız hazır geliştirme altyapısını taşır; kabul edilmiş feature uygulamasının main teslimi değildir. [PR4](https://github.com/melihsnyldzz-ui/melisa-crm/pull/4) açık tarihsel altyapı işi, [PR6](https://github.com/melihsnyldzz-ui/melisa-crm/pull/6) ayrı AI çekirdeği. PR1/2 eski ajan overlay'leri; ürün eksiği veya otomatik merge hedefi değildir.
+
+İlk iş hazır CI araçlarını mevcut feature'a taşıyıp exact head kontrolünü çalıştırmak; sonraki tek geliştirme **O02 Windows TEST otomatik açılışı**. Ardından normal AI önerisi, gerçek kurallar/katalog bağlamı, ERP eşleme, hedefli UX/mobil/rol kabulleri ve paket/rollback. Bağımlılık veya somut regresyon sıralamayı değiştirirse nedeni burada kaydedilir. Kullanıcı `devam` dediğinde sıradaki açık iş seçilir. Her iş branch→commit→push→PR→CI→STATUS olarak ajan tarafından teslim edilir.
+
+## Gerçek TEST kabulü
+
+Normal masaüstü TEST: **http://127.0.0.1:62400/**. Gateway62401, katalog62402, taslak adapter62403, ayrı native TEST API62404. Yalnız izinli7733 kabul kapsamı; başka müşteriye gönderim veya LIVE deploy yok. Telefonda `127.0.0.1` Windows sunucusunu açmaz; fiziksel erişim doğrulanana kadar telefon URL'si uydurulmaz.
+
+Sıradaki kullanıcı kontrolleri: (1) atanmış7733 kendi personel hesabında görünür ve müşteri/geçmiş açılır; (2) patron/müdür/personel doğru yetkiyi görür; (3) fiziksel CRM'de sohbet/medya ve ürün/fiyat kullanılabilir; (4) hazırlanmış AI önerisi incelenip yalnız taslağa alınır; (5) planlı otomatik açılış sonrası normal CRM ve ERP read/draft erişimi görülür. Hazır olmayan AI/autostart adımı kabul edilmiş gibi sunulmaz. Ana hedef ancak tüm kritik yapraklar ve son onaylı yayın/rollback kanıtı tamamlanınca BİTTİ olur.
+
+## Tarihsel plan ve kabul kayıtları — güncel iş sayacı değildir
+
+Aşağıdaki eski tarihler/URL hedefleri/PID'ler/kalan sayımlar kendi zamanı içindir. Bugünkü çalışma sırası ve durum yalnız üstteki ağaç ve CRM_STATUS güncel bölümüdür.
+
+# MELISA CRM — Ana Bitiş Planı
+
 Bu dosya, `melihsnyldzz-ui/melisa-crm` reposunda CRM’in kapsamı, çalışma sırası ve “BİTTİ” kararı için **source of truth (tek ana referans)** kaynağıdır. README buraya yönlendirir; CRM_STATUS.md durum ve kanıt kaydıdır. Bu planın varlığı özelliklerin tamamlandığı anlamına gelmez.
 
 ## Kanonik geliştirme girişi — 3 Ekim 2026

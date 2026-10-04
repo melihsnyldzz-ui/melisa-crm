@@ -1,5 +1,14 @@
 # Melisa CRM çalışma talimatları
 
+## Uçtan uca ana hedef ve GitHub teslimi — 4 Ekim 2026
+
+- Güncel kapsam yalnız tek bug değil; [CRM_FINISH_PLAN.md](CRM_FINISH_PLAN.md) içindeki tek finish tree üzerinden günlük/mobil CRM, mevcut ERP entegrasyonu, insan denetimli satış önerileri ve operasyon tamamlanır. `devam` sıradaki açık işi seçer. Kabul edilmiş baseline tekrar açılmaz.
+- Explorer, frontend, backend, reviewer, release ve gereken AI uzmanı açık dosya sahipliğiyle kullanılır; eşzamanlı yazarlarda aynı dosyalar paylaşılmaz.
+- Her iş **branch → commit → push → PR → CI → STATUS** ile teslim edilir. Ajan git/gh işlemlerini yürütür; kullanıcıdan komut veya token istemez. Aktif feature korunur; force-push, otomatik main merge ve LIVE deploy yoktur.
+- [GitHub çalışma düzeni](docs/development/GITHUB_WORKFLOW.md), [sürümleme](docs/development/RELEASES.md) ve [deploy/rollback](docs/development/DEPLOY_ROLLBACK.md) kullanılır. Eski PR check'i yeni head için PASS değildir; gerçek kabul CI'den ayrı kaydedilir.
+- Yalnız önceden izin verilen 7733 TEST kabul kapsamı gerçek gönderimde kullanılabilir. AI ilk aşamada insanın görebildiği öneridir; otomatik müşteri gönderimi yoktur. Gerçek müşteri, credential, veri kaybı veya geri dönüşü zor LIVE riski için açık kullanıcı onayı gerekir.
+- TEST hazırlığına verilen yetki rutin build/restart/Git teslimini kapsar. Son main/tag/LIVE/rollback adımları somut kabul edilmiş sürüm için kullanıcı onayını bekler; gereksiz ek gate/bridge/onay sistemi kurulmaz.
+
 ## Kimlik ve bağlayıcı kaynaklar
 
 - Kanonik repo: `melihsnyldzz-ui/melisa-crm`. Her yeni bilgisayarda veya checkout'ta önce `git remote -v`, branch ve çalışma ağacını oku; fetch ve push hedeflerinin bu repo olduğunu doğrula. HTTPS/SSH aynı kanonik repoya çözülmelidir; hedefler farklıysa yazma. Klasör adı repo kimliği değildir. Semih PC yolu, kullanıcı adı, portu ve servis sahibi varsayılmaz.

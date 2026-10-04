@@ -1,5 +1,32 @@
 # MELISA CRM — Güncel Durum
 
+Güncelleme: **4 Ekim 2026 — geniş ana hedef ve açık PR uzlaştırması**. Tek güncel finish tree: [CRM_FINISH_PLAN.md](CRM_FINISH_PLAN.md). **8 tamam / 10 kısmi / 6 açık; toplam24, tamamen tamamlanmış%33. Kalan16** (6 geliştirme +10 kabul/onay/kısmi). Önceki kalan5 günlük CRM kapsamı tarihsel korunur; yeni AI/yayın kapsamıyla karıştırılmaz.
+
+## Şu anda doğrulanmış durum
+
+- Kabul edilmiş fotoğraf, PDF/TXT, MP3/MP4 ses/video, çeviri, gerçek katalog/ürün/fiyat ve scoped ERP taslağı korunur. Bunlar yeniden test edilmedi veya değiştirilmedi. Son medya kabulü19:34–19:41; kullanıcı iki dosyayı telefonda açıp geri gönderdi, gelenler doğru konuşmada hatasız sonuna kadar oynadı.
+- Genel inbound kodu hazır; başka kişinin normal CRM alımı kabul edilmedi, LIVE eski kaynak aynı. Atama yönetim ekranında denenmiş; personelin kendi hesabı ve üç rol kabulü bekliyor. Fiziksel mobil CRM kabulü yok.
+- ERP gerçek kabulü yalnız müşteri593 / ürün41140-native301982 / 2×196=392 TRY draft readback kapsamındadır. Günlük diğer müşteri/ürün eşlemeleri hazır denmez; gerçek satış/stock/cari hareket oluşturulmadı.
+- AI PR6/09b6083 ayrı dalda, güncel CRM'ye bağlı değil. İnsan öneri çekirdeği ve54offline test var; normal AI ekranı, gerçek katalog products bağlantısı, etkin işletme politikası, gerçek model ve7733 kabulü yok. Atama snapshot alanları gerçek DTO ile uyuşmuyor; entegrasyon işi bunu düzeltmeli. Otonom müşteri gönderimi yok.
+- Windows autostart kurulu değil. Child autoheal kabulü reboot/logoff garantisi değildir. TEST portları62400–62404 yeniden salt okunur eşleştirildi: supervisor61508, UI/gateway39528, katalog56028, taslakadapter7356; ayrı native ERP60176 / CRM-ORDER-DRAFT-TEST-20261004-02. PID'ler bu kontrol anının kaydıdır; restart öncesi yeniden doğrulanır.
+- TEST UI **http://127.0.0.1:62400/**; gelen/giden yalnız7733, otomatik yanıt kapalı. Native taslak DB MELISA_ERP_SIRKET_TEST_20260929_01. LIVE MelisaWhatsAppCrmGateway Running/Auto korunur. Secret/config/proof/log repo dışındadır. Telefon TEST URL'si henüz doğrulanmış değildir.
+
+## GitHub / teknik teslim
+
+- Kanonik repo ve origin doğru; aktif branch `codex/crm-agents-on-completion-20261003`, başlangıçHEAD446ac3a, [PR3](https://github.com/melihsnyldzz-ui/melisa-crm/pull/3), basefeature/crm-completion. Main'e otomatik merge veya LIVE deploy yapılmadı.
+- [PR5](https://github.com/melihsnyldzz-ui/melisa-crm/pull/5) daha önce main'e birleşmiş; main8e861aa için quality-build-test/secret-scan SUCCESS. Bu yalnız eski altyapıHEAD'inin kanıtıdır. Hazır `.github`, `scripts/ci`, exact `.gitleaksignore` ve runbook mevcut feature'a seçilerek taşındı; yeni head CI henüz bekliyor.
+- [PR4](https://github.com/melihsnyldzz-ui/melisa-crm/pull/4)0930f58 açık tarihsel altyapı işi, eski checkleriSUCCESS; otomatik kapatılmadı. [PR6](https://github.com/melihsnyldzz-ui/melisa-crm/pull/6)09b6083 ai-sales-offlineSUCCESS; uygulama/model/kullanıcı kabulü değildir. PR1/2 eski ajan overlay'leri, yeni ürün eksiği sayılmaz.
+- Yerel eski `tests/scan-secrets.mjs` sentetik credential-URL reddetme fixture'larından exit1 vermişti; bu tarihsel sonuç CI Gitleaks ile aynı araç değildir. Yeni CI değerleri maskeler, yalnız tam sentetik rol-fixture fingerprint istisnası kullanır; genel secret kuralı gevşetilmedi.
+- Explorer, release ve AI uzmanı bağımsız salt okunur PR/kod keşfi yaptı. Çalışan uygulama kodu, provider, DB, runtime veya credential bu plan/CI hazırlığıyla değiştirilmedi. Mevcut CI araçlarının exact uygulamahead sonuçları aşağıdaki güncel teslim kaydına eklenecek.
+
+Sıradaki tek geliştirme: **O02 Windows TEST supervisor ve ayrı native ERP otomatik açılış zinciri**. Kullanıcının ilk somut kabulü: atanmış7733'ü kendi personel hesabında açmak; patron oturumu kabulü bu adımı kapatmaz.
+
+## Tarihsel kabul ve çalışma günlüğü — güncelmiş gibi okunmaz
+
+Aşağıdaki eski bug/eksik/PID/URL/kalan sayıları kendi anına aittir. Düzeltmenin sonraki gerçek kabulü ve yukarıdaki güncel durum esas alınır; geçmiş kanıtlar silinmez. Yeni ana hedef sayımı yalnız tek finish tree'dedir.
+
+# MELISA CRM — Güncel Durum
+
 Güncelleme: **4 Ekim 2026 — ses/video iki yönde gerçek kullanımla kabul edildi**. İş sırası: [CRM_FINISH_PLAN.md](CRM_FINISH_PLAN.md).
 
 Çalışan CRM baseline korunmuştur. Bu tur yalnız 7733 test hattıyla gerçek yazışma yapıldı; explorer, frontend/backend ve bağımsız reviewer kullanıldı. HTTP 200, build ve unit test tek başına yeşil gerekçe değildir. LIVE deployment yapılmadı, başka müşteriye mesaj gönderilmedi.
