@@ -1,5 +1,23 @@
 # MELISA CRM — Güncel Durum
 
+Güncelleme: **4 Ekim 2026, 23:00 — satış kuralları yönetimi ve gerçek AI kural kartı**. Tek finish tree: [CRM_FINISH_PLAN.md](CRM_FINISH_PLAN.md). **11 tamam /12 kısmi /2 açık; toplam25, ilerleme%44. Kalan14**. A02 kod ve gerçek TEST kullanımı hazır; gerçek işletme değerleri ve kullanıcı kabulü bekler. Çalışan baseline tekrar açılmadı.
+
+- **9786f3a2b93afcbd08cf96b469c8510b64d3ae7d**: Ayarlar→Satış kuralları; patron kaydeder, mevcut CRM rolleri okur. Genel/ülkeye özel minimum, TRY/USD/EUR, kargo/satış notu ve isteğe bağlı Telegram mevcut sunucu JSON kaynağındadır. Bilinmeyen minimum, minimum yok ve belirlenmiş tutar ayrıdır. Ülke telefon/dilden tahmin edilmez; doğrulanmamış ülke istisnası tam teklifi engeller.
+- Normal patron TEST ekranında ticari alanlar boş bırakılarak Kaydet başarıyla çalıştı; Güncel kuralları yükle ve özel dosya readback aynı boş değerleri doğruladı.1000USD/1000EUR tarihsel örnekleri etkinleştirilmedi. İşletme minimum/ülke/kargo yanıtı henüz yok.
+- 7733/konuşma55 için **bir gerçek OpenAI önerisi** üretildi. Sunucunun kural kartı minimum/kargoyu “Henüz belirlenmedi” gösterdi; Mesaj taslağına al güncel policy GET sonrası mevcut insan metninin sonuna ekledi. Gönderim0/ERPwrite0. Deneme eki kaldırıldı, önceki insan taslağı korundu; Ayarlar açık bırakıldı.
+- Ürün/fiyat/metin taslağa alma yeni kural revizyonunu tekrar okur; politika, oturum, sohbet, atama veya insan taslağı değişirse eski öneri uygulanmaz. Model minimum rakamlarını almaz; kesin tutarlar sunucu kartından gösterilir. Otomatik indirim, seri bölme, gönderim ve ERP yazımı açılmadı. Serbest AI metni insan incelemesinde kalır.
+- Yeni form1440/1024/390 genişliklerinde yatay taşma0; düğme/input/select44px, tablet rail56px. Bu fiziksel mobil veya üç gerçek rol kabulü değildir. Kanıtlar repo dışı `logs/acceptance-20261004/ai-rules-settings-*.jpg`, `ai-rules-final-settings.jpg`, `ai-rules-real-draft.jpg`, `ai-rules-real-use-20261004.json`.
+- TEST launcher/config/source/port/native DB kimliği kontrol edilerek yalnız UI/gateway2464 durduruldu; mevcut supervisor20356 ile yeniden açtı. Katalog/native/Chatwoot/LIVE değiştirilmedi. TEST politika yolu repo dışı TEST runtime'a sabitlendi; inherited/baseline LIVE yolu kullanılmaz. Aynı uygulama kayıtları revision ve atomik yazımla korunur; dosyaya eşzamanlı dış elle edit desteklenmiş kabul edilmez.
+- Backend147 +frontend37 +TEST config5 = **189/189 hedefli offline kontrol**, bağımsız reviewer açık P0/P1/P2 bulgu0. TEST build12,51sn başarılı. Teknik testler kullanıcı kabulü değildir. Önceki391bc34 exact CI SUCCESS; yeni A02 tesliminin CI sonucu [PR3 Checks](https://github.com/melihsnyldzz-ui/melisa-crm/pull/3/checks) üzerinden ayrıca doğrulanacak.
+
+**TEST: http://127.0.0.1:62400/**. Kontrol: (1)Ayarlar→Satış kuralları; (2)yalnız doğru işletme minimum/ülke/kargo bilgisini girip Kaydet; (3)Güncel kuralları yükle ile değerleri gör; (4)7733 Satış önerisinde aynı kural kartını incele; (5)taslağa almak gönderim yapmasın. Başka müşteriye yazılmadı; main merge/LIVE deploy yok. Fiziksel telefon CRM erişimi halen kabul edilmedi.
+
+**Sıradaki tek geliştirme: R02 değişmez TEST paketi ve mevcut sözleşmeye uygun geri dönüş tatbikatı hazırlığı.** A02 işletme değerleri ve kullanıcı kabulü ayrıca bekler.
+
+## Tarihsel durum — 4 Ekim 2026, 22:20; aşağıdaki kayıt güncel değildir
+
+# MELISA CRM — Güncel Durum (22:20 tarihsel kaydı)
+
 Güncelleme: **4 Ekim 2026, 22:20 — gerçek ERP ürün/fiyat önerisi ve tablet düzeni**. Tek finish tree: [CRM_FINISH_PLAN.md](CRM_FINISH_PLAN.md). **11 tamam /11 kısmi /3 açık; toplam25, ilerleme%44. Kalan14**. A04 kod ve gerçek TEST kullanımı hazır; kullanıcı kabulü beklediği için sarıdır. Eski kabul edilmiş baseline yeniden açılmadı.
 
 ## Şu anda doğrulanmış sonuç

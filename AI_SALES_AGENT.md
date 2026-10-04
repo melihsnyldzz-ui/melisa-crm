@@ -1,5 +1,13 @@
 # Melisa Satış Asistanı — Güncel entegrasyon
 
+4 Ekim2026,23:00: **9786f3a** normal Ayarlar ekranına patron satış kuralı yönetimi ekler. GET `/crm/sales-rules` mevcut crm.view rollerine; PUT güncel patron+crm.manage iznine açıktır. Aynı repo dışı `CRM_AI_SALES_RULES_FILE` kaynağı kullanılır; path body'den alınmaz. Sunucu version üretir; normalize politika SHA256 revision'ı GET/preview için ortaktır. Eski revision409, kayıt atomik ve aynı süreçte sıralıdır; eşzamanlı dış elle dosya düzenleme desteklenmiş sayılmaz.
+
+`minimumOrderMode` unconfigured/none/amount; countryRules (en çok12 okunabilir ülke adı), shippingTerms/salesNotes ve onaylı isteğe bağlıTelegram. Ülke otomatik seçilmez; doğrulanmamış istisna tamquote için insana döner. Minimum sayıları modelden saklanır, sunucu policyFacts kartında gösterilir; serbest yanıt insan tarafından incelenir. Her metin/ürün/fiyat taslağa alma freshpolicyGET yapar; değişmiş politika/sohbet/insan taslağı korunur. İndirim/seri bölme/autoSend/writeErp kapalı kalır.
+
+Normal TEST patron UI boş değerlerle Kaydet→geri okuma çalıştı; bir gerçek7733 OpenAI önerisi doğru bilinmeyen kural kartı gösterdi ve insan taslağını koruyarak aktarıldı. Gönderim/ERPwrite0.189/189 offline kontrol ve bağımsız review tamam; işletme MOQ/ülke/kargo değerleri ve kullanıcı kabulü bekler. Örnek1000USD/EUR etkin değildir. Önceki kayıt aşağıda tarihsel korunur.
+
+## Tarihsel entegrasyon — 22:20
+
 4 Ekim2026,22:20: mevcut kullanıcı onaylı7733/konuşma55 TEST copilot, sunucunun okuduğu konuşmaya ve mevcut ERP katalog okuyucusuna bağlandı. 7e966c5 gerçek aday/ürün kartı/fotoğraf/kayıtlı fiyat bağlantısı;4f17b98 gerçek modelde görülen boş seçim ve fiyat metni düzeltmesidir. Kod mevcut feature/PR3'te; main veya LIVE'a alınmadı.
 
 - Varsayılan arama son20 herkese açık metinden en çok2 kısa sorgu üretir. İsteğe bağlı ürün/kod yalnız arama konumlandırıcısıdır; tarayıcıdan ürün/fiyat/iş kuralı alınmaz. En çok8 aday/3 kart; seçilen ürün ayrıca geri okunur.
