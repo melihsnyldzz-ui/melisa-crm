@@ -1,5 +1,12 @@
 # MELISA CRM — Güncel Durum
 
+## 5 Ekim 2026 — yalnız proje yönetimi belge teslimi
+
+- Teknik kayıt rolü: bu dosya test/CI/ortam ve kanıtı tutar. Kararlar [PROJECT_DECISIONS.md](PROJECT_DECISIONS.md), günlük sıra [DELIVERY_BOARD.md](DELIVERY_BOARD.md), insan sonucu [USER_ACCEPTANCE.md](USER_ACCEPTANCE.md), tam kapsam [CRM_FINISH_PLAN.md](CRM_FINISH_PLAN.md) içindedir.
+- Kaynak tabanı `a92bcb485153226fc984f5e6fdcb9b54e0a2176b`; belge dalı `docs/decision-center-20261005`, hedef `codex/crm-agents-on-completion-20261003`. Teslim commit'i bu kaydı taşıyan PR'nin head'idir; CI aynı head için PR Checks'te doğrulanır. Önceki CI bu head için PASS sayılmaz.
+- Markdown kapsamı, yerel bağlantılar, karar ID/alanları, ŞİMDİ sayısı/bağımlılıkları, bekleyen kabul kayıtları ve korunmuş finish ID'leri kontrol edildi: PASS; bağımsız salt okunur inceleme sonrası bulunan iki yönlendirme çelişkisi düzeltildi. Uygulama kabulü bu görevde çalıştırılmadı; mevcut hosted offline CI ayrıca izlenir. Uygulama kodu, TEST/LIVE runtime, SQL/Vega, veri/provider ve mevcut kullanıcı kabulleri değiştirilmedi. Çalışan TEST/LIVE commit'i bu görevde **Durum doğrulanmadı**; aşağıdaki runtime kayıtları kendi kontrol anına aittir.
+- Yeni kullanıcı denemeleri başlangıçta `bekliyor`; teknik testlerden insan PASS üretilmedi. Bu belge işi geliştirmeyi yeniden başlatmaz, main merge/tag/deploy yapmaz.
+
 Güncelleme: **5 Ekim 2026, 10:55 — I01 genel pasif inbound yeni TEST paketinde çalıştı; iki kişide9 geçmiş mesaj ayrı API readback ile doğrulandı. Normal ekran/yeni mesaj kabulü bekliyor.** Tek finish tree: [CRM_FINISH_PLAN.md](CRM_FINISH_PLAN.md). **12 tamam /12 kısmi /1 açık; toplam25,kalan13.** Sayım LIVE hazırlık yüzdesi değildir; I01 sarı ve E02 genel eşleme kırmızı kalır.
 
 - **Gerçek entegrasyon sonucu:** yeni okuyucu7733 dışındaki2doğrulanmış kişiden9gelen geçmiş mesajı mevcut journal/worker ile2ayrı CRM konuşmasına aldı. Her scoped message için ayrı Chatwoot GET, aynı provider source_id/message_id ve incoming türünü doğruladı.9/9 yeni event done,0pending/mediaPending/error; önceki9event de worker tarafından reconciled/done. Bunlar servis başlangıcından önceki geçmiş mesajlardır; yeni mesaj alımı veya kullanıcı ekran kabulü değildir. Başka müşteriye WhatsApp gönderimi0, model çağrısı0, ERP taslak yazımı0.
@@ -14,7 +21,7 @@ Güncelleme: **5 Ekim 2026, 10:55 — I01 genel pasif inbound yeni TEST paketind
 
 **TEST: http://127.0.0.1:62400/**. Açık normal Chrome sekmesinde CRM hesabıyla giriş bekler. İlk somut kontroller: (1)diğer iki kişinin doğru ayrı konuşma/geçmişi; (2)yenilemede aynı mesajlar çoğalmasın; (3)yeni geleni gerçekten izleme; (4)7733→Katalog→41140/41142→ERP TEST formunda2+3adet980TRY create/readback. ERP giriş formu açıldığında mevcut hesabı kullanıcı girer; parola sohbete yazılmaz.
 
-**Sıradaki iş:** insan CRM/ERP girişinden sonra yarım kalan iki ürünlü taslak readback; I01 normal ekran ve yeni gelen mesaj kabulü de açık. Giriş beklerken source/runtime teknik hazırlığı teslim edildi; fiziksel mobil/personel/roller/Windows logon kabulleri sürer. Çalışma bu raporla tamamlanmış sayılmaz.
+**Açık teknik kapsam:** insan CRM/ERP girişinden sonra yarım kalan iki ürünlü taslak readback; I01 normal ekran ve yeni gelen mesaj kabulü de açık. Giriş beklerken source/runtime teknik hazırlığı teslim edildi; fiziksel mobil/personel/roller/Windows logon kabulleri sürer. Çalışma bu raporla tamamlanmış sayılmaz.
 
 ## Tarihsel durum — 5 Ekim 2026, I01 kaynak hazırlığı; aşağıdaki kayıt güncel değildir
 

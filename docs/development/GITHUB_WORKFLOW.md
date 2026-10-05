@@ -29,7 +29,7 @@ Bu hazırlık runtime, servis, deployment, tag, DB veya ticari kayıt işlemi ya
 - Kabul edilmiş içerik kaybolmadan eski paralel PR'lerin farklarını karşılaştır. Main'de olup adayda olmayan düzeltmeleri de koru. Birleştirme ve gereksiz PR kapatma ayrı kayıtlı kabul adımıdır.
 - Yeni düzen kabul edilip kaynak main'de toplandığında yeni işleri güncel main'den kısa dallara ayır. Ajan rutin Git/gh işlemlerini yürütür.
 - Tam PR head commit'i için `quality-build-test` ve `secret-scan` başarılı olmalı. Kırmızı kontrolü atlayıp merge etme. Kontrol henüz koşmadıysa PASS yazma.
-- Kullanıcı kabulü kişi/tarih/kapsam/tam commit ile STATUS ve PR'ye yazılır. Ardından açık merge talimatıyla main'e alınır; otomatik merge açılmaz.
+- Kullanıcı kabulünün kişi/tarih/kapsam/tam commit ve sonucu [USER_ACCEPTANCE.md](../../USER_ACCEPTANCE.md) içine yazılır; STATUS ve PR yalnız bu kayda bağlanır. Ardından açık merge talimatıyla main'e alınır; otomatik merge açılmaz.
 
 ## Otomatik kontrol sınırı
 
@@ -49,7 +49,7 @@ Kanonik durum dosyası [CRM_STATUS.md](../../CRM_STATUS.md); ikinci bir ERP_STAT
 | --- | --- |
 | Tarih / kapsam | Ne değişti, ne korunuyor |
 | Teknik sonuç | PASS / PARTIAL / FAIL / Durum doğrulanmadı; test ve CI bağlantısı |
-| Gerçek kullanıcı kabulü | BEKLİYOR / KABUL / RET; kişi, tarih, akış, tam commit |
+| Gerçek kullanıcı kabulü | USER_ACCEPTANCE iş/UA kaydı bağlantısı; ayrıntılı insan sonucu orada tutulur |
 | Teslim | branch, commit, PR bağlantısı |
 | TEST / LIVE | Ayrı tam commit, paket, kimlik ve kanıt; bilinmiyorsa Durum doğrulanmadı |
 | Kalan iş | Somut eksik, kabul adımı, rollback sınırı |

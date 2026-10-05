@@ -1,5 +1,7 @@
 # MELISA CRM — Ana Bitiş Planı
 
+Bu dosya **tam kapsam / finish tree** olarak kalır. Kalıcı kararlar [PROJECT_DECISIONS.md](PROJECT_DECISIONS.md), günlük öncelik [DELIVERY_BOARD.md](DELIVERY_BOARD.md), gözle deneme ve insan sonucu [USER_ACCEPTANCE.md](USER_ACCEPTANCE.md) içindedir. Aşağıdaki eski dilim/sıra cümleleri günlük öncelik oluşturmaz; mevcut kapsam ve kanıtlar korunur.
+
 Güncel ana hedef: **5 Ekim 2026 — günlük CRM + mobil + ERP + insan denetimli AI satış + kontrollü yayın**. Bu dosyadaki aşağıdaki ağaç tek güncel finish tree'dir. Eski kayıtlar en altta tarihsel kanıttır; ikinci güncel iş listesi değildir.
 
 **Tamamlanan: 12 / Kısmi: 12 / Açık: 1 / Toplam: 25. Genel ilerleme: 12/25 tamam; bu sayım LIVE hazırlık yüzdesi değildir.** Kısmi maddeler yüzdeye tamam sayılmaz. **Kalan açık madde sayısı: 13** = 1 geliştirme eksiği + 12 kısmi/kabul/onay adımı. U01 taslak kaybı düzeltildi: normal TEST'te üç yenilemede175/220/175 karakter metin birebir geri geldi. Bütün ekranların kullanıcı kabulü beklediğinden U01 sarıdır. R02 gerçek A→B→A→B turu korunur; E02 geniş ERP eşlemesi kırmızı kalır. A02 işletme değerleri ve A03/A04 kullanıcı kabulleri bekler.
@@ -40,7 +42,7 @@ Güncel ana hedef: **5 Ekim 2026 — günlük CRM + mobil + ERP + insan denetiml
 
 Kanonik kök `C:\Sirket\CRM\melisa-crm`, fetch/push origin `https://github.com/melihsnyldzz-ui/melisa-crm.git`; aktif dal `codex/crm-agents-on-completion-20261003`, [PR3](https://github.com/melihsnyldzz-ui/melisa-crm/pull/3). TEST güncel D paketi0c60c55/manifestbaf4bc59'dan çalışır; önceki C=aa85448/manifest91954b4a korunur; önceki B=e019baf/manifest e099238f ve R02 geri dönüş kanıtı korunur. Kanonik geçiş aracı5b5f80f paket dışındadır. Baseline gerçek kabul kaynak HEAD446ac3a korunur. Main8e861aa/PR5 yalnız hazır geliştirme altyapısını taşır; uygulama main'e alınmadı. [PR4](https://github.com/melihsnyldzz-ui/melisa-crm/pull/4) açık tarihsel altyapı işi; [PR6](https://github.com/melihsnyldzz-ui/melisa-crm/pull/6) çekirdeği cherry-pick ile bu dala alındı, PR kendiliğinden kapatılmadı. PR1/2 eski ajan overlay'leri; ürün eksiği veya otomatik merge hedefi değildir.
 
-U01 taslak kaybı düzeltildi; R02 gerçek TEST geri dönüşü korunur. E02 yeni native -04 TEST paketi açıldı; ilk yarım kalan iş aynı7733/müşteri593 kapsamında iki ürünlü2+3adet/980TRY taslak ve ayrı readback kabulüdür. Genel eşleme kırmızı kalır. İnsan CRM/ERP girişi beklenirken teslim haritasındaki CRM-1/I01 genel pasif gelen mesaj hazırlığı yapılır; başka müşteriye gönderim/AI/ERP yazımı açılmaz. Personel, fiziksel mobil, Windows logon ve işletme kuralları kabulleri ayrı bekler. Her iş ilgili mevcut dal/PR üzerinden dar commit→push→aynı HEAD CI→STATUS ile teslim edilir.
+U01 taslak kaybı düzeltildi; R02 gerçek TEST geri dönüşü korunur. E02 yeni native -04 TEST paketi açıldı; açık yarım kalan kapsam aynı7733/müşteri593 içinde iki ürünlü2+3adet/980TRY taslak ve ayrı readback kabulüdür. Genel eşleme kırmızı kalır. Günlük çalışma seçimi [DELIVERY_BOARD.md](DELIVERY_BOARD.md) ile yapılır; başka müşteriye gönderim/AI/ERP yazımı açılmaz. Personel, fiziksel mobil, Windows logon ve işletme kuralları kabulleri ayrı bekler. Her iş ilgili mevcut dal/PR üzerinden dar commit→push→aynı HEAD CI→STATUS ile teslim edilir.
 
 ## Gerçek TEST kabulü
 
@@ -50,7 +52,7 @@ Sıradaki kullanıcı kontrolleri: (1) atanmış7733 kendi personel hesabında g
 
 ## Tarihsel plan ve kabul kayıtları — güncel iş sayacı değildir
 
-Aşağıdaki eski tarihler/URL hedefleri/PID'ler/kalan sayımlar kendi zamanı içindir. Bugünkü çalışma sırası ve durum yalnız üstteki ağaç ve CRM_STATUS güncel bölümüdür.
+Aşağıdaki eski tarihler/URL hedefleri/PID'ler/kalan sayımlar kendi zamanı içindir. Tam kapsam üstteki ağaçtır; günlük sıra DELIVERY_BOARD, teknik kanıt CRM_STATUS güncel bölümüdür.
 
 # MELISA CRM — Ana Bitiş Planı
 

@@ -1,5 +1,7 @@
 # Melisa Teslim Haritası v1 — CRM girişi
 
+**5 Ekim yeni karar merkezi:** bu harita mevcut canlı teslim bağlamını ve eski kapsam/önerileri korur; günlük iş sırası [DELIVERY_BOARD.md](DELIVERY_BOARD.md), kalıcı ürün/iş kararları [PROJECT_DECISIONS.md](PROJECT_DECISIONS.md) içindedir. Aşağıdaki CRM-önce yönü güncel panoyu geçersiz kılmaz; finish kapsamından iş silinmez.
+
 **Tek ortak harita:** [Melisa Teslim Haritası v1 — sabit ERP belge kaydı](https://github.com/melihsnyldzz-ui/melisa-erp-v2/blob/2dbf31a808710268a2d54d48a41e3d94a4932881/MELISA_TESLIM_HARITASI_V1.md).
 
 Ana kopya `melihsnyldzz-ui/melisa-erp-v2` reposundadır. Bu dosya ikinci bir finish tree değil, CRM'den aynı haritaya giriş noktasıdır. Güncellenmiş harita kabul edildiğinde bağlantı yeni belge commit'ine ilerletilir; çelişen iki teslim haritası tutulmaz.
