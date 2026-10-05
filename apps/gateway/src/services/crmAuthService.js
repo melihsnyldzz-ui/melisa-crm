@@ -2,6 +2,7 @@ import crypto from 'node:crypto';
 import jwt from 'jsonwebtoken';
 import { env } from '../config/env.js';
 import { waapiSendReady } from './waapiReadiness.js';
+import { verifyTestAdminSession } from './testAdminSession.mjs';
 
 const ROLE_PERMISSIONS = Object.freeze({
   patron: ['crm.view', 'crm.send', 'crm.assign', 'crm.agents', 'crm.manage'],
@@ -77,6 +78,7 @@ export function publicCrmUser(user) {
     role: user.role,
     chatwootAgentId: user.chatwootAgentId,
     permissions: [...user.permissions],
+    ...(user.testAdmin === true ? {testAdmin:true} : {}),
     liveSendEnabled: Boolean(
       env.whatsapp.sendEnabled
       && (env.whatsapp.provider !== 'waapi' || waapiSendReady())
@@ -127,6 +129,8 @@ export function authenticateCrmUser({ username, password }) {
 }
 
 export function verifyCrmAccessToken(token, { includeContext = false } = {}) {
+  const testUser = verifyTestAdminSession(token, {includeContext});
+  if(testUser) return testUser;
   if (!env.auth.jwtSecret || env.auth.jwtSecret.length < 32) {
     throw authError('WHATSAPP_CRM_AUTH_SECRET_MISSING', 'CRM kimlik dogrulama anahtari yapilandirilmamis.', 503);
   }

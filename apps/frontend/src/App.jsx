@@ -34,6 +34,7 @@ import { closeCatalogSession } from "./catalog/logout.js";
 import { createSessionLoader, sessionReadIsCurrent } from "./sessionLoader.js";
 import { CATALOG_ENABLED, CATALOG_CRM_ONLY_ENABLED, CATALOG_EXISTING_STOCK_ENABLED } from "./releaseCapabilities.js";
 import { createTextDraftStorage, textDraftActorScope } from "./lib/textDraftStorage.js";
+import {testAdminAvailable,testRoleLogin,chooseTestRoleLogin,bootstrapTestAdmin} from './testAdmin.js';
 
 const team = ["Atanmamış", "Ahmet Yılmaz", "Zeynep Kaya", "Murat Demir", "Merve Demir"];
 
@@ -172,11 +173,12 @@ function Modal({ title, children, onClose }) {
   );
 }
 
-function LoginGate({ credentials, onChange, onConnect, busy, error, retryAvailable, onRetry, onChangeAccount }) {
+function LoginGate({ credentials, onChange, onConnect, busy, error, retryAvailable, onRetry, onChangeAccount, extraAction }) {
   return (
     <div className="login-gate">
       <section className="login-card" aria-label="Melisa CRM güvenli giriş">
         <span className="login-mark"><Butterfly size={34} weight="duotone" /></span>
+        {extraAction}
         <span className="eyebrow">{import.meta.env?.VITE_CRM_TEST === "1" ? "MELİSA BABY · TEST CRM" : "MELİSA BABY · CANLI CRM"}</span>
         <h1>CRM Yönetim Merkezi</h1>
         <p>Gerçek WhatsApp konuşmalarınıza erişmek için CRM hesabınızla giriş yapın.</p>
@@ -318,6 +320,9 @@ export function App() {
   const [roleMenu, setRoleMenu] = useState(false);
   const [role, setRole] = useState("Müdür");
   const [liveSession, setLiveSession] = useState(null);
+  const [manualTestLogin,setManualTestLogin]=useState(testRoleLogin);
+  const testAdminEnabled=testAdminAvailable();
+  const testBootstrapRef=useRef(null);
   const liveSessionRef = useRef(liveSession); liveSessionRef.current = liveSession;
   const [liveKey, setLiveKey] = useState(() => savedAccessKey());
   const [permissionCheck, setPermissionCheck] = useState({ busy: false, error: "" });
@@ -391,7 +396,7 @@ export function App() {
   const terminalMode = compactMode || staffMode;
   const singlePane = smallScreen || terminalMode;
   const canAssign = liveSession ? liveSession.assignmentEnabled : true;
-  const roleLabel = liveSession ? ({ patron: "Patron", mudur: "Müdür", personel: "Personel" }[liveSession.role] || "Personel") : role;
+  const roleLabel = liveSession?.testAdmin ? 'TEST ADMIN' : liveSession ? ({ patron: "Patron", mudur: "Müdür", personel: "Personel" }[liveSession.role] || "Personel") : role;
   const userName = liveSession?.name || liveSession?.username || roleLabel;
   const selectedChatVisible = !singlePane || mobileChatOpen;
   const changeLayout = (terminal) => {
@@ -581,6 +586,7 @@ export function App() {
   }, []);
 
   const closeLiveSession = (message = "", clearReceipts = false) => {
+    testBootstrapRef.current?.abort();
     if (clearReceipts) applyStoredDrafts(textDraftStorageRef.current.clear());
     else textDraftStorageRef.current.suspend();
     salesDraftFlowRef.current?.close();
@@ -679,7 +685,29 @@ export function App() {
     setLiveError("");
     return sessionLoaderRef.current.start({ token: liveKeyRef.current });
   };
-  useEffect(() => { resumeLiveSession(); return () => { sessionLoaderRef.current?.invalidate(); permissionRefreshRef.current?.invalidate(); sendScopeRef.current.invalidate(); uiOperationEpochRef.current++; }; }, []);
+  const openTestAdmin = async () => {
+    testBootstrapRef.current?.abort();
+    const controller=new AbortController();testBootstrapRef.current=controller;
+    setLiveBusy(true);setLiveError('');
+    try {
+      const token=await bootstrapTestAdmin({signal:controller.signal});
+      if(!controller.signal.aborted) await sessionLoaderRef.current.start({token});
+    } catch(error) {if(!controller.signal.aborted)setLiveError(error.message);}
+    finally {if(!controller.signal.aborted)setLiveBusy(false);}
+  };
+  const switchTestRole = () => {
+    chooseTestRoleLogin(true);setManualTestLogin(true);
+    void closeLiveSession('',true);
+  };
+  const returnToTestAdmin = () => {
+    void closeLiveSession('',true);
+    chooseTestRoleLogin(false);setManualTestLogin(false);
+    void openTestAdmin();
+  };
+  useEffect(() => {
+    if(testAdminEnabled&&!manualTestLogin)void openTestAdmin();else resumeLiveSession();
+    return () => {testBootstrapRef.current?.abort(); sessionLoaderRef.current?.invalidate(); permissionRefreshRef.current?.invalidate(); sendScopeRef.current.invalidate(); uiOperationEpochRef.current++;};
+  }, []);
 
   useEffect(() => {
     if (!hasLiveSession || !liveKey) return;
@@ -1105,7 +1133,10 @@ export function App() {
     setSendStates((items) => ({ ...items, [conversationId]: { state: "sent", text: "Önizlemeye eklendi · gerçek gönderim yapılmadı" } }));
   };
 
-  if (liveMode && !liveSession) return <LoginGate credentials={loginCredentials} onChange={setLoginCredentials} onConnect={connectLive} busy={liveBusy} error={liveError} retryAvailable={Boolean(liveKey)} onRetry={resumeLiveSession} onChangeAccount={() => closeLiveSession("", true)} />;
+  if (liveMode && !liveSession) {
+    if(testAdminEnabled&&!manualTestLogin)return <div className="login-gate"><section className="login-card"><h1>TEST ADMIN</h1><p>{liveBusy?'CRM TEST açılıyor…':liveError||'CRM TEST oturumu hazırlanıyor…'}</p>{!liveBusy?<button className="primary-button" onClick={openTestAdmin}>Yeniden dene</button>:null}<button className="secondary-button" onClick={switchTestRole}>Gerçek rollerle giriş</button></section></div>;
+    return <LoginGate credentials={loginCredentials} onChange={setLoginCredentials} onConnect={connectLive} busy={liveBusy} error={liveError} retryAvailable={Boolean(liveKey)} onRetry={resumeLiveSession} onChangeAccount={() => closeLiveSession("", true)} extraAction={testAdminEnabled?<button className="secondary-button" onClick={returnToTestAdmin}>TEST ADMIN ile aç</button>:null} />;
+  }
 
   return (
     <div className={`app-shell redesigned whatsapp-ui${inboxView ? " inbox-view" : ""}${terminalMode ? " compact-mode" : ""}${mobileChatOpen && inboxView ? " chat-open" : ""}${tabletInspectorOpen || desktopInspectorOpen ? " inspector-open" : ""}`}>
@@ -1124,6 +1155,7 @@ export function App() {
       </aside>
 
       <main className="main-area">
+        {testAdminEnabled?<div className="safety-strip"><strong>{liveSession?.testAdmin?'TEST ADMIN':'TEST rol kabulü'}</strong><span>Yalnız TEST · mevcut işlem sınırları geçerli</span><button className="secondary-button" onClick={liveSession?.testAdmin?switchTestRole:returnToTestAdmin}>{liveSession?.testAdmin?'Gerçek rollerle giriş':'TEST ADMIN ile aç'}</button></div>:null}
         <header className="topbar">
           <div className="workspace-title"><Butterfly size={25} weight="duotone" /><strong>{terminalMode ? "Melisa CRM" : "İletişim merkezi"}</strong><span>{liveSession ? roleLabel : "Tasarım önizlemesi"}</span></div>
           <div className="topbar-actions">

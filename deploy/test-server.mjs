@@ -4,6 +4,15 @@ import http from 'node:http';
 import { fileURLToPath } from 'node:url';
 import dotenv from '../apps/gateway/node_modules/dotenv/lib/main.js';
 import {resolveTestDirectories} from './test-supervisor.mjs';
+import {installTestAdminSession} from '../apps/gateway/src/services/testAdminSession.mjs';
+
+export function testAdminBootstrapAllowed(req) {
+  return req.method==='POST' && req.url==='/api/test-admin/session'
+    && req.socket?.remoteAddress==='127.0.0.1' && req.headers.host==='127.0.0.1:62400'
+    && req.headers.origin==='http://127.0.0.1:62400'
+    && !req.headers['x-forwarded-host'] && !req.headers['x-forwarded-for']
+    && (!req.headers['sec-fetch-site'] || req.headers['sec-fetch-site']==='same-origin');
+}
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 export function configureTestServerEnvironment(repoRoot,{env=process.env,loadBaseline=options=>dotenv.config(options)}={}){
@@ -37,6 +46,7 @@ Object.assign(env, {
 }
 async function startTestServer(){
 configureTestServerEnvironment(root);
+const createTestSession=installTestAdminSession({uiOrigin:process.env.CRM_UI_ORIGIN,gatewayOrigin:'http://127.0.0.1:62401'});
 // Passive incoming messages use existing identity/journal handling. Outbound and AI stay scoped to 7733.
 const { createApp } = await import('../apps/gateway/src/app.js');
 const { startTestIncomingReader } = await import('../apps/gateway/src/services/testIncomingReader.js');
@@ -47,6 +57,11 @@ const gateway = createApp().listen(62401, '127.0.0.1');
 const assets = path.join(root, 'apps/frontend/dist/client');
 const mime = { '.html':'text/html; charset=utf-8', '.js':'text/javascript', '.css':'text/css', '.png':'image/png', '.svg':'image/svg+xml', '.woff2':'font/woff2' };
 const ui = http.createServer((req, res) => {
+  if (req.url.startsWith('/api/test-admin/')) {
+    res.setHeader('cache-control','no-store');res.setHeader('content-type','application/json');
+    if(!testAdminBootstrapAllowed(req)){res.writeHead(403);res.end(JSON.stringify({error:'TEST_ADMIN_ORIGIN_REQUIRED'}));return;}
+    res.writeHead(200);res.end(JSON.stringify(createTestSession()));return;
+  }
   if (req.url.startsWith('/api/live/')) {
     const headers = { ...req.headers, host: '127.0.0.1:62401' };
     const upstream = http.request({ hostname:'127.0.0.1', port:req.url.startsWith('/api/live/crm/erp/')?62403:62401, path:req.url.slice('/api/live'.length), method:req.method, headers }, response => {
