@@ -1,5 +1,13 @@
 # MELISA CRM — Güncel Durum
 
+## 5 Ekim 2026 — CRM-D01 otomatik TEST ADMIN hazırlığı
+
+Kapsam yalnız kanonik CRM ve `http://127.0.0.1:62400/`. Kaynak `e58dd8b0390e758767a40c4e9a45d91d4b0861ef`, dal `codex/crm-agents-on-completion-20261003`, [PR #3](https://github.com/melihsnyldzz-ui/melisa-crm/pull/3). TEST launcher ayrı süreç anahtarıyla TEST ADMIN oturumu açar; mevcut patron izinlerini ayrı sentetik kimlikte kullanır. Gerçek kullanıcı/rol/atama modeli korunur; normal rollerle giriş ve TEST ADMIN'e dönüş seçilebilir. Katalog, provider readiness/7733, AI55/7733 ve ayrı native ERP giriş/token/DB sınırları değişmedi. Bu görevde gerçek mesaj ve ERP yazımı yapılmaz.
+
+Hedefli TEST bootstrap/LIVE token reddi/gerçek rol ve storage kontrolleri geçti; bağımsız reviewer'ın üç frontend bulgusu giderildi. Tam offline suite ve yeni immutable TEST paketi/62400 ekran provası sürüyor. Paket doğrulaması dirty checkout'u reddettiği için henüz switch yapılmadı; mevcut D paketi korunuyor. Kullanıcı kabulü [CRM-UA01](USER_ACCEPTANCE.md) **bekliyor**. Günlük sıra [DELIVERY_BOARD.md](DELIVERY_BOARD.md), onaylı kararlar [PROJECT_DECISIONS.md](PROJECT_DECISIONS.md); bu üç belge mevcut karar merkezi commit `eb99044` içinden uygulama dalına alındı, başka dalın uygulama farkı birleştirilmedi.
+
+## Önceki durum — 5 Ekim 2026, 10:55 (tarihsel)
+
 Güncelleme: **5 Ekim 2026, 10:55 — I01 genel pasif inbound yeni TEST paketinde çalıştı; iki kişide9 geçmiş mesaj ayrı API readback ile doğrulandı. Normal ekran/yeni mesaj kabulü bekliyor.** Tek finish tree: [CRM_FINISH_PLAN.md](CRM_FINISH_PLAN.md). **12 tamam /12 kısmi /1 açık; toplam25,kalan13.** Sayım LIVE hazırlık yüzdesi değildir; I01 sarı ve E02 genel eşleme kırmızı kalır.
 
 - **Gerçek entegrasyon sonucu:** yeni okuyucu7733 dışındaki2doğrulanmış kişiden9gelen geçmiş mesajı mevcut journal/worker ile2ayrı CRM konuşmasına aldı. Her scoped message için ayrı Chatwoot GET, aynı provider source_id/message_id ve incoming türünü doğruladı.9/9 yeni event done,0pending/mediaPending/error; önceki9event de worker tarafından reconciled/done. Bunlar servis başlangıcından önceki geçmiş mesajlardır; yeni mesaj alımı veya kullanıcı ekran kabulü değildir. Başka müşteriye WhatsApp gönderimi0, model çağrısı0, ERP taslak yazımı0.
