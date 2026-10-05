@@ -30,6 +30,31 @@ test('conflicting duplicate hydration cannot replace original text or bytes', as
   await assert.rejects(journal.accept({ ...event, text: 'changed', media: { data: 'YQ==' } }), e => e.code.endsWith('EVENT_CONFLICT'));
   assert.equal((await journal.pending('105185'))[0].event.media, null);
 });
+
+test('reader pending-media scan includes delayed exact identities beyond worker batch and reports overflow', async t => {
+  const { journal, root } = await fixture(t), peerJid = '19999999999@c.us';
+  for (let i = 0; i < 103; i++) await journal.accept({ ...event, peerJid: '19999999998@c.us', phone: '19999999998',
+    providerMessageId: `false_19999999998@c.us_OTHER_${i}` });
+  const selected = { ...event, peerJid };
+  await journal.accept(selected);
+  const key = journal.key(`${event.instanceId}:message:${event.providerMessageId}:`);
+  await journal.update('events', key, value => ({ ...value, retryAt: new Date(Date.now() + 900000).toISOString() }));
+  await journal.accept({ ...selected, phone: '19999999998', providerMessageId: `false_${peerJid}_WRONG_PHONE` });
+  await journal.accept({ ...selected, instanceId: 'other', providerMessageId: `false_${peerJid}_WRONG_INSTANCE` });
+  await journal.accept({ ...selected, direction: 'outgoing', providerMessageId: `false_${peerJid}_OUTGOING` });
+  await journal.accept({ ...selected, peerJid: '19999999998@c.us', providerMessageId: `false_${peerJid}_WRONG_PEER` });
+  await journal.accept({ ...selected, mediaPending: false, providerMessageId: `false_${peerJid}_READY` });
+  await journal.accept({ ...selected, providerMessageId: `false_${peerJid}_DONE` });
+  await journal.update('events', journal.key(`${event.instanceId}:message:false_${peerJid}_DONE:`), value => ({ ...value, done: true }));
+  const reopened = new WaapiJournal(root);
+  const scope = { peerJid, phone: event.phone };
+  assert.deepEqual(await reopened.pendingMedia(event.instanceId, scope), { providerMessageIds: [event.providerMessageId], overflow: false });
+  assert.equal((await reopened.pending(event.instanceId)).length, 100);
+  for (let i = 0; i < 2; i++) await journal.accept({ ...selected, providerMessageId: `false_${peerJid}_EXTRA_${i}` });
+  const bounded = await reopened.pendingMedia(event.instanceId, { ...scope, limit: 2 });
+  assert.equal(bounded.providerMessageIds.length, 2); assert.equal(bounded.overflow, true);
+  assert(bounded.providerMessageIds.every(id => id.startsWith(`false_${peerJid}_`)));
+});
 test('parallel inbound duplicates stay one record; batch is chronological before limit', async t => {
   const { journal, root } = await fixture(t);
   await Promise.all(Array.from({ length: 12 }, () => new WaapiJournal(root).accept(event)));

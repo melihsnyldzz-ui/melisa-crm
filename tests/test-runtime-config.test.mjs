@@ -36,7 +36,7 @@ test('baseline dotenv cannot route TEST journal or runtime into LIVE locations',
     assert.equal(env.CRM_TEST_RUNTIME_DIR,expectedRuntime);assert.equal(env.CRM_WAAPI_JOURNAL_DIR,path.join(expectedRuntime,'waapi'));
     assert.equal(env.CRM_TEST_LOG_DIR,path.resolve('fixture-crm','logs','test-completion'));
     assert.equal(env.WHATSAPP_ALLOWED_TEST_NUMBERS,'905387217733');assert.equal(env.WHATSAPP_TEST_NUMBER_ONLY,'true');
-    assert.equal(env.WAAPI_INCOMING_TEST_ONLY,'true');
+    assert.equal(env.WAAPI_INCOMING_TEST_ONLY,'false');
     assert.equal(env.CHATWOOT_INBOX_FALLBACK_ENABLED,'false');
     assert.equal(env.CRM_ERP_CATALOG_ORIGIN,'http://127.0.0.1:62402');assert.equal(env.CRM_ERP_CATALOG_PHOTO_CRM_AUTH,'true');
   }
@@ -72,4 +72,20 @@ test('TEST copilot activation and rule storage cannot be inherited or broadened 
     assert.equal(env.CRM_AI_SALES_TEST_PEER,'905387217733');
     assert.equal(env.CRM_AI_SALES_RULES_FILE,path.resolve('fixture-crm','runtime','test-completion','ai-sales-rules.json'));
   }
+});
+
+test('passive general TEST inbound does not broaden outbound, AI or automatic replies',()=>{
+  const env={CRM_BASELINE_ENV:'synthetic-private-config'};
+  configureTestServerEnvironment(path.resolve('fixture-crm','melisa-crm'),{env,loadBaseline:()=>{
+    Object.assign(env,{WAAPI_INCOMING_TEST_ONLY:'true',WHATSAPP_TEST_NUMBER_ONLY:'false',WHATSAPP_ALLOWED_TEST_NUMBERS:'12345678901',
+      WAAPI_TEST_RECIPIENT:'12345678901',WHATSAPP_AUTO_REPLY_ENABLED:'true',CRM_AI_SALES_CONVERSATION_ID:'999'});
+    return {parsed:{}};
+  }});
+  assert.equal(env.WAAPI_INCOMING_TEST_ONLY,'false');
+  assert.equal(env.WHATSAPP_TEST_NUMBER_ONLY,'true');
+  assert.equal(env.WHATSAPP_ALLOWED_TEST_NUMBERS,'905387217733');
+  assert.equal(env.WAAPI_TEST_RECIPIENT,'905387217733');
+  assert.equal(env.WHATSAPP_AUTO_REPLY_ENABLED,'false');
+  assert.equal(env.CRM_AI_SALES_CONVERSATION_ID,'55');
+  assert.equal(env.CRM_AI_SALES_TEST_PEER,'905387217733');
 });

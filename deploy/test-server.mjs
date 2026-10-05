@@ -23,7 +23,7 @@ Object.assign(env, {
   WHATSAPP_PROVIDER: 'waapi', WHATSAPP_TEST_NUMBER_ONLY: 'true',
   CHATWOOT_INBOX_FALLBACK_ENABLED: 'false',
   WHATSAPP_ALLOWED_TEST_NUMBERS: '905387217733', WAAPI_TEST_RECIPIENT: '905387217733',
-  WAAPI_OUTBOUND_MEDIA_ENABLED: 'true', WAAPI_CHATWOOT_BRIDGE_ENABLED: 'true', WAAPI_INCOMING_TEST_ONLY: 'true', WHATSAPP_AUTO_REPLY_ENABLED: 'false',
+  WAAPI_OUTBOUND_MEDIA_ENABLED: 'true', WAAPI_CHATWOOT_BRIDGE_ENABLED: 'true', WAAPI_INCOMING_TEST_ONLY: 'false', WHATSAPP_AUTO_REPLY_ENABLED: 'false',
   WHATSAPP_SEND_ENABLED: 'true', WHATSAPP_LIVE_SEND_APPROVED: 'true',
   CRM_OUTBOUND_NAMESPACE: 'melisa-crm:test-completion',
   CRM_ERP_CATALOG_ORIGIN: 'http://127.0.0.1:62402',
@@ -37,10 +37,12 @@ Object.assign(env, {
 }
 async function startTestServer(){
 configureTestServerEnvironment(root);
-// TEST receiver only reads the approved peer and imports into conversation 55.
+// Passive incoming messages use existing identity/journal handling. Outbound and AI stay scoped to 7733.
 const { createApp } = await import('../apps/gateway/src/app.js');
 const { startTestIncomingReader } = await import('../apps/gateway/src/services/testIncomingReader.js');
+const { startWaapiWorker } = await import('../apps/gateway/src/services/waapiChatwootBridge.js');
 const stopIncoming = startTestIncomingReader();
+const stopWorker = startWaapiWorker();
 const gateway = createApp().listen(62401, '127.0.0.1');
 const assets = path.join(root, 'apps/frontend/dist/client');
 const mime = { '.html':'text/html; charset=utf-8', '.js':'text/javascript', '.css':'text/css', '.png':'image/png', '.svg':'image/svg+xml', '.woff2':'font/woff2' };
@@ -64,6 +66,6 @@ const ui = http.createServer((req, res) => {
   if (req.method === 'HEAD') res.end(); else fs.createReadStream(file).pipe(res);
 }).listen(62400, '127.0.0.1', () => console.log('Melisa CRM TEST hazır: http://127.0.0.1:62400'));
 for (const server of [ui,gateway]) server.on('error', error => { console.error(error.code || 'TEST_START_FAILED'); process.exit(1); });
-for (const signal of ['SIGINT','SIGTERM']) process.on(signal, () => { stopIncoming(); ui.close(); gateway.close(); setTimeout(() => process.exit(0), 500).unref(); });
+for (const signal of ['SIGINT','SIGTERM']) process.on(signal, () => { stopIncoming(); stopWorker(); ui.close(); gateway.close(); setTimeout(() => process.exit(0), 500).unref(); });
 }
 if(process.argv[1]&&path.resolve(process.argv[1])===path.resolve(fileURLToPath(import.meta.url)))await startTestServer();

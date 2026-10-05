@@ -10,7 +10,7 @@ Güncel ana hedef: **5 Ekim 2026 — günlük CRM + mobil + ERP + insan denetiml
 
 | Kimlik | Modül / iş | Durum | Doğrulanmış sonuç ve kalan bitiş ölçütü |
 | --- | --- | --- | --- |
-| I01 | Inbox, gelen/giden metin, geçmiş ve yeni mesaj | 🟡 kısmi / kullanıcı kabulü bekliyor | 7733 yeni yanıtı doğru konuşmada bir kez; tam liste 728 / atanmamış621 gerçek ekranda. Genel kimlik kodu hazır; 7733 dışı yeni mesajın normal CRM alımı kabul edilmedi, LIVE eski filtrede. Başka müşteriye yazmadan yetkili genel inbound kabulü ve değişen akış kontrolü gerekir. |
+| I01 | Inbox, gelen/giden metin, geçmiş ve yeni mesaj | 🟡 kısmi / kullanıcı kabulü bekliyor | 7733 gerçek kabulü korunur. Genel pasif discovery/LID/mesaj sayfalama→kalıcı journal/worker kaynakta hazır; unread0, doğru ayrı kişiler, repeat, restart/geç medya kontrolleri eklendi. Gerçek provider shape/selectedLID6mesaj salt okunur doğrulandı; bu normal CRM alımı değildir. Yeni paket/TEST geçişi ve doğru başka konuşmada görünüm, yeni mesaj/geçmiş ayrımı kabulü bekler. Outbound/AI7733, LIVE eski filtre korunur; yoğun kuyrukta kota gecikmesi olabilir. |
 | I02 | Fotoğraf ve açma | 🟢 tamam | İki yönlü fotoğraf gerçek decode ve kullanıcı kabulü, 4 Ekim. |
 | I03 | PDF/dosya, açma/indirme | 🟢 tamam | İki yönlü PDF/TXT indirme, render/okuma, hash ve kullanıcı kabulü. Her Office formatı için kapsam iddiası yok. |
 | I04 | Ses/video ve oynatma | 🟢 tamam | 19:34–19:41 MP3/MP4 gönder/al; kullanıcı telefonda açtı, gelenler CRM'de sonuna kadar hatasız oynadı. |
