@@ -16,9 +16,11 @@ export function createCrmCatalogReader({verifyCrmContext,transport,activationApp
     resolveCrmReadSession:async(_actor,request)=>access.lease(context(request),request,verifyCrmContext),
   });
 }
-export function createCatalogRouter({Router,verifyCrmContext,transport,activationApproved=false,uiOrigin,logoutOrigin=null,access=catalogAccess,photoCrmAuthorization=false}={}) {
+export function createCatalogRouter({Router,verifyCrmContext,transport,activationApproved=false,uiOrigin,additionalUiOrigins=[],logoutOrigin=null,access=catalogAccess,photoCrmAuthorization=false}={}) {
   if(typeof Router!=='function'||typeof verifyCrmContext!=='function')throw Error('REVIEWED_GATEWAY_HOOKS_REQUIRED');
   if(logoutOrigin!==null&&logoutOrigin!=='http://127.0.0.1:4212')throw Error('EXACT_LOCAL_LOGOUT_ORIGIN_REQUIRED');
+  if(!Array.isArray(additionalUiOrigins)||additionalUiOrigins.some(value=>{try{const url=new URL(value);return typeof value!=='string'||value.includes('*')||!['http:','https:'].includes(url.protocol)||url.origin!==value||!!url.username||!!url.password}catch{return true}}))throw Error('EXACT_CATALOG_UI_ORIGINS_REQUIRED');
+  const origins=new Set([uiOrigin,...additionalUiOrigins]);
   const router=Router();
   const fail=(status,code)=>Response.json({success:false,error:{code,message:code}},{status,headers:{'cache-control':'no-store'}});
   const context=request=>{
@@ -31,7 +33,7 @@ export function createCatalogRouter({Router,verifyCrmContext,transport,activatio
     if(!activationApproved)return fail(503,'BRIDGE_NOT_DEPLOYED');
     const signOut=new URL(request.url).pathname==='/crm/catalog/auth/sign-out';
     const origin=request.headers.get('origin');
-    if(origin!==uiOrigin&&!(signOut&&logoutOrigin!==null&&origin===logoutOrigin))return fail(403,'CATALOG_ORIGIN_REQUIRED');
+    if(!origins.has(origin)&&!(signOut&&logoutOrigin!==null&&origin===logoutOrigin))return fail(403,'CATALOG_ORIGIN_REQUIRED');
     if(new URL(request.url).search)return fail(400,'INVALID_QUERY');
     const current=context(request);
     if(!access.base(current.user))return fail(403,'CRM_CATALOG_SCOPE_REQUIRED');

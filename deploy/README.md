@@ -1,5 +1,13 @@
 # Güncel TEST çalışma kapsamı — 4 Ekim 2026
 
+## Aynı yerel ağdan erişim — 5 Ekim 2026
+
+TEST başlangıç config'inde isteğe bağlı `LanAddress` etkinleştirilir. Örneğin `192.168.1.46` için CRM adresi `http://192.168.1.46:62400/` olur; bilgisayardaki `http://127.0.0.1:62400/` korunur. Yeni pakete geçerken `switch-test-package.ps1` aracının `-LanAddress` seçeneği kullanılır; önceki config geri dönüş kaydında aynen tutulur. Parametre verilmezse mevcut ayar korunur. Boş değer LAN erişimini kapatır.
+
+Yalnız bu bilgisayarın gerçek IPv4 arayüzündeki özel adres kabul edilir. CRM ekranı aynı alt ağdan erişilebilir; gateway/katalog/ERP servislerinin 62401–62404 bağlantıları loopback kalır. Ağdaki kullanıcılar mevcut CRM kullanıcı adı/parolasıyla giriş yapar. Şifresiz TEST ADMIN yalnız bilgisayarın exact loopback adresindedir; LAN'dan oturum oluşturulamaz. Katalog çıkışı aynı LAN origininde mevcut revoke işlemini kullanır. Rol, konuşma ataması, 7733 gönderim sınırı ve fiyat doğrulaması değişmez.
+
+Adresin sabit kalması ayrıca modem DHCP rezervasyonu veya ağ yöneticisinin doğru statik IP ayarıyla sağlanır. `LanAddress` uygulama ayarı DHCP adresini kendiliğinden sabitlemez. Port yönlendirme/WAN yayını kurulmaz; bilgisayar açık, ağa bağlı ve uyanık olmalıdır. Gerçek telefon/personel girişi ile IP rezervasyonu kabulü teknik kontrolden ayrı kaydedilir.
+
 Kullanıcının uçtan uca CRM görevi doğrulanmış TEST için build/restart/test/Git teslimini yetkilendirir; main otomatik merge ve LIVE deploy yetkisi yoktur. Runtime identity ve existing installer korumaları devam eder. Aşağıdaki3Ekim ve ilk hazırlık sınırları tarihseldir; bugünkü TEST yetkisini geri almaz.
 
 AI satış kuralları TEST'te `RuntimeDir/ai-sales-rules.json` kaynağından okunur; inherited veya baseline `CRM_AI_SALES_RULES_FILE` yolu alınmaz. RuntimeDir doğrulanmış repo dışı TEST dizinidir. İlk kurulumda bu dosya yönetici tarafından UTF-8 JSON olarak hazırlanır; mevcut kayıt üzerine yazılmaz. Ticari karar henüz yoksa sürüm ve boş alanlar aşağıdaki gibidir:

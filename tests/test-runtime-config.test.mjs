@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import path from 'node:path';
 import {resolveTestDirectories} from '../deploy/test-supervisor.mjs';
-import {configureTestServerEnvironment} from '../deploy/test-server.mjs';
+import {configureTestServerEnvironment,validateTestLanAddress,resolveTestLanNetwork,testUiRequestAllowed,createTestUiHandler,testAdminBootstrapAllowed} from '../deploy/test-server.mjs';
 import {createCrmCatalogReadSource,normalizeCrmOrigin} from '../packages/erp-adapter/services/crmCatalogReadSource.mjs';
 
 test('TEST supervisor state and logs default outside the canonical checkout',()=>{
@@ -22,6 +22,38 @@ test('TEST auth origin rejects external hosts, credentials and non-origin URLs',
   for(const host of ['127.0.0.1','localhost','[::1]'])assert.equal(normalizeCrmOrigin(`http://${host}:62401/`,{loopbackOnly:true}),`http://${host}:62401`);
   for(const value of ['http://example.com:62401','http://127.0.0.1.example.com:62401'])assert.throws(()=>normalizeCrmOrigin(value,{loopbackOnly:true}),/TEST_CRM_LOOPBACK_REQUIRED/);
   for(const value of ['file:///tmp/test','http://user:secret@127.0.0.1:62401','http://127.0.0.1:62401/auth/me','http://127.0.0.1:62401/?token=x','http://127.0.0.1:62401/#token'])assert.throws(()=>normalizeCrmOrigin(value,{loopbackOnly:true}),/CRM_ORIGIN_INVALID/);
+});
+
+test('LAN configuration is opt-in, RFC1918 only, and cannot be inherited from baseline',()=>{
+  for(const address of ['192.168.1.46','10.2.3.4','172.16.2.4','172.31.2.4',''])assert.equal(validateTestLanAddress(address),address);
+  for(const address of ['0.0.0.0','127.0.0.1','100.64.1.2','8.8.8.8','172.32.1.2','192.168.1.256','192.168.01.46','192.168.1.46:62400',null])assert.throws(()=>validateTestLanAddress(address));
+  for(const selected of ['', '192.168.1.46']){
+    const env={CRM_BASELINE_ENV:'fixture',CRM_TEST_LAN_ADDRESS:selected};
+    configureTestServerEnvironment(path.resolve('fixture-crm','melisa-crm'),{env,loadBaseline:()=>{env.CRM_TEST_LAN_ADDRESS='8.8.8.8';env.CRM_CATALOG_UI_ORIGINS='*';return{parsed:{}}}});
+    const origins='http://127.0.0.1:62400'+(selected?',http://192.168.1.46:62400':'');
+    assert.equal(env.CRM_TEST_LAN_ADDRESS,selected);assert.equal(env.WHATSAPP_CRM_CORS_ORIGINS,origins);assert.equal(env.CRM_CATALOG_UI_ORIGINS,origins);assert.equal(env.CRM_UI_ORIGIN,'http://127.0.0.1:62400');
+  }
+});
+
+const lanInterface={address:'192.168.1.46',netmask:'255.255.255.0',family:'IPv4',internal:false};
+const lan=()=>resolveTestLanNetwork('192.168.1.46',{Ethernet:[lanInterface]});
+const uiRequest=(remote='192.168.1.20')=>({method:'POST',url:'/api/live/auth/login',socket:{localAddress:'192.168.1.46',remoteAddress:remote},headers:{host:'192.168.1.46:62400',origin:'http://192.168.1.46:62400'}});
+test('LAN network requires an existing exact IPv4 interface and a contiguous private subnet',()=>{
+  assert.equal(resolveTestLanNetwork('',{}),null);assert.equal(lan().origin,'http://192.168.1.46:62400');
+  for(const interfaces of [{},{Ethernet:[{...lanInterface,internal:true}]},{Ethernet:[{...lanInterface,netmask:'255.0.255.0'}]},{Ethernet:[{...lanInterface,netmask:'0.0.0.0'}]},{Ethernet:[{...lanInterface,netmask:'255.0.0.0'}]}])assert.throws(()=>resolveTestLanNetwork('192.168.1.46',interfaces));
+});
+
+test('LAN requests require exact host/origin, local subnet and cannot obtain TEST ADMIN',()=>{
+  const network=lan();assert.equal(testUiRequestAllowed(uiRequest(),network),true);
+  for(const remote of ['192.168.2.20','10.0.0.20','100.100.1.1','8.8.8.8','127.0.0.1'])assert.equal(testUiRequestAllowed(uiRequest(remote),network),false);
+  for(const headers of [{host:'127.0.0.1:62400'},{origin:'http://192.168.1.99:62400'},{origin:undefined},{'x-forwarded-for':'127.0.0.1'},{'x-forwarded-host':'127.0.0.1:62400'}])assert.equal(testUiRequestAllowed({...uiRequest(),headers:{...uiRequest().headers,...headers}},network),false);
+  const read={...uiRequest(),method:'GET',headers:{host:'192.168.1.46:62400'}};assert.equal(testUiRequestAllowed(read,network),true);
+  const loopback={...uiRequest(),socket:{localAddress:'127.0.0.1',remoteAddress:'127.0.0.1'},headers:{host:'127.0.0.1:62400',origin:'http://127.0.0.1:62400'}};assert.equal(testUiRequestAllowed(loopback),true);
+  const bootstrap={...uiRequest(),url:'/api/test-admin/session'};assert.equal(testAdminBootstrapAllowed(bootstrap),false);
+  let sessionCalls=0,status,body;
+  const handler=createTestUiHandler({assets:path.resolve('fixture-assets'),lanNetwork:network,createTestSession:()=>{sessionCalls++;return{}}});
+  handler(bootstrap,{setHeader(){},writeHead(value){status=value},end(value){body=value}});
+  assert.equal(status,403);assert.equal(sessionCalls,0);assert.match(body,/TEST_ADMIN_ORIGIN_REQUIRED/);
 });
 
 test('baseline dotenv cannot route TEST journal or runtime into LIVE locations',()=>{

@@ -2,12 +2,13 @@ param(
     [string]$ConfigPath,
     [string]$PackageRoot,
     [string]$PackageManifestSha256,
+    [AllowEmptyString()][string]$LanAddress,
     [ValidateRange(20,180)][int]$WaitSeconds=90,
     [switch]$Library
 )
 Set-StrictMode -Version Latest
 $ErrorActionPreference='Stop'
-$switchArguments=@{ConfigFile=$ConfigPath;TargetRoot=$PackageRoot;TargetHash=$PackageManifestSha256;Seconds=$WaitSeconds;LibraryMode=[bool]$Library}
+$switchArguments=@{ConfigFile=$ConfigPath;TargetRoot=$PackageRoot;TargetHash=$PackageManifestSha256;Seconds=$WaitSeconds;LibraryMode=[bool]$Library;LanAddressBound=$PSBoundParameters.ContainsKey('LanAddress');LanAddress=$LanAddress}
 . (Join-Path $PSScriptRoot 'test-session-launcher.ps1') -Library
 
 function Get-SwitchTask($Config,$ConfigFile) {
@@ -77,7 +78,7 @@ function Stop-SwitchCrm($Config,$ConfigFile,$History,$Phase) {
             if ($identity.Children.ContainsKey($pair[0])) {$expected[[int]$pair[1]]=$identity.Children[$pair[0]].ProcessId}
         }
     }
-    Assert-TestListeners $listeners $expected
+    Assert-TestListeners $listeners $expected (Get-TestLanAddress $Config)
     Stop-ScheduledTask -InputObject $task
     foreach ($snapshot in $launchers) {
         $current=Assert-SwitchLauncher $snapshot $Config $ConfigFile
@@ -118,8 +119,11 @@ function Wait-SwitchReady($Config,$ConfigFile,$Native,$Seconds) {
         if ($identity -and $identity.Supervisor -and $identity.Children.Count -eq 3) {
             $expected=@{62400=$identity.Children['test-server.mjs'].ProcessId;62401=$identity.Children['test-server.mjs'].ProcessId;62402=$identity.Children['test-erp-catalog.mjs'].ProcessId;62403=$identity.Children['test-erp-orders.mjs'].ProcessId;62404=$Native.ProcessId}
             $listeners=Get-TestListeners
-            Assert-TestListeners $listeners $expected
-            if (@($listeners | Select-Object -ExpandProperty LocalPort -Unique).Count -eq 5 -and $task.State -eq 'Running' -and @(Get-SwitchLaunchers $Config $ConfigFile).Count -eq 1) {return $identity}
+            Assert-TestListeners $listeners $expected (Get-TestLanAddress $Config)
+            $lan=Get-TestLanAddress $Config
+            $uiReady=@($listeners | Where-Object {$_.LocalPort -eq 62400 -and $_.LocalAddress -eq '127.0.0.1'}).Count -eq 1
+            $lanReady=!$lan -or @($listeners | Where-Object {$_.LocalPort -eq 62400 -and $_.LocalAddress -ceq $lan}).Count -eq 1
+            if ($uiReady -and $lanReady -and @($listeners | Select-Object -ExpandProperty LocalPort -Unique).Count -eq 5 -and $task.State -eq 'Running' -and @(Get-SwitchLaunchers $Config $ConfigFile).Count -eq 1) {return $identity}
         }
         # Task start is asynchronous; Ready can still expose the previous run's result.
         # The bounded deadline, current launcher and current process chain decide readiness.
@@ -127,13 +131,20 @@ function Wait-SwitchReady($Config,$ConfigFile,$Native,$Seconds) {
     }
     throw 'TEST_SWITCH_READINESS_TIMEOUT'
 }
-function Invoke-TestPackageSwitch($ConfigFile,$TargetRoot,$TargetHash,$Seconds) {
-    $previous=Read-TestConfig $ConfigFile
-    $task=Get-SwitchTask $previous $ConfigFile
-    $native=Get-SwitchNative $previous
-    $candidate=$previous | ConvertTo-Json -Depth 8 | ConvertFrom-Json
+function New-TestPackageCandidate($Previous,$TargetRoot,$TargetHash,[bool]$LanAddressBound=$false,$LanAddress='') {
+    $candidate=$Previous | ConvertTo-Json -Depth 8 | ConvertFrom-Json
     $candidate | Add-Member -NotePropertyName PackageRoot -NotePropertyValue $TargetRoot -Force
     $candidate | Add-Member -NotePropertyName PackageManifestSha256 -NotePropertyValue $TargetHash -Force
+    if ($LanAddressBound) { $candidate | Add-Member -NotePropertyName LanAddress -NotePropertyValue (Resolve-TestLanAddress $LanAddress) -Force }
+    return $candidate
+}
+function Invoke-TestPackageSwitch($ConfigFile,$TargetRoot,$TargetHash,$Seconds,[bool]$LanAddressBound=$false,$LanAddress='') {
+    # The previous address may have disappeared after DHCP changed. Identity and
+    # format still validate; the candidate must pass current interface validation.
+    $previous=Read-TestConfig $ConfigFile -DeferLanInterface
+    $candidate=New-TestPackageCandidate $previous $TargetRoot $TargetHash $LanAddressBound $LanAddress
+    $task=Get-SwitchTask $previous $ConfigFile
+    $native=Get-SwitchNative $previous
     $id=(Get-Date).ToUniversalTime().ToString('yyyyMMddTHHmmssfffZ')+'-'+[Guid]::NewGuid().ToString('N')
     $history=Join-Path $previous.RuntimeDir ('package-switches/'+$id)
     if (!(Outside-Checkout $history $previous.RepoRoot) -or !(Outside-Checkout $history $TargetRoot)) {throw 'TEST_SWITCH_HISTORY_SCOPE_MISMATCH'}
@@ -190,5 +201,5 @@ function Invoke-TestPackageSwitch($ConfigFile,$TargetRoot,$TargetHash,$Seconds) 
 }
 if (!$switchArguments.LibraryMode) {
     if (!$switchArguments.ConfigFile -or !$switchArguments.TargetRoot -or !$switchArguments.TargetHash) {throw 'TEST_PACKAGE_SWITCH_ARGUMENTS_REQUIRED'}
-    Invoke-TestPackageSwitch $switchArguments.ConfigFile $switchArguments.TargetRoot $switchArguments.TargetHash $switchArguments.Seconds | ConvertTo-Json -Depth 5
+    Invoke-TestPackageSwitch $switchArguments.ConfigFile $switchArguments.TargetRoot $switchArguments.TargetHash $switchArguments.Seconds $switchArguments.LanAddressBound $switchArguments.LanAddress | ConvertTo-Json -Depth 5
 }

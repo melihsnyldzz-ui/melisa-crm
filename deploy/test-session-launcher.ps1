@@ -6,6 +6,32 @@ function Same-Path($A, $B) {
     if (!$A -or !$B) { return $false }
     return [IO.Path]::GetFullPath($A).TrimEnd('\','/').Equals([IO.Path]::GetFullPath($B).TrimEnd('\','/'), [StringComparison]::OrdinalIgnoreCase)
 }
+function Resolve-TestLanAddress($Address = '') {
+    if ($Address -isnot [string]) { throw 'TEST_LAN_ADDRESS_INVALID' }
+    if ($Address -ceq '') { return '' }
+    if ($Address -cnotmatch '^(?:0|[1-9][0-9]{0,2})(?:\.(?:0|[1-9][0-9]{0,2})){3}$') { throw 'TEST_LAN_ADDRESS_INVALID' }
+    $parts=@($Address.Split('.') | ForEach-Object {[int]$_})
+    if (@($parts | Where-Object {$_ -gt 255}).Count -or !($parts[0] -eq 10 -or ($parts[0] -eq 172 -and $parts[1] -ge 16 -and $parts[1] -le 31) -or ($parts[0] -eq 192 -and $parts[1] -eq 168))) { throw 'TEST_LAN_ADDRESS_INVALID' }
+    return $Address
+}
+function Get-TestLanAddress($Config) {
+    $property=$Config.PSObject.Properties['LanAddress']
+    if (!$property) { return '' }
+    return Resolve-TestLanAddress $property.Value
+}
+function Set-TestLanEnvironment($Config) {
+    $env:CRM_TEST_LAN_ADDRESS=Get-TestLanAddress $Config
+}
+function Assert-TestLanInterface($Address = '') {
+    $lan=Resolve-TestLanAddress $Address
+    if (!$lan) { return }
+    $minimum=if ($lan.StartsWith('10.')) {8} elseif ($lan.StartsWith('172.')) {12} else {16}
+    try {
+        $physical=@(Get-NetAdapter -Physical -ErrorAction Stop | Where-Object {$_.Status -eq 'Up'})
+        $assigned=@(Get-NetIPAddress -AddressFamily IPv4 -IPAddress $lan -ErrorAction Stop | Where-Object {$_.IPAddress -ceq $lan -and $_.AddressState -eq 'Preferred' -and $_.PrefixLength -ge $minimum -and $_.PrefixLength -le 30 -and $_.InterfaceIndex -in $physical.InterfaceIndex})
+        if ($assigned.Count -ne 1) { throw 'TEST_LAN_INTERFACE_REQUIRED' }
+    } catch { throw 'TEST_LAN_INTERFACE_REQUIRED' }
+}
 function Get-TestFileSha256($Path) {
     $stream=[IO.File]::OpenRead($Path)
     $sha=[Security.Cryptography.SHA256]::Create()
@@ -58,12 +84,14 @@ function Assert-TestPackage($Config) {
         if (!$verified -or $verified -isnot [pscustomobject]) { throw 'TEST_PACKAGE_VERIFICATION_FAILED' }
     } catch { throw 'TEST_PACKAGE_VERIFICATION_FAILED' }
 }
-function Read-TestConfig($File) {
+function Read-TestConfig($File, [switch]$DeferLanInterface) {
     if (![IO.Path]::IsPathRooted($File)) { throw 'CONFIG_ABSOLUTE_PATH_REQUIRED' }
     $c = Get-Content -LiteralPath $File -Raw | ConvertFrom-Json
     $keys = @('RepoRoot','NodePath','BaselineEnv','ErpApiRoot','ErpBaselineEnv','PhotoRoot','RuntimeDir','LogDir','NativeRelease','NativeConfig')
-    $allowed = $keys + @('OwnerSid','NodeSha256','NativeSourceCommit','NativePackageId','ExpectedDatabase','TaskName','AISalesMode','PackageRoot','PackageManifestSha256')
+    $allowed = $keys + @('OwnerSid','NodeSha256','NativeSourceCommit','NativePackageId','ExpectedDatabase','TaskName','AISalesMode','PackageRoot','PackageManifestSha256','LanAddress')
     foreach ($property in $c.PSObject.Properties.Name) { if ($property -notin $allowed) { throw 'CONFIG_UNKNOWN_FIELD' } }
+    $lanAddress=Get-TestLanAddress $c
+    if (!$DeferLanInterface) { Assert-TestLanInterface $lanAddress }
     $aiProperty=$c.PSObject.Properties['AISalesMode']
     if (!$aiProperty) { $c | Add-Member -NotePropertyName AISalesMode -NotePropertyValue 'off' }
     if ($c.AISalesMode -notin @('off','copilot')) { throw 'CONFIG_AI_SALES_MODE_REJECTED' }
@@ -118,9 +146,11 @@ function Assert-OwnedProcess($ProcessId, $Config, $Script, $ParentId = 0, $Allow
 function Get-TestListeners {
     return @(Get-NetTCPConnection -State Listen -ErrorAction Stop | Where-Object { $_.LocalPort -in @(62400,62401,62402,62403,62404) })
 }
-function Assert-TestListeners($Listeners, $Expected) {
+function Assert-TestListeners($Listeners, $Expected, $LanAddress = '') {
+    $lan=Resolve-TestLanAddress $LanAddress
     foreach ($l in $Listeners) {
-        if ($l.LocalAddress -ne '127.0.0.1' -or !$Expected.ContainsKey([int]$l.LocalPort) -or $Expected[[int]$l.LocalPort] -ne $l.OwningProcess) { throw 'TEST_FOREIGN_PORT_OWNER' }
+        $addressAllowed=$l.LocalAddress -eq '127.0.0.1' -or ($lan -and $l.LocalPort -eq 62400 -and $l.LocalAddress -ceq $lan)
+        if (!$addressAllowed -or !$Expected.ContainsKey([int]$l.LocalPort) -or $Expected[[int]$l.LocalPort] -ne $l.OwningProcess) { throw 'TEST_FOREIGN_PORT_OWNER' }
     }
 }
 function Read-SupervisorIdentity($Config) {
@@ -160,7 +190,7 @@ function Get-TestExpectedPorts($Identity) {
 }
 function Assert-TestSessionListeners($Listeners, $Expected, $Identity, $Config, $NativeSnapshot) {
     try {
-        Assert-TestListeners $Listeners $Expected
+        Assert-TestListeners $Listeners $Expected (Get-TestLanAddress $Config)
         return @{Identity=$Identity;Listeners=$Listeners;Expected=$Expected}
     } catch {
         if ($_.Exception.Message -ne 'TEST_FOREIGN_PORT_OWNER') { throw }
@@ -179,7 +209,7 @@ function Assert-TestSessionListeners($Listeners, $Expected, $Identity, $Config, 
         $freshListeners=Get-TestListeners
         $super=Assert-OwnedProcess $fresh.Supervisor.ProcessId $Config (Join-Path (Get-TestExecutionRoot $Config) 'deploy/test-supervisor.mjs') 0 (Same-Path (Get-TestExecutionRoot $Config) $Config.RepoRoot)
         if (!$super -or $super.CreationDate -ne $Identity.Supervisor.CreationDate) { throw 'TEST_FOREIGN_PORT_OWNER' }
-        Assert-TestListeners $freshListeners $freshExpected
+        Assert-TestListeners $freshListeners $freshExpected (Get-TestLanAddress $Config)
         return @{Identity=$fresh;Listeners=$freshListeners;Expected=$freshExpected}
     }
 }
@@ -237,7 +267,7 @@ function Assert-PendingSupervisorPorts($Listeners, $Snapshot, $Config, $NativeId
         if (!$child -or $child.CreationDate -lt $Snapshot.CreationDate) { throw 'TEST_PENDING_CHILD_IDENTITY_MISMATCH' }
         $expected[[int]$l.LocalPort]=$child.ProcessId
     }
-    Assert-TestListeners $Listeners $expected
+    Assert-TestListeners $Listeners $expected (Get-TestLanAddress $Config)
 }
 function Start-TestNode($Config, $Script, $WorkingDirectory, $Arguments, $Label) {
     if ($Label -eq 'supervisor') { Assert-TestPackage $Config }
@@ -257,6 +287,7 @@ function Invoke-TestSession($Config) {
         $env:CRM_BASELINE_ENV=$Config.BaselineEnv; $env:CRM_ERP_API_ROOT=$Config.ErpApiRoot
         $env:CRM_ERP_BASELINE_ENV=$Config.ErpBaselineEnv; $env:CRM_ERP_PHOTO_ROOT=$Config.PhotoRoot
         $env:CRM_TEST_RUNTIME_DIR=$Config.RuntimeDir; $env:CRM_TEST_LOG_DIR=$Config.LogDir
+        Set-TestLanEnvironment $Config
         $env:CRM_AI_SALES_MODE=$Config.AISalesMode
         Remove-Item Env:CRM_AI_SALES_RULES_FILE -ErrorAction SilentlyContinue
         $nativeScript=Join-Path $Config.NativeRelease 'apps/api/start-crm-order-test.mjs'
