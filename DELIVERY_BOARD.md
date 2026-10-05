@@ -8,7 +8,7 @@
 
 | ID | Hedef | Kabul kriteri | Durum | Bağımlılık |
 | --- | --- | --- | --- | --- |
-| CRM-D01 | Yalnız TEST'te otomatik TEST ADMIN erişimini tamamla/kabul et. | Doğrulanmış TEST'te normal CRM TEST ADMIN olarak açılır ve yenilenir; yalnız TEST sınırı hedefli kontrolde doğrulanır; kullanıcı CRM-UA01'i dener. | Kaynak hazır (e58dd8b); paket/62400 ekran doğrulaması sürüyor; kullanıcı kabulü bekliyor | TEST kimliği ve mevcut görev yetkisi |
+| CRM-D01 | Yalnız TEST'te otomatik TEST ADMIN erişimini tamamla/kabul et. | Doğrulanmış TEST'te normal CRM TEST ADMIN olarak açılır ve yenilenir; yalnız TEST sınırı hedefli kontrolde doğrulanır; kullanıcı CRM-UA01'i dener. | Teknik hazır / kullanıcı kabulü bekliyor; 62400 normal ekran, katalog/fiyat/ayarlar ve gerçek rollere dönüş provası geçti. Paket f1899b0, kanıt CRM_STATUS'ta. | CRM-UA01 kullanıcı sonucu |
 
 ERP sözleşmesi hazır olana kadar kabul edilmiş mesajlaşma baseline'ı korunur. Mevcut I02–I04, T01, K01–K03 ve E01 kabulleri finish tree'de kayıtlı kapsamlarıyla geçerlidir; yeniden geliştirme veya yeniden kabul işi değildir.
 

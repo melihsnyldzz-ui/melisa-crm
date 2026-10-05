@@ -8,7 +8,7 @@ Her sonuçta kişi, tarih, TEST adresi/ortamı, denenen paket/commit ve kanıt b
 
 | ID / iş | Kullanıcının gözle deneyeceği şey | Sonuç | Kişi / tarih / ortam-sürüm / kanıt |
 | --- | --- | --- | --- |
-| CRM-UA01 / CRM-D01 | TEST'i aç ve yenile; TEST ADMIN oturumunda normal inbox açılabilsin. Konuşmalar, katalog/ürün-fiyat ve ayarlara eriş; “Gerçek rollerle giriş” ve TEST ADMIN'e dönüşü dene. | bekliyor | 2026-10-05 kaynak e58dd8b; paket/ekran teknik provası sürüyor. Kullanıcının kendi sonucu henüz yok; teknik kayıt CRM_STATUS'ta. |
+| CRM-UA01 / CRM-D01 | TEST'i aç ve yenile; TEST ADMIN oturumunda normal inbox açılabilsin. Konuşmalar, katalog/ürün-fiyat ve ayarlara eriş; “Gerçek rollerle giriş” ve TEST ADMIN'e dönüşü dene. | bekliyor | 2026-10-05 ajan normal ekran provası geçti; http://127.0.0.1:62400/; çalışan paket/source f1899b0e0828f23010af75b1731682c749e596cc; teknik kanıt CRM_STATUS'ta. Kullanıcının kendi sonucu henüz yok; ajan/CI kanıtı insan PASS değildir. |
 | CRM-UA02 / CRM-D02 | Yeni ERP sözleşmesinden gelen ürünü ara/aç; aynı ERP kartı, fiyat/para birimi ve fotoğraf görünsün. | bekliyor | Durum doğrulanmadı |
 | CRM-UA03 / CRM-D03 | Yalnız 7733'e yeni/değişen ürün/fiyat/fotoğraf paylaşımını insan kontrolüyle yap; telefonda doğru ürün ve medya açılsın. | bekliyor | Durum doğrulanmadı |
 | CRM-UA04 / CRM-D04 | Onaylı TEST kimlikleriyle yeni/değişen taslağı aç; ERP ayrı geri okumada aynı satır/adet/fiyatı göstersin, stok/cari etkisi olmasın. | bekliyor | Durum doğrulanmadı |
