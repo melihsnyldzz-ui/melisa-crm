@@ -1,0 +1,474 @@
+{
+  "schema_version": 1,
+  "audit_date": "2026-10-05",
+  "timezone": "Europe/Istanbul",
+  "test_url": "http://127.0.0.1:62400/",
+  "runtime_source_commit": "f1899b0e0828f23010af75b1731682c749e596cc",
+  "archive_base_commit": "8549b42bef07f67cf73cc63155b115ccdb5c5750",
+  "raw_customer_evidence_authorized_private_repo": true,
+  "timestamp_note": "saved_at_utc is artifact file write time, not message time or provider delivery time. PDF copy/render time differs from its original browser download.",
+  "notes": [
+    "08 rejected stale frame is absent; 09 is stable mobile evidence.",
+    "17 documents a failed send (429), not a successful A02 message.",
+    "28 and 39 have masked password controls, no saved password value.",
+    "36 is a scrolled mobile preview; 38 rendered PNG is a PDF render.",
+    "42 is a short transition viewport; 45 is restored natural desktop width.",
+    "Browser screenshots were returned as JPEG bytes; extensions match their actual format. No raster re-encoding/editing was performed."
+  ],
+  "counts": {
+    "pdf_files": 1,
+    "screenshots": 43,
+    "pdf_renders": 1
+  },
+  "artifacts": [
+    {
+      "path": "ai/30-sales-suggestion-failed-1440.jpg",
+      "kind": "browser-viewport-screenshot",
+      "bytes": 95886,
+      "sha256": "5738e842737b9aa5c0d8089113049329f9f08255e47e8900b6f87f703a6bea5c",
+      "saved_at_utc": "2026-10-05T11:19:16.6670310Z",
+      "width_px": 1440,
+      "height_px": 900,
+      "format": "JPEG"
+    },
+    {
+      "path": "catalog/19-catalog-rate-limit-1440.jpg",
+      "kind": "browser-viewport-screenshot",
+      "bytes": 70394,
+      "sha256": "8c38454fd521be7195712e00d3d13be9e1f765903f7ebe48e11a09563f881022",
+      "saved_at_utc": "2026-10-05T11:12:44.9217547Z",
+      "width_px": 1440,
+      "height_px": 900,
+      "format": "JPEG"
+    },
+    {
+      "path": "catalog/31-catalog-default-usd-1440.jpg",
+      "kind": "browser-viewport-screenshot",
+      "bytes": 131799,
+      "sha256": "018aa8bdb48f381af0f14d3120367872b77f90f709f74cff5b617949306f16a9",
+      "saved_at_utc": "2026-10-05T11:19:54.5872520Z",
+      "width_px": 1440,
+      "height_px": 900,
+      "format": "JPEG"
+    },
+    {
+      "path": "catalog/32-catalog-two-products-try-1440.jpg",
+      "kind": "browser-viewport-screenshot",
+      "bytes": 140628,
+      "sha256": "ff8777eef72d5ad142104e3d17b0439050b44c53eb8ee6e6bac40521ed5cc7e5",
+      "saved_at_utc": "2026-10-05T11:20:05.6782187Z",
+      "width_px": 1440,
+      "height_px": 900,
+      "format": "JPEG"
+    },
+    {
+      "path": "catalog/33-catalog-1024.jpg",
+      "kind": "browser-viewport-screenshot",
+      "bytes": 105924,
+      "sha256": "a7cd7357036a6552f937ce9d5888b1e435127bf56882671e40c9fedb3ae8c128",
+      "saved_at_utc": "2026-10-05T11:20:21.1705121Z",
+      "width_px": 1024,
+      "height_px": 768,
+      "format": "JPEG"
+    },
+    {
+      "path": "catalog/37-catalog-preview-1440.jpg",
+      "kind": "browser-viewport-screenshot",
+      "bytes": 115258,
+      "sha256": "3191694e671f5d189c528441022c916b66c519bdde9383c61faa16e260807893",
+      "saved_at_utc": "2026-10-05T11:21:50.7672207Z",
+      "width_px": 1440,
+      "height_px": 900,
+      "format": "JPEG"
+    },
+    {
+      "path": "catalog/38-generated-pdf-page.png",
+      "kind": "rendered-pdf-page",
+      "bytes": 175261,
+      "sha256": "aa4c44bff15e36fb38fe21c5bef84309d8e5562757df2effe904e2a191a3d81b",
+      "saved_at_utc": "2026-10-05T11:24:26.9161981Z",
+      "width_px": 990,
+      "height_px": 1400,
+      "format": "PNG"
+    },
+    {
+      "path": "catalog/38-generated-two-products-TRY.pdf",
+      "kind": "downloaded-catalog-pdf",
+      "bytes": 133596,
+      "sha256": "7b346934c96f93f0855102a4e20ec8266e6b182871dfe52a94e0e9cd61d6fa54",
+      "saved_at_utc": "2026-10-05T11:22:07.5322038Z",
+      "pages": 1,
+      "format": "PDF"
+    },
+    {
+      "path": "conversations/03-test-7733-chat-1440.jpg",
+      "kind": "browser-viewport-screenshot",
+      "bytes": 98456,
+      "sha256": "72d5b61e219f0e4f2755beccbafec4a11afc938f8b2f8f408e088122b632c6f8",
+      "saved_at_utc": "2026-10-05T10:57:39.0367809Z",
+      "width_px": 1440,
+      "height_px": 900,
+      "format": "JPEG"
+    },
+    {
+      "path": "conversations/04-test-customer-info-1440.jpg",
+      "kind": "browser-viewport-screenshot",
+      "bytes": 95806,
+      "sha256": "357b860deb1e25288958213bd0c1524ffed226f1f072b33470bdffc92da1dadd",
+      "saved_at_utc": "2026-10-05T10:58:23.2707129Z",
+      "width_px": 1440,
+      "height_px": 900,
+      "format": "JPEG"
+    },
+    {
+      "path": "conversations/05-send-result-before-latest-1440.jpg",
+      "kind": "browser-viewport-screenshot",
+      "bytes": 89219,
+      "sha256": "d0b8bb28bea653ee9f3c0dd427c2f3ef8ae4c34ec3dfaef585444135692c4b20",
+      "saved_at_utc": "2026-10-05T10:59:16.4894178Z",
+      "width_px": 1440,
+      "height_px": 900,
+      "format": "JPEG"
+    },
+    {
+      "path": "conversations/06-sent-message-1440.jpg",
+      "kind": "browser-viewport-screenshot",
+      "bytes": 100209,
+      "sha256": "a2faa070400075f16534ff81226f09b5fb0733426d0952605e913ed86ecce501",
+      "saved_at_utc": "2026-10-05T10:59:35.0243077Z",
+      "width_px": 1440,
+      "height_px": 900,
+      "format": "JPEG"
+    },
+    {
+      "path": "conversations/13-long-message-draft-1440.jpg",
+      "kind": "browser-viewport-screenshot",
+      "bytes": 109900,
+      "sha256": "2e1605a28d905bdad8c2f93e021ce6774d0fd3a2f30cfddf1d1e0bc20871a8dd",
+      "saved_at_utc": "2026-10-05T11:03:53.2584758Z",
+      "width_px": 1440,
+      "height_px": 900,
+      "format": "JPEG"
+    },
+    {
+      "path": "conversations/20-assignment-dialog-1440.jpg",
+      "kind": "browser-viewport-screenshot",
+      "bytes": 51811,
+      "sha256": "fa7cb5d8d05c667462e12283e8d15efea861506d4b714ef215a07266f40ceb6b",
+      "saved_at_utc": "2026-10-05T11:13:24.7182427Z",
+      "width_px": 1440,
+      "height_px": 900,
+      "format": "JPEG"
+    },
+    {
+      "path": "conversations/25-real-customer-readonly-1440.jpg",
+      "kind": "browser-viewport-screenshot",
+      "bytes": 127831,
+      "sha256": "e758a6642e58d1ce95b5f7ec398c1c8da11e893fd0e2a2b9adef636801f07c57",
+      "saved_at_utc": "2026-10-05T11:14:45.9641394Z",
+      "width_px": 1440,
+      "height_px": 900,
+      "format": "JPEG"
+    },
+    {
+      "path": "conversations/26-real-customer-info-1440.jpg",
+      "kind": "browser-viewport-screenshot",
+      "bytes": 128690,
+      "sha256": "f8dd6f03fa17fc0cedfdb3242e3ad5a97a41dccb07b93b6956a0432afeaffd81",
+      "saved_at_utc": "2026-10-05T11:14:58.8240412Z",
+      "width_px": 1440,
+      "height_px": 900,
+      "format": "JPEG"
+    },
+    {
+      "path": "desktop/01-inbox-1440.jpg",
+      "kind": "browser-viewport-screenshot",
+      "bytes": 40939,
+      "sha256": "1d93b8457cf366ba2c143233b7cda9776d2002f576b9c3e5f6a7caf1ba69623d",
+      "saved_at_utc": "2026-10-05T10:56:34.9941056Z",
+      "width_px": 1440,
+      "height_px": 683,
+      "format": "JPEG"
+    },
+    {
+      "path": "desktop/02-management-inbox-1440.jpg",
+      "kind": "browser-viewport-screenshot",
+      "bytes": 114818,
+      "sha256": "603d5c539aaf9a872cde017d4f0b07c3765b619d4244c545cb6714d358b498fa",
+      "saved_at_utc": "2026-10-05T10:56:56.6194715Z",
+      "width_px": 1440,
+      "height_px": 900,
+      "format": "JPEG"
+    },
+    {
+      "path": "desktop/07-chat-1024.jpg",
+      "kind": "browser-viewport-screenshot",
+      "bytes": 80435,
+      "sha256": "efb679a296147a2dda757d692414f11be1a23d042a248faf15dd4aa1c49f40a4",
+      "saved_at_utc": "2026-10-05T10:59:35.1506096Z",
+      "width_px": 1024,
+      "height_px": 900,
+      "format": "JPEG"
+    },
+    {
+      "path": "desktop/14-settings-1440.jpg",
+      "kind": "browser-viewport-screenshot",
+      "bytes": 61815,
+      "sha256": "d61060f8803014fef2ee9eec0726fd5495d44e6a5a8c6e173cf82fb8bdefe1d2",
+      "saved_at_utc": "2026-10-05T11:04:03.2898647Z",
+      "width_px": 1440,
+      "height_px": 900,
+      "format": "JPEG"
+    },
+    {
+      "path": "desktop/21-customers-filtered-1440.jpg",
+      "kind": "browser-viewport-screenshot",
+      "bytes": 53177,
+      "sha256": "5a7f1827d3d9dfda8f8d0c817ac2c24be82bf886e209cee2d5d7befc71f4049b",
+      "saved_at_utc": "2026-10-05T11:13:37.6185843Z",
+      "width_px": 1440,
+      "height_px": 900,
+      "format": "JPEG"
+    },
+    {
+      "path": "desktop/22-team-dashboard-1440.jpg",
+      "kind": "browser-viewport-screenshot",
+      "bytes": 79761,
+      "sha256": "4463381744b44dfc2cdb8f5f567bbd652b474f6a59c6f4578863c1536a4887a5",
+      "saved_at_utc": "2026-10-05T11:14:03.0949658Z",
+      "width_px": 1440,
+      "height_px": 900,
+      "format": "JPEG"
+    },
+    {
+      "path": "desktop/24-unassigned-1440.jpg",
+      "kind": "browser-viewport-screenshot",
+      "bytes": 127073,
+      "sha256": "2edf3a6a730081fec9225707916befa02f96af433d14404ae3dd3c4d45c1b923",
+      "saved_at_utc": "2026-10-05T11:14:36.3177034Z",
+      "width_px": 1440,
+      "height_px": 900,
+      "format": "JPEG"
+    },
+    {
+      "path": "desktop/27-customer-panel-1024.jpg",
+      "kind": "browser-viewport-screenshot",
+      "bytes": 97341,
+      "sha256": "64cac7334869487bf0608934ea860e629fc9c4bb475caa72b47b5e51ff532efa",
+      "saved_at_utc": "2026-10-05T11:15:14.2900745Z",
+      "width_px": 1024,
+      "height_px": 768,
+      "format": "JPEG"
+    },
+    {
+      "path": "desktop/28-real-role-login-1440.jpg",
+      "kind": "browser-viewport-screenshot",
+      "bytes": 34899,
+      "sha256": "9f740972150cc99aa7bf1caf7fc8c5007d450e3630c66fa0004342215400d3ed",
+      "saved_at_utc": "2026-10-05T11:16:14.3373644Z",
+      "width_px": 1440,
+      "height_px": 900,
+      "format": "JPEG"
+    },
+    {
+      "path": "desktop/29-test-admin-rate-limit-1440.jpg",
+      "kind": "browser-viewport-screenshot",
+      "bytes": 21979,
+      "sha256": "a385ca565b033447e18333c5500b8a4b08977dff84f82bae98a4daf537d4cc1d",
+      "saved_at_utc": "2026-10-05T11:16:59.4370642Z",
+      "width_px": 1440,
+      "height_px": 900,
+      "format": "JPEG"
+    },
+    {
+      "path": "desktop/42-test-admin-opening-after-delay-1440.jpg",
+      "kind": "browser-viewport-screenshot",
+      "bytes": 10310,
+      "sha256": "c2d41706e0135108a5d059c50364d6ef4f56006110dc3376cf70aeaaedfbe716",
+      "saved_at_utc": "2026-10-05T11:29:00.8939272Z",
+      "width_px": 1440,
+      "height_px": 641,
+      "format": "JPEG"
+    },
+    {
+      "path": "desktop/44-settings-send-disabled-1440.jpg",
+      "kind": "browser-viewport-screenshot",
+      "bytes": 62398,
+      "sha256": "9199eb90505e78e993a0faabf87b15fc24230521d44e18720e3b84c90aa197b1",
+      "saved_at_utc": "2026-10-05T11:33:36.3585800Z",
+      "width_px": 1440,
+      "height_px": 900,
+      "format": "JPEG"
+    },
+    {
+      "path": "desktop/45-settings-end-state-1920.jpg",
+      "kind": "browser-viewport-screenshot",
+      "bytes": 73525,
+      "sha256": "94d49ad501323f8f950d78edaeea1260bf4ea76c26f2fd68884771aa5a17ff78",
+      "saved_at_utc": "2026-10-05T11:41:44.1229248Z",
+      "width_px": 1920,
+      "height_px": 911,
+      "format": "JPEG"
+    },
+    {
+      "path": "erp-order/39-erp-login-1440.jpg",
+      "kind": "browser-viewport-screenshot",
+      "bytes": 54211,
+      "sha256": "1863e1c310b1f9e99fab6d06b0ccba0ea1363611e5ebe213037b773e8adf7c13",
+      "saved_at_utc": "2026-10-05T11:23:49.3984433Z",
+      "width_px": 1440,
+      "height_px": 900,
+      "format": "JPEG"
+    },
+    {
+      "path": "erp-order/41-erp-draft-before-save-1440.jpg",
+      "kind": "browser-viewport-screenshot",
+      "bytes": 67330,
+      "sha256": "ff923bced49ad86e9add5b738a669c2b87dd2d915a0e8cf08e6a4f1c2da296d2",
+      "saved_at_utc": "2026-10-05T11:26:03.5423987Z",
+      "width_px": 1440,
+      "height_px": 900,
+      "format": "JPEG"
+    },
+    {
+      "path": "media/11-incoming-audio-played-1440.jpg",
+      "kind": "browser-viewport-screenshot",
+      "bytes": 103674,
+      "sha256": "09783ed443e67171eb4fed5a66b804bc2c5bbb26ccfac763f25680a1051febca",
+      "saved_at_utc": "2026-10-05T11:02:15.1601535Z",
+      "width_px": 1440,
+      "height_px": 900,
+      "format": "JPEG"
+    },
+    {
+      "path": "media/12-incoming-video-played-1440.jpg",
+      "kind": "browser-viewport-screenshot",
+      "bytes": 96246,
+      "sha256": "113a28d85f06539cb8882768e23e5098242b2cd49816e4c2380c543135857d23",
+      "saved_at_utc": "2026-10-05T11:02:44.0349053Z",
+      "width_px": 1440,
+      "height_px": 900,
+      "format": "JPEG"
+    },
+    {
+      "path": "media/18-photo-preview-1440.jpg",
+      "kind": "browser-viewport-screenshot",
+      "bytes": 107718,
+      "sha256": "bcf30412f86c73eceea456ded362438bc8c740fb48fef6bea8bdd52f451a58b8",
+      "saved_at_utc": "2026-10-05T11:12:32.4519778Z",
+      "width_px": 1440,
+      "height_px": 900,
+      "format": "JPEG"
+    },
+    {
+      "path": "media/43-photo-send-disabled-1440.jpg",
+      "kind": "browser-viewport-screenshot",
+      "bytes": 102593,
+      "sha256": "3e15a7eebfc9a6afef23c60d9d28fc8c86fbf069bb8beab2d4a70e0d0248dcc5",
+      "saved_at_utc": "2026-10-05T11:32:53.5282039Z",
+      "width_px": 1440,
+      "height_px": 900,
+      "format": "JPEG"
+    },
+    {
+      "path": "mobile/09-stable-chat-390.jpg",
+      "kind": "browser-viewport-screenshot",
+      "bytes": 52233,
+      "sha256": "ede6e476dcefe4bfb64ef982519bc271983d19e5081911e4e5733d2fcf8e06e8",
+      "saved_at_utc": "2026-10-05T11:00:08.2446792Z",
+      "width_px": 390,
+      "height_px": 844,
+      "format": "JPEG"
+    },
+    {
+      "path": "mobile/10-search-list-390.jpg",
+      "kind": "browser-viewport-screenshot",
+      "bytes": 23609,
+      "sha256": "eb6c2d6c39bab6f4a8c44ff95fa3086789ff3fb934a5f59bb7a1b2840898217e",
+      "saved_at_utc": "2026-10-05T11:00:38.5587176Z",
+      "width_px": 390,
+      "height_px": 844,
+      "format": "JPEG"
+    },
+    {
+      "path": "mobile/15-settings-390.jpg",
+      "kind": "browser-viewport-screenshot",
+      "bytes": 36266,
+      "sha256": "3309b470b0e503d4e05dc9589f4369baab7c7b72585a1a59bdefe87a759adcba",
+      "saved_at_utc": "2026-10-05T11:04:27.9939718Z",
+      "width_px": 390,
+      "height_px": 844,
+      "format": "JPEG"
+    },
+    {
+      "path": "mobile/23-team-dashboard-390.jpg",
+      "kind": "browser-viewport-screenshot",
+      "bytes": 38476,
+      "sha256": "c838f1aeb185fbeca01070a2520815ae4b6128e22036228357162c722921e0d6",
+      "saved_at_utc": "2026-10-05T11:14:13.3262739Z",
+      "width_px": 390,
+      "height_px": 844,
+      "format": "JPEG"
+    },
+    {
+      "path": "mobile/34-catalog-390.jpg",
+      "kind": "browser-viewport-screenshot",
+      "bytes": 51279,
+      "sha256": "3f32b6dfb6a143ba7418944bf7010ddfc5649307976051da1d4605c3a30b3132",
+      "saved_at_utc": "2026-10-05T11:20:43.0077391Z",
+      "width_px": 390,
+      "height_px": 844,
+      "format": "JPEG"
+    },
+    {
+      "path": "mobile/35-catalog-code-search-390.jpg",
+      "kind": "browser-viewport-screenshot",
+      "bytes": 44593,
+      "sha256": "b837296bd5fe114c97c50bc71b2093ae696cf656f12010d43573a98a0d9fac5c",
+      "saved_at_utc": "2026-10-05T11:21:24.9780639Z",
+      "width_px": 390,
+      "height_px": 844,
+      "format": "JPEG"
+    },
+    {
+      "path": "mobile/36-catalog-preview-390.jpg",
+      "kind": "browser-viewport-screenshot",
+      "bytes": 45166,
+      "sha256": "8a38a026105155af0322e235a155fc6cad9209e9f0f6cb9939ff8e7131982baf",
+      "saved_at_utc": "2026-10-05T11:21:34.5033197Z",
+      "width_px": 390,
+      "height_px": 844,
+      "format": "JPEG"
+    },
+    {
+      "path": "mobile/40-erp-draft-form-390.jpg",
+      "kind": "browser-viewport-screenshot",
+      "bytes": 42315,
+      "sha256": "c2352615bfc3d80c8514e4a32402547f2291e8003affd02439749884726015bb",
+      "saved_at_utc": "2026-10-05T11:25:26.2043284Z",
+      "width_px": 390,
+      "height_px": 844,
+      "format": "JPEG"
+    },
+    {
+      "path": "translation/16-incoming-english-turkish-1440.jpg",
+      "kind": "browser-viewport-screenshot",
+      "bytes": 108144,
+      "sha256": "e96f7bbf4f72c3ea3fb162fc925fc2b9bc1b7cface18becb90aa0b504ae0cfd7",
+      "saved_at_utc": "2026-10-05T11:10:35.1919188Z",
+      "width_px": 1440,
+      "height_px": 900,
+      "format": "JPEG"
+    },
+    {
+      "path": "translation/17-translation-and-send-rate-limit-1440.jpg",
+      "kind": "browser-viewport-screenshot",
+      "bytes": 112779,
+      "sha256": "c83a3a540371b5044a9b2ffbbf0f170b5acf045142015cb5cd6e873e2cb95dcb",
+      "saved_at_utc": "2026-10-05T11:11:25.6866527Z",
+      "width_px": 1440,
+      "height_px": 900,
+      "format": "JPEG"
+    }
+  ]
+}
