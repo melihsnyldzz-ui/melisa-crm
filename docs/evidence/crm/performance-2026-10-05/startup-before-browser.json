@@ -1,0 +1,122 @@
+{
+  "phase": "before",
+  "runtimeSource": "f166b0f7db499c68e6cc6718bcf090fcaf457927",
+  "method": "native-navigation-DOM-visible-enabled-real-row; frame separately; no tool elapsed added",
+  "samples": [
+    {
+      "sample": {
+        "observerInstalledAt": 282.5,
+        "listReadyAt": 16288.799999952316,
+        "paintRequestedAt": 16288.900000095367,
+        "paintAt": 16288.900000095367,
+        "count": 100,
+        "focus": true,
+        "visible": "visible"
+      },
+      "resources": [
+        {
+          "route": "/api/live/auth/me",
+          "start": 266.2000000476837,
+          "ms": 592.7999999523163
+        },
+        {
+          "route": "/api/live/crm/inbox",
+          "start": 861.5999999046326,
+          "ms": 15306.800000190735
+        },
+        {
+          "route": "/api/live/crm/agents",
+          "start": 861.9000000953674,
+          "ms": 46.5
+        },
+        {
+          "route": "/api/live/crm/erp/drafts",
+          "start": 16221.599999904633,
+          "ms": 105.60000014305115
+        }
+      ],
+      "listVisible": true,
+      "testButton": true
+    },
+    {
+      "sample": {
+        "observerInstalledAt": 379,
+        "listReadyAt": 7730.200000047684,
+        "paintRequestedAt": 7730.200000047684,
+        "paintAt": 7730.299999952316,
+        "count": 100,
+        "focus": true,
+        "visible": "visible"
+      },
+      "resources": [
+        {
+          "route": "/api/live/auth/me",
+          "start": 315.10000014305115,
+          "ms": 10.399999856948853
+        },
+        {
+          "route": "/api/live/crm/inbox",
+          "start": 335.90000009536743,
+          "ms": 7280.5
+        },
+        {
+          "route": "/api/live/crm/agents",
+          "start": 336.5,
+          "ms": 628.5
+        },
+        {
+          "route": "/api/live/crm/erp/drafts",
+          "start": 7653,
+          "ms": 17
+        }
+      ],
+      "listVisible": true,
+      "testButton": true
+    },
+    {
+      "sample": {
+        "observerInstalledAt": 285.90000009536743,
+        "listReadyAt": 9428.100000143051,
+        "paintRequestedAt": 9428.100000143051,
+        "paintAt": 9428.299999952316,
+        "count": 100,
+        "focus": true,
+        "visible": "visible"
+      },
+      "resources": [
+        {
+          "route": "/api/live/auth/me",
+          "start": 214.40000009536743,
+          "ms": 23
+        },
+        {
+          "route": "/api/live/crm/inbox",
+          "start": 248,
+          "ms": 9068.400000095367
+        },
+        {
+          "route": "/api/live/crm/agents",
+          "start": 250.20000004768372,
+          "ms": 596.5
+        },
+        {
+          "route": "/api/live/crm/erp/drafts",
+          "start": 9353,
+          "ms": 12.900000095367432
+        }
+      ],
+      "listVisible": true,
+      "testButton": true
+    }
+  ],
+  "conversationOpen": {
+    "sampleCount": 1,
+    "testRecipientSuffix": "7733",
+    "loadedHistoryAlreadyInOverview": true,
+    "measurement": {
+      "ms": 82.59999990463257,
+      "readyAt": 199937.20000004768,
+      "mediaCount": 4
+    }
+  }
+}

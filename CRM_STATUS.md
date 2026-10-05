@@ -1,5 +1,15 @@
 # MELISA CRM — Güncel Durum
 
+## 5 Ekim 2026 — İlk açılış: kaynak hazır, gerçek TEST sonrası karşılaştırması bekliyor
+
+Bu dar çalışma yalnız ilk gerçek konuşma listesinin açılışını hızlandırır. Çalışan TEST halen f166 paketidir; katalog optimizasyonu, PR9 baseline, mevcut görünüm, mesaj/rol/ERP sınırları korunur. Yeni ERP katalog hattı, LIVE ve gerçek gönderim kapsamda değildir.
+
+Önceki normal Chrome üç açılışı: görünür, etkin100 gerçek konuşma satırı **16288,8 /7730,2 /9428,1ms**, medyan **9428,1ms**; ilk inbox HTTP medyan **9068,4ms**. DOM gözlemcisi liste gelmeden282–379ms'de kuruldu; native zamanlar kullanıldı, araç beklemesi veya iki frame süreye eklenmedi. Ayrı GET-only Chatwoot cold profil medyanı: ilk liste sayfası468ms,751 kayıt/31 seri sayfa11894ms, ilk100 mesaj hidrasyonu5548ms; ekip27ms. Profilde receipt journal/provider readiness hariçtir; gateway HTTP süresiyle toplanarak kesin açılış zamanı yapılmaz. İlk tarayıcı örneğinde bağımsız provider profili de çalışıyordu; paylaşılan TEST yükü değişkendir. Yeni before kanıtları mevcut performance-2026-10-05 arşivinde.
+
+Aday kaynak management için yalnız taze ilk25 activity sayfasını getirir; tam traversal ve100 mesaj yüklemesi ilk renderı bekletmez. Personel taze tam traversal/atama erişim sınırını korur. Eksik toplamlar null, son mesaj ve geçmiş açık yüklenme durumudur; placeholder tam mesaj araması sayılmaz. Agents ayrı oturum-generation kontrollü yüklenir. Kalan tam100'lü overview/mesaj sayfalaması arka planda mevcut doğrulanmış yolu izler; tamamlanınca bootstrap-only eski üyeler uzlaştırılır. Boş tam yanıt eski kart/seçili sohbeti temizler; insan taslağı kısmi liste yüzünden silinmez. Yetki/revoke, seçilen konuşmanın fresh detail/send guard'ları ve iptalleri korunur. Geçersiz view400'ü fallback öncesinde reddedilir. Kurulu Chatwoot activity sıralamasını destekler; saniye eşitliklerinde ID tie-breaker yoktur, arka plan mevcut tam liste kesin sırasını tamamlar.
+
+Fotoğraflı katalog önce native ilk seçilebilir kart **11568,8 /1950 /2175,6ms**, medyan2175,6ms;12/12 görsel hazır2175,7ms medyan. Mevcut UI kartları görsel hazırlığı sonrası açtığı için iki nokta birlikte oluşur; boş modal başarı sayılmadı. Bu ölçüm eski iki-frame ölçümüyle kesin oran değildir. CSS/katalog kaynağı değiştirilmedi. Bağımsız inceleme açıkP0/P1/P2=0,29 hedefli kontrol PASS; tam kontrol/build/paket ve sonraki gerçek ekran ölçümü ayrı kaydedilecek.
+
 ## 5 Ekim 2026, 18:00 — Performans teslimi: gerçek TEST ölçüldü; ilk inbox beklemesi sürüyor
 
 **Güncel TEST:** http://127.0.0.1:62400/; TEST ADMIN, görünür Chrome, mevcut 7733 konuşması ve gerçek ERP katalog ürünleri. Kanonik uygulama dalı `codex/crm-agents-on-completion-20261003`, [PR #3](https://github.com/melihsnyldzz-ui/melisa-crm/pull/3). PR9'un 5 Ekim kabul/ekran kanıtları değişmedi; denetim dalında geliştirme yapılmadı. Mevcut tasarım ve accepted baseline korundu. Bu performans çalışması bitti; yeni iş kendiliğinden başlatılmaz.

@@ -45,6 +45,25 @@ test('startup completion timestamps describe the actual permission and inbox rea
  time=9000;agents.resolve({agents:[]});await pending;
  assert.equal(commits[0].permissionReadAt,1000);assert.equal(commits[0].inboxReadAt,6000);
 });
+
+test('bootstrap commits a real first page before the delayed agent list and keeps their abort scope',async()=>{
+ const agents=defer(),commits=[],agentResults=[],busy=[],states=[];let inboxOptions,agentSignal;
+ const loader=createSessionLoader({api:{session:async()=>({canAssign:true}),inbox:async(key,offset,options)=>{inboxOptions=options;assert.equal(offset,0);return {conversations:[{id:'55',messagesLoaded:false}],summary:{complete:false,total:null}};},agents:async(key,{signal})=>{agentSignal=signal;return agents.promise;}},onCommit:x=>commits.push(x),onAgents:x=>agentResults.push(x),onAgentsState:x=>states.push(x),onError:error=>{throw error;},onBusy:x=>busy.push(x)});
+ await loader.start({token:'synthetic'});assert.equal(inboxOptions.view,'bootstrap');assert.equal(commits.length,1);assert.deepEqual(busy,[true,false]);assert.equal(agentResults.length,0);assert(states.some(s=>s.busy));
+ loader.invalidate();assert(agentSignal.aborted);agents.resolve({agents:[{id:7}]});await Promise.resolve();await Promise.resolve();assert.equal(agentResults.length,0);
+});
+
+test('agent failures are truthful and retryable; a late old-account 401 cannot expire the replacement',async()=>{
+ const oldAgents=defer(),commits=[],errors=[],states=[],results=[];let freshFailure=true;
+ const loader=createSessionLoader({api:{session:async()=>({canAssign:true}),inbox:async()=>({conversations:[]}),agents:async key=>{if(key==='old')return oldAgents.promise;if(freshFailure)throw new Error('Synthetic offline roster');return {agents:[{id:7}]};}},onCommit:x=>commits.push(x),onAgents:x=>results.push(x),onAgentsState:x=>states.push(x),onError:x=>errors.push(x),onBusy:()=>{}});
+ await loader.start({token:'old'});await loader.start({token:'fresh'});await Promise.resolve();oldAgents.reject(Object.assign(new Error('old expired'),{status:401}));await Promise.resolve();await Promise.resolve();
+ assert.equal(commits.length,2);assert.equal(errors.length,0);assert(states.some(s=>s.error==='Synthetic offline roster'));freshFailure=false;await loader.refreshAgents();assert.deepEqual(results,[{agents:[{id:7}]}]);
+});
+
+test('current agent authorization loss expires its owning session after first-page commit',async()=>{
+ const agents=defer(),errors=[];const loader=createSessionLoader({api:{session:async()=>({canAssign:true}),inbox:async()=>({conversations:[{id:'55'}]}),agents:()=>agents.promise},onCommit:()=>{},onError:x=>errors.push(x),onBusy:()=>{}});
+ await loader.start({token:'synthetic'});agents.reject(Object.assign(new Error('revoked'),{status:401}));await Promise.resolve();await Promise.resolve();assert.equal(errors[0].status,401);
+});
 test('timeout during successful JSON body reading fails closed instead of committing an empty inbox',async()=>{
  const before=globalThis.fetch;globalThis.fetch=async(url,{signal})=>new Response(new ReadableStream({start(controller){controller.enqueue(new TextEncoder().encode('{"data":'));signal.addEventListener('abort',()=>controller.error(new DOMException('Aborted','AbortError')));}}),{status:200,headers:{'Content-Type':'application/json'}});
  try{await assert.rejects(()=>liveApi.inbox('synthetic-timeout',0,{timeoutMs:10}),{code:'CRM_REQUEST_TIMEOUT'});}finally{globalThis.fetch=before;}

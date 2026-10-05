@@ -9,7 +9,7 @@ import {
 } from "@phosphor-icons/react";
 import {
   applyReadReceipts, conversationRevision, effectiveInboxSummary, liveApi,
-  mergeInboxConversations, saveAccessKey, savedAccessKey, sortInboxByActivity,
+  mergeInboxConversations, reconcileBootstrapConversations, saveAccessKey, savedAccessKey, sortInboxByActivity,
 } from "./liveApi";
 import { matchesContactSearch, phoneUnavailableLabel } from "./contactIdentity.js";
 import CustomerPhone from "./CustomerPhone.jsx";
@@ -330,6 +330,8 @@ export function App() {
   const [liveBusy, setLiveBusy] = useState(false);
   const [liveError, setLiveError] = useState("");
   const [agents, setAgents] = useState([]);
+  const [agentLoadState,setAgentLoadState] = useState({busy:false,error:''});
+  const [detailLoadState,setDetailLoadState] = useState({id:'',busy:false,error:''});
   const [summary, setSummary] = useState({ total: 0, unread: 0, pendingHumanReply: 0, unassigned: 0 });
   const [productQuery, setProductQuery] = useState("");
   const [selectedProductId, setSelectedProductId] = useState(productSeed[0].id);
@@ -367,6 +369,8 @@ export function App() {
   const readReceiptsRef = useRef(readReceipts);
   const conversationsRef = useRef(conversations);
   const backgroundPageLoadRef = useRef("");
+  const remainingReadRef = useRef(null);
+  const bootstrapReconcileRef = useRef(null);
   const olderPageOffsetRef = useRef(100);
   const olderPageCheckedAtRef = useRef(Date.now());
   const inboxPollRef = useRef({ at: 0, inFlight: false });
@@ -465,7 +469,7 @@ export function App() {
   const filtered = useMemo(() => conversations.filter((item) => {
     const filterMatch = filter === "Atanmamışlar" ? item.owner === "Atanmamış" : filter === "Bekleyenler" ? item.waitingForReply === true : filter === "Okunmamış" ? item.unread > 0 : true;
     const countryMatch = countryFilter === "all" || (item.code && item.code !== "—" ? item.code : "unknown") === countryFilter;
-    return filterMatch && countryMatch && matchesContactSearch(item, query, true);
+    return filterMatch && countryMatch && matchesContactSearch(item, query, item.messagesLoaded!==false);
   }), [conversations, filter, query, countryFilter]);
   const filteredProducts = useMemo(() => productSeed.filter((product) => {
     const haystack = `${product.id} ${product.barcode} ${product.name} ${product.group}`.toLocaleLowerCase("tr-TR");
@@ -484,7 +488,8 @@ export function App() {
   const notificationItems = liveNotifications;
   const notificationUnreadCount = conversations.reduce((total, item) => total + (item.unread || 0), 0);
   const visibleWaitingCount = conversations.filter((item) => item.waitingForReply === true).length;
-  const visibleUnassignedCount = liveSession && conversations.length < summary.total ? summary.unassigned : conversations.filter((item) => item.owner === "Atanmamış").length;
+  const inboxPartial = Boolean(liveSession&&(summary.complete===false||conversations.length<summary.total));
+  const visibleUnassignedCount = conversations.filter((item) => item.owner === "Atanmamış").length;
   const effectiveSummary = useMemo(() => effectiveInboxSummary(summary, conversations), [summary, conversations]);
   const inboxView = activeView === "Gelen Kutusu" || activeView === "Konuşmalar";
   const selectedSendUncertain = Boolean(uncertainSends[selected.id]);
@@ -587,6 +592,9 @@ export function App() {
   }, []);
 
   const closeLiveSession = (message = "", clearReceipts = false) => {
+    remainingReadRef.current?.controller.abort();remainingReadRef.current=null;
+    bootstrapReconcileRef.current=null;
+    setAgentLoadState({busy:false,error:''});setDetailLoadState({id:'',busy:false,error:''});
     testBootstrapRef.current?.abort();
     if (clearReceipts) applyStoredDrafts(textDraftStorageRef.current.clear());
     else textDraftStorageRef.current.suspend();
@@ -613,21 +621,25 @@ export function App() {
     });
   };
 
-  const commitLiveSession = ({ key, session: sessionResult, inbox: inboxResult, agents: agentsResult, permissionReadAt = Date.now(), inboxReadAt = Date.now() }) => {
+  const commitLiveSession = ({ key, session: sessionResult, inbox: inboxResult, agents: agentsResult={agents:[]}, permissionReadAt = Date.now(), inboxReadAt = Date.now() }) => {
     const identity = accountIdentityKey(sessionResult.accountIdentity);
     if (!identity) throw new Error("CRM kullanıcı kimliği sunucu tarafından bildirilmedi.");
     if (sessionIdentityRef.current !== identity || liveKeyRef.current !== key) salesDraftFlowRef.current?.close();
     if (sessionIdentityRef.current !== identity) { setProductDrafts({}); setDraftOrders([]); orderPreviewLedgerRef.current.clear(); }
     if (sessionIdentityRef.current && sessionIdentityRef.current !== identity) { setProductDrafts({}); setDraftOrders([]); orderPreviewLedgerRef.current.clear(); uiOperationEpochRef.current++; setIncomingTranslations({}); clearCatalogStorage(safeCatalogStorage()); setModal(null); catalogSessionRef.current?.close(); setCatalogSource(initialCatalogSource); sendScopeRef.current.invalidate(); sendInFlightRef.current = false; setDrafts({}); setAttachments({}); attachmentRef.current = {}; setSendStates({}); readReceiptsRef.current = {}; setReadReceipts({}); }
     sessionIdentityRef.current = identity;
+    remainingReadRef.current?.controller.abort();remainingReadRef.current=null;
+    setMobileChatOpen(false);setAgentLoadState({busy:false,error:''});setDetailLoadState({id:'',busy:false,error:''});
     const visibleConversations = applyReadReceipts(sortInboxByActivity(inboxResult.conversations || []), readReceiptsRef.current);
+    bootstrapReconcileRef.current=inboxResult.summary?.complete===false?{ids:new Set(visibleConversations.map(row=>String(row.id))),seen:new Set()}:null;
     applyStoredDrafts(textDraftStorageRef.current.activate(sessionResult, visibleConversations));
     liveKeyRef.current = key; liveSessionRef.current = sessionResult; conversationsRef.current = visibleConversations;
     permissionPollRef.current = { key, at: permissionReadAt };
     inboxPollRef.current.at = inboxReadAt;
+    conversationPollRef.current.at=0;conversationPollRef.current.id='';
     saveAccessKey(key); setLiveKey(key); setLiveSession(sessionResult); setRole(sessionResult.displayName);
     setAgents(agentsResult.agents || []); setSummary(effectiveInboxSummary(inboxResult.summary || {}, visibleConversations)); setConversations(visibleConversations);
-    setNextInboxOffset(inboxResult.conversations?.length || 0); setRemainingConversationsError("");
+    setNextInboxOffset(inboxResult.summary?.complete===false?0:inboxResult.conversations?.length || 0); setRemainingConversationsError("");
     setSelectedId((current) => inboxResult.conversations?.some((item) => item.id === current) ? current : inboxResult.conversations?.[0]?.id || ""); setTranslationReady(false);
     setLoginCredentials({ username: "", password: "" });
     setLastSyncAt(new Date()); setSyncError("");
@@ -637,12 +649,16 @@ export function App() {
     onCommit: commitLiveSession,
     onError: error => { if (error.status === 401 || error.status === 403) closeLiveSession(error.message || "CRM oturumu doğrulanamadı.", error.status === 403); else setLiveError(error.message || "CRM bağlantısı kurulamadı."); },
     onBusy: setLiveBusy,
+    onAgents: result=>setAgents(result.agents||[]),
+    onAgentsState: update=>setAgentLoadState(state=>({...state,...update})),
   };
   if (!sessionLoaderRef.current) sessionLoaderRef.current = createSessionLoader({
     api: liveApi,
     onCommit: value => sessionCallbacksRef.current.onCommit(value),
     onError: error => sessionCallbacksRef.current.onError(error),
     onBusy: value => sessionCallbacksRef.current.onBusy(value),
+    onAgents: value=>sessionCallbacksRef.current.onAgents(value),
+    onAgentsState: value=>sessionCallbacksRef.current.onAgentsState(value),
   });
   const connectLive = () => {
     if (sessionLoaderRef.current.isPending() || !loginCredentials.username.trim() || !loginCredentials.password) return;
@@ -709,7 +725,7 @@ export function App() {
   };
   useEffect(() => {
     if(testAdminEnabled&&!manualTestLogin)void openTestAdmin();else resumeLiveSession();
-    return () => {testBootstrapRef.current?.abort(); sessionLoaderRef.current?.invalidate(); permissionRefreshRef.current?.invalidate(); sendScopeRef.current.invalidate(); uiOperationEpochRef.current++;};
+    return () => {testBootstrapRef.current?.abort();remainingReadRef.current?.controller.abort(); sessionLoaderRef.current?.invalidate(); permissionRefreshRef.current?.invalidate(); sendScopeRef.current.invalidate(); uiOperationEpochRef.current++;};
   }, []);
 
   useEffect(() => {
@@ -762,43 +778,57 @@ export function App() {
   }, [hasLiveSession, liveKey, refreshNonce]);
 
   const loadRemainingConversations = async () => {
-    if (catalogVisibleRef.current || !liveSession || loadingMoreConversations || nextInboxOffset >= summary.total) return;
+    if (catalogVisibleRef.current || !liveSession || remainingReadRef.current || (summary.complete!==false&&nextInboxOffset >= summary.total)) return;
     const scope = sendScopeRef.current.capture(), key = liveKey;
-    const isCurrent = () => sendScopeRef.current.isCurrent(scope) && Boolean(key) && liveKeyRef.current === key;
+    const controller=new AbortController(),operation={controller};remainingReadRef.current=operation;
+    const isCurrent = () => !controller.signal.aborted && sendScopeRef.current.isCurrent(scope) && Boolean(key) && liveKeyRef.current === key;
     setLoadingMoreConversations(true); setRemainingConversationsError("");
-    let offset = nextInboxOffset;
+    let offset = summary.complete===false?0:nextInboxOffset,total=summary.complete===false?null:summary.total;
+    const reconcile=bootstrapReconcileRef.current;if(offset===0)reconcile?.seen.clear();
     try {
-      for (let page = 0; page < 12 && offset < summary.total; page += 1) {
+      for (let page = 0; page < 12 && (total===null||offset<total); page += 1) {
         if(catalogVisibleRef.current)break;
-        const result = await liveApi.inbox(key, offset);
+        const result = await liveApi.inbox(key, offset,{signal:controller.signal});
         if (!isCurrent()) return;
         if(catalogVisibleRef.current)break;
-        if (!result.conversations.length) throw new Error("Kalan konuşmalar API’den gelmedi.");
+        if(result.summary.complete===false||!Number.isFinite(result.summary.total))throw new Error('Konuşma toplamı henüz doğrulanamadı. Tekrar deneyin.');
+        total=result.summary.total;
+        for(const row of result.conversations)reconcile?.seen.add(String(row.id));
+        if (!result.conversations.length&&total>0) throw new Error("Kalan konuşmalar API’den gelmedi.");
         const before = new Set(conversationsRef.current.map((item) => String(item.id)));
-        const merged = mergeInboxConversations(conversationsRef.current, result.conversations, selectedIdRef.current, null, true);
-        if (merged.length === before.size) throw new Error("Konuşma sayfalaması ilerlemedi.");
+        const merged = mergeInboxConversations(conversationsRef.current, result.conversations, selectedIdRef.current, null, total>0);
+        if (offset>0&&merged.length === before.size&&total>offset) throw new Error("Konuşma sayfalaması ilerlemedi.");
         const visible = applyReadReceipts(sortInboxByActivity(merged), readReceiptsRef.current);
         conversationsRef.current = visible; setConversations(visible);
+        setSummary(effectiveInboxSummary(result.summary,visible));
+        if(offset===0)inboxPollRef.current.at=Date.now();
         offset += result.conversations.length; setNextInboxOffset(offset);
+        if(offset>=total&&reconcile&&bootstrapReconcileRef.current===reconcile){
+          const reconciled=reconcileBootstrapConversations(conversationsRef.current,reconcile.ids,reconcile.seen,total);
+          conversationsRef.current=reconciled;setConversations(reconciled);setSummary(effectiveInboxSummary(result.summary,reconciled));
+          if(!reconciled.some(row=>String(row.id)===String(selectedIdRef.current))){setSelectedId('');setMobileChatOpen(false);}
+          bootstrapReconcileRef.current=null;
+        }
       }
     } catch (error) {
       if (!isCurrent()) return;
       if (error.status === 401) closeLiveSession("Oturumunuz sona erdi. Lütfen yeniden giriş yapın.");
       else setRemainingConversationsError(error.status === 429 ? error.message : "Diğer konuşmalar alınamadı. Tekrar deneyin.");
-    } finally { if (isCurrent()) setLoadingMoreConversations(false); }
+    } finally { if(remainingReadRef.current===operation)remainingReadRef.current=null;if (isCurrent()) setLoadingMoreConversations(false); }
   };
 
   useEffect(() => {
-    if (catalogVisibleRef.current || !liveSession || !summary.total || nextInboxOffset >= summary.total) return;
-    const loadKey = `${liveKey}:${summary.total}`;
+    if (catalogVisibleRef.current || !liveSession || (summary.complete!==false&&(!summary.total||nextInboxOffset >= summary.total))) return;
+    const loadKey = `${liveKey}:${summary.complete===false?'bootstrap':summary.total}`;
     if (backgroundPageLoadRef.current === loadKey) return;
     backgroundPageLoadRef.current = loadKey;
     loadRemainingConversations();
-  }, [hasLiveSession, liveKey, summary.total, refreshNonce]);
+  }, [hasLiveSession, liveKey, summary.total, summary.complete, refreshNonce]);
 
   useEffect(() => {
     if (!hasLiveSession || !selectedId || !selectedChatVisible || !inboxView) return;
     let active = true;
+    const controller=new AbortController();
     const readEpoch = sendScopeRef.current.capture();
     const currentRead = () => !catalogVisibleRef.current && sessionReadIsCurrent({ active, key: liveKey, currentKey: liveKeyRef.current, epochCurrent: sendScopeRef.current.isCurrent(readEpoch), recipientId: selectedId, currentRecipientId: selectedIdRef.current });
     const refreshConversation = async () => {
@@ -808,11 +838,12 @@ export function App() {
       if(queueForegroundRead(poll,refreshConversation,currentRead))return;
       if(poll.id === selectedId && now - poll.at < POLL_INTERVAL.conversation)return;
       poll.inFlight=true;poll.at = now; poll.id = selectedId;
+      setDetailLoadState({id:selectedId,busy:true,error:''});
       try {
-        const { conversation } = await liveApi.conversation(liveKey, selectedId);
+        const { conversation } = await liveApi.conversation(liveKey, selectedId,{signal:controller.signal});
         if (!currentRead()) return;
         setConversations((items) => {
-          const next = applyReadReceipts(items.map((item) => item.id === selectedId ? { ...item, ...conversation } : item), readReceiptsRef.current);
+          const next = applyReadReceipts(items.map((item) => item.id === selectedId ? { ...item, ...conversation,messagesLoaded:true,detailLoaded:true } : item), readReceiptsRef.current);
           conversationsRef.current = next;
           return next;
         });
@@ -823,14 +854,14 @@ export function App() {
           forgetDraft(selectedId);
           setConversations((items) => items.filter((item) => item.id !== selectedId));
           setSelectedId(""); setMobileChatOpen(false);
-        } else setSyncError(error.status === 429 ? error.message : "Konuşma güncellenemedi");
-      } finally { finishForegroundRead(poll); }
+        } else {setSyncError(error.status === 429 ? error.message : "Konuşma güncellenemedi");setDetailLoadState({id:selectedId,busy:false,error:error.message||'Konuşma geçmişi alınamadı.'});}
+      } finally {if(currentRead())setDetailLoadState(state=>({...state,busy:false}));finishForegroundRead(poll); }
     };
     refreshConversation();
     const timer = window.setInterval(refreshConversation, POLL_INTERVAL.conversation);
     window.addEventListener("focus", refreshConversation);
     document.addEventListener("visibilitychange", refreshConversation);
-    return () => { active = false; window.clearInterval(timer); window.removeEventListener("focus", refreshConversation); document.removeEventListener("visibilitychange", refreshConversation); };
+    return () => { active = false;controller.abort(); window.clearInterval(timer); window.removeEventListener("focus", refreshConversation); document.removeEventListener("visibilitychange", refreshConversation); };
   }, [selectedId, hasLiveSession, liveKey, selectedChatVisible, inboxView, refreshNonce]);
 
   useEffect(() => {
@@ -877,6 +908,7 @@ export function App() {
     setModal("assign");
   };
   const confirmAssignment = async () => {
+    if(liveSession&&(agentLoadState.busy||agentLoadState.error))return;
     const target = conversations.find((item) => String(item.id) === String(assignmentTargetId));
     const agent = agents.find((item) => String(item.id) === String(selectedAssigneeId));
     const demoAgent = teamOptions.find((item) => item === selectedAssigneeId);
@@ -1170,14 +1202,14 @@ export function App() {
         {inboxView ? <div className={desktopInspectorOpen ? "workspace with-inspector" : "workspace"}>
           {(tabletInspectorOpen || desktopInspectorOpen) ? <button className="inspector-scrim" aria-label="Bilgi panelini kapat" onClick={() => { setTabletInspectorOpen(false); setDesktopInspectorOpen(false); }} /> : null}
           <section className="queue-panel" aria-label="Konuşmalar">
-            <div className="queue-summary"><div className="queue-heading"><div><h1>{filter === "Atanmamışlar" ? "Atanmamışlar" : terminalMode ? "Mesajlarım" : "Mesajlar"}</h1><span className="queue-caption">{filter === "Atanmamışlar" ? `${visibleUnassignedCount} müşteri sorumlu bekliyor` : `${liveSession ? summary.total : conversations.length} konuşma`}</span></div>{liveSession ? <button className="refresh-queue" aria-label="Konuşmaları şimdi yenile" title={lastSyncAt ? `Son güncelleme ${lastSyncAt.toLocaleTimeString("tr-TR")}` : "Yenile"} onClick={() => setRefreshNonce((value) => value + 1)}><ArrowClockwise size={20} /></button> : <span className="queue-channel"><WhatsappLogo size={24} weight="fill" /></span>}</div></div>
+            <div className="queue-summary"><div className="queue-heading"><div><h1>{filter === "Atanmamışlar" ? "Atanmamışlar" : terminalMode ? "Mesajlarım" : "Mesajlar"}</h1><span className="queue-caption">{filter === "Atanmamışlar" ? `${visibleUnassignedCount} ${inboxPartial ? "yüklenen kayıtlarda " : ""}müşteri sorumlu bekliyor` : liveSession && summary.total == null ? `${conversations.length} konuşma · toplam yükleniyor…` : `${liveSession ? summary.total : conversations.length} konuşma`}</span></div>{liveSession ? <button className="refresh-queue" aria-label="Konuşmaları şimdi yenile" title={lastSyncAt ? `Son güncelleme ${lastSyncAt.toLocaleTimeString("tr-TR")}` : "Yenile"} onClick={() => setRefreshNonce((value) => value + 1)}><ArrowClockwise size={20} /></button> : <span className="queue-channel"><WhatsappLogo size={24} weight="fill" /></span>}</div></div>
             <label className="queue-search"><MagnifyingGlass size={20} /><input aria-label="Konuşmalarda ara" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="İsim, telefon, ülke veya mesaj ara" />{query ? <button aria-label="Aramayı temizle" onClick={() => setQuery("")}><X size={18}/></button> : null}</label>
             <div className="queue-filter-toggle"><button onClick={() => setCountryFilterOpen((value) => !value)} aria-expanded={countryFilterOpen}><SlidersHorizontal size={17}/>Ülke filtresi{countryFilter !== "all" ? " · etkin" : ""}<CaretDown size={13}/></button></div>{countryFilterOpen ? <label className="country-filter"><Globe size={18}/><span>Numara ülkesi</span><select aria-label="Numaranın ülkesine göre filtrele" value={countryFilter} onChange={(event) => setCountryFilter(event.target.value)}><option value="all">Tüm ülkeler</option>{countryOptions.map((region) => <option key={region.code} value={region.code}>{region.name} ({region.count})</option>)}</select></label> : null}
             <div className="queue-tabs" role="tablist" aria-label="Konuşma filtreleri">
               {[["Tüm Konuşmalar", "Tümü", null], ["Okunmamış", "Okunmamış", conversations.filter((item) => item.unread > 0).length], ...(canAssign ? [["Atanmamışlar", "Atanmamış", visibleUnassignedCount]] : [])].map(([value, label, count]) => <button key={value} role="tab" aria-selected={filter === value} className={filter === value ? "selected" : ""} onClick={() => setFilter(value)}>{label}{count > 0 ? <b>{count}</b> : null}</button>)}
             </div>
             {filter === "Bekleyenler" ? <div className="active-queue-filter">Yanıt bekleyenler<button onClick={() => setFilter("Tüm Konuşmalar")} aria-label="Yanıt bekleyen filtresini kaldır"><X size={18}/></button></div> : null}
-            {liveSession && (summary.total > conversations.length || remainingConversationsError) ? <div className="queue-load-more" role="status"><span>{remainingConversationsError || `${conversations.length} / ${summary.total} konuşma`}</span><button onClick={loadRemainingConversations} disabled={loadingMoreConversations}>{loadingMoreConversations ? "Yükleniyor…" : "Devamını yükle"}</button></div> : null}
+            {liveSession && (inboxPartial || remainingConversationsError) ? <div className="queue-load-more" role="status"><span>{remainingConversationsError || (summary.total == null ? `${conversations.length} konuşma · toplam yükleniyor…` : `${conversations.length} / ${summary.total} konuşma`)}</span><button onClick={loadRemainingConversations} disabled={loadingMoreConversations}>{loadingMoreConversations ? "Yükleniyor…" : "Devamını yükle"}</button></div> : null}
             <div className="conversation-list">
               {filtered.map((item) => <div key={item.id} className={`conversation-item${selected.id === item.id ? " selected" : ""}${item.unread ? " has-unread" : ""}`}>
                 <button className="conversation-row" onClick={() => selectConversation(item)} aria-label={`${item.name} konuşmasını aç`} aria-current={selected.id === item.id ? "true" : undefined}>
@@ -1186,7 +1218,7 @@ export function App() {
                 </button>
                 {item.owner === "Atanmamış" && canAssign && filter === "Atanmamışlar" ? <button className="queue-assign" aria-label={`${item.name} için temsilci ata`} onClick={() => openAssignment(item)}><UserPlus size={18} /><span>Sorumlu seç</span><ArrowRight size={16}/></button> : null}
               </div>)}
-              {!filtered.length ? <div className="empty-state"><CheckCircle size={32}/><strong>{(query || countryFilter !== "all") ? "Sonuç bulunamadı" : filter === "Atanmamışlar" ? "Herkesin bir sorumlusu var" : filter === "Okunmamış" ? "Tüm mesajlar okundu" : "Konuşma yok"}</strong><span>{(query || countryFilter !== "all") ? "Arama veya ülke filtresini değiştirin." : "Yeni mesajlar burada görünür."}</span>{(query || countryFilter !== "all") ? <button className="secondary-button" onClick={() => { setQuery(""); setCountryFilter("all"); }}>Filtreleri temizle</button> : null}</div> : null}
+              {!filtered.length ? <div className="empty-state"><CheckCircle size={32}/><strong>{inboxPartial ? "Yüklenen kayıtlarda sonuç yok" : (query || countryFilter !== "all") ? "Sonuç bulunamadı" : filter === "Atanmamışlar" ? "Herkesin bir sorumlusu var" : filter === "Okunmamış" ? "Tüm mesajlar okundu" : "Konuşma yok"}</strong><span>{inboxPartial ? (remainingConversationsError || (loadingMoreConversations ? "Diğer kayıtlar yükleniyor." : "Diğer kayıtlar henüz yüklenmedi. Devamını yükleyin.")) : (query || countryFilter !== "all") ? "Arama veya ülke filtresini değiştirin." : "Yeni mesajlar burada görünür."}</span>{(query || countryFilter !== "all") ? <button className="secondary-button" onClick={() => { setQuery(""); setCountryFilter("all"); }}>Filtreleri temizle</button> : null}</div> : null}
             </div>
             <div className={`queue-footer${syncStale ? " delayed" : ""}`}><span>{liveSession ? (syncStale ? "Güncelleme gecikti · bağlantıyı kontrol edin" : lastSyncAt ? `Son güncelleme ${lastSyncAt.toLocaleTimeString("tr-TR")}` : "Bağlanıyor…") : staffMode ? "Size atanan müşteriler" : filter === "Bekleyenler" ? `${visibleWaitingCount} yanıt bekliyor` : "En yeni konuşmalar üstte"}</span>{syncStale ? <Info size={16}/> : <CheckCircle size={16}/>}</div>
           </section>
@@ -1195,7 +1227,7 @@ export function App() {
             <header className="chat-header"><button className="chat-back" aria-label="Mesaj listesine dön" onClick={() => { closeVideoPilot(); setMobileChatOpen(false); }}><ArrowLeft size={24}/></button><Avatar initials={selected.initials} /><button className="chat-title" onClick={() => { setRightTab("Müşteri 360"); setDesktopInspectorOpen(true); setTabletInspectorOpen(true); }}><strong>{selected.name}</strong><span>{selected.id ? <><ChannelIcon channel={selected.channel} size={14}/><span title="Telefon numarasından belirlenen ülke / bölge">{selected.country}</span>{selected.language && selected.language !== "Belirtilmedi" ? ` · ${selected.language}` : ""}</> : "Bir konuşma seçin"}</span>{selected.phone ? <small className="chat-phone-number" dir="ltr">{selected.phoneDisplay || selected.phone}</small> : selected.id ? <small className="chat-phone-number unavailable">{phoneUnavailableLabel(selected)}</small> : null}</button><div className="chat-menu-wrap"><button className="inspector-toggle" aria-label="Konuşma menüsünü aç" aria-expanded={chatMenu} onClick={() => setChatMenu((value) => !value)}><DotsThree size={27} weight="bold"/></button>{chatMenu ? <><button className="menu-dismiss" aria-label="Konuşma menüsünü kapat" onClick={() => setChatMenu(false)}/><div className="chat-menu" role="menu"><button role="menuitem" onClick={() => { setChatMenu(false); setRightTab("Müşteri 360"); setDesktopInspectorOpen(true); setTabletInspectorOpen(true); }}><UserCircle size={20}/>Müşteri bilgileri</button>{canAssign && selected.id ? <button role="menuitem" onClick={() => { setChatMenu(false); openAssignment(selected); }}><UserPlus size={20}/>Temsilci ata</button> : null}{selected.id ? <button role="menuitem" onClick={() => openVideoPilot(selected.id)}><VideoCamera size={20}/>Görüntülü görüşme · Jitsi</button> : null}<button role="menuitem" onClick={() => { setChatMenu(false); setRightTab("AI Çeviri"); setDesktopInspectorOpen(true); setTabletInspectorOpen(true); }}><Translate size={20}/>Yanıt dili ve çeviri</button><button role="menuitem" onClick={() => { setChatMenu(false); setActiveView("Ayarlar"); }}><Gear size={20}/>Bağlantı ve ayarlar</button></div></> : null}</div></header>
             <div className="chat-scroll" ref={chatScrollRef} onScroll={(event) => { const element = event.currentTarget; const away = element.scrollHeight - element.scrollTop - element.clientHeight > 120; nearBottomRef.current = !away; setShowJumpLatest(away); }}>
               {!selected.id ? <div className="empty-chat"><ChatCircleDots size={38} weight="duotone" /><strong>Konuşma seçilmedi</strong><span>Mesajları görmek için soldaki listeden bir müşteri seçin.</span></div> : <>
-              <div className="date-pill">{liveSession ? "Gerçek konuşma geçmişi" : "25 Eylül 2026, Cuma"}</div>
+              <div className="date-pill">{liveSession && selected.messagesLoaded === false ? (detailLoadState.id === selected.id && detailLoadState.error ? detailLoadState.error : "Konuşma geçmişi yükleniyor…") : liveSession ? "Gerçek konuşma geçmişi" : "25 Eylül 2026, Cuma"}</div>
               {liveSession ? (selected.messages || []).map((message) => { const translated = incomingTranslations[`${selected.id}:${message.id}`]; const hasText = Boolean(message.text?.trim()); const isOutgoing = message.direction === "outgoing"; if (message.direction === "activity") return <p className="system-message" key={message.id}>{message.text}</p>; return <div className={`message-block ${isOutgoing ? "outgoing" : "incoming"}`} key={message.id}><span className="message-sender">{isOutgoing ? "Melisa Baby" : selected.name}</span>{hasText ? <div className={`message ${isOutgoing ? "outgoing" : "incoming"}`}><p>{message.text}</p><time>{messageClock(message.createdAt)}{isOutgoing ? <CheckCircle size={14} weight="fill" /> : null}</time></div> : null}<MessageAttachments attachments={message.attachments} createdAt={message.createdAt} outgoing={isOutgoing} />{!isOutgoing && hasText ? <><button className="translate-message" disabled={translated?.loading} onClick={() => translateIncomingMessage(message)}><Translate size={16} />{translated?.loading ? "Çevriliyor…" : translated?.translatedText && !translated.hidden ? "Türkçe çeviriyi gizle" : "Türkçeye Çevir"}</button>{translated?.translatedText && !translated.hidden ? <div className="translation-inline"><span>Türkçe çeviri · {translated.detectedLanguage || "dil otomatik algılandı"}</span><p>{translated.translatedText}</p>{translated.warning ? <small>{translated.warning}</small> : null}</div> : null}{translated?.error ? <div className="translation-inline error"><span>Çeviri kullanılamıyor</span><p>{translated.error}</p></div> : null}</> : null}</div>; }) : <>
               <div className="message incoming"><p>{selected.foreign}</p><time>10:14</time></div>
               <button className="translate-message" onClick={() => setTranslatedIncoming((value) => !value)}><Translate size={16} />{translatedIncoming ? "Türkçe çeviriyi gizle" : "Türkçeye Çevir"}</button>
@@ -1233,13 +1265,13 @@ export function App() {
             <div className="inspector-tabs" role="tablist">{["AI Çeviri", "Müşteri 360"].map((tab) => <button key={tab} role="tab" aria-selected={rightTab === tab} className={rightTab === tab ? "active" : ""} onClick={() => setRightTab(tab)}>{tab === "Müşteri 360" ? "Müşteri" : "Çeviri"}</button>)}</div>
             {rightTab === "AI Çeviri" ? <div className="inspector-content"><div className="assistant-status"><span className="assistant-icon"><Sparkle size={22} weight="fill" /></span><div><strong>Çeviri yardımcısı</strong><p>Gelen yabancı mesajları Türkçeye, yazdığınız mesajları müşterinin diline çevirir.</p></div><b>{translationBusy ? "Çalışıyor" : liveSession ? "İstekle" : "Demo"}</b></div><div className="language-section"><label htmlFor="target-language">Yanıt dili</label><div className="language-select"><span className="country-code">{selected.code}</span><select id="target-language" value={targetLanguage} onChange={(event) => { setTargetLanguage(event.target.value); setTranslationReady(false); setTranslationResult(null); }}><option value="auto">Otomatik algıla</option><option value="en">İngilizce</option><option value="fr">Fransızca</option><option value="ar">Arapça</option><option value="de">Almanca</option><option value="it">İtalyanca</option><option value="es">İspanyolca</option><option value="bg">Bulgarca</option><option value="ru">Rusça</option><option value="ro">Romence</option><option value="sq">Arnavutça</option></select><CaretDown size={15} /></div><button className="primary-button language-translate" disabled={!draft.trim() || translationBusy} onClick={() => { setTabletInspectorOpen(false); setDesktopInspectorOpen(false); translateDraft(); }}><Translate size={18}/>{translationBusy ? "Çevriliyor…" : "Mesajı bu dile çevir"}</button></div><div className="info-box"><Sparkle size={18} weight="fill" /><span>{liveSession ? "Çeviri yalnız siz istediğinizde çalışır. Sonuç önce gösterilir; hiçbir mesaj otomatik gönderilmez." : "Demo çevirisini göndermeden önce kontrol edin."}</span></div><CustomerSummary selected={selected} onAssign={() => openAssignment(selected)} canAssign={canAssign} /></div> : <div className="inspector-content customer-full"><CustomerSummary selected={selected} onAssign={() => openAssignment(selected)} canAssign={canAssign} expanded /></div>}
           </aside>
-        </div> : <BackofficeView activeView={activeView} conversations={conversations} query={query} products={productSeed} catalogs={catalogSeed} draftOrders={draftOrders} role={role} liveSession={liveSession} getSalesRulesContext={currentSalesRulesContext} onRefreshSession={refreshLivePermissions} summary={effectiveSummary} agents={agents} onOpenConversation={(id, targetFilter = "Tüm Konuşmalar") => { const conversation = conversations.find((item) => String(item.id) === String(id)); if (!conversation) return; selectConversation(conversation); setFilter(targetFilter); setActiveView("Gelen Kutusu"); }} onOpenProduct={(id) => { setSelectedProductId(id); setModal("Ürün Gönder"); }} onOpenCatalog={() => setModal("Katalog")} onOpenPrice={() => setModal("Fiyat")} onOpenVideo={openVideoPilot} onCreateDraft={() => setModal("draft")} onOpenNotifications={() => setModal("notifications")} onNotify={flash} />}
+        </div> : <BackofficeView activeView={activeView} conversations={conversations} query={query} products={productSeed} catalogs={catalogSeed} draftOrders={draftOrders} role={role} liveSession={liveSession} getSalesRulesContext={currentSalesRulesContext} onRefreshSession={refreshLivePermissions} summary={effectiveSummary} agents={agents} inboxPartial={inboxPartial} agentLoadState={agentLoadState} onRefreshAgents={()=>sessionLoaderRef.current?.refreshAgents()} onOpenConversation={(id, targetFilter = "Tüm Konuşmalar") => { const conversation = conversations.find((item) => String(item.id) === String(id)); if (!conversation) return; selectConversation(conversation); setFilter(targetFilter); setActiveView("Gelen Kutusu"); }} onOpenProduct={(id) => { setSelectedProductId(id); setModal("Ürün Gönder"); }} onOpenCatalog={() => setModal("Katalog")} onOpenPrice={() => setModal("Fiyat")} onOpenVideo={openVideoPilot} onCreateDraft={() => setModal("draft")} onOpenNotifications={() => setModal("notifications")} onNotify={flash} />}
       </main>
 
       {modal === "erp-order" && erpOrderContext?.current() && String(selected.id) === erpOrderContext.recipientId ? <ERPOrderDialog token={liveKey} actorKey={sessionIdentityRef.current} conversation={selected} items={erpOrderContext.items} isCurrent={erpOrderContext.current} onClose={()=>{setModal(null);setErpOrderContext(null);}} onSaved={order=>{setDraftOrders(items=>[{...order,id:order.id||order.orderId,customer:order.customerName||selected.name,owner:userName,total:`${order.documentCurrency||""} ${Number(order.grandTotal||order.total||0).toFixed(2)}`,lines:order.items.length,status:"ERP TEST taslağı",updated:"Şimdi"},...items.filter(item=>String(item.id)!==String(order.id||order.orderId))]);flash(`ERP TEST taslağı yeniden okundu: ${order.documentNo||order.orderNo||order.id}`);}}/> : null}
       {CATALOG_ENABLED && modal === "catalog-builder" && selected.id && liveSession && catalogContextCurrent() ? <CatalogWorkspace existingStock={CATALOG_EXISTING_STOCK_ENABLED} authMode={CATALOG_CRM_ONLY_ENABLED?"crm":"erp"} key={`${sessionIdentityRef.current}:${roleLabel}:${selected.id}`} token={liveKey} isCurrent={catalogContextCurrent} onSession={session=>{catalogSessionRef.current=session;}} onSource={setCatalogSource} onCrmExpired={()=>closeLiveSession("CRM oturumu sona erdi. Yeniden giriş yapın.")} customer={selected} identity={sessionIdentityRef.current} role={roleLabel} canAttach={Boolean(liveSession.liveSendEnabled && !selectedSendUncertain)} onClose={closeCatalog} onAttach={attachCatalogOutput} onProductAction={catalogProductAction} attachmentExists={Boolean(pendingAttachment)} /> : null}
       {toast ? <div className="toast" role="status"><CheckCircle size={20} weight="fill" />{toast}</div> : null}
-      {modal === "assign" ? <Modal title="Temsilci ata" onClose={() => !assignmentBusy && setModal(null)}><div className="modal-body"><div className="selected-customer"><Avatar initials={(conversations.find((item) => String(item.id) === String(assignmentTargetId)) || selected).initials} /><div><strong>{(conversations.find((item) => String(item.id) === String(assignmentTargetId)) || selected).name}</strong><span>Bu konuşmadan kim sorumlu olacak?</span></div></div><div className="assignee-list" role="radiogroup" aria-label="Sorumlu temsilci">{(liveSession ? agents.map((agent) => ({ id: String(agent.id), name: agent.name })) : teamOptions.slice(1).map((name) => ({ id: name, name }))).map((agent) => <button key={agent.id} role="radio" aria-checked={selectedAssigneeId === agent.id} className={selectedAssigneeId === agent.id ? "assignee-option selected" : "assignee-option"} onClick={() => { setSelectedAssigneeId(agent.id); setAssignmentError(""); }}><Avatar initials={agent.name.split(" ").map((part) => part[0]).join("").slice(0, 2)} compact /><span className="assignee-person"><strong>{agent.name}</strong><small>{conversations.filter((item) => item.owner === agent.name).length} konuşma</small></span><span className="assignee-check">{selectedAssigneeId === agent.id ? <Check size={16} weight="bold" /> : null}</span></button>)}</div>{assignmentError ? <p className="assignment-error" role="alert">{assignmentError}</p> : null}<div className="modal-actions"><button className="secondary-button" onClick={() => setModal(null)} disabled={assignmentBusy}>Vazgeç</button><button className="primary-button" onClick={confirmAssignment} disabled={!selectedAssigneeId || assignmentBusy}><UserPlus size={18} />{assignmentBusy ? "Atanıyor…" : "Atamayı onayla"}</button></div></div></Modal> : null}
+      {modal === "assign" ? <Modal title="Temsilci ata" onClose={() => !assignmentBusy && setModal(null)}><div className="modal-body"><div className="selected-customer"><Avatar initials={(conversations.find((item) => String(item.id) === String(assignmentTargetId)) || selected).initials} /><div><strong>{(conversations.find((item) => String(item.id) === String(assignmentTargetId)) || selected).name}</strong><span>Bu konuşmadan kim sorumlu olacak?</span></div></div>{liveSession && (agentLoadState.busy || agentLoadState.error) ? <p role={agentLoadState.error ? "alert" : "status"}>{agentLoadState.busy ? "Temsilciler yükleniyor…" : agentLoadState.error}{agentLoadState.error ? <button onClick={()=>sessionLoaderRef.current?.refreshAgents()}>Yeniden dene</button> : null}</p> : null}<div className="assignee-list" role="radiogroup" aria-label="Sorumlu temsilci">{(liveSession ? agents.map((agent) => ({ id: String(agent.id), name: agent.name })) : teamOptions.slice(1).map((name) => ({ id: name, name }))).map((agent) => <button key={agent.id} role="radio" aria-checked={selectedAssigneeId === agent.id} className={selectedAssigneeId === agent.id ? "assignee-option selected" : "assignee-option"} onClick={() => { setSelectedAssigneeId(agent.id); setAssignmentError(""); }}><Avatar initials={agent.name.split(" ").map((part) => part[0]).join("").slice(0, 2)} compact /><span className="assignee-person"><strong>{agent.name}</strong><small>{conversations.filter((item) => item.owner === agent.name).length} {inboxPartial ? "görünür " : ""}konuşma</small></span><span className="assignee-check">{selectedAssigneeId === agent.id ? <Check size={16} weight="bold" /> : null}</span></button>)}</div>{assignmentError ? <p className="assignment-error" role="alert">{assignmentError}</p> : null}<div className="modal-actions"><button className="secondary-button" onClick={() => setModal(null)} disabled={assignmentBusy}>Vazgeç</button><button className="primary-button" onClick={confirmAssignment} disabled={!selectedAssigneeId || assignmentBusy || (liveSession && (agentLoadState.busy || Boolean(agentLoadState.error)))}><UserPlus size={18} />{assignmentBusy ? "Atanıyor…" : "Atamayı onayla"}</button></div></div></Modal> : null}
       {!liveSession && modal === "draft" ? <Modal title="ERP Taslak Sipariş" onClose={() => setModal(null)}><div className="modal-body"><div className="safety-banner"><CheckCircle size={21} weight="fill" /><div><strong>Güvenli taslak modu</strong><span>Bu önizleme stok düşürmez, siparişi kesinleştirmez ve henüz ERP’ye veri göndermez.</span></div></div><div className="draft-summary"><span>Müşteri<strong>{selected.name}</strong></span><span>Miktar birimi<strong>Adet</strong></span><span>Ürün satırı<strong>{pendingProducts.length || "Ürün bekleniyor"}</strong></span></div>{pendingProducts.length ? <div className="draft-lines">{pendingProducts.map((product, index) => <div key={`${product.id}-${index}`}><span><Package size={18} /></span><p><strong>{product.name}</strong><small>{product.id} · {product.quantity} adet · {product.price}</small></p></div>)}</div> : <button className="add-draft-product" onClick={() => setModal("Ürün Gönder")}><Plus size={17} />Siparişe ürün seç</button>}<div className="modal-actions"><button className="secondary-button" onClick={() => setModal(null)}>Vazgeç</button><button className="primary-button" onClick={createDraftOrder}><ClipboardText size={18} />Taslak Önizleme Oluştur</button></div></div></Modal> : null}
       {!liveSession && modal === "Ürün Gönder" ? <Modal title="Ürün Seç ve Gönder" onClose={() => setModal(null)}><div className="product-picker"><label className="product-search"><MagnifyingGlass size={18} /><input value={productQuery} onChange={(event) => setProductQuery(event.target.value)} placeholder="Ürün adı, stok kodu veya barkod…" autoFocus /><Barcode size={21} /></label><div className="product-picker-layout"><div className="product-results">{filteredProducts.map((product) => <button key={product.id} className={selectedProductId === product.id ? "product-row selected" : "product-row"} onClick={() => setSelectedProductId(product.id)}><span className="product-thumb"><Package size={25} weight="duotone" /></span><span><small>{product.id} · {product.group}</small><strong>{product.name}</strong><em>{product.colors.join(" · ")}</em></span><b>{product.price}<small>{product.stock} stok</small></b></button>)}{!filteredProducts.length ? <div className="product-empty"><Barcode size={28} /><strong>Ürün bulunamadı</strong><span>Barkodu veya ürün adını kontrol edin.</span></div> : null}</div><div className="product-selection">{(() => { const product = productSeed.find((item) => item.id === selectedProductId); return product ? <><span className="selected-product-icon"><Package size={36} weight="duotone" /></span><small>{product.id} · {product.barcode}</small><h3>{product.name}</h3><p>{product.group} · {product.series}</p><div className="color-list">{product.colors.map((color) => <span key={color}>{color}</span>)}</div><div className="price-stock"><span>Fiyat<strong>{product.price}</strong></span><span>Stok<strong>{product.stock}</strong></span></div><label>Adet<div className="quantity-stepper"><button onClick={() => setProductQuantity((value) => Math.max(1, value - 1))} aria-label="Adedi azalt"><Minus size={16} /></button><strong>{productQuantity}</strong><button onClick={() => setProductQuantity((value) => Math.min(99, value + 1))} aria-label="Adedi artır"><Plus size={16} /></button></div></label></> : null; })()}</div></div><div className="modal-actions"><button className="secondary-button" onClick={() => setModal(null)}>Vazgeç</button><button className="primary-button" onClick={addSelectedProduct}><Paperclip size={18} />Gönderime Ekle</button></div></div></Modal> : null}
       {!liveSession && modal === "Katalog" ? <Modal title="Katalog Seç" onClose={() => setModal(null)}><div className="modal-body catalog-picker"><p className="modal-intro">Müşterinin diline uygun kataloğu seçip gönderim önizlemesine ekleyin.</p>{catalogSeed.map((catalog) => <button className="catalog-choice" key={catalog.id} onClick={() => addCatalog(catalog)}><span><BookOpen size={24} weight="duotone" /></span><div><small>{catalog.id} · {catalog.updated}</small><strong>{catalog.title}</strong><em>{catalog.detail}</em></div><ArrowRight size={18} /></button>)}<div className="modal-actions"><button className="secondary-button" onClick={() => setModal(null)}>Vazgeç</button></div></div></Modal> : null}
@@ -1251,15 +1283,15 @@ export function App() {
   );
 }
 
-function BackofficeView({ activeView, conversations, query, products, catalogs, draftOrders, role, liveSession, getSalesRulesContext, onRefreshSession, summary, agents, onOpenConversation, onOpenProduct, onOpenCatalog, onOpenPrice, onOpenVideo, onCreateDraft, onOpenNotifications, onNotify }) {
+function BackofficeView({ activeView, conversations, query, products, catalogs, draftOrders, role, liveSession, getSalesRulesContext, onRefreshSession, summary, agents, inboxPartial=false, agentLoadState={busy:false,error:""}, onRefreshAgents, onOpenConversation, onOpenProduct, onOpenCatalog, onOpenPrice, onOpenVideo, onCreateDraft, onOpenNotifications, onNotify }) {
   const visibleCustomers = conversations.filter((item) => matchesContactSearch(item, query));
   const unassigned = conversations.filter((item) => item.owner === "Atanmamış");
   const waiting = conversations.filter((item) => item.waitingForReply === true);
   const isLive = Boolean(liveSession);
-  const totalCount = isLive ? summary.total || conversations.length : conversations.length;
-  const unreadCount = isLive ? summary.unread || 0 : conversations.reduce((sum, item) => sum + item.unread, 0);
-  const unassignedCount = isLive ? summary.unassigned ?? unassigned.length : unassigned.length;
-  const waitingCount = isLive ? summary.pendingHumanReply ?? waiting.length : waiting.length;
+  const totalCount = isLive ? summary.total ?? "Yükleniyor…" : conversations.length;
+  const unreadCount = isLive ? summary.unread ?? "Yükleniyor…" : conversations.reduce((sum, item) => sum + item.unread, 0);
+  const unassignedCount = inboxPartial ? unassigned.length : isLive ? summary.unassigned ?? unassigned.length : unassigned.length;
+  const waitingCount = inboxPartial ? waiting.length : isLive ? summary.pendingHumanReply ?? waiting.length : waiting.length;
   const countryCount = new Set(conversations.map((item) => item.code).filter((code) => code && code !== "—")).size;
   const teamRoster = isLive ? agents : team.slice(1).map((name, index) => ({ id: `demo-${index}`, name }));
   const teamLoad = teamRoster.map((agent) => ({
@@ -1276,7 +1308,7 @@ function BackofficeView({ activeView, conversations, query, products, catalogs, 
   if (activeView === "Müşteriler") return (
     <section className="backoffice-page">
       <PageHeading eyebrow={isLive ? "CANLI MÜŞTERİ VERİSİ" : "MÜŞTERİ YÖNETİMİ"} title="Müşteriler" text="Müşteri kartlarını ve sorumlu temsilci bilgisini tek ekrandan görüntüleyin." action={<button className="primary-button" onClick={() => onOpenConversation(conversations[0]?.id)}><ChatCircleDots size={18} />Konuşmaları Aç</button>} />
-      <div className="metric-row"><Metric value={totalCount} label="toplam konuşma" /><Metric value={unassignedCount} label="atanmamış" warning /><Metric value={unreadCount} label="okunmamış mesaj" /><Metric value={countryCount || "—"} label="tespit edilen ülke" /></div>
+      <div className="metric-row"><Metric value={totalCount} label="toplam konuşma" /><Metric value={unassignedCount} label={inboxPartial ? "yüklenenlerde atanmamış" : "atanmamış"} warning /><Metric value={unreadCount} label={inboxPartial ? "yüklenenlerde okunmamış mesaj" : "okunmamış mesaj"} /><Metric value={countryCount || "—"} label="tespit edilen ülke" /></div>
       <div className="data-card"><div className="data-card-heading"><div><strong>Müşteri listesi</strong><span>{visibleCustomers.length} kayıt gösteriliyor{isLive && totalCount > conversations.length ? ` · toplam ${totalCount}` : ""}</span></div>{isLive ? <small>Canlı CRM · ilk {conversations.length} kayıt</small> : <button className="secondary-button" onClick={() => onNotify("Müşteri filtreleri uygulandı.")}><SlidersHorizontal size={17} />Filtrele</button>}</div><div className="customer-table"><div className="table-head"><span>Müşteri</span><span>Ülke / Dil</span><span>Sorumlu</span><span>Durum</span><span /></div>{visibleCustomers.map((item) => <div className="table-row" key={item.id}><span className="customer-cell"><Avatar initials={item.initials} compact /><span><strong>{item.name}</strong><small>{item.phoneDisplay || item.phone || phoneUnavailableLabel(item)}</small></span></span><span><strong>{item.country}</strong><small>{item.language}</small></span><span>{item.owner}</span><span><b className={item.owner === "Atanmamış" ? "status-pill warning" : "status-pill"}>{item.owner === "Atanmamış" ? "Atama Bekliyor" : "Aktif"}</b></span><button className="row-action" onClick={() => onOpenConversation(item.id)}><ChatCircleDots size={17} />Konuşmayı aç</button></div>)}</div></div>
     </section>
   );
@@ -1300,8 +1332,8 @@ function BackofficeView({ activeView, conversations, query, products, catalogs, 
   if (activeView === "Raporlar") return (
     <section className="backoffice-page">
       <PageHeading eyebrow={isLive ? "CANLI CRM ÖZETİ" : "YÖNETİCİ ÖZETİ"} title="Raporlar" text="Mevcut CRM verisindeki konuşma ve ekip dağılımını gösterir." />
-      <div className="metric-row report-metrics"><Metric value={totalCount} label="aktif konuşma" /><Metric value={waitingCount} label="yanıt bekleyen" warning /><Metric value={unreadCount} label="okunmamış mesaj" /><Metric value={unassignedCount} label="atanmamış" warning /></div>
-      <div className="report-layout"><div className="data-card team-load"><div className="data-card-heading"><div><strong>Ekip konuşma dağılımı</strong><span>{isLive ? "Chatwoot temsilcileri · canlı" : "Demo ekip"}</span></div></div>{teamLoad.length ? teamLoad.map((agent) => <div key={agent.id}><span className="avatar avatar-compact">{agent.initials}</span><p><strong>{agent.name}</strong><small>{agent.count} görünür konuşma</small></p><b>{isLive ? (agent.count ? "Konuşması var" : "Atama yok") : agent.count ? "Aktif" : "Boş"}</b></div>) : <div className="empty-state"><Users size={28} /><strong>Temsilci bulunamadı</strong><span>Agent listesi API’den gelmedi.</span></div>}</div><div className="data-card settings-card"><div className="data-card-heading"><div><strong>Veri kapsamı</strong><span>Yanlış veya tahmini metrik gösterilmez</span></div></div><div className="setting-row"><span>Canlı listede gösterilen</span><strong>{conversations.length} konuşma</strong><CheckCircle size={18} weight="fill" /></div><div className="setting-row"><span>Toplam aktif kayıt</span><strong>{totalCount}</strong><CheckCircle size={18} weight="fill" /></div><div className="setting-row"><span>Yenileme</span><strong>Görünür sekmede: konuşma 6 sn · kutu 20 sn</strong><CheckCircle size={18} weight="fill" /></div><div className="setting-row"><span>Yanıt süresi raporu</span><strong>Henüz API’de yok</strong><Clock size={18} /></div></div></div>
+      <div className="metric-row report-metrics"><Metric value={totalCount} label="aktif konuşma" /><Metric value={waitingCount} label={inboxPartial ? "yüklenenlerde yanıt bekleyen" : "yanıt bekleyen"} warning /><Metric value={unreadCount} label={inboxPartial ? "yüklenenlerde okunmamış mesaj" : "okunmamış mesaj"} /><Metric value={unassignedCount} label={inboxPartial ? "yüklenenlerde atanmamış" : "atanmamış"} warning /></div>
+      <div className="report-layout"><div className="data-card team-load"><div className="data-card-heading"><div><strong>Ekip konuşma dağılımı</strong><span>{isLive ? "Chatwoot temsilcileri · canlı" : "Demo ekip"}</span></div></div>{teamLoad.length ? teamLoad.map((agent) => <div key={agent.id}><span className="avatar avatar-compact">{agent.initials}</span><p><strong>{agent.name}</strong><small>{agent.count} görünür konuşma</small></p><b>{isLive ? (agent.count ? "Konuşması var" : inboxPartial ? "Diğer kayıtlar yükleniyor" : "Atama yok") : agent.count ? "Aktif" : "Boş"}</b></div>) : <div className="empty-state"><Users size={28} /><strong>{agentLoadState.busy ? "Temsilciler yükleniyor…" : agentLoadState.error ? "Temsilciler alınamadı" : "Temsilci bulunamadı"}</strong><span>{agentLoadState.error || (agentLoadState.busy ? "Gerçek ekip listesi bekleniyor." : "Agent listesi API’den gelmedi.")}</span>{agentLoadState.error ? <button onClick={onRefreshAgents}>Yeniden dene</button> : null}</div>}</div><div className="data-card settings-card"><div className="data-card-heading"><div><strong>Veri kapsamı</strong><span>Yanlış veya tahmini metrik gösterilmez</span></div></div><div className="setting-row"><span>Canlı listede gösterilen</span><strong>{conversations.length} konuşma</strong><CheckCircle size={18} weight="fill" /></div><div className="setting-row"><span>Toplam aktif kayıt</span><strong>{totalCount}</strong><CheckCircle size={18} weight="fill" /></div><div className="setting-row"><span>Yenileme</span><strong>Görünür sekmede: konuşma 6 sn · kutu 20 sn</strong><CheckCircle size={18} weight="fill" /></div><div className="setting-row"><span>Yanıt süresi raporu</span><strong>Henüz API’de yok</strong><Clock size={18} /></div></div></div>
     </section>
   );
 
@@ -1309,7 +1341,7 @@ function BackofficeView({ activeView, conversations, query, products, catalogs, 
     <section className="backoffice-page">
       <PageHeading eyebrow={`${role.toLocaleUpperCase("tr-TR")} KONTROL MERKEZİ`} title="Yönetim Masası" text="Bekleyen müşterilere, atanmamış havuza ve ekip yüküne ilk bakış." action={<button className="primary-button" onClick={onOpenNotifications}><Bell size={18} />Bildirimleri Aç</button>} />
       <div className="management-grid"><article className="priority-card danger-card"><span><Clock size={23} /></span><div><small>Yanıt bekleyenler</small><strong>{waitingCount}</strong><p>Müşterinin son mesajına cevap verilmemiş</p></div><button onClick={() => onOpenConversation(waiting[0]?.id || conversations[0]?.id, "Bekleyenler")}>Kuyruğu aç <ArrowRight size={16} /></button></article><article className="priority-card warning-card"><span><UserPlus size={23} /></span><div><small>Atanmamış havuz</small><strong>{unassignedCount}</strong><p>Yeni müşteri sorumlusu bekliyor</p></div><button onClick={() => onOpenConversation(unassigned[0]?.id || conversations[0]?.id, "Atanmamışlar")}>Atama yap <ArrowRight size={16} /></button></article><article className="priority-card"><span><ChatCircleDots size={23} /></span><div><small>Tüm aktif konuşmalar</small><strong>{totalCount}</strong><p>Canlı WhatsApp görüşmeleri</p></div><button onClick={() => onOpenConversation(conversations[0]?.id)}>Tümünü gör <ArrowRight size={16} /></button></article></div>
-      <div className="report-layout"><div className="data-card team-load"><div className="data-card-heading"><div><strong>Ekip yükü</strong><span>{isLive ? "Canlı konuşma dağılımı" : "Aktif konuşma dağılımı"}</span></div></div>{teamLoad.map((agent) => <div key={agent.id}><span className="avatar avatar-compact">{agent.initials}</span><p><strong>{agent.name}</strong><small>{agent.count} görünür konuşma</small></p><b>{isLive ? (agent.count ? "Konuşması var" : "Atama yok") : agent.count ? "Aktif" : "Boş"}</b></div>)}</div><div className="data-card next-actions"><div className="data-card-heading"><div><strong>Önerilen işlemler</strong><span>Canlı kuyruk</span></div></div><button onClick={() => onOpenConversation(unassigned[0]?.id || conversations[0]?.id, "Atanmamışlar")}><UserPlus size={19} /><span><strong>Atanmamış müşterileri dağıt</strong><small>{unassignedCount} müşteri sorumlu bekliyor</small></span><ArrowRight size={16} /></button><button onClick={() => onOpenConversation(waiting[0]?.id || conversations[0]?.id, "Bekleyenler")}><Clock size={19} /><span><strong>Yanıt bekleyenleri kontrol et</strong><small>{waitingCount} konuşma yanıt bekliyor</small></span><ArrowRight size={16} /></button><button onClick={onOpenNotifications}><Bell size={19} /><span><strong>Bildirimleri gözden geçir</strong><small>{unreadCount} okunmamış mesaj</small></span><ArrowRight size={16} /></button></div></div>
+      <div className="report-layout"><div className="data-card team-load"><div className="data-card-heading"><div><strong>Ekip yükü</strong><span>{isLive ? "Canlı konuşma dağılımı" : "Aktif konuşma dağılımı"}</span></div></div>{teamLoad.map((agent) => <div key={agent.id}><span className="avatar avatar-compact">{agent.initials}</span><p><strong>{agent.name}</strong><small>{agent.count} görünür konuşma</small></p><b>{isLive ? (agent.count ? "Konuşması var" : inboxPartial ? "Diğer kayıtlar yükleniyor" : "Atama yok") : agent.count ? "Aktif" : "Boş"}</b></div>)}</div><div className="data-card next-actions"><div className="data-card-heading"><div><strong>Önerilen işlemler</strong><span>Canlı kuyruk</span></div></div><button onClick={() => onOpenConversation(unassigned[0]?.id || conversations[0]?.id, "Atanmamışlar")}><UserPlus size={19} /><span><strong>Atanmamış müşterileri dağıt</strong><small>{unassignedCount} müşteri sorumlu bekliyor</small></span><ArrowRight size={16} /></button><button onClick={() => onOpenConversation(waiting[0]?.id || conversations[0]?.id, "Bekleyenler")}><Clock size={19} /><span><strong>Yanıt bekleyenleri kontrol et</strong><small>{waitingCount} konuşma yanıt bekliyor</small></span><ArrowRight size={16} /></button><button onClick={onOpenNotifications}><Bell size={19} /><span><strong>Bildirimleri gözden geçir</strong><small>{unreadCount} okunmamış mesaj</small></span><ArrowRight size={16} /></button></div></div>
     </section>
   );
 

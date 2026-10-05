@@ -345,14 +345,75 @@ function mapConversation(conversation, messageData, { canSend, canAssign }) {
   };
 }
 
-export async function listChatwootInboxOverview({ limit = 25, offset = 0, user = null } = {}) {
+async function listChatwootInboxBootstrap({ limit, user }) {
+  const identity = backendIdentity();
+  const policy = [env.chatwoot.inboxId, env.chatwoot.includeGroups];
+  const requestedLimit = Number(limit);
+  const safeLimit = Number.isFinite(requestedLimit)
+    ? Math.min(CHATWOOT_PAGE_SIZE, Math.max(1, Math.floor(requestedLimit))) : CHATWOOT_PAGE_SIZE;
+  const seen = new Set();
+  let rows = []; let provenEmpty = false;
+  const invalid = () => Object.assign(new Error('Chatwoot konusma listesi gecersiz.'), {
+    code: 'WHATSAPP_CRM_CHATWOOT_READ_INVALID', statusCode: 502,
+  });
+  for (let page = 1; page <= CHATWOOT_MAX_TRAVERSAL_PAGES; page++) {
+    assertBackendIdentity(identity); assertInboxPolicy(policy);
+    const response = await chatwootApiRequest(`/conversations?status=all&page=${page}&sort_by=last_activity_at_desc`);
+    assertBackendIdentity(identity); assertInboxPolicy(policy);
+    const payload = response?.data?.payload;
+    if (!Array.isArray(payload) || payload.length > CHATWOOT_PAGE_SIZE) throw invalid();
+    const rawCount = response?.data?.meta?.all_count;
+    const countKnown = rawCount !== undefined;
+    if (countKnown && (!(typeof rawCount === 'number' || (typeof rawCount === 'string' && /^\d+$/.test(rawCount)))
+      || !Number.isSafeInteger(Number(rawCount)) || Number(rawCount) < 0
+      || Number(rawCount) > CHATWOOT_MAX_RAW_CONVERSATIONS)) throw invalid();
+    const pageIds = new Set(); let added = 0;
+    for (const row of payload) {
+      const id = Number(row?.id);
+      if (!row || typeof row !== 'object' || Array.isArray(row)
+        || !(typeof row.id === 'number' || (typeof row.id === 'string' && /^[1-9]\d*$/.test(row.id)))
+        || !Number.isSafeInteger(id) || id <= 0 || pageIds.has(id)) throw invalid();
+      pageIds.add(id); if (!seen.has(id)) { seen.add(id); added++; }
+    }
+    if (payload.length && !added) throw invalid();
+    if (countKnown && (seen.size > Number(rawCount)
+      || (payload.length < CHATWOOT_PAGE_SIZE && seen.size < Number(rawCount)))) throw invalid();
+    rows = payload.filter(row => (!policy[0] || Number(row.inbox_id) === Number(policy[0]))
+      && (policy[1] || !isGroupConversation(row))).slice(0, safeLimit);
+    if (rows.length) break;
+    if (payload.length < CHATWOOT_PAGE_SIZE || (countKnown && seen.size >= Number(rawCount))) {
+      provenEmpty = countKnown && seen.size === Number(rawCount); break;
+    }
+    if (page === CHATWOOT_MAX_TRAVERSAL_PAGES) throw invalid();
+  }
+  assertBackendIdentity(identity); assertInboxPolicy(policy);
+  const canSend = isChatwootSendEnabled() && Boolean(user.permissions?.includes('crm.send'));
+  const canAssign = Boolean(user.permissions?.includes('crm.assign'));
+  const conversations = rows.map(row => {
+    const conversation = mapConversation(row, { messages: [], workflow: [] }, { canSend, canAssign });
+    for (const key of ['messages', 'notes', 'tasks', 'productInterests', 'quotes']) delete conversation[key];
+    return { ...conversation, messagesLoaded: false, detailLoaded: false, preview: 'Son mesaj yükleniyor…', waitingForReply: null };
+  });
+  const count = provenEmpty ? 0 : null;
+  return {
+    conversations,
+    summary: { total: count, open: count, unread: count, pendingHumanReply: count, complete: provenEmpty, source: 'chatwoot-crm' },
+    pagination: { limit: safeLimit, offset: 0, hasNext: !provenEmpty, nextOffset: provenEmpty ? null : 0, total: count },
+    capabilities: { read: true, send: canSend, assign: canAssign, updateStatus: false, localWorkflow: false },
+  };
+}
+
+export async function listChatwootInboxOverview({ limit = 25, offset = 0, user = null, view } = {}) {
+  if (view === 'bootstrap' && ['patron', 'mudur'].includes(user?.role)) {
+    return listChatwootInboxBootstrap({ limit, user });
+  }
   await refreshWaapiReadiness();
   const identity = backendIdentity();
   const safeOffset = Math.max(Number(offset) || 0, 0);
   const safeLimit = Math.min(Math.max(Number(limit) || CHATWOOT_PAGE_SIZE, 1), CHATWOOT_MAX_OVERVIEW_LIMIT);
   // Personnel assignment is an access boundary: its own fresh traversal cannot
   // reuse either a settled snapshot or another request's older in-flight rows.
-  const allRows = await readAllConversationPages({ fresh: user?.role === 'personel' });
+  const allRows = await readAllConversationPages({ fresh: user?.role === 'personel' || view === 'bootstrap' });
   assertBackendIdentity(identity);
   const sendEnabled = isChatwootSendEnabled();
   const canSend = sendEnabled && (!user || user.permissions?.includes('crm.send'));

@@ -16,23 +16,53 @@ const fakeWindow=sessionStorage=>({location:{pathname:'/',search:''},crypto:{ran
 const settle=async()=>{await Promise.resolve();await Promise.resolve();};
 async function bundle(file,instrument=false){
  await build({absWorkingDir:frontend,tsconfigRaw:{},entryPoints:[frontend+'src/App.jsx'],outfile:file,bundle:true,platform:'node',format:'esm',jsx:'automatic',define:{'import.meta.env.DEV':'false','import.meta.env.VITE_CRM_TEST':'"1"'},external:['react','@phosphor-icons/react'],loader:{'.css':'empty'},plugins:instrument?[{name:'isolated-app-handler-harness',setup(build){
-  build.onLoad({filter:/App\.jsx$/},args=>({loader:'jsx',contents:readFileSync(args.path,'utf8').replace(/^import \{ useCallback, useEffect, useMemo, useRef, useState \} from "react";/,'const {useCallback,useEffect,useMemo,useRef,useState}=globalThis.__draftHooks;').replace('  if (liveMode && !liveSession) return <LoginGate','  globalThis.__draftHarness.actions={commitLiveSession,setDraft,sendMessage,closeLiveSession,refreshLivePermissions,selectConversation};\n  if (liveMode && !liveSession) return <LoginGate')}));
+  build.onLoad({filter:/App\.jsx$/},args=>({loader:'jsx',contents:readFileSync(args.path,'utf8').replace(/^import \{ useCallback, useEffect, useMemo, useRef, useState \} from "react";/,'const {useCallback,useEffect,useMemo,useRef,useState}=globalThis.__draftHooks;').replace('  if (liveMode && !liveSession) return <LoginGate','  globalThis.__draftHarness.actions={commitLiveSession,setDraft,sendMessage,closeLiveSession,refreshLivePermissions,selectConversation,setQuery,setFilter,loadRemainingConversations};\n  if (liveMode && !liveSession) return <LoginGate')}));
   build.onLoad({filter:/liveApi\.js$/},args=>({loader:'js',contents:readFileSync(args.path,'utf8')+'\nfor(const name of Object.keys(globalThis.__draftHarness.api))liveApi[name]=(...args)=>globalThis.__draftHarness.api[name](...args);'}));
  }}]:[]});
 }
-async function fixture(run){
+async function fixture(run,{compact=false}={}){
  mkdirSync(temporary,{recursive:true});const file=temporary+'text-draft-handlers-'+randomUUID()+'.mjs', previous={window:globalThis.window,document:globalThis.document,hooks:globalThis.__draftHooks,harness:globalThis.__draftHarness};
  const local=storage(),values=[],effects=[];let cursor=0;
  globalThis.window=fakeWindow(local);
+ if(compact)globalThis.window.localStorage.getItem=()=> 'terminal';
  globalThis.document={visibilityState:'visible',addEventListener(){},removeEventListener(){}};
  globalThis.__draftHooks={useState(initial){const i=cursor++;if(!(i in values))values[i]=typeof initial==='function'?initial():initial;return [values[i],update=>{values[i]=typeof update==='function'?update(values[i]):update;}];},useRef(initial){const i=cursor++;if(!(i in values))values[i]={current:initial};return values[i];},useMemo:fn=>fn(),useCallback:fn=>fn,useEffect:fn=>effects.push(fn)};
  const harness=globalThis.__draftHarness={api:{erpDrafts:async()=>({orders:[]}),catalogSignOut:async()=>({}),session:async()=>actor(),inbox:async()=>({conversations:[row()],summary:{total:1}}),conversation:async()=>({conversation:row()}),send:async()=>({message:{id:'synthetic-accepted',direction:'outgoing',text:'sent'}})},actions:null};
- try{await bundle(file,true);const {App}=await import(pathToFileURL(file).href);const render=()=>{cursor=0;effects.length=0;return App();};const connect=(session=actor(),rows=[row(),row('56')])=>{harness.actions.commitLiveSession({key:'synthetic-session',session,inbox:{conversations:rows,summary:{total:rows.length}},agents:{agents:[]}});return render();};
+ try{await bundle(file,true);const {App}=await import(pathToFileURL(file).href);const render=()=>{cursor=0;effects.length=0;return App();};const connect=(session=actor(),rows=[row(),row('56')],inboxExtra={})=>{harness.actions.commitLiveSession({key:'synthetic-session',session,inbox:{conversations:rows,summary:{total:rows.length},...inboxExtra},agents:{agents:[]}});return render();};
   render();await run({local,harness,render,connect,pollBackground:()=>effects.filter(fn=>String(fn).includes('const refreshInbox = async')||String(fn).includes('permissionPollRef.current')).forEach(fn=>fn()),pollDrafts:()=>effects.filter(fn=>String(fn).includes('textDraftStorageRef.current.synchronize')).forEach(fn=>fn()),pollConversation:()=>effects.filter(fn=>String(fn).includes('const refreshConversation = async')).forEach(fn=>fn())});
  }finally{globalThis.window=previous.window;globalThis.document=previous.document;globalThis.__draftHooks=previous.hooks;globalThis.__draftHarness=previous.harness;rmSync(file,{force:true});}
 }
 function find(tree,predicate){if(!tree||typeof tree!=='object')return null;if(predicate(tree))return tree;for(const child of React.Children.toArray(tree.props?.children)){const found=find(child,predicate);if(found)return found;}return null;}
 const composer=tree=>find(tree,node=>node.type==='textarea'&&node.props['aria-label']==='Mesajınız');
+
+test('actual compact App exposes the first real bootstrap list, truthful partial search and selected-history loading',async()=>fixture(async h=>{
+ const boot={...row(),messagesLoaded:false,detailLoaded:false,preview:'Son mesaj yükleniyor…'};
+ const partial={summary:{complete:false,total:null,unread:null,unassigned:null,pendingHumanReply:null}};
+ let tree=h.connect(actor(),[boot],partial);
+ assert.match(tree.props.className,/compact-mode/);assert.doesNotMatch(tree.props.className,/chat-open/);
+ let html=renderToStaticMarkup(tree);assert.match(html,/1 konuşma · toplam yükleniyor/);assert.doesNotMatch(html,/null konuşma|0 konuşma/);
+ h.harness.actions.setQuery('not-a-loaded-customer');html=renderToStaticMarkup(h.render());assert.match(html,/Yüklenen kayıtlarda sonuç yok/);assert.doesNotMatch(html,/Sonuç bulunamadı|Herkesin bir sorumlusu var|Tüm mesajlar okundu/);
+ h.harness.actions.setQuery('');h.harness.actions.selectConversation(boot);tree=h.render();assert.match(tree.props.className,/chat-open/);assert.match(renderToStaticMarkup(tree),/Konuşma geçmişi yükleniyor/);
+ let complete;h.harness.api.conversation=()=>new Promise(r=>{complete=r;});h.pollConversation();await settle();complete({conversation:{...row(),messages:[{id:'synthetic-m1',direction:'incoming',text:'Synthetic real detail',createdAt:'2026-10-05T12:00:00Z',attachments:[]}]}});await settle();
+ html=renderToStaticMarkup(h.render());assert.match(html,/Synthetic real detail/);assert.doesNotMatch(html,/Konuşma geçmişi yükleniyor/);
+ h.connect(actor(),[boot],partial);assert.doesNotMatch(h.render().props.className,/chat-open/,'another authenticated bootstrap returns compact mode to the list');
+},{compact:true}));
+
+test('actual App preserves background failure text and retries a fresh full traversal that reconciles stale bootstrap rows',async()=>fixture(async h=>{
+ const old={...row('55'),name:'Synthetic stale bootstrap',messagesLoaded:false},kept={...row('56'),name:'Synthetic kept bootstrap',messagesLoaded:false};
+ h.connect(actor(),[old,kept],{summary:{complete:false,total:null,unread:null,unassigned:null,pendingHumanReply:null}});
+ h.harness.api.inbox=async()=>{throw Object.assign(new Error('Synthetic background failure'),{status:429});};
+ await h.harness.actions.loadRemainingConversations();let html=renderToStaticMarkup(h.render());assert.match(html,/Synthetic background failure/);assert.match(html,/Synthetic stale bootstrap/);
+ const calls=[];h.harness.api.inbox=async(key,offset)=>{calls.push(offset);return {conversations:[{...kept,messagesLoaded:true}],summary:{complete:true,total:1,unread:0,unassigned:0,pendingHumanReply:0}};};
+ await h.harness.actions.loadRemainingConversations();html=renderToStaticMarkup(h.render());assert.deepEqual(calls,[0]);assert.doesNotMatch(html,/Synthetic stale bootstrap|Synthetic background failure/);assert.match(html,/Synthetic kept bootstrap/);
+}));
+
+test('actual App clears bootstrap rows and selected chat after a proven empty full overview',async()=>fixture(async h=>{
+ const boot={...row(),name:'Synthetic removed bootstrap',messagesLoaded:false};
+ h.connect(actor(),[boot],{summary:{complete:false,total:null,unread:null,unassigned:null,pendingHumanReply:null}});h.harness.actions.selectConversation(boot);h.render();
+ h.harness.api.inbox=async()=>({conversations:[],summary:{complete:true,total:0,unread:0,unassigned:0,pendingHumanReply:0}});
+ await h.harness.actions.loadRemainingConversations();const html=renderToStaticMarkup(h.render());assert.doesNotMatch(html,/Synthetic removed bootstrap/);assert.match(html,/0 konuşma/);assert.match(html,/Konuşma seçilmedi/);
+}));
 
 test('actual App uses committed startup reads for polling while manual permission checks stay fresh',async()=>fixture(async h=>{
  const originalNow=Date.now;let time=100000,inboxCalls=0,permissionCalls=0;

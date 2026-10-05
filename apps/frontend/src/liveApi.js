@@ -357,6 +357,7 @@ export function applyReadReceipts(conversations = [], receipts = {}) {
 }
 
 export function effectiveInboxSummary(summary = {}, conversations = []) {
+  if(summary.complete===false)return {...summary};
   const unread = conversations.reduce((total, conversation) => total + (Number(conversation.unread) || 0), 0);
   const pendingHumanReply = conversations.filter((conversation) => conversation.waitingForReply === true || (conversation.waitingForReply === undefined && Number(conversation.unread) > 0)).length;
   return { ...summary, unread, pendingHumanReply };
@@ -413,6 +414,8 @@ export function normalizeConversation(value, index = 0) {
     channel,
     tags: Array.isArray(row.tags) ? row.tags.map(String) : [],
     messages,
+    messagesLoaded: row.messagesLoaded!==undefined?row.messagesLoaded===true:Array.isArray(row.messages),
+    detailLoaded: row.detailLoaded!==undefined?row.detailLoaded===true:Array.isArray(row.messages),
   };
 }
 
@@ -420,6 +423,7 @@ export function normalizeInboxPayload(payload) {
   const rows = Array.isArray(payload) ? payload : payload.conversations || payload.items || payload.payload || [];
   const conversations = rows.map(normalizeConversation);
   const source = payload.summary || payload.counts || {};
+  if(source.complete===false)return {conversations,summary:{...source,complete:false,total:null,open:null,unread:null,unassigned:null,pendingHumanReply:null},pagination:payload.pagination||{}};
   const numberOr = (value, fallback) => Number.isFinite(Number(value)) ? Number(value) : fallback;
   const summary = {
     total: numberOr(source.total ?? payload.total, conversations.length),
@@ -427,7 +431,7 @@ export function normalizeInboxPayload(payload) {
     unassigned: numberOr(source.unassigned ?? payload.unassigned, conversations.filter((item) => item.owner === "Atanmamış").length),
     pendingHumanReply: numberOr(source.pendingHumanReply ?? source.waiting ?? payload.pendingHumanReply ?? payload.waiting, conversations.filter((item) => item.unread > 0).length),
   };
-  return { conversations, summary };
+  return { conversations, summary:{...summary,complete:true}, pagination:payload.pagination||{} };
 }
 
 export function mergeInboxConversations(currentRows, incomingRows, selectedId = "", detailConversation = null, preserveMissing = false) {
@@ -435,6 +439,7 @@ export function mergeInboxConversations(currentRows, incomingRows, selectedId = 
   const merged = (incomingRows || []).map((item) => {
     if (String(item.id) === String(selectedId) && detailConversation) return { ...item, ...detailConversation };
     const existing = currentById.get(String(item.id));
+    if(item.messagesLoaded===false&&existing?.messagesLoaded===true)return {...existing,...item,messages:existing.messages,workflow:existing.workflow,preview:existing.preview,foreign:existing.foreign,waitingForReply:existing.waitingForReply,messagesLoaded:true,detailLoaded:existing.detailLoaded};
     const incomingHasMessages = Array.isArray(item.messages) && item.messages.length > 0;
     if (String(item.id) === String(selectedId) && existing?.messages?.length && incomingHasMessages) {
       const history = new Map(existing.messages.map((message) => [String(message.id), message]));
@@ -451,6 +456,12 @@ export function mergeInboxConversations(currentRows, incomingRows, selectedId = 
   return [...merged, ...(currentRows || []).filter((item) => !seen.has(String(item.id))).map((item) =>
     String(item.id) === String(selectedId) && detailConversation ? { ...item, ...detailConversation } : item
   )];
+}
+
+// Only a completed fresh traversal can disprove membership of bootstrap rows.
+export function reconcileBootstrapConversations(rows, bootstrapIds, seenIds, total) {
+  if(total===0)return [];
+  return rows.filter(row=>!bootstrapIds.has(String(row.id))||seenIds.has(String(row.id)));
 }
 
 export function sortInboxByActivity(rows) {
@@ -597,9 +608,12 @@ export const liveApi = {
   async session(token, options = {}) { return normalizePermissions(await request("/auth/me", token, options)); },
   // Chatwoot-backed inbox pages can take over 20 seconds; retain a bounded read
   // budget without extending sends or preventing session cancellation.
-  async inbox(token, offset = 0, options = {}) { return normalizeInboxPayload(await request(`/crm/inbox?limit=100&offset=${Math.max(0, Number(offset) || 0)}`, token, { timeoutMs: 45000, ...options })); },
-  async conversation(token, id) {
-    const result = await request(`/crm/conversations/${id}`, token);
+  async inbox(token, offset = 0, {view,...options} = {}) {
+    if(view!==undefined&&view!=='bootstrap')throw new Error('CRM liste görünümü geçerli değil.');
+    return normalizeInboxPayload(await request(`/crm/inbox?limit=100&offset=${Math.max(0, Number(offset) || 0)}${view==='bootstrap'?'&view=bootstrap':''}`, token, { timeoutMs: 45000, ...options }));
+  },
+  async conversation(token, id, options = {}) {
+    const result = await request(`/crm/conversations/${id}`, token, options);
     return { conversation: normalizeConversation(result.conversation || result) };
   },
   async agents(token, options = {}) {
