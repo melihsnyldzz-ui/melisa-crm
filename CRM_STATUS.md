@@ -1,6 +1,39 @@
 # MELISA CRM — Güncel Durum
 
-## 5 Ekim 2026 — Performans çalışması: aday kaynak, TEST karşılaştırması sürüyor
+## 5 Ekim 2026, 18:00 — Performans teslimi: gerçek TEST ölçüldü; ilk inbox beklemesi sürüyor
+
+**Güncel TEST:** http://127.0.0.1:62400/; TEST ADMIN, görünür Chrome, mevcut 7733 konuşması ve gerçek ERP katalog ürünleri. Kanonik uygulama dalı `codex/crm-agents-on-completion-20261003`, [PR #3](https://github.com/melihsnyldzz-ui/melisa-crm/pull/3). PR9'un 5 Ekim kabul/ekran kanıtları değişmedi; denetim dalında geliştirme yapılmadı. Mevcut tasarım ve accepted baseline korundu. Bu performans çalışması bitti; yeni iş kendiliğinden başlatılmaz.
+
+**Çalışan paket source:** `f166b0f7db499c68e6cc6718bcf090fcaf457927`, `C:\Sirket\CRM\releases\crm-test-f166b0f7db499c68e6cc6718bcf090fcaf457927`; manifest SHA256 `47c495de9fa0d1da6a1878b7dfc2b2d6742c976d4541f35944315bacd36b6d4f`. Kilitli offline kurulum/fresh TEST build ve kaynak-blob/payload doğrulamasından sonra kanonik geçiş aracıyla **17:23:58 READY**. Önceki f189 paketi ve geri dönüş config'i korundu; eski paket yeni verifier ile doğrulandı, bu tur gerçek rollback tatbikatı yapılmadı. Sonraki yalnız belge/evidence commit'i çalışan source ile aynı şey değildir.
+
+**Önce → sonra:** her API hücresi gerçek çalışan TEST'te üç başarılı örneğin medyanı; milisaniye. Tam tablo, tarayıcı örnekleri ve yöntem sınırları [PERFORMANCE_REVIEW.md](docs/evidence/crm/performance-2026-10-05/PERFORMANCE_REVIEW.md) içindedir.
+
+| Okuma | Önce f189 | Sonra f166 |
+| --- | ---: | ---: |
+| Inbox, 100 konuşma | 4902,70 | 4936,31 |
+| 7733 konuşma55 detayı | 131,61 | 207,39 |
+| Katalog ilk sayfa | 8400,73 | 111,74 |
+| Kod41140 araması | 7780,86 | 99,88 |
+| Ürün adı araması | 6928,45 | 101,89 |
+| Ürün metadata detayı | 897,46 | 51,47 |
+| Tek ürün fotoğrafı | 784,45 | 67,34 |
+| Katalog ikinci sayfa | 6944,51 | 85,73 |
+
+Görünür tarayıcı medyanları: katalog ilk açılış **14507→4738,5ms**, ikinci açılış **17329,4→4829,2ms**; kod **6970,6→296ms**, ad **8969,3→170,5ms**, sayfa değişimi **13224→3940,4ms**; iki ürünlü PDF indirme **13666,4→277,1ms**. PDF tarayıcıda üretilir; her indirmede iki taze katalog doğrulama okuması korunur. Soğuk katalog API örneği1111,50ms, fotoğraflı bütün katalog UI hâlâ~4,7s; her soğuk açılış hedefe ulaştı denmez. İlk CRM/UI kayıtları **15,90→15,14s**, farklı paint ölçütleri nedeniyle kesin kazanç oranı değildir; ana ekran <1s hedefi sağlanmadı. İlk Chatwoot taraması kalan asıl beklemedir. Seri→paralel inbox denemesi **14644→15627ms** ile yavaşladı, uygulanmadı.
+
+Tarayıcıda CRM eylemi olmadan iki native frame medyanı **1996,9ms** bulundu. Önizleme33,1→2005,7ms, müşteri yerel araması73,5→1599ms ve zaten seçili7733'ü yeniden açma45,1→1973,7ms kayıtları bu ortam/ölçüm etkisiyle UI regresyonu veya kesin uygulama süresi sayılmaz. Önizleme <1s ayrı güvenilir UI ölçümüyle kanıtlanmadı; bu kontrolden süre çıkarılıp sayı düzeltilmedi. Özel detay UI ve fiziksel mobil ölçülmedi. Ayrıntılı yöntem ve bütün ham sayısal örnekler raporda.
+
+**Ölçülen darboğaz ve optimizasyon:** eski SQL'in iki facet sorgusu toplam~5,5s CPU,1085 fotoğraf ID'si1091 parametre/68535 karakter plan oluşturuyordu. Typed XML ID kapsamı bir kez ayrıştırılır; fotoğraflı kapsam ürünün mevcut IND indeksinden INNER LOOP JOIN ile başlar. Fotoğrafsız kapsam, facet self-exclude, toplam, filtre, LIKE, sıralama ve null/unknown fiyat-stok-birim semantiği korunur. SQL DDL/index veya ticari veri değişikliği yok. Yeni iki bounded worker sürücüyü/bağlantıyı reuse eder: kuyruk32, kuyruk dahil14s deadline,30s idle. Her iş taze SELECT ve aynı pre/post DB kimlik kanıtıdır. Worker config/source drift fail-closed, abort/close teyidi, frame/queue limitleri korundu. Ürün/fiyat/facet/fotoğraf mapping sonucu cache'i eklenmedi; mapping~15ms olduğu için darboğaz değildir. Kullanıcı/rol/yetki/auth cache'i yok. İlk session yüklemesinin hemen ardından yinelenen auth/inbox poll kaldırıldı; mevcut periyodik poll ve revoke/401 davranışı korunur. Yeni `melisa-catalog.v1` hattına/CRM-D02'ye geçilmedi.
+
+**429 ve güvenlik:** mevcut kişi başı300/15min sınırı artırılmadan inbox/detail okuma (`crm-read`) ile gönderim (`crm-send`) bütçeleri ayrıldı; katalog, auth ve login mevcut ayrı sınırları korunur. Fresh token/aktif rol/izin kontrolü her request'te kalır. Scope header uyuşmazlığı/eksikliğinde frontend global cooldown; otomatik mutation retry yok. Gerçek Express fixture'da send bütçesinin429'u read'i kilitlemez, read kendi bütçesinde429 verir. Gerçek TEST'te önce27/27 ve sonra27/27 okuma200,429 yok; uzun süreli gönderim kabulü veya limit aşılabilirliği sonucu değildir. Bu tur başka müşteri/7733'e mesaj gönderimi, AI model çağrısı veya ERP taslak yazımı yapılmadı.
+
+**Gerçek görsel/çıktı kanıtı:** [7733 inbox](docs/evidence/crm/performance-2026-10-05/after-7733-inbox.jpg), [iki ürünlü önizleme](docs/evidence/crm/performance-2026-10-05/after-catalog-preview.jpg), [indirilen PDF](docs/evidence/crm/performance-2026-10-05/two-product-catalog-after.pdf) ve [çizdirilen PDF sayfası](docs/evidence/crm/performance-2026-10-05/two-product-catalog-after.png). PDF133596 bayt/1sayfa/2görsel;41140 ve41142, her biri196 TRY/adet; kaynak/stok/seri belirsizlik etiketleri yerinde. PDF görsel olarak incelendi. Eski kabul kanıtları ve kaynak dosyaları değiştirilmedi. Görsel tasarım yeniden yapılmadı.
+
+**Doğrulama/GitHub:** tam offline **855/855 PASS** (frontend321/gateway444/sözleşme-CI90), bağımsız son reviewer actionable P0/P1/P2=0. Uygulama source f166 exact [PR CI](https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/37324162737), [push CI](https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/37324155952) ve [AI offline](https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/37324162779) tüm7job SUCCESS; yalnız belge HEAD'i ayrıca [PR Checks](https://github.com/melihsnyldzz-ui/melisa-crm/pull/3/checks) üzerinden doğrulanır. Teknik testler önceki kullanıcı kabullerinin yerine geçirilmedi. Finish-tree **25toplam /12tamam /12kısmi /1açık, kalan13** sayımı değişmedi; genel Chatwoot başlangıç performansı ve diğer insan kabulleri kapanmadı.
+
+**Korunan servisler:** 17:52:43 kimlik kontrolünde TEST62400/62401 PID45028, katalog62402 PID21384, taslak adapter62403 PID44928 yeni pakete bağlı; ayrı nativeERP62404 PID49220 ve creation aynı. LIVE4114/4116/5188 PID/creation aynı; runtime kimliği [after-runtime.json](docs/evidence/crm/performance-2026-10-05/after-runtime.json) içinde. LIVE deploy/main merge/tag yok. ERP mevcut read bağlantısı ve taslak sözleşmesi değişmedi. Özel config/credential/mesaj dökümleri Git'e alınmadı.
+
+## Tarihsel performans kaydı — 5 Ekim 2026, TEST geçişinden önce: aday kaynak
 
 Kanonik uygulama dalı `codex/crm-agents-on-completion-20261003`; PR9'daki gerçek kullanım denetimi baseline olarak korundu. Yeni ERP katalog sözleşmesine geçiş, UX değişikliği, müşteri gönderimi ve LIVE işlemi yok. Aşağıdaki tarihsel kayıtlar performans sonrası kabul değildir.
 

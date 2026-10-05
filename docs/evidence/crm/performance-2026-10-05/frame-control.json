@@ -1,0 +1,20 @@
+{
+  "scope": "no CRM action; two native animation frames only",
+  "samples": [
+    {
+      "focus": true,
+      "ms": 1005.2000000476836,
+      "visibility": "visible"
+    },
+    {
+      "focus": true,
+      "ms": 1996.9000000953672,
+      "visibility": "visible"
+    },
+    {
+      "focus": true,
+      "ms": 1999.7999999523165,
+      "visibility": "visible"
+    }
+  ]
+}
