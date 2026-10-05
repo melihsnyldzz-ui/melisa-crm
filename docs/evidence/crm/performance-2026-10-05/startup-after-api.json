@@ -1,0 +1,95 @@
+{
+  "phase": "after",
+  "runtimeSource": "2aef938f3f76d8bf4ca95054a5a0f98c19e21001",
+  "measuredAt": "2026-10-05T16:00:35.202Z",
+  "scope": "TEST-admin-authorized-read-only",
+  "sampleCount": 3,
+  "scenarios": [
+    {
+      "name": "first-inbox-request",
+      "samples": [
+        {
+          "ms": 643.57,
+          "status": 200,
+          "bytes": 22532,
+          "rows": 25,
+          "total": null,
+          "summaryComplete": false,
+          "incomplete": true,
+          "hydratedRows": 0
+        },
+        {
+          "ms": 661.51,
+          "status": 200,
+          "bytes": 22532,
+          "rows": 25,
+          "total": null,
+          "summaryComplete": false,
+          "incomplete": true,
+          "hydratedRows": 0
+        },
+        {
+          "ms": 939.1,
+          "status": 200,
+          "bytes": 22530,
+          "rows": 25,
+          "total": null,
+          "summaryComplete": false,
+          "incomplete": true,
+          "hydratedRows": 0
+        }
+      ],
+      "medianMs": 661.51
+    },
+    {
+      "name": "test-conversation-detail",
+      "samples": [
+        {
+          "ms": 202.86,
+          "status": 200,
+          "bytes": 15774
+        },
+        {
+          "ms": 245.18,
+          "status": 200,
+          "bytes": 15774
+        },
+        {
+          "ms": 237.94,
+          "status": 200,
+          "bytes": 15774
+        }
+      ],
+      "medianMs": 237.94
+    },
+    {
+      "name": "catalog-first-page",
+      "samples": [
+        {
+          "ms": 74.98,
+          "status": 200,
+          "bytes": 8852,
+          "rows": 12,
+          "catalogTotal": 1085
+        },
+        {
+          "ms": 70.27,
+          "status": 200,
+          "bytes": 8852,
+          "rows": 12,
+          "catalogTotal": 1085
+        },
+        {
+          "ms": 71.01,
+          "status": 200,
+          "bytes": 8852,
+          "rows": 12,
+          "catalogTotal": 1085
+        }
+      ],
+      "medianMs": 71.01
+    }
+  ],
+  "writes": 0,
+  "stoppedOn429": false
+}

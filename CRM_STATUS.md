@@ -1,6 +1,24 @@
 # MELISA CRM — Güncel Durum
 
-## 5 Ekim 2026 — İlk açılış: kaynak hazır, gerçek TEST sonrası karşılaştırması bekliyor
+## 5 Ekim 2026, 19:03 — İlk gerçek konuşma listesi hızlandırıldı; TEST ölçümü tamamlandı
+
+**Güncel TEST:** http://127.0.0.1:62400/; çalışan uygulama source `2aef938f3f76d8bf4ca95054a5a0f98c19e21001`, immutable `C:\Sirket\CRM\releases\crm-test-2aef938f3f76d8bf4ca95054a5a0f98c19e21001`, manifest SHA256 `4b2ea843df3b51024f0018690871c9ca95cef7b7f12bcea2baa92ac054e3dc01`. 18:52:00 READY geçişi sonrası gerçek ekran ölçüldü. Kanonik dal `codex/crm-agents-on-completion-20261003`, [PR3](https://github.com/melihsnyldzz-ui/melisa-crm/pull/3); belge HEAD'i çalışan source'dan ayrıdır. Katalog source/optimizasyonu ve PR9 kabul kanıtları korunmuştur.
+
+**Üç native Chrome örneğinin medyanı:** ilk görünür/etkin gerçek konuşma listesi **9428,1 → 779,2ms**; ilk inbox tarayıcı resource HTTP **9068,4 → 422,7ms**. Ayrı doğrudan gateway inbox **3925,34 → 661,51ms**. Önce100, sonra25 gerçek satır; boş çerçeve başarı sayılmadı. İlk25'ten hemen 7733 seçilince gerçek ses/video geçmişi **633,7ms**'de açıldı (bir örnek; önceki82,6ms zaten yüklenmiş geçmişti, eşdeğer cold kıyas değildir). Araç/frame beklemeleri native DOM süresine eklenmedi. Normal reload/TEST ADMIN ölçümüdür, ilk normal kullanıcı login/personel hız garantisi değildir.
+
+**Darboğaz/optimizasyon:** backend ilk yanıt için bütün751 ham Chatwoot kaydının31 seri metadata sayfasını ve ilk100 mesaj hidrasyonunu bekliyordu. Ayrı shadow profil medyanı traversal11894ms, hydration5548ms, ilk sayfa468ms, ekip27ms; bunlar gateway/browser süresine eklenmez. Patron/müdür için fresh activity bootstrap, tam traversal/mesaj hidrasyonunu ilk renderın dışına çıkarır. Personel full fresh assignment traversalını korur; ekip ayrı oturum kontrollü yüklenir, seçili konuşma fresh detail ile açılır. Kalan full overview/mesaj sayfalaması arka planda mevcut yoluyla tamamlanır; full senkron hâlâ pahalıdır.
+
+**Sayılar/arama:** başlangıç total=null ve açık yüklenme; placeholder mesaj aramasına girmez. Kısmi sonuçsuz arama diğer kayıtların henüz yüklenmediğini söyler. Tam yükleme sonunda gerçek748 toplam/36 okunmamış/641 atanmamış ve7733 aramasında bir sonuç, load-more yokluğu ekran/JSON ile kaydedildi. Tam mesaj içerikli arama full yükleme bitene kadar tamamlanmış sayılmaz. Geçici tab sayıları yüklenen kapsamı gösterir; yanında yüklenen/toplam ilerlemesi vardır. Stale bootstrap üyeleri full yanıtla uzlaştırılır; gerçek boş full sonuç temizlenir, insan taslağı korunur.
+
+**Fotoğraflı katalog ayrı ölçüldü:** ilk kullanılabilir grid **2175,6 → 681,2ms**, sayfanın12 fotoğrafı tümü hazır **2175,7 → 713,1ms**. İlk örnek cold etkisiyle2328/2385ms; bu fark katalogda yeni optimizasyon yapıldığı anlamına gelmez. API mevcut sayfa **74,02 → 71,01ms**,12/1085 gerçek ERP ürünü. Kullanıcının16 seçim/English/USD tercihi korunur; bulunmayan USD fiyatından sahte teklif çıkmaz. CSS/görsel tasarım/katalog pool/worker/cache/SQL sorguları değişmedi.
+
+**Güvenlik/veri:** fresh rol/yetki/revoke/detail/send guard, group/inbox filtreleri, oturum-generation/abort, gerçek fiyat doğrulaması ve read-only katalog kuralları korundu. Auth/rol/fiyat cache eklenmedi. Geçersiz view400 fallback öncesi reddedilir. API örneklerinde429 yok; önceki read/send/login bütçeleri aynı. Yeni ERP melisa-catalog.v1, LIVE, SQL DDL/ERP write/AI çağrısı/mesaj gönderimi yok.
+
+**Operasyon sınırı:** ara gözlemde TEST child18:54:37'de mevcut supervisor tarafından yeniden başladı;18:55:11 eski token AUTH_TOKEN_INVALID. Kapanma nedeni logda bulunamadı, ayrı açık operasyon incelemesidir. Fresh reload sonrası başarı ve son ekranda gecikme uyarısı olmaması kaydedildi.19:03 kimlikte TEST62400/01 PID71596,62402 PID54156,62403 PID35948 aynı pakette; nativeERP62404 PID49220 ve LIVE4114/4116/5188 PID/creation değişmedi. Önceki f166 rollback paket/config korunur; rollback tatbikatı bu tur yapılmadı.
+
+**Doğrulama/teslim:** offline874/874 ve syntax249 PASS; bağımsız son inceleme actionableP0/P1/P2=0,29 hedefli PASS. Source2aef tüm7 CI SUCCESS: [PR](https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/37335629904), [push](https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/37335620312), [AI offline](https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/37335629883). Son belge HEAD'i [PR checks](https://github.com/melihsnyldzz-ui/melisa-crm/pull/3/checks) ile ayrıca doğrulanır. Sayılar teknik CI'yi insan kabulü saymaz; finish-tree25/12tamam/12kısmi/1açık, kalan13 değişmedi. [Aynı arşivde rapor/ölçüm/ekranlar](docs/evidence/crm/performance-2026-10-05/PERFORMANCE_REVIEW.md). İstenen dar iş bitti; başka geliştirme başlatılmadı.
+
+## Tarihsel — 5 Ekim 2026 ilk açılış aday kaynağı; aşağıdaki runtime/ölçüm beklentisi yukarıdaki teslimle güncellendi
 
 Bu dar çalışma yalnız ilk gerçek konuşma listesinin açılışını hızlandırır. Çalışan TEST halen f166 paketidir; katalog optimizasyonu, PR9 baseline, mevcut görünüm, mesaj/rol/ERP sınırları korunur. Yeni ERP katalog hattı, LIVE ve gerçek gönderim kapsamda değildir.
 

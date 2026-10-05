@@ -1,5 +1,49 @@
 # CRM performans ölçüm incelemesi
 
+## Son teslim — 5 Ekim, 19:03: yalnız ilk gerçek konuşma listesinin hızlandırılması
+
+Bu bölüm aşağıdaki 18:00 katalog tesliminden sonraki dar çalışmadır. Önce çalışan source `f166b0f7db499c68e6cc6718bcf090fcaf457927`, sonra `2aef938f3f76d8bf4ca95054a5a0f98c19e21001`. TEST paket geçişi 18:52:00 READY; manifest SHA256 `4b2ea843df3b51024f0018690871c9ca95cef7b7f12bcea2baa92ac054e3dc01`. Kanonik geliştirme dalı ve PR3 kullanıldı; PR9 denetim kanıtları, katalog optimizasyonu ve LIVE korunmuştur. Sonraki belge HEAD'i çalışan paket source'u değildir.
+
+### Eşdeğer native tarayıcı ölçümü
+
+Normal görünür Chrome, aynı TEST ADMIN/kompakt görünüm, geçerli oturumla normal reload; üç başarılı örneğin medyanı. DOM gözlemcisi gerçek satırlar gelmeden kurulur. Hazır ölçütü görünür, etkin gerçek konuşma düğmeleridir; boş çerçeve başarı değildir. Native `performance.now()` kullanıldı; accessibility/tool çağrılarının duvar süresi, networkidle veya iki frame beklemesi eklenmedi. Bir sonraki paint zamanı ayrıca saklandı. İlk önce örneğinde bağımsız provider profili de çalışıyordu; paylaşılan TEST yükü ve snapshot ısınması değişkendir. Bu sayılar tüm cihazlar veya personel girişi için garanti değildir.
+
+| Ölçüt | Önce medyan ms | Sonra medyan ms | Örnekler / sınır |
+| --- | ---: | ---: | --- |
+| İlk görünür, etkin gerçek konuşma listesi | 9428,1 | 779,2 | Önce 16288,8 / 7730,2 / 9428,1; sonra 1237,1 / 627,3 / 779,2. Önce 100, sonra 25 gerçek satır. |
+| Tarayıcı ilk inbox HTTP resource süresi | 9068,4 | 422,7 | Önce 15306,8 / 7280,5 / 9068,4; sonra 440,8 / 422,7 / 412,3. Liste görünme süresinden ayrı. |
+| 7733 gerçek geçmişini açma | 82,6 | 633,7 | Her tarafta yalnız bir örnek. Önce zaten yüklenmiş geçmiş; sonra ilk 25 satırdan hemen fresh detail okuması. Eşdeğer cold kıyas değildir. Sonra gerçek ses/video geçmişinde dört medya elemanı görünür; gönderim yapılmadı. |
+| Fotoğraflı katalog ilk kullanılabilir grid | 2175,6 | 681,2 | Önce 11568,8 / 1950 / 2175,6; sonra 2328,4 / 681,2 / 671,5. Gerçek ürün adı, görünür etkin seçim ve busy=false gerekir. |
+| Katalog bu sayfadaki 12 fotoğrafın tamamı | 2175,7 | 713,1 | Önce 11568,8 / 1950 / 2175,7; sonra 2384,8 / 713,1 / 698,3. IMG.complete ve naturalWidth>0 ayrı ölçüldü. Tüm 1085 ürünün fotoğrafları demek değildir. |
+
+Katalog kaynağı değiştirilmedi. Üç açılışın ilk örnekleri cold/cache etkisi nedeniyle daha yavaştır; bu ölçümlerden yalnız inbox değişikliğinin katalog hızını artırdığı sonucu çıkmaz. Kullanıcının mevcut 16 seçim/English/USD tercihi korunmuştur; kaynakta USD fiyatı olmayan ürünler için fiyatlı çıktı engeli yerindedir. Boş katalog bağlantı modalı kullanılabilir grid kabul edilmedi. Eski aşağıdaki iki-frame ölçümleri bu yeni native serinin yerine kullanılmaz.
+
+### Ayrı gateway/API ve Chatwoot profili
+
+Doğrudan gerçek TEST gateway API, üç başarılı GET gövdesini tam okumaya kadar ölçüldü; özel token yalnız bellekte tutuldu. [Önce API](startup-before-api.json), [sonra API](startup-after-api.json). Eski gateway `view=bootstrap` parametresini normal overview olarak işliyordu. Cache/snapshot ve ağ yükü tarayıcı serisinden farklı; süreler toplanamaz veya birbirinden çıkarılarak render süresi hesaplanamaz.
+
+| Gateway API | Önce ms | Sonra ms | Sonraki sonuç |
+| --- | ---: | ---: | --- |
+| İlk inbox | 3925,34 | 661,51 | 25 gerçek kayıt; total=null, complete=false, hydratedRows=0. |
+| 7733 fresh detail | 136,89 | 237,94 | Gerçek geçmiş; bu küçük örnek serisinde daha yavaş, gizlenmedi. |
+| Mevcut katalog ilk sayfa | 74,02 | 71,01 | 12 ürün / 1085 toplam; katalog hattı korunmuş. |
+
+GET-only [Chatwoot önce profilinde](startup-before-provider.json) ilk metadata sayfası medyan 468ms; 751 ham kaydın 31 seri sayfası 11894ms; ilk 100 konuşmanın mesaj hidrasyonu 5548ms; ekip 27ms. Provider profili receipt journal/readiness ek işlerini içermeyen ayrı shadow okumadır; gateway/browser sonucu değildir. Darboğaz frontend'in kalan bütün 648 konuşmayı beklemesi değildi: backend ilk 100 için bütün metadata traversalını ve mesaj hidrasyonunu bekletiyordu; ekip de frontend başlangıç Promise.all içinde ilk listeyi bekletebiliyordu. Yeni patron/müdür bootstrap yalnız fresh activity sayfasını okur, mesaj hidrasyonu/traversal başlangıç renderından çıkar. Kurulu Chatwoot activity sort desteği ayrıca doğrulandı; eşit saniyede ID tie sırası garanti edilmez, normal overview kesin sıralamayı tamamlar.
+
+### Sayılar, arama ve korunan sınırlar
+
+İlk 25 kayıtta toplam bilinmiyor diye açıkça gösterilir; mesaj önizlemesi/history yükleniyor durumu sahte mesaj veya boş geçmiş yapılmaz. Arama yüklenen gerçek kayıtlar üzerindedir; kısmi sonuçsuz aramada diğer kayıtların yüklenmekte olduğu belirtilir. Arka planda mevcut tam overview ve mesaj sayfalaması korunur; örneğin [kısmi ekran](startup-after-7733-partial-list.jpg) 400/748 kaydı, geçici atanmamış sayısını gösterir. Bu ekran ilk 25'in tam o andaki fotoğrafı değildir. Tamamlanan [arama kanıtında](startup-after-complete-search.json) 748 toplam, okunmamış36, atanmamış641 ve 7733 aramasında bir sonuç vardır; load-more kalmamıştır. Global mesaj içerikli arama tam yükleme bitene kadar tamamlanmış sayılmaz. Full yükleme hâlâ pahalıdır; yeni ilk liste başarısı tam senkronun <1s olduğu iddiası değildir.
+
+Personel için fresh full traversal/assignment erişim sınırı değiştirilmedi; personel hızlanması ölçülmedi/iddia edilmez. Agents ayrı oturum-generation kontrollü yüklenir; oturum/logout abort ve stale sonuç koruması, mevcut poll/revoke, fresh detail/send guard, inbox/group filtreleri, kaynak fiyat doğrulaması korunmuştur. Yeni auth/rol/fiyat cache yok; katalog cache/SQL pool/worker/read-only kaynak önceki optimizasyonla aynıdır. Geçersiz view service/fallback öncesinde 400 olur. Full sonuçta bootstrap-only eski üyeler uzlaştırılır; gerçek boş full sonuç eski liste/seçimi temizler, insan taslağı kısmi sonuç yüzünden silinmez. CSS ve görsel tasarım değişmedi; LIVE/new ERP melisa-catalog.v1/SQL DDL/ERP write/AI çağrısı/mesaj gönderimi yok.
+
+### Operasyon gözlemi ve doğrulama
+
+Ara gözlemde TEST oturumu geçersizleşti. Yerel log, test-server child'ın 18:54:37'de mevcut supervisor tarafından tekrar başlatıldığını ve 18:55:11'de eski token için AUTH_TOKEN_INVALID olduğunu gösterir. Child kapanma nedeni mevcut logda bulunamadı; bu dar çalışma bunu çözmüş veya hiç hata olmamış gibi sunmaz. Fresh reload sonrası üçüncü açılış ve fresh geçmiş başarıyla ölçüldü; son ekranda gecikme uyarısı yok. Paket source aynı kaldı. Sonraki [runtime kimlik kanıtı](startup-runtime-after.json) TEST62400/62401 PID71596,62402 PID54156,62403 PID35948'in aynı immutable pakete bağlı olduğunu; nativeERP62404 PID49220 ve LIVE4114/4116/5188 PID/creation değişmediğini doğrular. Geri dönüş önceki f166 paket/config'inde hazır; bu tur rollback tatbikatı yapılmadı. Child kapanma nedeni ayrı operasyon incelemesi olarak açıktır.
+
+API serilerinde 429 görülmedi; mevcut ayrı read/send/login bütçeleri değiştirilmedi. Yerel logdaki önceden mevcut WAAPI_READER_RATE_LIMIT kaydı katalog veya login 429 kabulü sayılmaz. Tam offline 874/874 (frontend331/gateway453/sözleşme-CI90), tracked syntax249 PASS; bağımsız son inceleme actionable P0/P1/P2=0 ve 29 hedefli kontrol PASS. Source2aef CI tüm7job SUCCESS: [PR](https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/37335629904), [push](https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/37335620312), [AI offline](https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/37335629883). Sonraki belge HEAD'i aynı PR checks üzerinden ayrıca kontrol edilir. Kullanıcı kabul edilmiş baseline yeniden açılmadı. İstenen ilk açılış işi burada durur; başka geliştirme kendiliğinden başlamaz.
+
+Yeni kanıtlar aynı performance-2026-10-05 arşivinde: [önce browser](startup-before-browser.json), [sonra browser](startup-after-browser.json), [önce katalog](startup-before-catalog.json), [sonra katalog](startup-after-catalog.json), [önce liste](startup-before-7733-list.jpg), [sonra tam liste](startup-after-complete-7733-list.jpg), [gerçek geçmiş](startup-after-7733-history.jpg), [önce katalog ekranı](startup-before-catalog.jpg), [sonra katalog ekranı](startup-after-catalog.jpg). Ham müşteri verisi, credential/config veya token arşive alınmadı.
+
 5 Ekim 2026 TEST ölçümleri katalog okumalarında belirgin hızlanma gösteriyor. Normal tarayıcıda katalog açılışı ve PDF indirme de kısalmış. İlk CRM açılışındaki Chatwoot beklemesi sürüyor; bütün ekranların bir saniyenin altında açıldığı veya kullanıcı kabulünün tamamlandığı sonucu çıkmaz.
 
 Önceki çalışan kaynak `f1899b0e0828f23010af75b1731682c749e596cc`, sonraki çalışan kaynak ve uygulama teslim commit'i `f166b0f7db499c68e6cc6718bcf090fcaf457927`. Sonraki startup manifest SHA256 `47c495de9fa0d1da6a1878b7dfc2b2d6742c976d4541f35944315bacd36b6d4f`; dosya hash'i seçili config değeriyle eşleşti. Önceki API ölçümünün belge HEAD'i `8549b42` idi; çalışan kaynakla aynı alan değildir. Yetkili TEST paket geçişi 17:23:58'de READY oldu; sonraki ölçümler bu değişmez pakette yapıldı. Bu raporun yazılması runtime değiştirmedi. Sonraki belge commit'i uygulama paketinin source commit'i değildir.
