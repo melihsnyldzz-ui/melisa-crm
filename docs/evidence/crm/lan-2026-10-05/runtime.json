@@ -1,0 +1,87 @@
+{
+  "checkedAt": "2026-10-05T21:06:50.5593606Z",
+  "sourceCommit": "1d288142aa0b1c465a91826191fc3cac50207498",
+  "packageManifestSha256": "adc59b3c6af7973125b071239217d61a7d36dbcc1c8d13e8c42ddc26faab9ffe",
+  "lanAddress": "192.168.1.46",
+  "dhcpReservation": "not verified; router login pending",
+  "lanBrowser": "normal username/password gate visible",
+  "localBrowser": "new control tab ERR_BLOCKED_BY_CLIENT; local HTTP document 200",
+  "ports": [
+    {
+      "port": 62400,
+      "pid": 70248,
+      "started": "2026-10-05T21:03:42.4329780Z",
+      "addresses": [
+        "192.168.1.46",
+        "127.0.0.1"
+      ],
+      "samePidAndCreation": false
+    },
+    {
+      "port": 62401,
+      "pid": 70248,
+      "started": "2026-10-05T21:03:42.4329780Z",
+      "addresses": [
+        "127.0.0.1"
+      ],
+      "samePidAndCreation": false
+    },
+    {
+      "port": 62402,
+      "pid": 21460,
+      "started": "2026-10-05T21:03:37.3407500Z",
+      "addresses": [
+        "127.0.0.1"
+      ],
+      "samePidAndCreation": false
+    },
+    {
+      "port": 62403,
+      "pid": 14024,
+      "started": "2026-10-05T21:03:39.8112610Z",
+      "addresses": [
+        "127.0.0.1"
+      ],
+      "samePidAndCreation": false
+    },
+    {
+      "port": 62404,
+      "pid": 49220,
+      "started": "2026-10-05T07:05:23.0876580Z",
+      "addresses": [
+        "127.0.0.1"
+      ],
+      "samePidAndCreation": true
+    },
+    {
+      "port": 4114,
+      "pid": 33624,
+      "started": "2026-09-21T13:32:33.5930350Z",
+      "addresses": [
+        "192.168.1.46"
+      ],
+      "samePidAndCreation": true
+    },
+    {
+      "port": 4116,
+      "pid": 40828,
+      "started": "2026-09-21T13:32:33.6970310Z",
+      "addresses": [
+        "192.168.1.46"
+      ],
+      "samePidAndCreation": true
+    },
+    {
+      "port": 5188,
+      "pid": 31820,
+      "started": "2026-09-21T13:32:33.8048010Z",
+      "addresses": [
+        "192.168.1.46",
+        "127.0.0.1"
+      ],
+      "samePidAndCreation": true
+    }
+  ],
+  "physicalDeviceAcceptance": "pending",
+  "mediaOrigin": "Existing HTTPS Funnel observed in 7733 DOM; not changed"
+}

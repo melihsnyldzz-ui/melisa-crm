@@ -1,0 +1,47 @@
+{
+  "checkedAt": "2026-10-05T21:04:10.078Z",
+  "sourceCommit": "1d288142aa0b1c465a91826191fc3cac50207498",
+  "checks": [
+    {
+      "name": "LAN login document",
+      "status": 200,
+      "html": true
+    },
+    {
+      "name": "loopback document",
+      "status": 200,
+      "html": true
+    },
+    {
+      "name": "LAN anonymous auth rejected",
+      "status": 401,
+      "html": false
+    },
+    {
+      "name": "LAN TEST admin mint rejected",
+      "status": 403,
+      "html": false
+    },
+    {
+      "name": "LAN spoofed loopback admin rejected",
+      "status": 403,
+      "html": false
+    },
+    {
+      "name": "LAN foreign origin rejected",
+      "status": 403,
+      "html": false
+    },
+    {
+      "name": "LAN forwarding header rejected",
+      "status": 403,
+      "html": false
+    },
+    {
+      "name": "LAN missing origin write rejected",
+      "status": 403,
+      "html": false
+    }
+  ],
+  "acceptance": "Technical entry and negative checks; real LAN account/device acceptance pending."
+}
