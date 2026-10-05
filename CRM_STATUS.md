@@ -1,5 +1,17 @@
 # MELISA CRM — Güncel Durum
 
+## 5 Ekim 2026 — Performans çalışması: aday kaynak, TEST karşılaştırması sürüyor
+
+Kanonik uygulama dalı `codex/crm-agents-on-completion-20261003`; PR9'daki gerçek kullanım denetimi baseline olarak korundu. Yeni ERP katalog sözleşmesine geçiş, UX değişikliği, müşteri gönderimi ve LIVE işlemi yok. Aşağıdaki tarihsel kayıtlar performans sonrası kabul değildir.
+
+Önceki gerçek TEST kaynak paketi `f1899b0e0828f23010af75b1731682c749e596cc`. Üç örnek API medyanları: inbox4902.70ms, konuşma55 131.61ms, katalog8400.73ms, kod41140 7780.86ms, ad6928.45ms, detay897.46ms, fotoğraf784.45ms, ikinci sayfa6944.51ms. Görünür Chrome'da katalog ilk açılış14507ms, ikinci açılış17329.4ms; iki ürünlü PDF13666.4ms. Tarayıcı süreleri fotoğraf/render ve çıktı doğrulamalarını içerir. Oturum süresi dolan357ms örneği başarıdan çıkarıldı. Sayısal kanıt: `docs/evidence/crm/performance-2026-10-05/`.
+
+Darboğaz gerçek SQL faz ölçümünde iki facet sorgusunun toplam~5.5s CPU/elapsed maliyeti; liste planı1085 fotoğraf kimliğini tekrar parametreliyordu. Aday sorgu typed XML kapsamını bir kez ayrıştırıp fotoğraflı ürünlerde indeksli ürün kimliğinden INNER LOOP JOIN ile başlar; fotoğrafsız kapsam ve filtre/facet semantiği korunur. Sınırlı iki worker yalnız sürücüyü/bağlantıyı tekrar kullanır; her okumada taze ürün/fiyat SQL ve aynı DB kimlik kanıtı vardır. Ürün/fiyat/rol/auth cache'i eklenmedi. Request başı/sonu auth, revoke, readonly guard, unknown price/stock, iptal/deadline/source drift ve doğrulanmış kapanış kontrolleri korunur. Fotoğraf mapping okuması~15ms olduğundan cache eklenmedi.
+
+Gönderim, inbox/detail okuma, katalog, oturum doğrulama ve login bütçeleri ayrıldı; mevcut limitler artırılmadı. Güvenilir scope header'ı uyuşmazsa frontend global bekler. İlk session yüklemesinden hemen sonra yinelenen auth/inbox poll kaldırıldı; periyodik taze yetki/mesaj poll davranışı korundu. Daha yavaş ölçülen Chatwoot paralel tarama denemesi kaynakta bırakılmadı.
+
+Offline tam kontrol855/855 PASS (frontend321, gateway444, sözleşme/CI90); bağımsız son reviewer actionable P0/P1/P2=0. Eski immutable paket yeni verifier ile tekrar doğrulandı; rollback uyumluluğu korunur. İzole aday handler ilk sayfa medyanı6823.89→84.75ms, soğuk749.68ms; üç tam ürün/fiyat/facet envelope eşit, yalnız fetchedAt hariç. Bu aday sonucu çalışan TEST'in son ölçümü değildir. Yeni immutable paket ve gerçek tarayıcı/API sonrası ölçümleri bu bölümün üstünde ayrıca kaydedilecek.
+
 ## 5 Ekim 2026, 12:31 — CRM-D01 otomatik TEST ADMIN teknik hazır
 
 Kapsam yalnız kanonik CRM ve `http://127.0.0.1:62400/`. Uygulama değişikliği `cfb7022` + `e58dd8b`, çalışan paket kaynak commit'i `f1899b0e0828f23010af75b1731682c749e596cc`; dal `codex/crm-agents-on-completion-20261003`, [PR #3](https://github.com/melihsnyldzz-ui/melisa-crm/pull/3). TEST launcher ayrı süreç anahtarıyla TEST ADMIN oturumu açar; mevcut patron izinlerini ayrı sentetik kimlikte kullanır. Gerçek kullanıcı/rol/atama modeli korunur; normal rollerle giriş ve TEST ADMIN'e dönüş seçilebilir. Katalog, provider readiness/7733, AI55/7733 ve ayrı native ERP giriş/token/DB sınırları değişmedi. Bu görevde mesaj gönderimi, atama veya ERP yazımı tetiklenmedi.

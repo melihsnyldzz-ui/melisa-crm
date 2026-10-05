@@ -1,0 +1,31 @@
+{
+  "samples": [
+    {
+      "listCalls": 30,
+      "listSumMs": 38819.19,
+      "listMaxMs": 2498.52,
+      "listBytes": 2829700,
+      "messageCalls": 100,
+      "messageSumMs": 33607.22,
+      "messageMaxMs": 795.5,
+      "messageBytes": 529538,
+      "summaryCandidateCount": 99,
+      "summaryMissingCount": 1,
+      "latestIdMatchCount": 87,
+      "latestIdMismatchCount": 12,
+      "latestDirectionMatchCount": 99,
+      "privateWorkflowCount": 0,
+      "outgoingReceiptReadSkippedCount": 9,
+      "listWallMs": 38839.56,
+      "rawConversationCount": 748,
+      "selectedCount": 100,
+      "filterSortMs": 6.26,
+      "messageWallMs": 6876.28,
+      "totalWallMs": 45722.22
+    }
+  ],
+  "completed": 1,
+  "providerReadinessCalls": 0,
+  "sqlCalls": 0,
+  "writes": 0
+}

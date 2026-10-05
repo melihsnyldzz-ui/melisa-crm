@@ -1,0 +1,413 @@
+{
+  "measuredAt": "2026-10-05T13:16:40.506Z",
+  "sourceHead": "8549b42bef07f67cf73cc63155b115ccdb5c5750",
+  "runtimeSource": "f1899b0e0828f23010af75b1731682c749e596cc",
+  "scope": "authorized-existing-TEST-read-only",
+  "sampleCount": 3,
+  "scenarios": [
+    {
+      "name": "auth-me",
+      "samples": [
+        {
+          "status": 200,
+          "ms": 575.84,
+          "bytes": 302,
+          "meta": {
+            "catalogRead": true
+          }
+        },
+        {
+          "status": 200,
+          "ms": 4.23,
+          "bytes": 302,
+          "meta": {
+            "catalogRead": true
+          }
+        },
+        {
+          "status": 200,
+          "ms": 2.77,
+          "bytes": 302,
+          "meta": {
+            "catalogRead": true
+          }
+        }
+      ],
+      "medianMs": 4.23,
+      "maxMs": 575.84
+    },
+    {
+      "name": "inbox",
+      "samples": [
+        {
+          "status": 200,
+          "ms": 21656.54,
+          "bytes": 476661,
+          "meta": {
+            "readOnly": true
+          },
+          "counts": {
+            "conversations": 100
+          }
+        },
+        {
+          "status": 200,
+          "ms": 4074.6,
+          "bytes": 476661,
+          "meta": {
+            "readOnly": true
+          },
+          "counts": {
+            "conversations": 100
+          }
+        },
+        {
+          "status": 200,
+          "ms": 4902.7,
+          "bytes": 476661,
+          "meta": {
+            "readOnly": true
+          },
+          "counts": {
+            "conversations": 100
+          }
+        }
+      ],
+      "medianMs": 4902.7,
+      "maxMs": 21656.54
+    },
+    {
+      "name": "conversation-55",
+      "samples": [
+        {
+          "status": 200,
+          "ms": 150.53,
+          "bytes": 15774,
+          "meta": {
+            "readOnly": true
+          },
+          "counts": {
+            "messages": 18
+          }
+        },
+        {
+          "status": 200,
+          "ms": 127.6,
+          "bytes": 15774,
+          "meta": {
+            "readOnly": true
+          },
+          "counts": {
+            "messages": 18
+          }
+        },
+        {
+          "status": 200,
+          "ms": 131.61,
+          "bytes": 15774,
+          "meta": {
+            "readOnly": true
+          },
+          "counts": {
+            "messages": 18
+          }
+        }
+      ],
+      "medianMs": 131.61,
+      "maxMs": 150.53
+    },
+    {
+      "name": "catalog-first-page",
+      "samples": [
+        {
+          "status": 200,
+          "ms": 8400.73,
+          "bytes": 8852,
+          "meta": {
+            "page": 1,
+            "limit": 12,
+            "total": 1085,
+            "totalPages": 91,
+            "hasNextPage": true,
+            "hasPreviousPage": false,
+            "totalPhotoEligible": 1085,
+            "cached": false,
+            "sourceDatabaseVerified": true
+          },
+          "count": 12
+        },
+        {
+          "status": 200,
+          "ms": 7505.81,
+          "bytes": 8852,
+          "meta": {
+            "page": 1,
+            "limit": 12,
+            "total": 1085,
+            "totalPages": 91,
+            "hasNextPage": true,
+            "hasPreviousPage": false,
+            "totalPhotoEligible": 1085,
+            "cached": false,
+            "sourceDatabaseVerified": true
+          },
+          "count": 12
+        },
+        {
+          "status": 200,
+          "ms": 8488.71,
+          "bytes": 8852,
+          "meta": {
+            "page": 1,
+            "limit": 12,
+            "total": 1085,
+            "totalPages": 91,
+            "hasNextPage": true,
+            "hasPreviousPage": false,
+            "totalPhotoEligible": 1085,
+            "cached": false,
+            "sourceDatabaseVerified": true
+          },
+          "count": 12
+        }
+      ],
+      "medianMs": 8400.73,
+      "maxMs": 8488.71
+    },
+    {
+      "name": "catalog-code-41140",
+      "samples": [
+        {
+          "status": 200,
+          "ms": 7780.86,
+          "bytes": 1279,
+          "meta": {
+            "page": 1,
+            "limit": 12,
+            "total": 1,
+            "totalPages": 1,
+            "hasNextPage": false,
+            "hasPreviousPage": false,
+            "totalPhotoEligible": 1,
+            "cached": false,
+            "sourceDatabaseVerified": true
+          },
+          "count": 1
+        },
+        {
+          "status": 200,
+          "ms": 8099.22,
+          "bytes": 1279,
+          "meta": {
+            "page": 1,
+            "limit": 12,
+            "total": 1,
+            "totalPages": 1,
+            "hasNextPage": false,
+            "hasPreviousPage": false,
+            "totalPhotoEligible": 1,
+            "cached": false,
+            "sourceDatabaseVerified": true
+          },
+          "count": 1
+        },
+        {
+          "status": 200,
+          "ms": 6708.13,
+          "bytes": 1279,
+          "meta": {
+            "page": 1,
+            "limit": 12,
+            "total": 1,
+            "totalPages": 1,
+            "hasNextPage": false,
+            "hasPreviousPage": false,
+            "totalPhotoEligible": 1,
+            "cached": false,
+            "sourceDatabaseVerified": true
+          },
+          "count": 1
+        }
+      ],
+      "medianMs": 7780.86,
+      "maxMs": 8099.22
+    },
+    {
+      "name": "catalog-name-supermini",
+      "samples": [
+        {
+          "status": 200,
+          "ms": 6726.42,
+          "bytes": 6473,
+          "meta": {
+            "page": 1,
+            "limit": 12,
+            "total": 11,
+            "totalPages": 1,
+            "hasNextPage": false,
+            "hasPreviousPage": false,
+            "totalPhotoEligible": 11,
+            "cached": false,
+            "sourceDatabaseVerified": true
+          },
+          "count": 11
+        },
+        {
+          "status": 200,
+          "ms": 6992.86,
+          "bytes": 6473,
+          "meta": {
+            "page": 1,
+            "limit": 12,
+            "total": 11,
+            "totalPages": 1,
+            "hasNextPage": false,
+            "hasPreviousPage": false,
+            "totalPhotoEligible": 11,
+            "cached": false,
+            "sourceDatabaseVerified": true
+          },
+          "count": 11
+        },
+        {
+          "status": 200,
+          "ms": 6928.45,
+          "bytes": 6473,
+          "meta": {
+            "page": 1,
+            "limit": 12,
+            "total": 11,
+            "totalPages": 1,
+            "hasNextPage": false,
+            "hasPreviousPage": false,
+            "totalPhotoEligible": 11,
+            "cached": false,
+            "sourceDatabaseVerified": true
+          },
+          "count": 11
+        }
+      ],
+      "medianMs": 6928.45,
+      "maxMs": 6992.86
+    },
+    {
+      "name": "catalog-product-detail",
+      "samples": [
+        {
+          "status": 200,
+          "ms": 897.46,
+          "bytes": 891,
+          "meta": {
+            "cached": false,
+            "sourceDatabaseVerified": true
+          }
+        },
+        {
+          "status": 200,
+          "ms": 946.41,
+          "bytes": 891,
+          "meta": {
+            "cached": false,
+            "sourceDatabaseVerified": true
+          }
+        },
+        {
+          "status": 200,
+          "ms": 790.41,
+          "bytes": 891,
+          "meta": {
+            "cached": false,
+            "sourceDatabaseVerified": true
+          }
+        }
+      ],
+      "medianMs": 897.46,
+      "maxMs": 946.41
+    },
+    {
+      "name": "catalog-product-photo",
+      "samples": [
+        {
+          "status": 200,
+          "ms": 878.3,
+          "bytes": 168355
+        },
+        {
+          "status": 200,
+          "ms": 784.05,
+          "bytes": 168355
+        },
+        {
+          "status": 200,
+          "ms": 784.45,
+          "bytes": 168355
+        }
+      ],
+      "medianMs": 784.45,
+      "maxMs": 878.3
+    },
+    {
+      "name": "catalog-second-page",
+      "samples": [
+        {
+          "status": 200,
+          "ms": 6734.04,
+          "bytes": 8591,
+          "meta": {
+            "page": 2,
+            "limit": 12,
+            "total": 1085,
+            "totalPages": 91,
+            "hasNextPage": true,
+            "hasPreviousPage": true,
+            "totalPhotoEligible": 1085,
+            "cached": false,
+            "sourceDatabaseVerified": true
+          },
+          "count": 12
+        },
+        {
+          "status": 200,
+          "ms": 6944.51,
+          "bytes": 8591,
+          "meta": {
+            "page": 2,
+            "limit": 12,
+            "total": 1085,
+            "totalPages": 91,
+            "hasNextPage": true,
+            "hasPreviousPage": true,
+            "totalPhotoEligible": 1085,
+            "cached": false,
+            "sourceDatabaseVerified": true
+          },
+          "count": 12
+        },
+        {
+          "status": 200,
+          "ms": 7532.39,
+          "bytes": 8591,
+          "meta": {
+            "page": 2,
+            "limit": 12,
+            "total": 1085,
+            "totalPages": 91,
+            "hasNextPage": true,
+            "hasPreviousPage": true,
+            "totalPhotoEligible": 1085,
+            "cached": false,
+            "sourceDatabaseVerified": true
+          },
+          "count": 12
+        }
+      ],
+      "medianMs": 6944.51,
+      "maxMs": 7532.39
+    }
+  ],
+  "stoppedOn429": false,
+  "bootstrap": {
+    "status": 200,
+    "ms": 53.73
+  }
+}

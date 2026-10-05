@@ -370,6 +370,7 @@ export function App() {
   const olderPageOffsetRef = useRef(100);
   const olderPageCheckedAtRef = useRef(Date.now());
   const inboxPollRef = useRef({ at: 0, inFlight: false });
+  const permissionPollRef = useRef({ key: '', at: 0 });
   const conversationPollRef = useRef({ at: 0, id: "" });
   const paginationRef = useRef(null);
   paginationRef.current = { offset: nextInboxOffset, total: summary.total };
@@ -612,7 +613,7 @@ export function App() {
     });
   };
 
-  const commitLiveSession = ({ key, session: sessionResult, inbox: inboxResult, agents: agentsResult }) => {
+  const commitLiveSession = ({ key, session: sessionResult, inbox: inboxResult, agents: agentsResult, permissionReadAt = Date.now(), inboxReadAt = Date.now() }) => {
     const identity = accountIdentityKey(sessionResult.accountIdentity);
     if (!identity) throw new Error("CRM kullanıcı kimliği sunucu tarafından bildirilmedi.");
     if (sessionIdentityRef.current !== identity || liveKeyRef.current !== key) salesDraftFlowRef.current?.close();
@@ -622,6 +623,8 @@ export function App() {
     const visibleConversations = applyReadReceipts(sortInboxByActivity(inboxResult.conversations || []), readReceiptsRef.current);
     applyStoredDrafts(textDraftStorageRef.current.activate(sessionResult, visibleConversations));
     liveKeyRef.current = key; liveSessionRef.current = sessionResult; conversationsRef.current = visibleConversations;
+    permissionPollRef.current = { key, at: permissionReadAt };
+    inboxPollRef.current.at = inboxReadAt;
     saveAccessKey(key); setLiveKey(key); setLiveSession(sessionResult); setRole(sessionResult.displayName);
     setAgents(agentsResult.agents || []); setSummary(effectiveInboxSummary(inboxResult.summary || {}, visibleConversations)); setConversations(visibleConversations);
     setNextInboxOffset(inboxResult.conversations?.length || 0); setRemainingConversationsError("");
@@ -667,10 +670,10 @@ export function App() {
   const hasLiveSession = Boolean(liveSession);
   useEffect(() => {
     if (!liveKey || !hasLiveSession) return;
-    let lastCheck = 0;
     const check = () => {
-      if (document.visibilityState === "hidden" || Date.now() - lastCheck < POLL_INTERVAL.permission) return;
-      lastCheck = Date.now();
+      const poll = permissionPollRef.current;
+      if (document.visibilityState === "hidden" || (poll.key === liveKey && Date.now() - poll.at < POLL_INTERVAL.permission)) return;
+      permissionPollRef.current = { key: liveKey, at: Date.now() };
       refreshLivePermissions().catch(() => {});
     };
     check();

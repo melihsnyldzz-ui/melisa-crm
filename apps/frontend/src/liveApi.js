@@ -2,7 +2,7 @@ import { existingQuery, existingId } from './catalog/existingStock.js';
 import { normalizeAccountIdentity } from "./accountIdentity.js";
 import { resolveContactIdentity } from "./contactIdentity.js";
 import { validateSendPayload, validateFileSignature } from "./outboundMedia.js";
-import { createRequestControl } from "./requestControl.js";
+import { createRequestControl, requestBudgetScope } from "./requestControl.js";
 
 const STORAGE_KEY = "melisa-crm-access-token";
 const API_ROOT = "/api/live";
@@ -134,7 +134,7 @@ async function request(path, accessToken = "", options = {}) {
       ...(options.body ? { "Content-Type": "application/json" } : {}),
       ...(options.headers || {}),
     },
-  }), (fetchOptions.method || "GET") === "GET" && !callerSignal);
+  }), (fetchOptions.method || "GET") === "GET" && !callerSignal, { actor: accessToken, scope: requestBudgetScope(path, fetchOptions.method || 'GET') });
   let payload;
   try { payload = await response.json(); }
   catch (error) {
@@ -512,7 +512,7 @@ async function catalogPhoto(accessToken, id, { signal: callerSignal } = {}) {
   let timedOut=false,response;
   const timer = setTimeout(() => { timedOut=true;controller.abort(); }, 20000);
   try {
-    response = await requestControl.run(`${accessToken}:${path}`, () => fetch(`${API_ROOT}${path}`, { cache: "no-store", redirect: "error", signal: controller.signal, headers: { Accept: "image/jpeg,image/png,image/webp", Authorization: `Bearer ${accessToken}` } }), false);
+    response = await requestControl.run(`${accessToken}:${path}`, () => fetch(`${API_ROOT}${path}`, { cache: "no-store", redirect: "error", signal: controller.signal, headers: { Accept: "image/jpeg,image/png,image/webp", Authorization: `Bearer ${accessToken}` } }), false, { actor: accessToken, scope: requestBudgetScope(path) });
     if (!response.ok) { const payload=await response.json().catch(()=>({})); throw Object.assign(new Error(errorMessage(payload,response.status)),{status:response.status,code:payload?.error?.code||""}); }
     const type=(response.headers.get("content-type")||"").split(";")[0].trim().toLowerCase();
     if (!["image/jpeg","image/png","image/webp"].includes(type)) throw Object.assign(new Error("Ürün fotoğrafının dosya türü doğrulanamadı."), { status: 415 });

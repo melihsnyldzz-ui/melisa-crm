@@ -13,6 +13,9 @@ const hex = (value,length=64) => typeof value==='string' && new RegExp(`^[a-f0-9
 const samePath = (a,b) => process.platform==='win32' ? path.resolve(a).toLowerCase()===path.resolve(b).toLowerCase() : path.resolve(a)===path.resolve(b);
 const within = (parent,child) => {const relative=path.relative(parent,child);return relative===''||!path.isAbsolute(relative)&&relative!=='..'&&!relative.startsWith('..'+path.sep);};
 const runtimeFiles = ['package.json','apps/gateway/package.json','apps/gateway/package-lock.json','apps/frontend/package.json','apps/frontend/package-lock.json','deploy/test-supervisor.mjs','deploy/test-server.mjs','deploy/test-erp-catalog.mjs','deploy/test-erp-orders.mjs','deploy/test-erp-read-environment.mjs','packages/contracts/index.mjs','packages/erp-adapter/services/crmCatalogReadSource.mjs','packages/erp-adapter/workers/crmExistingStockReadWorker.mjs'];
+// Older verified packages remain valid rollback targets. The pool is mandatory
+// only for an adapter that imports it, and is always sealed as a Git source blob.
+const stockPoolPath='packages/erp-adapter/services/crmStockWorkerPool.mjs';
 const buildFiles = ['apps/frontend/index.html','apps/frontend/vite.config.mjs','apps/frontend/scripts/prepare-sites-build.mjs','apps/frontend/worker/index.js','apps/frontend/.openai/hosting.json'];
 
 export function safePackagePath(value) {
@@ -26,7 +29,7 @@ function privatePath(value) {
 }
 export function allowedSourcePath(value) {
   if(!safePackagePath(value)||privatePath(value)||/(?:^|\/)(?:tests?|__tests__)(?:\/|$)|\.test\.[^.]+$/i.test(value))return false;
-  if(runtimeFiles.includes(value)||buildFiles.includes(value)||value==='deploy/test-package.mjs')return true;
+  if(runtimeFiles.includes(value)||buildFiles.includes(value)||value==='deploy/test-package.mjs'||value===stockPoolPath)return true;
   return /^apps\/gateway\/src\/.+\.(?:js|mjs|json)$/.test(value)
     || /^apps\/frontend\/src\/.+\.(?:js|jsx|mjs|css|svg|png|webp|jpg|jpeg)$/.test(value)
     || /^apps\/frontend\/public\/.+\.(?:svg|png|webp|jpg|jpeg|ico|woff2?)$/.test(value);
@@ -160,6 +163,7 @@ export function verifyTestPackage({packageRoot,manifestSha256}) {
     validateLockedDependencies(JSON.parse(fs.readFileSync(path.join(packageRoot,lock.path),'utf8')),JSON.parse(fs.readFileSync(path.join(packageRoot,`apps/${target}/package.json`),'utf8')));
   }
   for(const source of manifest.sourceFiles){const bytes=fs.readFileSync(path.join(packageRoot,source.path));if(crypto.createHash('sha1').update(`blob ${bytes.length}\0`).update(bytes).digest('hex')!==source.gitBlob)failure('PACKAGE_GIT_BLOB_MISMATCH');}
+  if(fs.readFileSync(path.join(packageRoot,'deploy/test-erp-catalog.mjs'),'utf8').includes('crmStockWorkerPool.mjs')&&!manifest.sourceFiles.some(row=>row.path===stockPoolPath))failure('PACKAGE_REQUIRED_FILE_MISSING');
   return {packageRoot:path.resolve(packageRoot),manifestSha256,sourceCommit:manifest.source.commit,sourceTree:manifest.source.tree,supervisor:manifest.entrypoints.supervisor,environment:'TEST'};
 }
 function git(repo,args,options={}){return execFileSync('git',['-C',repo,...args],{stdio:['ignore','pipe','pipe'],windowsHide:true,maxBuffer:32*1024*1024,...options});}

@@ -1,6 +1,6 @@
 // One user-driven login/resume at a time; logout invalidates even non-abortable
 // transports. Credentials/tokens are never stored here beyond the active call.
-export function createSessionLoader({api,onCommit,onError,onBusy}) {
+export function createSessionLoader({api,onCommit,onError,onBusy,now=Date.now}) {
   let generation=0, active=null;
   const current=operation=>active===operation && operation.generation===generation && !operation.controller.signal.aborted;
   function invalidate() { generation++; active?.controller.abort(); active=null; }
@@ -16,12 +16,13 @@ export function createSessionLoader({api,onCommit,onError,onBusy}) {
         if(credentials){const result=await api.login(credentials.username,credentials.password,{signal});if(!current(operation))return null;key=result.accessToken;}
         if(!key)throw new Error('CRM oturumu gerekli.');
         const session=await api.session(key,{signal});if(!current(operation))return null;
+        const permissionReadAt=now();let inboxReadAt;
         const [inbox,agents]=await Promise.all([
-          api.inbox(key,0,{signal}),
+          api.inbox(key,0,{signal}).then(result=>{inboxReadAt=now();return result;}),
           session.canAssign?api.agents(key,{signal}).catch(error=>{if(error?.name==='AbortError'||error?.status===401)throw error;return {agents:[]};}):Promise.resolve({agents:[]}),
         ]);
         if(!current(operation))return null;
-        const result={key,session,inbox,agents};onCommit(result);return result;
+        const result={key,session,inbox,agents,permissionReadAt,inboxReadAt};onCommit(result);return result;
       }catch(error){if(current(operation))onError(error);return null;}
       finally {if(current(operation)){operation.pending=false;onBusy(false);}}
     })();

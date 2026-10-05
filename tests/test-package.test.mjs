@@ -34,6 +34,19 @@ test('complete offline package verifies exact frontend/backend/dependency bytes 
   assert.deepEqual(verifyTestPackage({packageRoot:f.root,manifestSha256:f.sha.toUpperCase()}),metadata);
   assert.equal(f.manifest.files.some(row=>row.path.includes('node_modules/dotenv')),true);assert.equal(f.manifest.files.some(row=>row.path.includes('/dist/client/')),true);
 });
+
+test('stock pool is sealed for new adapters while older rollback packages still verify',t=>{
+  const old=fixture(t);assert.equal(old.verify().environment,'TEST');
+  const f=fixture(t),adapter='deploy/test-erp-catalog.mjs',pool='packages/erp-adapter/services/crmStockWorkerPool.mjs';
+  f.write(adapter,"import {createCrmStockWorkerPool} from '../packages/erp-adapter/services/crmStockWorkerPool.mjs';\n");
+  f.manifest.files=inventoryPackage(f.root).files.filter(row=>row.path!==TEST_PACKAGE_MANIFEST);
+  f.manifest.sourceFiles.find(row=>row.path===adapter).gitBlob=blob(fs.readFileSync(path.join(f.root,adapter)));f.seal();
+  assert.throws(()=>f.verify(),{code:'PACKAGE_REQUIRED_FILE_MISSING'});
+  assert.equal(allowedSourcePath(pool),true);f.write(pool,'export const createCrmStockWorkerPool=()=>{};\n');
+  f.manifest.files=inventoryPackage(f.root).files.filter(row=>row.path!==TEST_PACKAGE_MANIFEST);
+  f.manifest.sourceFiles.push({path:pool,gitBlob:blob(fs.readFileSync(path.join(f.root,pool)))});sort(f.manifest.sourceFiles);f.seal();
+  assert.equal(f.verify().environment,'TEST');
+});
 test('changed backend, frontend or dependency byte, same-size edit, missing file and unlisted file all fail verification',t=>{
   for(const change of ['apps/gateway/package.json','apps/frontend/dist/client/assets/test.js','apps/gateway/node_modules/dotenv/lib/main.js']){
     const f=fixture(t),file=path.join(f.root,change),bytes=fs.readFileSync(file);bytes[0]=bytes[0]===65?66:65;fs.writeFileSync(file,bytes);assert.throws(()=>f.verify(),{code:'PACKAGE_PAYLOAD_MISMATCH'});

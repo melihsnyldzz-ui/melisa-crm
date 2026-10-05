@@ -26,13 +26,31 @@ async function fixture(run){
  globalThis.window=fakeWindow(local);
  globalThis.document={visibilityState:'visible',addEventListener(){},removeEventListener(){}};
  globalThis.__draftHooks={useState(initial){const i=cursor++;if(!(i in values))values[i]=typeof initial==='function'?initial():initial;return [values[i],update=>{values[i]=typeof update==='function'?update(values[i]):update;}];},useRef(initial){const i=cursor++;if(!(i in values))values[i]={current:initial};return values[i];},useMemo:fn=>fn(),useCallback:fn=>fn,useEffect:fn=>effects.push(fn)};
- const harness=globalThis.__draftHarness={api:{erpDrafts:async()=>({orders:[]}),catalogSignOut:async()=>({}),session:async()=>actor(),conversation:async()=>({conversation:row()}),send:async()=>({message:{id:'synthetic-accepted',direction:'outgoing',text:'sent'}})},actions:null};
+ const harness=globalThis.__draftHarness={api:{erpDrafts:async()=>({orders:[]}),catalogSignOut:async()=>({}),session:async()=>actor(),inbox:async()=>({conversations:[row()],summary:{total:1}}),conversation:async()=>({conversation:row()}),send:async()=>({message:{id:'synthetic-accepted',direction:'outgoing',text:'sent'}})},actions:null};
  try{await bundle(file,true);const {App}=await import(pathToFileURL(file).href);const render=()=>{cursor=0;effects.length=0;return App();};const connect=(session=actor(),rows=[row(),row('56')])=>{harness.actions.commitLiveSession({key:'synthetic-session',session,inbox:{conversations:rows,summary:{total:rows.length}},agents:{agents:[]}});return render();};
-  render();await run({local,harness,render,connect,pollDrafts:()=>effects.filter(fn=>String(fn).includes('textDraftStorageRef.current.synchronize')).forEach(fn=>fn()),pollConversation:()=>effects.filter(fn=>String(fn).includes('const refreshConversation = async')).forEach(fn=>fn())});
+  render();await run({local,harness,render,connect,pollBackground:()=>effects.filter(fn=>String(fn).includes('const refreshInbox = async')||String(fn).includes('permissionPollRef.current')).forEach(fn=>fn()),pollDrafts:()=>effects.filter(fn=>String(fn).includes('textDraftStorageRef.current.synchronize')).forEach(fn=>fn()),pollConversation:()=>effects.filter(fn=>String(fn).includes('const refreshConversation = async')).forEach(fn=>fn())});
  }finally{globalThis.window=previous.window;globalThis.document=previous.document;globalThis.__draftHooks=previous.hooks;globalThis.__draftHarness=previous.harness;rmSync(file,{force:true});}
 }
 function find(tree,predicate){if(!tree||typeof tree!=='object')return null;if(predicate(tree))return tree;for(const child of React.Children.toArray(tree.props?.children)){const found=find(child,predicate);if(found)return found;}return null;}
 const composer=tree=>find(tree,node=>node.type==='textarea'&&node.props['aria-label']==='Mesajınız');
+
+test('actual App uses committed startup reads for polling while manual permission checks stay fresh',async()=>fixture(async h=>{
+ const originalNow=Date.now;let time=100000,inboxCalls=0,permissionCalls=0;
+ Date.now=()=>time;
+ h.harness.api.inbox=async()=>{inboxCalls++;return {conversations:[row()],summary:{total:1}};};
+ h.harness.api.session=async()=>{permissionCalls++;return actor();};
+ try{
+  h.connect();h.pollBackground();await settle();assert.equal(inboxCalls,0);assert.equal(permissionCalls,0);
+  await h.harness.actions.refreshLivePermissions();assert.equal(permissionCalls,1,'manual refresh must always reach the server');
+  time+=19999;h.pollBackground();await settle();assert.equal(inboxCalls,0);assert.equal(permissionCalls,1);
+  time+=1;h.pollBackground();await settle();assert.equal(inboxCalls,1);assert.equal(permissionCalls,1);
+  globalThis.document.visibilityState='hidden';time+=40000;h.pollBackground();await settle();assert.equal(inboxCalls,1);assert.equal(permissionCalls,1);
+  globalThis.document.visibilityState='visible';h.pollBackground();await settle();assert.equal(inboxCalls,2);assert.equal(permissionCalls,2);
+  h.harness.api.session=async()=>{throw Object.assign(new Error('Synthetic revoked'),{status:401});};
+  await assert.rejects(h.harness.actions.refreshLivePermissions(),{status:401});
+  const html=renderToStaticMarkup(h.render());assert.match(html,/Melisa CRM güvenli giriş/);
+ }finally{Date.now=originalNow;}
+}));
 test('actual production App first render hides persisted text and never overwrites storage before authentication',async()=>{
  mkdirSync(temporary,{recursive:true});const file=temporary+'text-draft-ssr-'+randomUUID()+'.mjs',previous=globalThis.window,local=storage();
  const s=createTextDraftStorage({getStorage:()=>local});s.activate(actor(),[row()]);s.set(row(),'PRIVATE UNSENT TEXT');local.setItem('melisa-crm-access-token','synthetic-remembered');const before=local.getItem(TEXT_DRAFT_STORAGE_KEY);

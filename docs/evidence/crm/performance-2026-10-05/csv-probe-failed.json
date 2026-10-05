@@ -1,0 +1,35 @@
+{
+  "measuredAt": "2026-10-05T13:34:52.174Z",
+  "runtimeSource": "f1899b0e0828f23010af75b1731682c749e596cc",
+  "scope": "existing-handler-fixed-SELECT-fresh-child",
+  "samples": [
+    {
+      "index": 1,
+      "scenario": "first-page",
+      "variant": "candidate",
+      "authMs": [
+        17.78
+      ],
+      "imagePoolMs": 167.47,
+      "identityParameterCount": 0,
+      "identitySqlLength": 33,
+      "identityBindMs": 0,
+      "identityQueryMs": 23.56,
+      "imagesParameterCount": 0,
+      "imagesSqlLength": 303,
+      "imagesBindMs": 0,
+      "imagesQueryMs": 38.87,
+      "eligibleIdCount": 1085,
+      "workerProfileUnavailable": true,
+      "status": 503,
+      "bytes": 104,
+      "totalMs": 14335.73,
+      "errorCode": "ERP_CATALOG_SQL_UNAVAILABLE"
+    }
+  ],
+  "limitations": [
+    "No server execution plan; SQL batch timing includes server compile/execute/network.",
+    "Worker uses exact executeRead in a fresh profiler child through original runner spawn dependency.",
+    "planUntilPool includes only exact executeRead plan construction; projection is post-query residual."
+  ]
+}

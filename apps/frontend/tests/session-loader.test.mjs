@@ -36,6 +36,15 @@ test('caller abort uses an AbortError and scoped reads cannot coalesce with a re
  }finally{globalThis.fetch=before;}
 });
 test('authorized catalog release enables its UI while retaining gateway account authentication',()=>{assert.equal(CATALOG_ENABLED,true);});
+
+test('startup completion timestamps describe the actual permission and inbox reads, not delayed commit time',async()=>{
+ let time=1000;const inbox=defer(),agents=defer(),commits=[];
+ const loader=createSessionLoader({now:()=>time,api:{session:async()=>({canAssign:true}),inbox:()=>inbox.promise,agents:()=>agents.promise},onCommit:x=>commits.push(x),onError:error=>{throw error;},onBusy:()=>{}});
+ const pending=loader.start({token:'synthetic'});await Promise.resolve();
+ time=6000;inbox.resolve({conversations:[]});await Promise.resolve();
+ time=9000;agents.resolve({agents:[]});await pending;
+ assert.equal(commits[0].permissionReadAt,1000);assert.equal(commits[0].inboxReadAt,6000);
+});
 test('timeout during successful JSON body reading fails closed instead of committing an empty inbox',async()=>{
  const before=globalThis.fetch;globalThis.fetch=async(url,{signal})=>new Response(new ReadableStream({start(controller){controller.enqueue(new TextEncoder().encode('{"data":'));signal.addEventListener('abort',()=>controller.error(new DOMException('Aborted','AbortError')));}}),{status:200,headers:{'Content-Type':'application/json'}});
  try{await assert.rejects(()=>liveApi.inbox('synthetic-timeout',0,{timeoutMs:10}),{code:'CRM_REQUEST_TIMEOUT'});}finally{globalThis.fetch=before;}
