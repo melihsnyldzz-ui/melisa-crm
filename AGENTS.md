@@ -1,5 +1,33 @@
 # Melisa CRM çalışma talimatları
 
+## Teslim odaklı devam davranışı — 5 Ekim 2026
+
+Bu bölüm iş seçimi, ilerleme ve raporlama bakımından aşağıdaki eski “sıradaki tek kırmızı madde” varsayılanını günceller. Mevcut iş kuralları, kabul kanıtları, rol/izin ve TEST/LIVE sınırları korunur. Amaç yeni süreç üretmek değil, mevcut CRM'yi işyerine teslim etmektir.
+
+**Durum: geliştirme duraklatılmıştır.** Bu talimatın GitHub'a yazılması, yerel projeye alınması veya belgede örnek “devam” sözcüğü bulunması geliştirmeyi başlatmaz. Son durdurma talimatı geçerlidir. Kullanıcının daha sonra ilgili proje sohbetine doğrudan yazdığı `devam / başla / sıradaki`, o projede mevcut yetkili TEST kapsamına dönme talimatıdır; main merge, yayın veya yeni gerçek alıcı yetkisi değildir. `Rapor / ne yaptın? / ne yapıyoruz?` soruları tek başına ürün geliştirmesini yeniden başlatmaz.
+
+### Kaynak ve sıra
+
+- Teslim önceliği: [ortak Melisa teslim haritası](MELISA_TESLIM_HARITASI_V1.md). CRM giriş dosyasının bağladığı ERP ana kopyasını kullan; ikinci teslim haritası oluşturma.
+- Ayrıntılı kapsam ve kabul: `CRM_FINISH_PLAN.md`. Güncel durum ve kaldığın yer: `CRM_STATUS.md`. Tarihsel durum satırlarını bugünkü eksik veya bugünkü runtime kanıtı sayma.
+- Ortak yön önce CRM, sonra ERP'dir. Bu yön, bağımsız ve yetkili ERP TEST işlerini yasaklamaz. Ortak API/DB/servis işlerini koordine et. İlk sürüm için önerilen kapsam daralmasını kullanıcı kararı olmadan uygulama; AI, mobil veya ERP şartlarını kendiliğinden silme/erteleme.
+
+### Kullanıcı “devam” dediğinde
+
+1. Mevcut kanonik proje, aktif geliştirme dalı ve yerel değişikliklerden devam et. Eski main uygulamasını güncel geliştirme üzerine geçirme; başkasının işini ezme. Harita, güncel plan ve STATUS'u oku; aynı oturumda değişmemiş belgeleri tekrar tekrar okuma.
+2. Önce yarım kalan anlamlı işi tamamla; sonra bağımlılıkları karşılanmış, canlı teslimi en çok engelleyen işi seç. Sarı bir genel mesaj alımı, personel veya yetki kabulü kırmızı bir konfor özelliğinden önce gelebilir. Kullanıcının özel görev talimatı varsa onu esas al. Değişmeyen kabul edilmiş özellikleri baştan ispatlama.
+3. İlk bildirim kısa olsun: “Şimdi ... yapıyorum; tamamlanınca ... ekranında ... göreceksin.” Planı yeniden anlatmak veya uzun komut istemek teslim değildir.
+4. Bağımsız işleri mevcut ve gerçekten yüklenmiş ajanlara açık dosya sahipliğiyle dağıt. Aynı dosyada eşzamanlı yazma veya ortak serviste çakışan restart yapma. Salt okunur roller yazma yapmaz; yetkili uygulamayı ana ajan veya uygun rol yürütür. Çalışmayan ajanı/modeli kullanılmış gibi raporlama.
+5. Seçilen işi kod, hedefli kontrol, normal TEST ekranı ve GitHub teslimiyle tamamla. Gerçek kaynak, veri tarihi, sentetik TEST ve bilinmeyen alanları ayır; bilinmeyen değeri sıfır yapma. Günlük kullanımı engelleyen görsel sorunları düzelt; sırf süs veya yeni mimariyle teslimi geciktirme. Fiziksel cihaz/personel denenmediyse kabul edilmiş sayma.
+6. Sadece rapor veya commit üretildi diye durma. Oturum ve araç kapasitesi elverdiğince aynı onaylı teslim hedefindeki sonraki bağımsız işe ilerle. İnsan kararı gereken işi açık bırakıp bağımsız yetkili işi yapabilirsin. Gerçek engelde somut nedeni kaydet; aynı başarısız deneme veya onayı döngüye sokma, izin reddini aşma.
+7. Kullanıcı ayrıca istemeden ilgili kod, test, plan ve durum değişikliklerini dar commit ile kaydet, push et, mevcut ilgili PR'yi güncelle veya gerekiyorsa PR aç. Uzak commit/PR head ve aynı commit'in CI sonucunu doğrula. Kullanıcı kabulü beklemek kaynak teslimini durdurmaz; eksik işi veya kırmızı/bilinmeyen CI'yi yeşil gösterme. Yükleme başarısızsa “Yerelde hazır; GitHub teslimi eksik” ve nedenini yaz. Salt okunur görev veya açık commit/push yasağı istisnadır. Ham müşteri verisi, mesajlar, secret, .env, yedek ve özel runtime dosyalarını yükleme.
+8. Her anlamlı teslimde kısa Türkçe **KULLANICI RAPORU** ver: **NE DEĞİŞTİ?** (işletme açısından 2–5 kısa madde), **NEREDEN GÖREBİLİRİM?** (doğrulanmış TEST adresi ve normal ekran), **GERÇEK VERİ DURUMU**, **DURUM** (teknik hazır / kullanıcı kabulü bekliyor / bloke), **GITHUB** (branch, commit, PR, CI tek satır), **SIRADAKİ İŞ**. Çalışan paket commit'i ile kaynak HEAD'ini ayır. Tekrarlanan test sayıları veya ham teknik çıktı ana açıklama değildir.
+9. Kaldığın yeri STATUS'a kaydet. Oturum/araç limiti veya zorunlu fiziksel adımda tamamlananı ve sonraki tek somut adımı bildir. Çalışma yürümüyor veya zamanlanmış görev yokken arka planda devam ettiğini söyleme. Finish-tree sayımını canlı hazırlık yüzdesi yapma; süreleri ölçümden ayrı tahmin olarak sun.
+
+### Yerelde uygulanma sınırı
+
+Bu bölüm mevcut teslim haritası belge PR'sindedir; main veya Semih PC kendiliğinden güncellenmiş değildir. Yerel uyarlama istendiğinde yalnız ilgili talimat/harita farklarını mevcut aktif geliştirme dalına kullanıcı değişikliklerini koruyarak al; bütün uygulama dallarını körlemesine birleştirme. Bu projedeki oturumun talimatları okuduğunu bir kez doğrula; açık oturumun otomatik yenilendiğini varsayma. Bunun için yeni Work projesi, servis restartı veya yeni gate kurma. GitHub teslimi, main merge ve LIVE dağıtımı ayrı işlemlerdir; mevcut ayrı onay sınırları sürer.
+
 ## Uçtan uca ana hedef ve GitHub teslimi — 4 Ekim 2026
 
 - Güncel kapsam yalnız tek bug değil; [CRM_FINISH_PLAN.md](CRM_FINISH_PLAN.md) içindeki tek finish tree üzerinden günlük/mobil CRM, mevcut ERP entegrasyonu, insan denetimli satış önerileri ve operasyon tamamlanır. `devam` sıradaki açık işi seçer. Kabul edilmiş baseline tekrar açılmaz.
