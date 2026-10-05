@@ -26,3 +26,13 @@ ERP sözleşmesi hazır olana kadar kabul edilmiş mesajlaşma baseline'ı korun
 | ID | Hedef | Kabul kriteri | Durum | Bağımlılık |
 | --- | --- | --- | --- | --- |
 | CRM-D06 | Canlı teslimi engellemeyen yeni fikirleri değerlendir. | Yeni fikir ancak açık kullanıcı kararı/ID/kabul ölçütüyle işe dönüşür; insan kontrollü copilot dışındaki otomatik gerçek gönderim ayrıca karar gerektirir. | Bekleyen fikir havuzu; uygulama onayı yok | Mevcut canlı teslim; yeni kullanıcı kararı; CRM-DEC-003 |
+
+## Denetim / karar hazırlığı — 5 Ekim 2026
+
+Bu kayıt yukarıdaki CRM-D01–D06 sırasını değiştirmez ve yeni geliştirme seçmez. Kullanıcının ayrı denetim talimatı kapsamında gerçek TEST ekranları kullanıldı; rapor sonrası durulur.
+
+| ID | Hedef | Kabul kriteri | Durum | Bağımlılık |
+| --- | --- | --- | --- | --- |
+| CRM-AUDIT-001 | Mevcut CRM'nin gerçek kullanım görünümünü ve UX karar adaylarını arşivle. | Görünür TEST ADMIN denetimi, yalnız 7733 etkili denemeleri, diğer müşteriler salt okunur; ekran/akış tablosu ve en fazla 10 karar; secret içermeyen private GitHub kanıt teslimi. | Denetim ve rapor hazır; kullanıcı + ChatGPT kararları bekliyor. [CRM_REVIEW](docs/evidence/crm/2026-10-05/CRM_REVIEW.md), [kanıt manifesti](docs/evidence/crm/2026-10-05/manifest.json); dal codex/crm-usage-audit-20261005. GitHub teslimi ilgili PR/Checks üzerinden ayrıca doğrulanır. | CRM-DEC-004; kullanıcı büyük UX/öncelik kararı |
+
+Sonuç: gerçek çift yönlü metin/Türkçe çeviri, medya okuma/oynatma ve gerçek katalog PDF görüldü. 429, eski geçmiş erişimi, sonuç üretmeyen AI ve denetim sonundaki kapalı gönderim somut bulgu; iki ürünlü ERP denemesi doğrulanamadı. Bunlar önceki kabulleri silmez. Kod/servis değişikliği, main merge ve LIVE deploy yok.
