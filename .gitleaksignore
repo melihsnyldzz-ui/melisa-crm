@@ -1,3 +1,6 @@
 # Exact false positives independently reviewed on 2026-10-03; no broad exclusions.
 # Synthetic role-auth test fixture
 c2f1682bd3839b60d3a038f6240df9a55f6ae89f:apps/frontend/tests/gateway.test.mjs:generic-api-key:87
+# Independently reviewed 2026-10-05: offline TEST/LIVE isolation fixture only;
+# real TEST session signing uses a separate random in-memory key.
+cfb7022b901971c3fd911f51ac161109e8963f39:tests/test-admin.test.mjs:generic-api-key:21
