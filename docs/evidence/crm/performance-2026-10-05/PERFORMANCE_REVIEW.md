@@ -44,6 +44,10 @@ API serilerinde 429 görülmedi; mevcut ayrı read/send/login bütçeleri deği�
 
 Yeni kanıtlar aynı performance-2026-10-05 arşivinde: [önce browser](startup-before-browser.json), [sonra browser](startup-after-browser.json), [önce katalog](startup-before-catalog.json), [sonra katalog](startup-after-catalog.json), [önce liste](startup-before-7733-list.jpg), [sonra tam liste](startup-after-complete-7733-list.jpg), [gerçek geçmiş](startup-after-7733-history.jpg), [önce katalog ekranı](startup-before-catalog.jpg), [sonra katalog ekranı](startup-after-catalog.jpg). Ham müşteri verisi, credential/config veya token arşive alınmadı.
 
+## Tarihsel — 5 Ekim 18:00 katalog teslimi
+
+Bu bölüm önceki f166 paket ölçümüdür; ilk listeye ilişkin güncel sonuçlar yukarıdaki 19:03 teslimindedir.
+
 5 Ekim 2026 TEST ölçümleri katalog okumalarında belirgin hızlanma gösteriyor. Normal tarayıcıda katalog açılışı ve PDF indirme de kısalmış. İlk CRM açılışındaki Chatwoot beklemesi sürüyor; bütün ekranların bir saniyenin altında açıldığı veya kullanıcı kabulünün tamamlandığı sonucu çıkmaz.
 
 Önceki çalışan kaynak `f1899b0e0828f23010af75b1731682c749e596cc`, sonraki çalışan kaynak ve uygulama teslim commit'i `f166b0f7db499c68e6cc6718bcf090fcaf457927`. Sonraki startup manifest SHA256 `47c495de9fa0d1da6a1878b7dfc2b2d6742c976d4541f35944315bacd36b6d4f`; dosya hash'i seçili config değeriyle eşleşti. Önceki API ölçümünün belge HEAD'i `8549b42` idi; çalışan kaynakla aynı alan değildir. Yetkili TEST paket geçişi 17:23:58'de READY oldu; sonraki ölçümler bu değişmez pakette yapıldı. Bu raporun yazılması runtime değiştirmedi. Sonraki belge commit'i uygulama paketinin source commit'i değildir.
