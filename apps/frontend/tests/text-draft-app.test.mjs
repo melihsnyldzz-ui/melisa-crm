@@ -17,7 +17,7 @@ const fakeWindow=sessionStorage=>({location:{pathname:'/',search:''},crypto:{ran
 const settle=async()=>{await Promise.resolve();await Promise.resolve();};
 async function bundle(file,instrument=false){
  await build({absWorkingDir:frontend,tsconfigRaw:{},entryPoints:[frontend+'src/App.jsx'],outfile:file,bundle:true,platform:'node',format:'esm',jsx:'automatic',define:{'import.meta.env.DEV':'false','import.meta.env.VITE_CRM_TEST':'"1"'},external:['react','@phosphor-icons/react'],loader:{'.css':'empty'},plugins:instrument?[{name:'isolated-app-handler-harness',setup(build){
-  build.onLoad({filter:/App\.jsx$/},args=>({loader:'jsx',contents:readFileSync(args.path,'utf8').replace(/^import \{ useCallback, useEffect, useMemo, useRef, useState \} from "react";/,'const {useCallback,useEffect,useMemo,useRef,useState}=globalThis.__draftHooks;').replace('  if (liveMode && !liveSession) return <LoginGate','  globalThis.__draftHarness.actions={commitLiveSession,setDraft,sendMessage,closeLiveSession,refreshLivePermissions,selectConversation,setQuery,setFilter,loadRemainingConversations,activateTerminal};\n  if (liveMode && !liveSession) return <LoginGate')}));
+  build.onLoad({filter:/App\.jsx$/},args=>({loader:'jsx',contents:readFileSync(args.path,'utf8').replace(/^import \{ useCallback, useEffect, useMemo, useRef, useState \} from "react";/,'const {useCallback,useEffect,useMemo,useRef,useState}=globalThis.__draftHooks;').replace('  if (liveMode && !liveSession) return <LoginGate','  globalThis.__draftHarness.actions={commitLiveSession,setDraft,sendMessage,closeLiveSession,refreshLivePermissions,selectConversation,setQuery,setFilter,loadRemainingConversations,activateTerminal,checkSendStatus};\n  if (liveMode && !liveSession) return <LoginGate')}));
   build.onLoad({filter:/liveApi\.js$/},args=>({loader:'js',contents:readFileSync(args.path,'utf8')+'\nfor(const name of Object.keys(globalThis.__draftHarness.api))liveApi[name]=(...args)=>globalThis.__draftHarness.api[name](...args);'}));
  }}]:[]});
 }
@@ -29,7 +29,7 @@ async function fixture(run,{compact=false,terminal=false,offline=false}={}){
  if(compact)globalThis.window.localStorage.getItem=()=> 'terminal';
  globalThis.document={visibilityState:'visible',addEventListener(){},removeEventListener(){}};
  globalThis.__draftHooks={useState(initial){const i=cursor++;if(!(i in values))values[i]=typeof initial==='function'?initial():initial;return [values[i],update=>{values[i]=typeof update==='function'?update(values[i]):update;}];},useRef(initial){const i=cursor++;if(!(i in values))values[i]={current:initial};return values[i];},useMemo:fn=>fn(),useCallback:fn=>fn,useEffect:fn=>effects.push(fn)};
- const harness=globalThis.__draftHarness={api:{canonicalCatalogProduct:async()=>({}),erpDrafts:async()=>({orders:[]}),catalogSignOut:async()=>({}),session:async()=>actor(),inbox:async()=>({conversations:[row()],summary:{total:1}}),conversation:async()=>({conversation:row()}),send:async()=>({message:{id:'synthetic-accepted',direction:'outgoing',text:'sent'}})},actions:null};
+ const harness=globalThis.__draftHarness={api:{sendStatus:async()=>({}),canonicalCatalogProduct:async()=>({}),erpDrafts:async()=>({orders:[]}),catalogSignOut:async()=>({}),session:async()=>actor(),inbox:async()=>({conversations:[row()],summary:{total:1}}),conversation:async()=>({conversation:row()}),send:async()=>({message:{id:'synthetic-accepted',direction:'outgoing',text:'sent'}})},actions:null};
  try{await bundle(file,true);const {App}=await import(pathToFileURL(file).href);const render=()=>{cursor=0;effects.length=0;return App();};const connect=(session=actor(),rows=[row(),row('56')],inboxExtra={})=>{harness.actions.commitLiveSession({key:'synthetic-session',session,inbox:{conversations:rows,summary:{total:rows.length},...inboxExtra},agents:{agents:[]}});return render();};
   render();await run({local,harness,render,connect,pollBackground:()=>effects.filter(fn=>String(fn).includes('const refreshInbox = async')||String(fn).includes('permissionPollRef.current')).forEach(fn=>fn()),pollDrafts:()=>effects.filter(fn=>String(fn).includes('textDraftStorageRef.current.synchronize')).forEach(fn=>fn()),pollConversation:()=>effects.filter(fn=>String(fn).includes('const refreshConversation = async')).forEach(fn=>fn())});
  }finally{globalThis.window=previous.window;globalThis.document=previous.document;globalThis.__draftHooks=previous.hooks;globalThis.__draftHarness=previous.harness;rmSync(file,{force:true});}
@@ -157,6 +157,22 @@ test('actual App preserves failed/uncertain text and 401 expiry; explicit logout
  h.connect();assert.equal(composer(h.render()).props.value,'unsent human text');let calls=0;h.harness.api.send=async()=>{calls++;throw new TypeError('synthetic transport failure');};await h.harness.actions.sendMessage();const uncertainTree=h.render();assert.equal(composer(uncertainTree).props.value,'unsent human text');assert.equal(find(uncertainTree,node=>node.props?.['aria-label']==='Mesajı gönder').props.disabled,true);await h.harness.actions.sendMessage();assert.equal(calls,1);
  await h.harness.actions.closeLiveSession('',true);h.render();assert.equal(h.local.getItem(TEXT_DRAFT_STORAGE_KEY),null);h.connect();assert.equal(composer(h.render()).props.value,'');await settle();
 }));
+
+test('actual terminal status control is read-only, keeps unknown locks, and unlocks only exact pretransport rejection',async()=>fixture(async h=>{
+ h.connect();h.harness.actions.setDraft('Original preserved body');h.render();let sends=0,uuid;
+ h.harness.api.send=async(_token,_id,_text,id)=>{sends++;uuid=id;throw Object.assign(Error('synthetic response loss'),{status:503});};
+ await h.harness.actions.sendMessage();let tree=h.render();assert.equal(sends,1);
+ assert.equal(find(tree,node=>node.props?.['aria-label']==='Dosya ekle').props.disabled,false,'reloaded attachment may be reselected without enabling transport');
+ assert.equal(find(tree,node=>node.props?.['aria-label']==='Mesajı gönder').props.disabled,true);
+ const base={clientRequestId:uuid,conversationId:'55',providerMessageIdPresent:false,chatwootMessageIdPresent:false};
+ for(const outcome of [null,{...base,deliveryState:'PENDING'},{...base,deliveryState:'REJECTED_BEFORE_TRANSPORT',clientRequestId:'other'}]){
+  h.harness.api.sendStatus=async(_token,id,text,requestId,media)=>{assert.equal(id,'55');assert.equal(text,'Original preserved body');assert.equal(requestId,uuid);assert.equal(media,null);return outcome;};
+  await h.harness.actions.checkSendStatus();tree=h.render();assert.equal(find(tree,node=>node.props?.['aria-label']==='Mesajı gönder').props.disabled,true);assert.equal(sends,1);
+ }
+ for(const status of [403,409,404]){h.harness.api.sendStatus=async()=>{throw Object.assign(Error('denied'),{status});};await h.harness.actions.checkSendStatus();assert.equal(find(h.render(),node=>node.props?.['aria-label']==='Mesajı gönder').props.disabled,true);}
+ h.harness.api.sendStatus=async()=>({...base,deliveryState:'CONFIRMED',providerMessageIdPresent:true,chatwootMessageIdPresent:true});await h.harness.actions.checkSendStatus();tree=h.render();assert.match(renderToStaticMarkup(tree),/Gönderim kabul edilmiş/);assert.equal(find(tree,node=>node.props?.['aria-label']==='Mesajı gönder').props.disabled,true);
+ h.harness.api.sendStatus=async()=>({...base,deliveryState:'REJECTED_BEFORE_TRANSPORT'});await h.harness.actions.checkSendStatus();tree=h.render();assert.equal(find(tree,node=>node.props?.['aria-label']==='Mesajı gönder').props.disabled,false);assert.equal(composer(tree).props.value,'Original preserved body');assert.equal(sends,1,'checking journal never retries transport');
+},{terminal:true}));
 test('actual App view-only typing remains memory-only across inbox synchronization',async()=>fixture(async h=>{
  h.connect({...actor(),canSend:false,liveSendEnabled:false});h.harness.actions.setDraft('view-only editable text');assert.equal(composer(h.render()).props.value,'view-only editable text');h.pollDrafts();assert.equal(composer(h.render()).props.value,'view-only editable text');assert.equal(h.local.getItem(TEXT_DRAFT_STORAGE_KEY),null);
 }));

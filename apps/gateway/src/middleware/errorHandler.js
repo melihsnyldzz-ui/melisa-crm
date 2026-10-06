@@ -40,6 +40,8 @@ export function errorHandler(err, req, res, next) {
   if (err.meta?.deliveryState) meta.deliveryState = err.meta.deliveryState;
   if (err.meta?.clientRequestId) meta.clientRequestId = err.meta.clientRequestId;
   if (err.meta?.providerStatus) meta.providerStatus = err.meta.providerStatus;
+  if (err.meta?.transportAttempted === false && req.method === 'POST'
+    && /^\/crm\/conversations\/[1-9][0-9]*\/messages$/.test(req.path)) meta.transportAttempted = false;
 
   return res.status(statusCode).json({
     success: false,

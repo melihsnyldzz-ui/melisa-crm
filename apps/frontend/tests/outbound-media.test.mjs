@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { MAX_FILE_BYTES, MAX_REQUEST_BYTES, ATTACHMENT_ACCEPT, attachmentMimeType, attachmentMediaLabel, prepareAttachment, validateAttachmentFile, validateFileSignature, validateSendPayload, classifySendFailure } from "../src/outboundMedia.js";
+import { MAX_FILE_BYTES, MAX_REQUEST_BYTES, ATTACHMENT_ACCEPT, attachmentMimeType, attachmentMediaLabel, prepareAttachment, validateAttachmentFile, validateFileSignature, validateSendPayload, classifySendFailure, outboundRecoveryState } from "../src/outboundMedia.js";
 const png = {type:"image/png", size:100, name:"test.png"};
 test("one-file allowlist and 3 MiB raw ceiling", () => {
   for (const type of ["image/jpeg","image/png","image/webp","application/pdf","text/plain","audio/mpeg","audio/mp4","audio/ogg","audio/wav","video/mp4"]) {
@@ -80,6 +80,8 @@ test("request counts serialized UTF-8 bytes before network", () => {
  assert.throws(()=>validateSendPayload({media:{dataUrl:"https://example.test/photo",mimeType:"image/png"}}),{status:400});
 });
 test("timeouts/5xx/explicit uncertain lock; definitive denial is retryable manually", () => {
+ assert.equal(classifySendFailure({status:503,code:'WHATSAPP_CRM_WAAPI_NOT_READY',transportAttempted:false}),'failed');
+ assert.equal(classifySendFailure({status:503,code:'WHATSAPP_CRM_WAAPI_NOT_READY'}),'uncertain');
  for(const error of [{code:"CRM_REQUEST_TIMEOUT"},{status:502},{status:409,code:"UNCONFIRMED_NO_RETRY"}]) assert.equal(classifySendFailure(error),"uncertain");
  for(const error of [{status:401},{status:413},{status:429},{status:503,code:"SEND_DISABLED"},{status:409,code:"PROVIDER_NOT_READY"}]) assert.equal(classifySendFailure(error),"failed");
 });
@@ -98,6 +100,14 @@ test("live media send preserves same-origin auth and idempotency contract, with 
   await assert.rejects(()=>liveApi.send("mock-token","synthetic-id","","unique-failure",media));
   assert.equal(calls.length,2);
  } finally {globalThis.fetch=originalFetch;}
+});
+
+test('only an exact UUID and conversation with definite receipt evidence resolves a send lock',()=>{
+ const base={clientRequestId:'synthetic-id',conversationId:'55',deliveryState:'REJECTED_BEFORE_TRANSPORT',providerMessageIdPresent:false,chatwootMessageIdPresent:false};
+ assert.equal(outboundRecoveryState(base,'synthetic-id','55'),'rejected');
+ for(const receipt of [null,{...base,clientRequestId:'other'},{...base,conversationId:'56'},{...base,providerMessageIdPresent:true},{...base,deliveryState:'PENDING'},{...base,deliveryState:'UNCONFIRMED_NO_RETRY'}])assert.equal(outboundRecoveryState(receipt,'synthetic-id','55'),'uncertain');
+ assert.equal(outboundRecoveryState(base,'','55'),'uncertain');
+ assert.equal(outboundRecoveryState({...base,deliveryState:'CONFIRMED',providerMessageIdPresent:true,chatwootMessageIdPresent:true},'synthetic-id','55'),'confirmed');
 });
 
 test("audio/video sends retain recipient, canonical MIME and one request identity without retries", async (t) => {

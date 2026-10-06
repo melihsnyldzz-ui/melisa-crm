@@ -62,8 +62,15 @@ export function validateSendPayload(payload) {
   return payload;
 }
 export function classifySendFailure(error) {
+  if (error.transportAttempted === false) return "failed";
   const blocked = /SEND_DISABLED|NOT_CONNECTED|PROVIDER_NOT_READY/.test(error.code || "");
   return !blocked && (String(error.code).includes("UNCONFIRMED_NO_RETRY") || String(error.message).includes("UNCONFIRMED_NO_RETRY") || !error.status || error.status >= 500) ? "uncertain" : "failed";
+}
+export function outboundRecoveryState(receipt, clientRequestId, conversationId) {
+  if (!clientRequestId || receipt?.clientRequestId !== clientRequestId || String(receipt.conversationId) !== String(conversationId)) return 'uncertain';
+  if (receipt.deliveryState === 'REJECTED_BEFORE_TRANSPORT' && receipt.providerMessageIdPresent === false && receipt.chatwootMessageIdPresent === false) return 'rejected';
+  if (receipt.deliveryState === 'CONFIRMED' && receipt.providerMessageIdPresent === true && receipt.chatwootMessageIdPresent === true) return 'confirmed';
+  return 'uncertain';
 }
 export function selectedConversation(conversations, id) {
   return conversations.find((item) => String(item.id) === String(id)) || null;

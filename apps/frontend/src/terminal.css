@@ -9,6 +9,13 @@
 .terminal-entry .terminal-home { min-width:44px; min-height:44px; display:flex; align-items:center; gap:6px; border:1px solid #d5e4d8; border-radius:12px; background:#fff; color:#1d6036; padding:8px; }
 .terminal-entry .workspace { height:calc(var(--crm-height,100dvh) - 60px); }
 .terminal-entry button,.terminal-entry select { min-height:44px; }
+.app-shell.redesigned.whatsapp-ui.terminal-entry button { min-height:44px; min-width:44px; }
+.terminal-entry .automatic-translation-toggle > label { min-height:44px; display:flex; align-items:center; }
+body:has(.terminal-entry) .catalog-builder button,
+body:has(.terminal-entry) .catalog-builder select,
+body:has(.terminal-entry) .catalog-builder input { min-height:44px; }
+body:has(.terminal-entry) .catalog-builder button { min-width:44px; }
+body:has(.terminal-entry) .catalog-reorder { grid-template-columns:44px 44px; }
 .terminal-entry .conversation-row { min-height:78px; }
 .terminal-entry .automatic-translation-toggle { display:flex; flex-wrap:wrap; align-items:center; gap:8px; padding:6px 12px; font-size:12px; }
 .terminal-entry .automatic-translation-toggle select { min-width:140px; padding:4px; border:1px solid #d5e4d8; border-radius:8px; }

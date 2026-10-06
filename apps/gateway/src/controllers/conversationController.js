@@ -2,7 +2,7 @@ import { env } from '../config/env.js';
 import { assignChatwootConversationToAgent } from '../services/chatwootConversationService.js';
 import { getChatwootConversationDetail, getChatwootConversationAccess, assertChatwootAssignedInboxCurrent, listChatwootAgents } from '../services/chatwootInboxService.js';
 import { verifyCrmAccessToken, assertCrmPermission } from '../services/crmAuthService.js';
-import { sendCrmTextMessage } from '../services/sendService.js';
+import { sendCrmTextMessage, readCrmOutboundStatus } from '../services/sendService.js';
 import { ok } from '../utils/response.js';
 
 // The short TEST rehearsal may expire during a provider read. Normal sessions
@@ -99,3 +99,36 @@ export async function postConversationMessage(req, res, next) {
     return next(error);
   }
 }
+
+export function createOutboundStatusRequestGuard(req, verify = verifyCrmAccessToken) {
+  const header = req.get('authorization') || '';
+  const identity = user => JSON.stringify([user?.id,user?.username,user?.role,user?.chatwootAgentId,user?.testPersonnel === true]);
+  const original = identity(req.user);
+  return () => {
+    if (!/^Bearer [^\s]+$/.test(header)) throw Object.assign(Error('Oturum doğrulanamadı.'),{statusCode:401,code:'AUTH_TOKEN_INVALID'});
+    const user = verify(header.slice(7));
+    if (user?.active !== true || identity(user) !== original) throw Object.assign(Error('Oturum değişti.'),{statusCode:401,code:'AUTH_TOKEN_INVALID'});
+    assertCrmPermission(user,'crm.send');
+    return user;
+  };
+}
+export function createOutboundStatusController({
+  readConversation = getChatwootConversationDetail, readAccess = getChatwootConversationAccess,
+  readStatus = readCrmOutboundStatus, makeGuard = createOutboundStatusRequestGuard,
+} = {}) {
+  return async (req, res, next) => {
+    try {
+      const conversationId = req.params.conversationId;
+      const guard = makeGuard(req);
+      await guard?.({permission:'crm.send',conversationId});
+      const conversation = await readConversation({conversationId,user:req.user});
+      const result = await readStatus({conversationId:String(conversation.id),phone:conversation.phone,
+        remoteJid:conversation.remoteJid,actorId:req.user.id,text:req.body?.text,
+        media:req.body?.media,clientRequestId:req.body?.clientRequestId});
+      await readAccess({conversationId,user:req.user});
+      await guard?.({permission:'crm.send',conversationId});
+      return ok(res,result,{source:'outbound-journal',readOnly:true});
+    } catch(error) { return next(error); }
+  };
+}
+export const postConversationMessageStatus = createOutboundStatusController();

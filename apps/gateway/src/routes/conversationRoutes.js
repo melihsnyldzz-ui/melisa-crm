@@ -3,6 +3,7 @@ import {
   patchConversationAssignment,
   getConversationDetail,
   postConversationMessage,
+  postConversationMessageStatus,
 } from '../controllers/conversationController.js';
 import { requireCrmAuth, requireCrmPermission } from '../middleware/auth.js';
 import { crmTranslationRateLimit } from '../middleware/security.js';
@@ -19,6 +20,13 @@ conversationRoutes.get(
   requireCrmAuth,
   requireCrmPermission('crm.view'),
   getConversationDetail,
+);
+
+conversationRoutes.post(
+  '/crm/conversations/:conversationId/messages/status',
+  requireCrmAuth,
+  requireCrmPermission('crm.send'),
+  postConversationMessageStatus,
 );
 
 conversationRoutes.post(

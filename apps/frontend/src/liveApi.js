@@ -154,6 +154,7 @@ async function request(path, accessToken = "", options = {}) {
     const error = new Error(errorMessage(payload, response.status));
     error.status = response.status;
     error.code = payload?.error?.code || "";
+    if (payload?.meta?.transportAttempted === false) error.transportAttempted = false;
     throw error;
   }
   return preserveEnvelope ? payload : dataOf(payload);
@@ -645,6 +646,12 @@ export const liveApi = {
   salesDraft: (token, id, {signal,catalogSearch='',customerLanguage,currentComposer,draftContext} = {}) => {
     if(typeof catalogSearch!=='string'||catalogSearch.trim().length>120)throw new Error('Ürün araması en fazla 120 karakter olabilir.');
     return request(`/crm/conversations/${encodeURIComponent(String(id))}/sales-draft`, token, { method: 'POST', body: JSON.stringify({...(catalogSearch.trim()?{catalogSearch:catalogSearch.trim()}:{}),...(customerLanguage!==undefined?{customerLanguage}:{}),...(currentComposer!==undefined?{currentComposer}:{}),...(draftContext!==undefined?{draftContext}:{})}), signal, timeoutMs: 90000, preserveAuthDenial: true, redirect: 'error' });
+  },
+  async sendStatus(token, id, text, clientRequestId, media = null) {
+    const payload = {text,media,clientRequestId};
+    validateSendPayload(payload);
+    return request(`/crm/conversations/${encodeURIComponent(String(id))}/messages/status`,token,
+      {method:'POST',body:JSON.stringify(payload),preserveAuthDenial:true,redirect:'error'});
   },
   async translate(token, id, { mode, text, targetLanguage }) {
     const body = { mode, text };
