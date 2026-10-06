@@ -15,7 +15,7 @@ const messageRow = (id,peer,ts,extra={}) => ({message:{id:{_serialized:`false_${
 const chat = (peer,ts,extra={}) => ({id:{_serialized:peer},isGroup:false,unreadCount:0,timestamp:ts,lastMessage:{id:{_serialized:`true_${peer}_hint`,fromMe:true,remote:peer},timestamp:ts},...extra});
 async function reader(t,request,{time=clock(),journal,provider,config={incomingTestOnly:false}}={}) {
  const accepted=[],calls=[];let tick;
- const transport=provider||{request:async(action,body)=>{calls.push({action,body});return request(action,body);}};
+ const transport=provider||{request:async(action,body)=>{calls.push({action,body,at:time.value});return request(action,body);}};
  const stop=startTestIncomingReader({provider:transport,config,journal:journal||{accept:async event=>{accepted.push(event);return{accepted:true};}},
   bridge:{sync:()=>{throw Error('general reader must use the durable journal, not fixed conversation55');}},
   now:()=>time.value,setIntervalFn:fn=>{tick=fn;return{unref(){}};},clearIntervalFn:()=>{}});
@@ -83,9 +83,109 @@ test('bounded queue retains a partially discovered page until all 330 recent pee
  const chats=Array.from({length:330},(_,i)=>chat(`${19999000000+i}@c.us`,ts));
  const r=await reader(t,(action,body)=>action==='action/get-chats'?success(chats.slice(body.offset,body.offset+body.limit)):
   success([messageRow('one-per-peer',body.chatId,ts)]),{time});
- for(let i=0;i<1000&&r.accepted.length<330;i++)await r.tick(300001);
+ for(let i=0;i<1000&&r.accepted.length<330;i++)await r.tick();
  assert.equal(r.accepted.length,330);assert.equal(new Set(r.accepted.map(event=>event.phone)).size,330);
  assert(r.calls.every(call=>call.body.limit===100));
+});
+
+test('a fresh peer bypasses a saturated 500-peer backfill while every older peer retains a turn',async t=>{
+ const time=clock(),ts=Math.floor(time.value/1000),peers=Array.from({length:500},(_,i)=>`${19999000000+i}@c.us`);
+ const freshPeer=peers[400],seen=new Set();let changed=false,replyAt,receivedAt;
+ const r=await reader(t,(action,body)=>{
+  if(action==='action/get-chats') {
+   const chats=peers.map(peer=>chat(peer,changed&&peer===freshPeer?Math.floor(replyAt/1000):ts));
+   chats.sort((a,b)=>b.timestamp-a.timestamp);
+   return success(chats.slice(body.offset,body.offset+body.limit));
+  }
+  return success([messageRow(changed&&body.chatId===freshPeer?'fresh-reply':'backlog',body.chatId,
+   changed&&body.chatId===freshPeer?Math.floor(replyAt/1000):ts)]);
+ },{time,journal:{accept:async event=>{
+  seen.add(event.phone);
+  if(event.providerMessageId.endsWith('_fresh-reply'))receivedAt??=time.value;
+  return{accepted:true};
+ }}});
+ for(let i=0;i<30;i++)await r.tick();
+ assert(seen.size<100,'the startup backlog must still be active when the reply arrives');
+ changed=true;replyAt=time.value;
+ for(let i=0;i<8&&receivedAt===undefined;i++)await r.tick();
+ assert(receivedAt!==undefined,'a fresh reply must not wait behind the complete backfill');
+ assert(receivedAt-replyAt<=360000,`fresh reply waited ${receivedAt-replyAt}ms`);
+ const olderCount=seen.size;
+ for(let i=0;i<1600&&seen.size<500;i++)await r.tick();
+ assert.equal(seen.size,500);assert(seen.size>olderCount);
+ t.diagnostic(`synthetic 500-peer queue: fresh reply ${receivedAt-replyAt}ms; all 500 peers retained`);
+ for(const call of r.calls)assert(r.calls.filter(other=>other.at>call.at-300000&&other.at<=call.at).length<=8);
+ assert(r.calls.every(call=>['action/get-chats','action/fetch-messages'].includes(call.action)&&call.body.limit===100));
+});
+
+test('a changed paginated peer probes its newest page promptly and then resumes its unfinished old cursor',async t=>{
+ const time=clock(),ts=Math.floor(time.value/1000);let changed=false,freshAt;
+ const r=await reader(t,(action,body)=>{
+  if(action==='action/get-chats')return success([chat(peerA,changed?ts+1:ts),chat(peerB,ts)]);
+  if(body.chatId===peerB)return success([messageRow('oldest-slot',peerB,ts)]);
+  if(body.offset===0&&changed){freshAt??=time.value;return success([messageRow('new-head-reply',peerA,ts+1)]);}
+  changed=true;
+  return success(Array.from({length:100},(_,i)=>messageRow('deep-'+(body.offset+i),peerA,ts)));
+ },{time});
+ const started=time.value;
+ for(let i=0;i<8&&freshAt===undefined;i++)await r.tick();
+ assert(freshAt!==undefined);assert(freshAt-started<=360000);
+ for(let i=0;i<12;i++)await r.tick();
+ assert(r.accepted.some(event=>event.providerMessageId.endsWith('_oldest-slot')));
+ assert(r.calls.some(call=>call.action==='action/fetch-messages'&&call.body.offset>=300));
+ assert(r.accepted.some(event=>event.providerMessageId.endsWith('_new-head-reply')));
+ t.diagnostic(`synthetic deep pagination: changed head ${freshAt-started}ms; old cursor resumed`);
+});
+
+test('failed head refreshes do not prevent retained backfill peers from being read',async t=>{
+ const time=clock(),ts=Math.floor(time.value/1000),chats=Array.from({length:330},(_,i)=>chat(`${19999000000+i}@c.us`,ts));let heads=0;
+ const r=await reader(t,(action,body)=>{
+  if(action==='action/get-chats'){
+   if(body.offset===0&&++heads>1)throw Error('SYNTHETIC_HEAD_FAILURE');
+   return success(chats.slice(body.offset,body.offset+body.limit));
+  }
+  return success([messageRow('retained-peer',body.chatId,ts)]);
+ },{time});
+ for(let i=0;i<40;i++)await r.tick();
+ assert(heads>2);assert(r.accepted.length>10,'head failure must not monopolize every later tick');
+ assert(r.calls.some(call=>call.action==='action/get-chats'&&call.body.offset===200));
+});
+
+test('changed-peer full rescans retain all 275 new messages before resuming a deep saved cursor',async t=>{
+ const time=clock(),ts=Math.floor(time.value/1000),seen=new Set();let changed=false,starts=0;
+ const original=Array.from({length:1000},(_,i)=>messageRow('original-'+i,peerA,ts));
+ const burst=Array.from({length:275},(_,i)=>messageRow('fresh-burst-'+i,peerA,ts+1));
+ const r=await reader(t,(action,body)=>{
+  if(action==='action/get-chats')return success([chat(peerA,changed?ts+1:ts)]);
+  if(body.offset===0)starts++;
+  // Both shapes are valid: current messages may precede or follow the old rows.
+  const rows=changed?[...burst,...original]:original;
+  if(!changed&&body.offset===400)changed=true;
+  return success(rows.slice(body.offset,body.offset+body.limit));
+ },{time,journal:{accept:async event=>{seen.add(event.providerMessageId);return{accepted:true};}}});
+ for(let i=0;i<140;i++)await r.tick();
+ assert(changed);assert.equal(starts,2,'the changed hint must start one complete rescan');
+ assert.equal([...seen].filter(id=>id.includes('_fresh-burst-')).length,275);
+ assert.equal([...seen].filter(id=>id.includes('_original-')).length,1000);
+ const offsets=r.calls.filter(call=>call.action==='action/fetch-messages').map(call=>call.body.offset);
+ const rescanStart=offsets.indexOf(0,1);
+ assert.deepEqual(offsets.slice(rescanStart,rescanStart+13),Array.from({length:13},(_,i)=>i*100));
+ assert(offsets.slice(rescanStart+13).includes(500),'the prior cursor remains resumable after the terminal rescan');
+});
+
+test('changed-peer rescans also reach a fresh burst after oldest-first provider pages',async t=>{
+ const time=clock(),ts=Math.floor(time.value/1000),seen=new Set();let changed=false;
+ const original=Array.from({length:1000},(_,i)=>messageRow('ascending-old-'+i,peerA,ts));
+ const burst=Array.from({length:275},(_,i)=>messageRow('ascending-new-'+i,peerA,ts+1));
+ const r=await reader(t,(action,body)=>{
+  if(action==='action/get-chats')return success([chat(peerA,changed?ts+1:ts)]);
+  const rows=changed?[...original,...burst]:original;
+  if(!changed&&body.offset===400)changed=true;
+  return success(rows.slice(body.offset,body.offset+body.limit));
+ },{time,journal:{accept:async event=>{seen.add(event.providerMessageId);return{accepted:true};}}});
+ for(let i=0;i<140;i++)await r.tick();
+ assert.equal([...seen].filter(id=>id.includes('_ascending-new-')).length,275);
+ assert.equal([...seen].filter(id=>id.includes('_ascending-old-')).length,1000);
 });
 
 test('a newer discovery hint during message pagination schedules another complete fetch pass',async t=>{
@@ -264,6 +364,55 @@ test('provider429 globally waits before any other peer/discovery request and res
  },{time});
  await r.tick();const count=r.calls.length;for(let i=0;i<5;i++)await r.tick();assert.equal(r.calls.length,count);
  await r.tick(300000);await r.tick();assert.equal(r.accepted.length,1);
+});
+
+test('a provider-local quota resumes at its exact oldest-call expiry instead of adding another five minutes',async t=>{
+ const time=clock(),ts=Math.floor(time.value/1000),requests=[];
+ const provider=new WaapiProvider({config:{instanceId:WAAPI_INSTANCE,apiToken:'synthetic-offline-token'},now:()=>time.value,
+  fetchFn:async(url,options)=>{
+   const action=url.slice(url.lastIndexOf('/client/')+8),body=options.body?JSON.parse(options.body):undefined;
+   requests.push({action,body,at:time.value});
+   return{ok:true,json:async()=>success(action==='action/get-chats'?[chat(peerA,ts)]:[messageRow('exact-resume',peerA,ts)])};
+  }});
+ provider.calls=Array.from({length:7},()=>time.value-250000);
+ const r=await reader(t,null,{time,provider});assert.equal(requests.length,1);
+ await r.tick();assert.equal(requests.length,1,'the provider budget must remain eight calls');
+ await r.tick(4999);assert.equal(requests.length,1);
+ await r.tick(1);assert.equal(requests.length,2,'resume at 50s, not a new 5-minute block from the 45s rejection');
+ await r.tick(0);
+ assert.equal(r.accepted.length,1);assert.equal(requests.at(-1).action,'action/fetch-messages');
+});
+
+test('an explicit provider retry-after blocks every peer and discovery only until that deadline',async t=>{
+ const time=clock(),ts=Math.floor(time.value/1000);let rejected=false;
+ const r=await reader(t,(action,body)=>{
+  if(action==='action/get-chats')return success([chat(peerA,ts),chat(peerB,ts)]);
+  if(!rejected){rejected=true;throw Object.assign(Error('WHATSAPP_CRM_WAAPI_HTTP_429'),{statusCode:429,meta:{retryAfterMs:90000}});}
+  return success([messageRow('retry-after',body.chatId,ts)]);
+ },{time});
+ await r.tick();const count=r.calls.length;
+ await r.tick(89999);assert.equal(r.calls.length,count);
+ await r.tick(1);assert(r.calls.length>count);
+ await r.tick(0);assert.equal(r.accepted.length,1);
+});
+
+test('provider pretransport rejection consumes no reader transport slot and both eight-call caps remain intact',async t=>{
+ const time=clock(),ts=Math.floor(time.value/1000),requests=[];
+ const provider=new WaapiProvider({config:{instanceId:WAAPI_INSTANCE,apiToken:'synthetic-offline-token'},now:()=>time.value,
+  fetchFn:async(url,options)=>{
+   const action=url.slice(url.lastIndexOf('/client/')+8),body=options.body?JSON.parse(options.body):undefined;
+   requests.push({action,body,at:time.value});
+   return{ok:true,json:async()=>success(action==='action/get-chats'?[chat(peerA,ts)]:
+    Array.from({length:100},(_,i)=>messageRow('quota-page-'+(body.offset+i),peerA,ts)))};
+  }});
+ provider.calls=[time.value-250000];
+ const r=await reader(t,null,{time,provider});
+ for(let i=0;i<7;i++)await r.tick(0);
+ assert.equal(requests.length,7);assert.equal(provider.calls.length,8);
+ await r.tick(49999);assert.equal(requests.length,7);
+ await r.tick(1);assert.equal(requests.length,8);assert.equal(provider.calls.length,8);
+ assert.equal(requests.at(-1).at-requests[0].at,50000);
+ for(let i=0;i<5;i++)await r.tick(0);assert.equal(requests.length,8);
 });
 test('TEST receiver imports only recent incoming messages from the verified peer, once, without sends',async()=>{
  const now=Date.now(),ts=Math.floor(now/1000),peer=WAAPI_RECIPIENT+'@c.us';let tick;const imports=[],requests=[];

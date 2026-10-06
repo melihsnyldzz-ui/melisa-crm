@@ -1,0 +1,92 @@
+{
+  "testUrl": "http://127.0.0.1:62400/",
+  "userAcceptance": {
+    "physicalMobile": "not performed",
+    "outboundTestTextPhone": "User explicitly saw it and replied",
+    "incomingReplyScreen": "pending before new runtime"
+  },
+  "actor": "TEST ADMIN",
+  "schemaVersion": 1,
+  "scope": "Visible A-Z CRM TEST; agent screen proof and human phone reply kept separate",
+  "pdf": {
+    "localDownload": "not captured; automation timeout",
+    "preview": "two real products, recorded 196 TRY per unit",
+    "newPhoneAcceptance": "not performed"
+  },
+  "date": "2026-10-06",
+  "initialRuntimeSource": "1d288142aa0b1c465a91826191fc3cac50207498",
+  "files": [
+    {
+      "sourceCommit": "1d288142aa0b1c465a91826191fc3cac50207498",
+      "sha256": "7c0bf88ba4fd32862268808158b3f3565e23e27b1bbe98465c0a773c446633b2",
+      "name": "ai-suggestion-unavailable.jpg",
+      "bytes": 57551
+    },
+    {
+      "sourceCommit": "1d288142aa0b1c465a91826191fc3cac50207498",
+      "sha256": "defe9737d061d84e8d9d21a0d7d094d2d66ee856b3f4582d105dc6914d12f9d9",
+      "name": "assignment-ahmet.jpg",
+      "bytes": 74378
+    },
+    {
+      "sourceCommit": "1d288142aa0b1c465a91826191fc3cac50207498",
+      "sha256": "a6b22eb272aba829cf591e7cb67dfc4540409a36e8e5d6a10c3af5722fc9a59e",
+      "name": "catalog-preview.jpg",
+      "bytes": 80581
+    },
+    {
+      "sourceCommit": "1d288142aa0b1c465a91826191fc3cac50207498",
+      "sha256": "5fd36bced58db9a275e205ac2081b95000170de8017598aa44af6cedabedcf37",
+      "name": "catalog-two-products.jpg",
+      "bytes": 100831
+    },
+    {
+      "sourceCommit": "1d288142aa0b1c465a91826191fc3cac50207498",
+      "sha256": "61085d467cb49ac16325ab6674eefe7b6b7d1dae41e7967ba0a0473d8ff464a0",
+      "name": "desktop-chat-1440.jpg",
+      "bytes": 86469
+    },
+    {
+      "sourceCommit": "1d288142aa0b1c465a91826191fc3cac50207498",
+      "sha256": "c1981df1e88c937a639e33afd6d0ac594f21374a920a30a69664a4c800d7fe4f",
+      "name": "erp-login-required.jpg",
+      "bytes": 42942
+    },
+    {
+      "sourceCommit": "1d288142aa0b1c465a91826191fc3cac50207498",
+      "sha256": "4c7dccd60859cac1e56181809b8b009d4b08c9d0befe350ae59750fa134468da",
+      "name": "media-playback.jpg",
+      "bytes": 187903
+    },
+    {
+      "sourceCommit": "1d288142aa0b1c465a91826191fc3cac50207498",
+      "sha256": "4ae8cc32de5cfd37b099a5fddfe39b406aa60d024257c7bd28ab6af28ef9391e",
+      "name": "mobile-catalog.jpg",
+      "bytes": 42691
+    },
+    {
+      "sourceCommit": "1d288142aa0b1c465a91826191fc3cac50207498",
+      "sha256": "03d27b64b3427fb0d53021979b76194678f5faaf20de1699e35715e6533e4600",
+      "name": "mobile-chat.jpg",
+      "bytes": 41256
+    },
+    {
+      "sourceCommit": "1d288142aa0b1c465a91826191fc3cac50207498",
+      "sha256": "3440af3c4c7ccdcbf1423680fa60e224e2f419c47b06fd0c32214dbed14bde69",
+      "name": "mobile-unassigned-search.jpg",
+      "bytes": 22042
+    },
+    {
+      "sourceCommit": "1d288142aa0b1c465a91826191fc3cac50207498",
+      "sha256": "260e7e158e6710b4c43199c8c5f765e5b2148cbff40175c74309bfcbbd2af0d6",
+      "name": "outbound-translation-preview.jpg",
+      "bytes": 37331
+    },
+    {
+      "sourceCommit": "1d288142aa0b1c465a91826191fc3cac50207498",
+      "sha256": "2193cf31adcb6037c0e0b7cc2b10d236d5782c74b1ba4d011548c9b2dae079fb",
+      "name": "photo-viewer.jpg",
+      "bytes": 153334
+    }
+  ]
+}

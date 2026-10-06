@@ -8,6 +8,8 @@ import {createHash} from 'node:crypto';
 
 const PAGE_SIZE = 100;
 const MAX_QUEUE = 256;
+const HOT_QUEUE_RESERVE = 8;
+const HEAD_REFRESH_MS = 135000;
 const MAX_PEERS = 1024;
 const MAX_MESSAGE_PAGES = 200;
 const MAX_PENDING_MEDIA = 1000;
@@ -46,7 +48,18 @@ export function startTestIncomingReader({provider = waapiProvider, bridge = waap
     }
     calls.push(now());
     try { return await provider.request(path, body); }
-    catch (error) { if (quotaError(error)) blockedUntil = now() + WINDOW_MS; throw error; }
+    catch (error) {
+      if (quotaError(error)) {
+        // A local provider quota has an exact rolling-window deadline. Do not add
+        // another five minutes when the panel has already consumed its budget.
+        if (error.code === 'WHATSAPP_CRM_WAAPI_RATE_LIMIT' && error.meta?.transportAttempted === false) calls.pop();
+        const providerDeadline = /(?:^|_)WAAPI_RATE_LIMIT$/.test(error.code || '') && Array.isArray(provider.calls)
+          && provider.calls.length >= 8 ? provider.calls[0] + WINDOW_MS : null;
+        const retryAfter = Number(error.retryAfterMs ?? error.meta?.retryAfterMs);
+        blockedUntil = Math.max(blockedUntil, providerDeadline ?? (now() + (Number.isFinite(retryAfter) && retryAfter > 0 ? retryAfter : WINDOW_MS)));
+      }
+      throw error;
+    }
   };
 
   const trialTick = async () => {
@@ -68,19 +81,51 @@ export function startTestIncomingReader({provider = waapiProvider, bridge = waap
 
   const peers = new Map(), jobs = new Map(), queue = [];
   let discoveryOffset = 0, discoveryRows = null, discoveryIndex = 0, discoveryDue = 0, discoveryTurn = true;
+  let headDue = now() + HEAD_REFRESH_MS, headTurn = true, hotTurn = true, pendingHead = [], headObservedAt = 0, discoveryObservedAt = 0;
   const discoveryPages = new Set();
-  const enqueue = (peer, marker, state) => {
+  const enqueue = (peer, marker, state, hot = false, timestamp = 0) => {
     const current = jobs.get(peer);
-    if (current) { if (current.marker !== marker) current.changedMarker = marker; return true; }
-    if (queue.length >= MAX_QUEUE) return false;
-    const job = {peer, marker, offset: 0, rows: null, index: 0, phone: null, pages: new Set(), retryAt: 0};
+    if (current) {
+      if (current.marker !== marker && current.changedMarker !== marker) {
+        current.changedMarker = marker; current.hot = true; current.hotAt = timestamp;
+      }
+      return true;
+    }
+    if (queue.length >= (hot ? MAX_QUEUE : MAX_QUEUE - HOT_QUEUE_RESERVE)) return false;
+    const job = {peer, marker, offset: 0, rows: null, index: 0, phone: null, pages: new Set(), retryAt: 0, hot, hotAt: timestamp};
     jobs.set(peer, job); queue.push(job); state.queued = true; return true;
+  };
+  const peerHint = (chat, observedAt) => {
+    const peer = peerValue(chat?.id), timestamp = Math.max(Number(chat?.timestamp) || 0, Number(chat?.lastMessage?.timestamp) || 0);
+    if (!isPeer(peer) || chat.isGroup !== false || !recent(timestamp)) return null;
+    let state = peers.get(peer);
+    if (!state) {
+      if (peers.size >= MAX_PEERS) {
+        const disposable = [...peers.keys()].find(key => !jobs.has(key));
+        if (disposable) peers.delete(disposable);
+        else return null;
+      }
+      state = {marker: null, queued: false, hydrateAt: 0, pendingMedia: new Set(), mediaOverflow: false, hintTimestamp: 0, hintObservedAt: 0}; peers.set(peer, state);
+    }
+    // A held backfill page must not undo a fresher head hint for the same peer.
+    if (timestamp < state.hintTimestamp || (timestamp === state.hintTimestamp && observedAt < state.hintObservedAt)) return null;
+    state.hintTimestamp = timestamp; state.hintObservedAt = observedAt;
+    return {peer, timestamp, state, marker: `${timestamp}:${chat.lastMessage?.id?._serialized || ''}`};
+  };
+  const promoteHead = () => {
+    pendingHead = pendingHead.filter(chat => {
+      const hint = peerHint(chat, headObservedAt);
+      return hint && (hint.state.marker !== hint.marker || (hint.state.hydrateAt && hint.state.hydrateAt <= now()))
+        && !enqueue(hint.peer, hint.marker, hint.state, true, hint.timestamp);
+    });
   };
   const discover = async () => {
     if (!discoveryRows) {
       discoveryRows = rowsFrom(await readerProvider.request('action/get-chats', {offset: discoveryOffset, limit: PAGE_SIZE}));
+      discoveryObservedAt = now();
       discoveryRows = [...discoveryRows].sort((a, b) => Math.max(Number(b?.timestamp) || 0, Number(b?.lastMessage?.timestamp) || 0)
         - Math.max(Number(a?.timestamp) || 0, Number(a?.lastMessage?.timestamp) || 0));
+      if (discoveryOffset === 0) { headDue = now() + HEAD_REFRESH_MS; headTurn = false; }
       discoveryIndex = 0;
       const signature = JSON.stringify(discoveryRows.map(chat => [peerValue(chat?.id), chat?.timestamp, chat?.lastMessage?.id?._serialized]));
       if (discoveryRows.length === PAGE_SIZE && (discoveryPages.has(signature) || discoveryOffset >= 20000)) {
@@ -90,22 +135,12 @@ export function startTestIncomingReader({provider = waapiProvider, bridge = waap
       discoveryPages.add(signature);
     }
     while (discoveryIndex < discoveryRows.length) {
-      const chat = discoveryRows[discoveryIndex], peer = peerValue(chat?.id);
-      const timestamp = Math.max(Number(chat?.timestamp) || 0, Number(chat?.lastMessage?.timestamp) || 0);
-      if (!isPeer(peer) || chat.isGroup !== false || !recent(timestamp)) { discoveryIndex++; continue; }
+      const hint = peerHint(discoveryRows[discoveryIndex], discoveryObservedAt);
+      if (!hint) { discoveryIndex++; continue; }
+      const {peer, marker, state, timestamp} = hint;
       // lastMessage is a discovery hint only, never a message to import (including outgoing hints).
-      const marker = `${timestamp}:${chat.lastMessage?.id?._serialized || ''}`;
-      let state = peers.get(peer);
-      if (!state) {
-        if (peers.size >= MAX_PEERS) {
-          const disposable = [...peers.keys()].find(key => !jobs.has(key));
-          if (disposable) peers.delete(disposable);
-          else return;
-        }
-        state = {marker: null, queued: false, hydrateAt: 0, pendingMedia: new Set(), mediaOverflow: false}; peers.set(peer, state);
-      }
       if (state.marker !== marker || (state.hydrateAt && state.hydrateAt <= now())) {
-        if (!enqueue(peer, marker, state)) return; // Retain the page/cursor until queue space is available.
+        if (!enqueue(peer, marker, state, discoveryOffset === 0, timestamp)) return; // Retain the page/cursor until queue space is available.
       }
       discoveryIndex++;
     }
@@ -115,14 +150,32 @@ export function startTestIncomingReader({provider = waapiProvider, bridge = waap
     if (!full) discoveryPages.clear();
     discoveryDue = full ? now() : now() + 45000;
   };
+  const refreshHead = async () => {
+    // The newest hints remain reachable while an older discovery page is held
+    // by the bounded queue. That backfill cursor is retained independently.
+    headDue = now() + HEAD_REFRESH_MS; headTurn = false;
+    pendingHead = rowsFrom(await readerProvider.request('action/get-chats', {offset: 0, limit: PAGE_SIZE}));
+    headObservedAt = now();
+    promoteHead();
+  };
   const finish = job => {
     const state = peers.get(job.peer);
     state.marker = job.marker; state.queued = false;
     state.hydrateAt = state.pendingMedia.size || state.mediaOverflow ? now() + WINDOW_MS : 0;
     jobs.delete(job.peer);
-    if (job.changedMarker && job.changedMarker !== job.marker) enqueue(job.peer, job.changedMarker, state);
+    if (job.changedMarker && job.changedMarker !== job.marker) enqueue(job.peer, job.changedMarker, state, true, job.hotAt);
   };
   const readPeer = async job => {
+    if (job.changedMarker && !job.resume) {
+      // Rescan a changed peer from the first page, then resume its old cursor.
+      // Provider ordering is not assumed: the rescan must reach its terminal
+      // page before the saved cursor or completion marker can take over.
+      if (job.offset || job.rows) {
+        job.resume = {offset: job.offset, rows: job.rows, index: job.index, pages: job.pages};
+        job.offset = 0; job.rows = null; job.index = 0; job.pages = new Set();
+      }
+      job.marker = job.changedMarker; delete job.changedMarker;
+    }
     if (!job.phone) job.phone = job.peer.endsWith('@c.us') ? job.peer.slice(0, -5) : await readerProvider.resolveIncomingPhone(job.peer);
     if (!job.mediaRestored && typeof journal.pendingMedia === 'function') {
       const pending = await journal.pendingMedia(WAAPI_INSTANCE, {peerJid: job.peer, phone: job.phone, limit: MAX_PENDING_MEDIA});
@@ -190,18 +243,32 @@ export function startTestIncomingReader({provider = waapiProvider, bridge = waap
       } else if (event.media) state.pendingMedia.delete(mediaKey);
       job.index++;
     }
+    job.hot = Boolean(job.changedMarker);
     if (job.rows.length === PAGE_SIZE) {
       job.offset += PAGE_SIZE; job.rows = null; job.index = 0;
       queue.push(job); // Fair pagination: other peers get a turn before the next page.
+    } else if (job.resume) {
+      Object.assign(job, job.resume); delete job.resume;
+      queue.push(job);
     } else finish(job);
   };
   const generalTick = async () => {
-    const index = queue.findIndex(job => job.retryAt <= now());
-    if ((discoveryTurn || index === -1) && now() >= discoveryDue && queue.length < MAX_QUEUE) {
+    promoteHead();
+    const oldest = queue.findIndex(job => job.retryAt <= now());
+    if (now() >= headDue && (headTurn || oldest === -1)) {
+      if (discoveryOffset === 0 && !discoveryRows) { discoveryTurn = false; await discover(); }
+      else await refreshHead();
+      return;
+    }
+    if ((discoveryTurn || oldest === -1) && now() >= discoveryDue && queue.length < MAX_QUEUE - HOT_QUEUE_RESERVE) {
+      headTurn = true;
       discoveryTurn = false; await discover(); return;
     }
-    if (index === -1) return;
-    discoveryTurn = true;
+    if (oldest === -1) return;
+    const hottest = hotTurn ? queue.reduce((selected, job, index) => job.hot && job.retryAt <= now()
+      && (selected === -1 || job.hotAt > queue[selected].hotAt) ? index : selected, -1) : -1;
+    const index = hottest === -1 ? oldest : hottest;
+    hotTurn = hottest === -1; headTurn = true; discoveryTurn = true;
     const [job] = queue.splice(index, 1);
     try { await readPeer(job); }
     catch (error) {

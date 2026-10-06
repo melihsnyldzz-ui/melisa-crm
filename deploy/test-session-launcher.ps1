@@ -135,7 +135,20 @@ function Get-TestProcess($ProcessId) {
 function Assert-OwnedProcess($ProcessId, $Config, $Script, $ParentId = 0, $AllowRelative = $false) {
     $p = Get-TestProcess $ProcessId
     if (!$p) { return $null }
-    $sid = Invoke-CimMethod -InputObject $p -MethodName GetOwnerSid
+    try { $sid = Invoke-CimMethod -InputObject $p -MethodName GetOwnerSid }
+    catch [Microsoft.Management.Infrastructure.CimException] {
+        # A process can exit between the CIM snapshot and GetOwnerSid. Only the
+        # NotFound race with a fresh missing PID is ordinary recovery evidence.
+        if ($_.Exception.NativeErrorCode -ne [Microsoft.Management.Infrastructure.NativeErrorCode]::NotFound -and $_.Exception.StatusCode -ne 6 -and $_.FullyQualifiedErrorId -notlike 'HRESULT 0x80041002,*') { throw }
+        $after = Get-TestProcess $ProcessId
+        if (!$after) { return $null }
+        if ($after.CreationDate -ne $p.CreationDate) { throw 'TEST_PROCESS_PID_REUSED' }
+        throw
+    }
+    $verified = Get-TestProcess $ProcessId
+    if (!$verified) { return $null }
+    if ($verified.CreationDate -ne $p.CreationDate) { throw 'TEST_PROCESS_PID_REUSED' }
+    $p = $verified
     if ($sid.ReturnValue -ne 0 -or $sid.Sid -ne $Config.OwnerSid -or !(Same-Path $p.ExecutablePath $Config.NodePath)) { throw 'TEST_PROCESS_OWNER_OR_NODE_MISMATCH' }
     $absolute = '(?:^|\s)"?' + [regex]::Escape([IO.Path]::GetFullPath($Script)) + '"?(?:\s|$)'
     $relative = '(?:^|\s)"?deploy[/\\]test-supervisor\.mjs"?(?:\s|$)'
@@ -331,7 +344,13 @@ function Invoke-TestSession($Config) {
             if ($nativeListeners.Count) {
                 $nativeId=$nativeListeners[0].OwningProcess
                 $native=Assert-OwnedProcess $nativeId $Config $nativeScript
-                if (!$native -or $native.CommandLine -notmatch ('(?:^|\s)"?' + [regex]::Escape($Config.NativeConfig) + '"?(?:\s|$)')) { throw 'TEST_NATIVE_CONFIG_ARGUMENT_MISMATCH' }
+                if (!$native) {
+                    # The listener snapshot may outlive its process. Re-read all
+                    # listeners before recovering; never start against stale ports.
+                    $nativeId=0; $nativeUnavailableSince=$null
+                    continue
+                }
+                if ($native.CommandLine -notmatch ('(?:^|\s)"?' + [regex]::Escape($Config.NativeConfig) + '"?(?:\s|$)')) { throw 'TEST_NATIVE_CONFIG_ARGUMENT_MISMATCH' }
                 $nativeSnapshot=$native
                 $expected[62404]=$nativeId
             } elseif ($nativeId) {

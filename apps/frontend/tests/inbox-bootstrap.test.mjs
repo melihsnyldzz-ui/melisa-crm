@@ -8,6 +8,23 @@ test('bootstrap null totals, explicit unloaded history and pagination survive no
  assert.deepEqual(effectiveInboxSummary(result.summary,result.conversations),result.summary);
  const empty=normalizeInboxPayload({conversations:[],summary:{complete:true,total:0,unread:0}});assert.equal(empty.summary.total,0);assert.equal(empty.summary.complete,true);
 });
+test('full paginated inbox replaces the page unassigned count with the accessible DTO count',()=>{
+ const rows=Array.from({length:767},(_,index)=>({id:String(index+1),name:'Synthetic customer',assignedUserName:index<57||(index>=100&&index<150)?'Synthetic agent':'',unread:0}));
+ const firstPage=normalizeInboxPayload({conversations:rows.slice(0,100),summary:{complete:true,total:767}});
+ assert.equal(firstPage.summary.unassigned,43);
+ const all=normalizeInboxPayload({conversations:rows,summary:firstPage.summary}).conversations;
+ const summary=effectiveInboxSummary(firstPage.summary,all);
+ assert.equal(summary.total,767);assert.equal(summary.unassigned,660);assert.equal(firstPage.summary.unassigned,43);
+ assert.equal(effectiveInboxSummary({complete:true,total:0,unassigned:43},[]).unassigned,0);
+});
+test('partial inbox scope preserves page counts and unknown bootstrap totals',()=>{
+ const rows=Array.from({length:100},(_,index)=>({id:String(index+1),name:'Synthetic customer',assignedUserName:index<57?'Synthetic agent':''}));
+ const firstPage=normalizeInboxPayload({conversations:rows,summary:{complete:true,total:767}});
+ assert.equal(effectiveInboxSummary(firstPage.summary,firstPage.conversations).unassigned,43);
+ const bootstrap=normalizeInboxPayload({conversations:rows,summary:{complete:false,total:null,unassigned:null}});
+ assert.deepEqual(effectiveInboxSummary(bootstrap.summary,bootstrap.conversations),bootstrap.summary);
+ assert.equal(effectiveInboxSummary({unassigned:null},firstPage.conversations).unassigned,null);
+});
 test('a lightweight refresh preserves selected loaded detail and workflow, including a verified empty history',()=>{
  for(const messages of [[],[{id:'m1',text:'Synthetic text'}]]){
   const current={id:'55',messages,messagesLoaded:true,detailLoaded:true,workflow:[{id:'synthetic-workflow'}]};

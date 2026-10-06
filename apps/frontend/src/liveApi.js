@@ -360,7 +360,10 @@ export function effectiveInboxSummary(summary = {}, conversations = []) {
   if(summary.complete===false)return {...summary};
   const unread = conversations.reduce((total, conversation) => total + (Number(conversation.unread) || 0), 0);
   const pendingHumanReply = conversations.filter((conversation) => conversation.waitingForReply === true || (conversation.waitingForReply === undefined && Number(conversation.unread) > 0)).length;
-  return { ...summary, unread, pendingHumanReply };
+  const fullScope = Number.isSafeInteger(summary.total) && summary.total >= 0 && conversations.length === summary.total;
+  // A page fallback is only a page count until every accessible conversation is loaded.
+  const unassigned = fullScope ? conversations.filter((conversation) => conversation.owner === "Atanmamış").length : summary.unassigned;
+  return { ...summary, unread, pendingHumanReply, ...(fullScope ? { unassigned } : {}) };
 }
 
 export function normalizeConversation(value, index = 0) {
