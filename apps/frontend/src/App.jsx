@@ -264,9 +264,17 @@ export function App() {
   const terminalNavigation = useRef(null);
   const [online, setOnline] = useState(() => window.navigator?.onLine !== false);
   const [translationDisplay, setTranslationDisplay] = useState('both');
+  const activateTerminal = () => {
+    setActiveView('Gelen Kutusu');
+    // Returning from another ERP module keeps the existing conversation/composer.
+    // Force fresh permission and selected-conversation reads through their guards.
+    conversationPollRef.current.at = 0;
+    setRefreshNonce(value => value + 1);
+    if (liveKeyRef.current) void permissionRefreshRef.current?.().catch(() => {});
+  };
   useEffect(() => {
     if (!entry.enabled) return;
-    terminalNavigation.current = bindTerminalNavigation({ window, entry, onActivate: () => { setActiveView('Gelen Kutusu'); setMobileChatOpen(false); }, onLogout: () => closeLiveSession('',true) });
+    terminalNavigation.current = bindTerminalNavigation({ window, entry, onActivate: activateTerminal, onLogout: () => closeLiveSession('',true) });
     const update = () => setOnline(window.navigator?.onLine !== false);
     window.addEventListener('online', update); window.addEventListener('offline', update);
     return () => { terminalNavigation.current?.close(); window.removeEventListener('online', update); window.removeEventListener('offline', update); };
@@ -780,8 +788,8 @@ export function App() {
         const olderOffset = allPagesLoaded && now - olderPageCheckedAtRef.current >= POLL_INTERVAL.olderPage ? olderPageOffsetRef.current : null;
         if (olderOffset !== null) olderPageCheckedAtRef.current = now;
         const [result, olderPage] = await Promise.all([
-          liveApi.inbox(liveKey),
-          olderOffset !== null ? liveApi.inbox(liveKey, olderOffset).catch(() => null) : Promise.resolve(null),
+          liveApi.inbox(liveKey, 0, entry.enabled && liveSessionRef.current?.role === 'personel' ? {view:'bootstrap'} : {}),
+          olderOffset !== null ? liveApi.inbox(liveKey, olderOffset, entry.enabled && liveSessionRef.current?.role === 'personel' ? {view:'bootstrap'} : {}).catch(() => null) : Promise.resolve(null),
         ]);
         if (!currentRead()) return;
         if (olderOffset !== null) olderPageOffsetRef.current = olderOffset + 100 < result.summary.total ? olderOffset + 100 : 100;
@@ -821,7 +829,7 @@ export function App() {
     try {
       for (let page = 0; page < 12 && (total===null||offset<total); page += 1) {
         if(catalogVisibleRef.current)break;
-        const result = await liveApi.inbox(key, offset,{signal:controller.signal});
+        const result = await liveApi.inbox(key, offset,{signal:controller.signal,...(entry.enabled && liveSessionRef.current?.role === 'personel' ? {view:'bootstrap'} : {})});
         if (!isCurrent()) return;
         if(catalogVisibleRef.current)break;
         if(result.summary.complete===false||!Number.isFinite(result.summary.total))throw new Error('Konuşma toplamı henüz doğrulanamadı. Tekrar deneyin.');

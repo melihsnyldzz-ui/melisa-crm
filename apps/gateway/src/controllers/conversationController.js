@@ -1,6 +1,6 @@
 import { env } from '../config/env.js';
 import { assignChatwootConversationToAgent } from '../services/chatwootConversationService.js';
-import { getChatwootConversationDetail, getChatwootConversationAccess, listChatwootAgents } from '../services/chatwootInboxService.js';
+import { getChatwootConversationDetail, getChatwootConversationAccess, assertChatwootAssignedInboxCurrent, listChatwootAgents } from '../services/chatwootInboxService.js';
 import { verifyCrmAccessToken, assertCrmPermission } from '../services/crmAuthService.js';
 import { sendCrmTextMessage } from '../services/sendService.js';
 import { ok } from '../utils/response.js';
@@ -8,7 +8,7 @@ import { ok } from '../utils/response.js';
 // The short TEST rehearsal may expire during a provider read. Normal sessions
 // retain their established path; no permanent user or role is changed here.
 export function createTestPersonnelRequestGuard(req, {
-  verify = verifyCrmAccessToken, readAccess = getChatwootConversationAccess,
+  verify = verifyCrmAccessToken, readAccess = getChatwootConversationAccess, readAssignments = assertChatwootAssignedInboxCurrent,
 } = {}) {
   if (req.user?.testPersonnel !== true) return null;
   const header = req.get('authorization') || '';
@@ -22,8 +22,9 @@ export function createTestPersonnelRequestGuard(req, {
     assertCrmPermission(user, permission);
     return user;
   };
-  return async ({permission = 'crm.view', conversationId} = {}) => {
+  return async ({permission = 'crm.view', conversationId, conversationIds} = {}) => {
     const user = current(permission);
+    if (conversationIds !== undefined) await readAssignments({conversationIds,user});
     if (conversationId !== undefined) await readAccess({conversationId,user});
     return current(permission);
   };

@@ -200,7 +200,7 @@ function isGroupConversation(conversation) {
     || String(sender.name || '').toLocaleUpperCase('tr-TR').includes('(GROUP)');
 }
 
-async function readAllConversationPagesUnshared(identity, { parallelPages = 1 } = {}) {
+async function readAllConversationPagesUnshared(identity, { parallelPages = 1, personnelSelector = null } = {}) {
   const conversations = [];
   const positions = new Map();
   let page = 1;
@@ -213,9 +213,13 @@ async function readAllConversationPagesUnshared(identity, { parallelPages = 1 } 
 
   const acceptPage = response => {
     assertBackendIdentity(identity);
-    const rows = response?.data?.payload;
+    // Chatwoot's filter renderer returns {meta,payload}; older documented
+    // wrappers use {data:{meta,payload}}. Both retain the same bounded contract.
+    const data = personnelSelector ? (response?.data || response) : response?.data;
+    const rows = data?.payload;
     if (!Array.isArray(rows) || rows.length > CHATWOOT_PAGE_SIZE) throw invalid();
-    const count = response?.data?.meta?.all_count;
+    const count = data?.meta?.all_count;
+    if (personnelSelector && count === undefined) throw invalid();
     if (count !== undefined) {
       if (!(typeof count === 'number' || (typeof count === 'string' && /^\d+$/.test(count)))
         || !Number.isSafeInteger(Number(count)) || Number(count) < 0 || Number(count) > CHATWOOT_MAX_RAW_CONVERSATIONS) throw invalid();
@@ -228,6 +232,8 @@ async function readAllConversationPagesUnshared(identity, { parallelPages = 1 } 
         || !(typeof row.id === 'number' || (typeof row.id === 'string' && /^[1-9]\d*$/.test(row.id)))
         || !Number.isSafeInteger(id) || id <= 0 || pageIds.has(id)) throw invalid();
       pageIds.add(id);
+      if (personnelSelector && (Number(row.meta?.assignee?.id) !== personnelSelector.agentId
+        || (personnelSelector.inboxId && Number(row.inbox_id) !== personnelSelector.inboxId))) throw invalid();
       if (positions.has(id)) {
         // Activity ordering can overlap offset pages. Keep stable first position,
         // but use the latest returned assignment/unread/contact metadata.
@@ -253,7 +259,15 @@ async function readAllConversationPagesUnshared(identity, { parallelPages = 1 } 
     const batchSize = Math.min(parallelPages, remaining, CHATWOOT_MAX_TRAVERSAL_PAGES - page + 1);
     const responses = await Promise.all(Array.from({ length: batchSize }, (_, index) => {
       assertBackendIdentity(identity);
-      return chatwootApiRequest(`/conversations?status=all&page=${page + index}&sort_by=created_at_desc`);
+      if (!personnelSelector) return chatwootApiRequest(`/conversations?status=all&page=${page + index}&sort_by=created_at_desc`);
+      // Official read-only custom-filter endpoint. The filter values come only
+      // from the verified current actor and existing server inbox policy.
+      const payload = [{ attribute_key:'assignee_id', filter_operator:'equal_to', values:[String(personnelSelector.agentId)], query_operator:null }];
+      if (personnelSelector.inboxId) {
+        payload[0].query_operator = 'AND';
+        payload.push({ attribute_key:'inbox_id', filter_operator:'equal_to', values:[String(personnelSelector.inboxId)], query_operator:null });
+      }
+      return chatwootApiRequest(`/conversations/filter?page=${page + index}&sort_by=created_at_desc`, { method:'POST', body:{ payload } });
     }));
     let complete = false;
     for (const response of responses) {
@@ -269,11 +283,11 @@ async function readAllConversationPagesUnshared(identity, { parallelPages = 1 } 
   return { rows: conversations, cacheable };
 }
 
-function readAllConversationPages({ fresh = false } = {}) {
+function readAllConversationPages({ fresh = false, personnelSelector = null } = {}) {
   const identity = backendIdentity();
   // Personnel access must not inherit any traversal that started before its request.
   // Do not publish a personnel traversal into the management snapshot either.
-  if (fresh) return readAllConversationPagesUnshared(identity, { parallelPages: 4 }).then(result => result.rows);
+  if (fresh) return readAllConversationPagesUnshared(identity, { parallelPages: 4, personnelSelector }).then(result => result.rows);
   if (conversationSnapshot?.identity === identity) {
     if (conversationSnapshot.pending) return conversationSnapshot.pending;
     if (conversationSnapshot.expiresAt > Date.now()) return Promise.resolve(conversationSnapshot.rows);
@@ -289,6 +303,28 @@ function readAllConversationPages({ fresh = false } = {}) {
     throw error;
   });
   return entry.pending;
+}
+
+// Re-query the authoritative assigned subset immediately before a personnel
+// bootstrap response. One fresh filter validates every returned ID together;
+// no management snapshot, settled cache or message history is reused here.
+export async function assertChatwootAssignedInboxCurrent({ conversationIds, user }) {
+  const agentId = Number(user?.chatwootAgentId);
+  const forbidden = () => Object.assign(new Error('Bu konusma size atanmamis.'), {
+    code:'WHATSAPP_CRM_CONVERSATION_FORBIDDEN', statusCode:403,
+  });
+  if (user?.role !== 'personel' || !Number.isSafeInteger(agentId) || agentId < 1
+    || !Array.isArray(conversationIds) || conversationIds.length > CHATWOOT_MAX_OVERVIEW_LIMIT
+    || conversationIds.some(id => !/^[1-9]\d*$/.test(String(id)) || !Number.isSafeInteger(Number(id)))) throw forbidden();
+  if (!conversationIds.length) return;
+  const identity = backendIdentity(), policy = [env.chatwoot.inboxId, env.chatwoot.includeGroups];
+  const rows = await readAllConversationPages({ fresh:true, personnelSelector:{agentId,inboxId:Number(policy[0]) || null} });
+  assertBackendIdentity(identity); assertInboxPolicy(policy);
+  const assigned = new Map(rows.filter(row => policy[1] || !isGroupConversation(row)).map(row => [Number(row.id),row]));
+  for (const id of conversationIds) {
+    const row = assigned.get(Number(id)); if (!row) throw forbidden();
+    assertConversationAccess(user, {id:Number(id),chatwootAgentId:row.meta?.assignee?.id || null});
+  }
 }
 
 function crmUserIdForAgent(agentId) {
@@ -430,7 +466,11 @@ export async function listChatwootInboxOverview({ limit = 25, offset = 0, user =
   const safeLimit = Math.min(Math.max(Number(limit) || CHATWOOT_PAGE_SIZE, 1), CHATWOOT_MAX_OVERVIEW_LIMIT);
   // Personnel assignment is an access boundary: its own fresh traversal cannot
   // reuse either a settled snapshot or another request's older in-flight rows.
-  const allRows = await readAllConversationPages({ fresh: user?.role === 'personel' || view === 'bootstrap' });
+  const agentId = Number(user?.chatwootAgentId);
+  const personnelSelector = user?.role === 'personel' && view === 'bootstrap'
+    ? { agentId, inboxId:Number(policy[0]) || null } : null;
+  const allRows = personnelSelector && (!Number.isSafeInteger(agentId) || agentId < 1) ? []
+    : await readAllConversationPages({ fresh: user?.role === 'personel' || view === 'bootstrap', personnelSelector });
   assertBackendIdentity(identity);
   const inboxRows = env.chatwoot.inboxId
     ? allRows.filter((conversation) => Number(conversation.inbox_id) === Number(env.chatwoot.inboxId))

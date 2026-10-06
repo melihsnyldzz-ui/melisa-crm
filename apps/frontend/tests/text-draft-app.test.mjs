@@ -17,7 +17,7 @@ const fakeWindow=sessionStorage=>({location:{pathname:'/',search:''},crypto:{ran
 const settle=async()=>{await Promise.resolve();await Promise.resolve();};
 async function bundle(file,instrument=false){
  await build({absWorkingDir:frontend,tsconfigRaw:{},entryPoints:[frontend+'src/App.jsx'],outfile:file,bundle:true,platform:'node',format:'esm',jsx:'automatic',define:{'import.meta.env.DEV':'false','import.meta.env.VITE_CRM_TEST':'"1"'},external:['react','@phosphor-icons/react'],loader:{'.css':'empty'},plugins:instrument?[{name:'isolated-app-handler-harness',setup(build){
-  build.onLoad({filter:/App\.jsx$/},args=>({loader:'jsx',contents:readFileSync(args.path,'utf8').replace(/^import \{ useCallback, useEffect, useMemo, useRef, useState \} from "react";/,'const {useCallback,useEffect,useMemo,useRef,useState}=globalThis.__draftHooks;').replace('  if (liveMode && !liveSession) return <LoginGate','  globalThis.__draftHarness.actions={commitLiveSession,setDraft,sendMessage,closeLiveSession,refreshLivePermissions,selectConversation,setQuery,setFilter,loadRemainingConversations};\n  if (liveMode && !liveSession) return <LoginGate')}));
+  build.onLoad({filter:/App\.jsx$/},args=>({loader:'jsx',contents:readFileSync(args.path,'utf8').replace(/^import \{ useCallback, useEffect, useMemo, useRef, useState \} from "react";/,'const {useCallback,useEffect,useMemo,useRef,useState}=globalThis.__draftHooks;').replace('  if (liveMode && !liveSession) return <LoginGate','  globalThis.__draftHarness.actions={commitLiveSession,setDraft,sendMessage,closeLiveSession,refreshLivePermissions,selectConversation,setQuery,setFilter,loadRemainingConversations,activateTerminal};\n  if (liveMode && !liveSession) return <LoginGate')}));
   build.onLoad({filter:/liveApi\.js$/},args=>({loader:'js',contents:readFileSync(args.path,'utf8')+'\nfor(const name of Object.keys(globalThis.__draftHarness.api))liveApi[name]=(...args)=>globalThis.__draftHarness.api[name](...args);'}));
  }}]:[]});
 }
@@ -60,6 +60,40 @@ test('actual terminal manual price send fresh-checks ERP before transport and pr
  h.harness.api.canonicalCatalogProduct=async()=>{reads++;return{data:{...p,status:'active',hold:{blocked:false}},meta:{catalogVersion:'melisa-catalog.v1',sourceDatabaseVerified:true,cached:false}};};
  await h.harness.actions.sendMessage();assert.equal(reads,2);assert.equal(sends,1);assert.equal(composer(h.render()).props.value,'');
 },{terminal:true}));
+
+test('actual terminal return preserves the selected conversation and composer while rechecking permissions and assignment',async()=>fixture(async h=>{
+ h.connect(); h.harness.actions.selectConversation(row()); h.render();
+ h.harness.actions.setDraft('Preserved personnel message'); h.render();
+ let permissionReads=0,detailReads=0;
+ h.harness.api.session=async()=>{permissionReads++;return actor();};
+ h.harness.api.conversation=async()=>{detailReads++;return {conversation:row()};};
+ for(let navigation=0;navigation<2;navigation++){
+  h.harness.actions.activateTerminal();const tree=h.render();
+  assert.match(tree.props.className,/chat-open/);assert.equal(composer(tree).props.value,'Preserved personnel message');
+  h.pollConversation();await settle();h.render();
+ }
+ assert(permissionReads>=1);assert.equal(detailReads,2);
+ h.harness.api.conversation=async()=>{throw Object.assign(Error('assignment changed'),{status:403});};
+ h.harness.actions.activateTerminal();h.render();h.pollConversation();await settle();
+ const revoked=h.render();assert.doesNotMatch(revoked.props.className,/chat-open/);assert.equal(composer(revoked).props.disabled,true);
+ assert.equal(createTextDraftStorage({getStorage:()=>h.local}).activate(actor(),[row()]).drafts['55'],undefined);
+ await h.harness.actions.closeLiveSession('',true);h.harness.actions.activateTerminal();
+ assert.match(renderToStaticMarkup(h.render()),/login-gate terminal-login/);
+},{terminal:true,compact:true}));
+
+test('actual personnel terminal polls metadata without rehydrating every conversation or losing selected history',async()=>fixture(async h=>{
+ const originalNow=Date.now;let time=100000;Date.now=()=>time;
+ try{
+  const own={...row(),messagesLoaded:true,detailLoaded:true,messages:[{id:'old',direction:'incoming',text:'Existing own history'}]};
+  h.connect({...actor(),role:'personel'},[own]);h.harness.actions.selectConversation(own);h.render();
+  h.harness.actions.setDraft('Unsent personnel message');h.render();
+  const calls=[];h.harness.api.inbox=async(key,offset,options)=>{calls.push({offset,view:options?.view});return {conversations:[{...row(),messagesLoaded:false,detailLoaded:false}],summary:{total:1}};};
+  h.harness.api.session=async()=>({...actor(),role:'personel'});
+  time+=20000;h.pollBackground();await settle();
+  const tree=h.render();assert.deepEqual(calls,[{offset:0,view:'bootstrap'}]);
+  assert.equal(composer(tree).props.value,'Unsent personnel message');assert.match(renderToStaticMarkup(tree),/Existing own history/);
+ }finally{Date.now=originalNow;}
+},{terminal:true,compact:true}));
 
 test('actual compact App exposes the first real bootstrap list, truthful partial search and selected-history loading',async()=>fixture(async h=>{
  const boot={...row(),messagesLoaded:false,detailLoaded:false,preview:'Son mesaj yükleniyor…'};

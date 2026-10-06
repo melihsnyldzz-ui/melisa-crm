@@ -4,6 +4,7 @@ import { env } from '../config/env.js';
 import {
   listChatwootInboxOverview,
   getChatwootConversationDetail,
+  assertChatwootAssignedInboxCurrent,
   mapChatwootMessage,
   normalizeChatwootMessageDirection,
 } from './chatwootInboxService.js';
@@ -410,13 +411,14 @@ test('bootstrap identity and inbox policy changes fail closed', async t => {
   }
 });
 
-test('personnel and unknown bootstrap retain fresh full traversal and personnel assignment boundary', async t => {
+test('personnel bootstrap uses a fresh assigned selector while unknown bootstrap retains the full traversal', async t => {
   inboxFixture(t, 'bootstrap-staff'); let listReads = 0; let messageReads = 0;
   const row = syntheticConversation(1, 7);
   global.fetch = async url => {
     const parsed = new URL(String(url));
     if (parsed.pathname.endsWith('/messages')) { messageReads++; return jsonResponse({ payload: [] }); }
     assert.equal(parsed.searchParams.get('sort_by'), 'created_at_desc'); listReads++;
+    if(parsed.pathname.endsWith('/filter'))return jsonResponse({meta:{all_count:0},payload:[]});
     return jsonResponse({ data: { meta: { all_count: 1 }, payload: [row] } });
   };
   await listChatwootInboxOverview({ user: { role: 'patron' } });
@@ -427,25 +429,31 @@ test('personnel and unknown bootstrap retain fresh full traversal and personnel 
   assert.equal(listReads, 3); assert.equal(messageReads, 2); assert.equal(unknown.summary.total, 1);
 });
 
-test('personnel bootstrap reads bounded fresh pages concurrently, keeps exact assignment totals and defers history', async t => {
+test('personnel bootstrap reads only the fresh assigned subset, keeps exact totals and defers history', async t => {
   inboxFixture(t, 'staff-parallel');
   const rows = Array.from({ length: 751 }, (_, i) => syntheticConversation(i + 1, i < 23 ? 7 : 8));
   let active = 0, peak = 0, historyReads = 0;
   const pages = [];
-  global.fetch = async url => {
+  global.fetch = async (url, options) => {
     const parsed = new URL(String(url));
     if (parsed.pathname.endsWith('/messages')) { historyReads++; return jsonResponse({ payload: [] }); }
     assert.equal(parsed.searchParams.get('sort_by'), 'created_at_desc');
+    assert(parsed.pathname.endsWith('/conversations/filter'));assert.equal(options.method,'POST');
+    assert.deepEqual(JSON.parse(options.body),{payload:[
+      {attribute_key:'assignee_id',filter_operator:'equal_to',values:['7'],query_operator:'AND'},
+      {attribute_key:'inbox_id',filter_operator:'equal_to',values:['1'],query_operator:null},
+    ]});
     const page = Number(parsed.searchParams.get('page')); pages.push(page);
     active++; peak = Math.max(peak, active);
     // Different completion order must not reorder page consumption or leak the other agent.
     await new Promise(resolve => setTimeout(resolve, page % 4 + 1));
     active--;
-    return jsonResponse({ data: { meta: { all_count: rows.length }, payload: rows.slice((page - 1) * 25, page * 25) } });
+    const assigned=rows.filter(row=>row.meta.assignee.id===7);
+    return jsonResponse({meta:{all_count:assigned.length},payload:assigned.slice((page-1)*25,page*25)});
   };
   const user = { role: 'personel', chatwootAgentId: 7, permissions: [] };
   const result = await listChatwootInboxOverview({ view: 'bootstrap', limit: 100, user });
-  assert.equal(peak, 4); assert.equal(pages.length, 31); assert.equal(historyReads, 0);
+  assert.equal(peak, 1); assert.equal(pages.length, 1); assert.equal(historyReads, 0);
   assert.deepEqual(result.conversations.map(row => row.id), Array.from({ length: 23 }, (_, i) => i + 1));
   assert.equal(result.pagination.total, 23); assert.equal(result.pagination.hasNext, false);
   assert.equal(result.summary.pendingHumanReply, null);
@@ -455,7 +463,7 @@ test('personnel bootstrap reads bounded fresh pages concurrently, keeps exact as
   }
   rows[0].meta.assignee.id = 8;
   const refreshed = await listChatwootInboxOverview({ view: 'bootstrap', limit: 100, user });
-  assert.equal(pages.length, 62); assert.equal(refreshed.pagination.total, 22);
+  assert.equal(pages.length, 2); assert.equal(refreshed.pagination.total, 22);
   assert.equal(refreshed.conversations.some(row => row.id === 1), false); assert.equal(historyReads, 0);
 });
 
@@ -485,6 +493,31 @@ test('personnel without a bound agent cannot inherit unassigned bootstrap rows',
   global.fetch = async () => jsonResponse({ data: { meta: { all_count: 1 }, payload: [row] } });
   const result = await listChatwootInboxOverview({ view: 'bootstrap', user: { role: 'personel', chatwootAgentId: null } });
   assert.deepEqual(result.conversations, []); assert.equal(result.pagination.total, 0);
+});
+
+test('assigned selector rejects foreign assignment, missing counts and ignored inbox filters without caching or fallback',async t=>{
+ for(const mode of ['foreign','uncounted','wrong-inbox'])await t.test(mode,async t=>{
+  inboxFixture(t,'selector-invalid-'+mode);let calls=0;
+  global.fetch=async(url,options)=>{calls++;assert(String(url).includes('/conversations/filter?'));assert.equal(options.method,'POST');
+   return jsonResponse({meta:mode==='uncounted'?{}:{all_count:1},payload:[syntheticConversation(1,mode==='foreign'?8:7,mode==='wrong-inbox'?2:1)]});};
+  const options={view:'bootstrap',user:{role:'personel',chatwootAgentId:7}};
+  await assert.rejects(listChatwootInboxOverview(options),e=>e.code==='WHATSAPP_CRM_CHATWOOT_READ_INVALID');
+  await assert.rejects(listChatwootInboxOverview(options));assert.equal(calls,2);
+ });
+});
+
+test('final personnel batch re-reads authoritative assignments for every returned ID and rejects any missing or excluded ID',async t=>{
+ inboxFixture(t,'final-assignment-batch');let rows=[syntheticConversation(1),syntheticConversation(2)],calls=0;
+ global.fetch=async(url,options)=>{calls++;assert(String(url).includes('/conversations/filter?'));assert.equal(options.method,'POST');
+  return jsonResponse({meta:{all_count:rows.length},payload:rows});};
+ const user={role:'personel',chatwootAgentId:7,permissions:['crm.view']};
+ await assertChatwootAssignedInboxCurrent({conversationIds:[1,2],user});assert.equal(calls,1);
+ rows=[syntheticConversation(1)];
+ await assert.rejects(assertChatwootAssignedInboxCurrent({conversationIds:[1,2],user}),e=>e.statusCode===403);assert.equal(calls,2);
+ rows=[syntheticConversation(1),syntheticConversation(2)];rows[1].meta.sender.identifier='group@g.us';
+ await assert.rejects(assertChatwootAssignedInboxCurrent({conversationIds:[1,2],user}),e=>e.statusCode===403);
+ await assert.rejects(assertChatwootAssignedInboxCurrent({conversationIds:[1],user:{...user,role:'mudur'}}),e=>e.statusCode===403);
+ assert.equal(calls,3);
 });
 
 test('concurrent overview offsets share one complete page traversal and overlapping in-flight message reads', async t => {

@@ -15,7 +15,11 @@ export async function getInboxController(req, res, next) {
     const overview = await getInboxOverview({ limit, offset, view: req.query?.view, user: req.user });
     if (guard) {
       await guard();
-      await Promise.all((overview.conversations || []).map(item => guard({conversationId:item.id})));
+      if (req.query?.view === 'bootstrap' && overview.summary?.source === 'chatwoot-crm') {
+        await guard({conversationIds:(overview.conversations || []).map(item=>item.id)});
+      } else {
+        await Promise.all((overview.conversations || []).map(item => guard({conversationId:item.id})));
+      }
       await guard();
     }
 

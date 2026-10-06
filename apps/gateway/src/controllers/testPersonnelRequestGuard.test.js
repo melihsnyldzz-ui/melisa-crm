@@ -43,3 +43,16 @@ test('normal personnel and managers retain the existing request path without ext
   assert.equal(createTestPersonnelRequestGuard({user:{role:'personel'}},hooks),null);
   assert.equal(createTestPersonnelRequestGuard({user:{role:'patron'}},hooks),null);
 });
+
+test('batched final assignments retain TEST token expiry and current actor revocation checks',async t=>{
+ for(const mode of ['expire','revoke','reassign'])await t.test(mode,async t=>{
+  const f=fixture(),oldNow=Date.now;t.after(()=>{Date.now=oldNow;});let release;
+  const guard=createTestPersonnelRequestGuard(f.req,{verify:verifyTestPersonnelSession,readAccess:()=>{assert.fail('batch must not request 23 individual metadata endpoints');},
+   readAssignments:({conversationIds,user})=>{assert.deepEqual(conversationIds,['55','56']);assert.equal(user.chatwootAgentId,3);return new Promise(resolve=>{release=resolve;});}});
+  const pending=guard({conversationIds:['55','56']});
+  if(mode==='expire')Date.now=()=>jwt.decode(f.token).exp*1000+1000;
+  else if(mode==='revoke')f.setUser({...f.getUser(),active:false});
+  else f.setUser({...f.getUser(),chatwootAgentId:2});
+  release();await assert.rejects(pending,error=>error.code==='AUTH_TOKEN_INVALID');
+ });
+});
