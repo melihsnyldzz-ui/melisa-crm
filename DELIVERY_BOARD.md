@@ -1,5 +1,8 @@
 # CRM teslim panosu
 
+**6 Ekim Goal6 / CRM-DEC-006:** O02 mevcut startup zinciri teknik tamamlandı. Source77a2fa34/immutable paket, Limited logon/IgnoreNew/max3 task retry, sınırlı child recovery, authenticated Chatwoot bağımlılığı ve ERP exactTEST/native bağlantısı kanıtlı. Gerçek server child kapanışı ve ikinci launcher;76/77 ERP ile bağımsız sağlık görünümü doğrulandı. Gerçek reboot/logon/işyeri kabulü CRM-UA06 bekler. **25 toplam /12🟢 /13🟡 /0🔴** değişmez; M01/önceki kullanıcı kabulleri değişmez. Goal6 sonunda durulur; Goal7/LIVE/main/provider/gerçek mesaj/rol değişikliği yok. [Goal6 kanıtı](docs/evidence/crm/2026-10-06-goal6/README.md).
+
+
 **2026-10-05 kullanıcı önceliği.** Kalıcı kararlar [PROJECT_DECISIONS.md](PROJECT_DECISIONS.md), tam kapsam [CRM_FINISH_PLAN.md](CRM_FINISH_PLAN.md), teknik kanıt [CRM_STATUS.md](CRM_STATUS.md), insan sonuçları [USER_ACCEPTANCE.md](USER_ACCEPTANCE.md). Bu pano mevcut finish tree'yi daraltmaz; günlük sıra burada tutulur. Bölüm içindeki satır sırası önceliktir. Bu başlangıç kaydı uygulama geliştirmesi/kabul yapmaz.
 
 `Onaylı` iş seçilebilir; bağımlılığı hazır değilse bekler. `Teknik hazır / kullanıcı kabulü bekliyor` tamam değildir; kullanıcı sonucu ilgili UA kaydına bağlanır. `Tamam` yalnız işin tüm kabul ölçütleri ve GitHub teslimi kanıtlıysa kullanılır. Yeni kapsam veya öncelik kullanıcı kararı ister; kabul edilmiş işi yeniden açma. `ŞİMDİ` içinde tamamlanmamış iş varken `SONRA` öne alınmaz. ŞİMDİ tamamen tamamlandığında onaylı SONRA sırasının ilk işi, bağımlılığı hazırsa aynı sırayla ŞİMDİ’ye taşınır; yeni kapsam veya sıra değişimi sayılmaz. Bağımlılık hazır değilse beklenir; CANLIDAN SONRA otomatik taşınmaz.

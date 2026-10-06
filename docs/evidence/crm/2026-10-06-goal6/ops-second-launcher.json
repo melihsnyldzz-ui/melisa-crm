@@ -1,0 +1,11 @@
+{
+  "observedAt": "2026-10-06T20:03:47.1007848Z",
+  "erpSecondLauncher": "already-owned",
+  "crmSecondLauncherExit": 0,
+  "secondScheduledStarts": "IgnoreNew",
+  "erpSupervisorUnchanged": 23564,
+  "crmSupervisorUnchanged": 74452,
+  "allChildPidCreationUnchanged": true,
+  "sharedNative62404Unchanged": 44548,
+  "scope": "Real second launch against running TEST owner, no writes or extra processes"
+}

@@ -6,6 +6,13 @@ Her sonuçta kişi, tarih, TEST adresi/ortamı, denenen paket/commit ve kanıt b
 
 ## Yeni/değişen kapsam
 
+**Goal6 / O02 — teknik tamam; insan kabulü bekliyor.**
+
+| ID / kapsam | Deneme | Sonuç | Ortam / kanıt |
+| --- | --- | --- | --- |
+| CRM-UA06 / O02 | İleride gerçek Windows oturum açılışında normal CRM'i aç; yeni paket/ERP katalog/native bağlantısını kontrol et; Chatwoot geç hazırsa bağımsız yüzleri ve sonra bağlantının gelmesini değerlendir; ikinci açılışta kopya servis olmadığını incele. | bekliyor | source77a2fa34 [CRM](http://127.0.0.1:62400/); mevcut logon görevi, gerçek child/owner/recovery teknik prova tamam. Fiziksel reboot/logon bu tur yapılmadı/istenmedi. Kişi/tarih/insan sonucu yok. [Goal6 kanıtı](docs/evidence/crm/2026-10-06-goal6/README.md). |
+
+
 **2026-10-06 Goal5 teknik denemesi:** CRM source4eadb51f0b1428311e253ac049faa49e8fbf02cf/immutable paket, ERP TEST74. Ajan gerçek tarayıcı ve API provası teknik tamamlandı; fiziksel cihaz/personel kendi denemesi yapılmadı. CRM-UA05 **bekliyor**, önceki insan PASS kayıtları değişmedi. Normal terminal http://127.0.0.1:5194/terminal.html → Müşterilerim; bu localhost adresi telefon URL'si değildir. [Teknik kanıt](docs/evidence/crm/2026-10-06-goal5/README.md).
 
 **2026-10-06 Goal4 teknik denemesi — insan sonucu bekliyor:** Güncel CRM source9ea4dda207d4012776791df9089887c8c3e6015e, immutable `crm-test-9ea4dda207d4012776791df9089887c8c3e6015e`/manifeste6d0f29a153caed3c69a4d6ffab7574c5714f66b1c5e5fd83974f07889916528; normal http://127.0.0.1:62400/. Ortak ERP katalog/native iki ürünlü32,88USD/readback/refresh ve yalnız7733 gerçek8023fotoğraf/fiyat paylaşımının provider201/CRM12273 GET teknik kanıtı hazır; delivered/read=false, telefon açma veya insan PASS yok. Normal katalog1440/1024/390 taşmasız teknik tarayıcı kanıtlı; A05 açık İngilizce yanıt/Türkçe özet gerçek modelle doğrulandı; teknik hazır, insan kabulü bekliyor. CRM-UA01/02/03/04 **bekliyor**, A04/A05 insan ürün/dil/metin kabulü yok; ERP-UA13–17 değişmez. Önceki yeşil kabuller kayıtlı kapsamlarıyla korunur. Kullanıcı kişi/deneme zamanı/sonucu bildirilmedi. [Teknik kanıt](docs/evidence/crm/2026-10-06-goal4/README.md).
