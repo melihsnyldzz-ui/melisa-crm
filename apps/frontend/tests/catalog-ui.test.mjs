@@ -42,3 +42,29 @@ test('catalog workspace owns navigation/session cleanup and output checks remain
  assert.equal((builder.match(/await beforeOutput\(\)/g)||[]).length,2);assert.match(builder,/await onAttach\(file,customer\.id,isCurrent\)/);assert.doesNotMatch(workspace+builder,/liveApi\.send|\.sendMessage\(/);
  assert.match(app,/CATALOG_ENABLED && modal === "catalog-builder" && selected.id && liveSession && catalogContextCurrent\(\)/);assert.match(app,/onCrmExpired=\{\(\)=>closeLiveSession/);
 });
+
+test('catalog apply and both reset controls keep server-side photo-only scope',()=>{
+ const builder=readFileSync('src/catalog/CatalogBuilder.jsx','utf8');
+ assert.doesNotMatch(builder,/hasImage:false/);
+ assert.equal((builder.match(/hasImage:true/g)||[]).length,3);
+ assert.match(builder,/onSubmit=[\s\S]*?onPage\(\{\.\.\.query,page:1,limit:50,hasImage:true\}\)/);
+ assert.match(builder,/onClick=[\s\S]*?const q=\{search:''[\s\S]*?hasImage:true\};setQuery\(q\);onPage\(q\);\}\}>Sıfırla/);
+ assert.match(builder,/if\(paged\)\{const q=\{search:''[\s\S]*?hasImage:true\};setQuery\(q\);onPage\(q\)/);
+ assert.match(builder,/Yalnız fotoğrafı olan ERP ürünleri gösterilir/);
+});
+
+test('previous unloaded selection remains removable individually without inventing a product or price',async()=>{
+ const {catalogStorageKey,readPagedCatalog}=await import('../src/catalog/model.js');
+ const storage={getItem:()=>JSON.stringify({draft:{selected:['erp-12','erp-30226']},saved:[]}),setItem(){}};
+ const key=catalogStorageKey('synthetic','patron','55');
+ assert.deepEqual(readPagedCatalog(storage,key,[]).draft.selected,['erp-12','erp-30226']);
+ mkdirSync('.sites-runtime',{recursive:true});const file='.sites-runtime/catalog-previous-selection-test.mjs',previousWindow=globalThis.window;
+ try{
+  globalThis.window={sessionStorage:storage};
+  buildSync({absWorkingDir:process.cwd(),tsconfigRaw:{},entryPoints:[process.cwd()+'/src/catalog/CatalogBuilder.jsx'],outfile:file,bundle:true,platform:'node',format:'esm',jsx:'automatic',external:['react','@phosphor-icons/react'],loader:{'.css':'empty'}});
+  const Builder=(await import(pathToFileURL(`${process.cwd()}/${file}`).href)).default;
+  const source={state:'ready',paged:true,query:{search:'',brand:'',category:'',barcode:'',hasImage:true},products:[],viewProducts:[],meta:{total:0,page:1,totalPages:1,facets:{brands:[],categories:[]}}};
+  const html=renderToStaticMarkup(React.createElement(Builder,{customer:{id:'55',name:'Synthetic'},identity:'synthetic',role:'patron',products:[],sourceStatus:source,onPage(){},onClose(){},onAttach(){},onProductAction(){}}));
+  assert.equal((html.match(/Önceki seçim [12] seçimden çıkar/g)||[]).length,2);assert.match(html,/Bu katalogda görünmüyor/);assert.match(html,/2 ürün/);assert.match(html,/disabled=""[^>]*>Ürünleri ekle/);assert.doesNotMatch(html,/erp-30226|erp-12|catalog-product-pick/);assert.deepEqual(readPagedCatalog(storage,key,[]).draft.selected,['erp-12','erp-30226']);
+ }finally{globalThis.window=previousWindow;rmSync(file,{force:true});}
+});
