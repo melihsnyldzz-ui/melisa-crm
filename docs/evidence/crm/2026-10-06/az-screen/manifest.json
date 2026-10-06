@@ -3,7 +3,9 @@
   "userAcceptance": {
     "physicalMobile": "not performed",
     "outboundTestTextPhone": "User explicitly saw it and replied",
-    "incomingReplyScreen": "Agent saw reply on OLD 1d288142 package around16:29; new optimization not yet applied"
+    "incomingReplyScreen": "Agent saw reply on OLD 1d288142 package around16:29; new optimization not yet applied",
+    "newIncomingReply": "Awaiting a fresh human reply after the new16:48 TEST send; no real new latency claimed",
+    "erpLogin": "Normal login with previously stored TEST form credentials succeeded; synthetic TEST customer and two196TRY rows shown, quantities1+1, no new create/readback"
   },
   "actor": "TEST ADMIN",
   "schemaVersion": 1,
@@ -17,82 +19,119 @@
   "initialRuntimeSource": "1d288142aa0b1c465a91826191fc3cac50207498",
   "files": [
     {
-      "sourceCommit": "1d288142aa0b1c465a91826191fc3cac50207498",
-      "sha256": "7c0bf88ba4fd32862268808158b3f3565e23e27b1bbe98465c0a773c446633b2",
+      "name": "after-erp-session-ready.jpg",
+      "bytes": 45716,
+      "sha256": "9c138512cab44c4e46f3a83c441652bec5f661333e20bc3269376fc1fcaedbec",
+      "sourceCommit": "48cceed03606d8f423462b2ecf8fe6f1472b800e"
+    },
+    {
+      "name": "after-new-test-send.jpg",
+      "bytes": 55272,
+      "sha256": "438902583a33f8a1c4719bbdbbd7b405b09dfbf386f0b941aec987d856c79c46",
+      "sourceCommit": "48cceed03606d8f423462b2ecf8fe6f1472b800e"
+    },
+    {
+      "name": "after-unassigned-summary.jpg",
+      "bytes": 46283,
+      "sha256": "70d14b8921d5ed4732d6e108536bbe4a69590f5e18cfe5038f781ed15619a583",
+      "sourceCommit": "48cceed03606d8f423462b2ecf8fe6f1472b800e"
+    },
+    {
       "name": "ai-suggestion-unavailable.jpg",
-      "bytes": 57551
+      "bytes": 57551,
+      "sha256": "7c0bf88ba4fd32862268808158b3f3565e23e27b1bbe98465c0a773c446633b2",
+      "sourceCommit": "1d288142aa0b1c465a91826191fc3cac50207498"
     },
     {
-      "sourceCommit": "1d288142aa0b1c465a91826191fc3cac50207498",
-      "sha256": "defe9737d061d84e8d9d21a0d7d094d2d66ee856b3f4582d105dc6914d12f9d9",
       "name": "assignment-ahmet.jpg",
-      "bytes": 74378
+      "bytes": 74378,
+      "sha256": "defe9737d061d84e8d9d21a0d7d094d2d66ee856b3f4582d105dc6914d12f9d9",
+      "sourceCommit": "1d288142aa0b1c465a91826191fc3cac50207498"
     },
     {
-      "sourceCommit": "1d288142aa0b1c465a91826191fc3cac50207498",
-      "sha256": "a6b22eb272aba829cf591e7cb67dfc4540409a36e8e5d6a10c3af5722fc9a59e",
       "name": "catalog-preview.jpg",
-      "bytes": 80581
+      "bytes": 80581,
+      "sha256": "a6b22eb272aba829cf591e7cb67dfc4540409a36e8e5d6a10c3af5722fc9a59e",
+      "sourceCommit": "1d288142aa0b1c465a91826191fc3cac50207498"
     },
     {
-      "sourceCommit": "1d288142aa0b1c465a91826191fc3cac50207498",
-      "sha256": "5fd36bced58db9a275e205ac2081b95000170de8017598aa44af6cedabedcf37",
       "name": "catalog-two-products.jpg",
-      "bytes": 100831
-    },
-    {
-      "sourceCommit": "1d288142aa0b1c465a91826191fc3cac50207498",
-      "sha256": "61085d467cb49ac16325ab6674eefe7b6b7d1dae41e7967ba0a0473d8ff464a0",
-      "name": "desktop-chat-1440.jpg",
-      "bytes": 86469
-    },
-    {
-      "sourceCommit": "1d288142aa0b1c465a91826191fc3cac50207498",
-      "sha256": "c1981df1e88c937a639e33afd6d0ac594f21374a920a30a69664a4c800d7fe4f",
-      "name": "erp-login-required.jpg",
-      "bytes": 42942
-    },
-    {
-      "sourceCommit": "1d288142aa0b1c465a91826191fc3cac50207498",
-      "sha256": "4c7dccd60859cac1e56181809b8b009d4b08c9d0befe350ae59750fa134468da",
-      "name": "media-playback.jpg",
-      "bytes": 187903
-    },
-    {
-      "sourceCommit": "1d288142aa0b1c465a91826191fc3cac50207498",
-      "sha256": "4ae8cc32de5cfd37b099a5fddfe39b406aa60d024257c7bd28ab6af28ef9391e",
-      "name": "mobile-catalog.jpg",
-      "bytes": 42691
-    },
-    {
-      "sourceCommit": "1d288142aa0b1c465a91826191fc3cac50207498",
-      "sha256": "03d27b64b3427fb0d53021979b76194678f5faaf20de1699e35715e6533e4600",
-      "name": "mobile-chat.jpg",
-      "bytes": 41256
-    },
-    {
-      "sourceCommit": "1d288142aa0b1c465a91826191fc3cac50207498",
-      "sha256": "3440af3c4c7ccdcbf1423680fa60e224e2f419c47b06fd0c32214dbed14bde69",
-      "name": "mobile-unassigned-search.jpg",
-      "bytes": 22042
-    },
-    {
-      "sourceCommit": "1d288142aa0b1c465a91826191fc3cac50207498",
-      "sha256": "260e7e158e6710b4c43199c8c5f765e5b2148cbff40175c74309bfcbbd2af0d6",
-      "name": "outbound-translation-preview.jpg",
-      "bytes": 37331
-    },
-    {
-      "sourceCommit": "1d288142aa0b1c465a91826191fc3cac50207498",
-      "sha256": "2193cf31adcb6037c0e0b7cc2b10d236d5782c74b1ba4d011548c9b2dae079fb",
-      "name": "photo-viewer.jpg",
-      "bytes": 153334
+      "bytes": 100831,
+      "sha256": "5fd36bced58db9a275e205ac2081b95000170de8017598aa44af6cedabedcf37",
+      "sourceCommit": "1d288142aa0b1c465a91826191fc3cac50207498"
     },
     {
       "name": "chat-1024.jpg",
       "bytes": 39195,
       "sha256": "48d039be03c603bebdf23a3be1b1b2d7ecb34c1faf72d58787b9297db8c86e89",
       "sourceCommit": "1d288142aa0b1c465a91826191fc3cac50207498"
+    },
+    {
+      "name": "desktop-chat-1440.jpg",
+      "bytes": 86469,
+      "sha256": "61085d467cb49ac16325ab6674eefe7b6b7d1dae41e7967ba0a0473d8ff464a0",
+      "sourceCommit": "1d288142aa0b1c465a91826191fc3cac50207498"
+    },
+    {
+      "name": "erp-login-required.jpg",
+      "bytes": 42942,
+      "sha256": "c1981df1e88c937a639e33afd6d0ac594f21374a920a30a69664a4c800d7fe4f",
+      "sourceCommit": "1d288142aa0b1c465a91826191fc3cac50207498"
+    },
+    {
+      "name": "media-playback.jpg",
+      "bytes": 187903,
+      "sha256": "4c7dccd60859cac1e56181809b8b009d4b08c9d0befe350ae59750fa134468da",
+      "sourceCommit": "1d288142aa0b1c465a91826191fc3cac50207498"
+    },
+    {
+      "name": "mobile-catalog.jpg",
+      "bytes": 42691,
+      "sha256": "4ae8cc32de5cfd37b099a5fddfe39b406aa60d024257c7bd28ab6af28ef9391e",
+      "sourceCommit": "1d288142aa0b1c465a91826191fc3cac50207498"
+    },
+    {
+      "name": "mobile-chat.jpg",
+      "bytes": 41256,
+      "sha256": "03d27b64b3427fb0d53021979b76194678f5faaf20de1699e35715e6533e4600",
+      "sourceCommit": "1d288142aa0b1c465a91826191fc3cac50207498"
+    },
+    {
+      "name": "mobile-unassigned-search.jpg",
+      "bytes": 22042,
+      "sha256": "3440af3c4c7ccdcbf1423680fa60e224e2f419c47b06fd0c32214dbed14bde69",
+      "sourceCommit": "1d288142aa0b1c465a91826191fc3cac50207498"
+    },
+    {
+      "name": "outbound-translation-preview.jpg",
+      "bytes": 37331,
+      "sha256": "260e7e158e6710b4c43199c8c5f765e5b2148cbff40175c74309bfcbbd2af0d6",
+      "sourceCommit": "1d288142aa0b1c465a91826191fc3cac50207498"
+    },
+    {
+      "name": "photo-viewer.jpg",
+      "bytes": 153334,
+      "sha256": "2193cf31adcb6037c0e0b7cc2b10d236d5782c74b1ba4d011548c9b2dae079fb",
+      "sourceCommit": "1d288142aa0b1c465a91826191fc3cac50207498"
     }
-  ]
+  ],
+  "currentRuntime": {
+    "nativeStockEffect": false,
+    "nativeSourceCommit": "b708f8e0e6af17d473836a9d4b61c1f970c5bdb4",
+    "sourceCommit": "48cceed03606d8f423462b2ecf8fe6f1472b800e",
+    "manifestSha256": "82f58020e51717e2dc2dc32a53a1f928bad6a36081a46f81c2510e09917eb923",
+    "livePidCreationUnchanged": true,
+    "switchHelperCommit": "5021e32a9363dc25aed68a333898e0b8505a7719",
+    "nativePackageId": "CRM-ORDER-DRAFT-TEST-20261005-04",
+    "nativeLedgerEffect": false,
+    "readyAt": "2026-10-06T13:48:07.9637276Z"
+  },
+  "beforeIncomingLatency": {
+    "chatwootCreatedAt": "2026-10-06T13:16:59Z",
+    "providerAt": "2026-10-06T13:02:23Z",
+    "acceptedDelayMs": 872465,
+    "journalAcceptedAt": "2026-10-06T13:16:55.465Z",
+    "doneAt": "2026-10-06T13:16:59.899Z",
+    "sourceCommit": "1d288142aa0b1c465a91826191fc3cac50207498"
+  }
 }
