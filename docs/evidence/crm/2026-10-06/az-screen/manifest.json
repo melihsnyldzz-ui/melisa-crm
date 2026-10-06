@@ -3,7 +3,7 @@
   "userAcceptance": {
     "physicalMobile": "not performed",
     "outboundTestTextPhone": "User explicitly saw it and replied",
-    "incomingReplyScreen": "pending before new runtime"
+    "incomingReplyScreen": "Agent saw reply on OLD 1d288142 package around16:29; new optimization not yet applied"
   },
   "actor": "TEST ADMIN",
   "schemaVersion": 1,
@@ -87,6 +87,12 @@
       "sha256": "2193cf31adcb6037c0e0b7cc2b10d236d5782c74b1ba4d011548c9b2dae079fb",
       "name": "photo-viewer.jpg",
       "bytes": 153334
+    },
+    {
+      "name": "chat-1024.jpg",
+      "bytes": 39195,
+      "sha256": "48d039be03c603bebdf23a3be1b1b2d7ecb34c1faf72d58787b9297db8c86e89",
+      "sourceCommit": "1d288142aa0b1c465a91826191fc3cac50207498"
     }
   ]
 }

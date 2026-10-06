@@ -38,3 +38,7 @@ Bu kayıt yeni bir kullanıcı kabulü veya LIVE hazırlık yüzdesi değildir. 
 3. Atanmamış metriği yalnız bütün sayısal total kapsamı gerçekten yüklenince gerçek owner DTO'larından hesaplanır. Partial/null toplam ve görünüm korunur; tasarım değişmez.
 
 Bu bölüm kaynak hazırlık kaydıdır. Yeni paket/Git CI/gerçek tekrar denemesi sonuçları `CRM_STATUS.md` ve bu raporun son uygulama bölümüne ayrı eklenir. Yeni ERP `melisa-catalog.v1`, LIVE, main merge, credential, işletme satış kuralları veya ticari veri değiştirilmedi.
+
+### Eski paketle sonraki gözlem
+
+16:29 civarı normal Mesajlar ekranına dönünce kullanıcının `6 ekim yanıtı` mesajı da göründü. Bu sırada hâlâ1d288142 çalışıyordu; sonuç yeni optimizasyona atfedilmez.16:06'da olmayan mesajın bu kontrolde görünmesi gecikmenin üst sınırını gösterir; kesin journal kabul zamanı repo dışı metadata ile ayrıca doğrulanır. CSS1024×800,scrollWidth1024 ekranı `chat-1024.jpg` içinde. İlk paket hazırlığı, bu yeni ekran kanıtı kaydedildiğinde checkout dirty olduğu için servis değiştirmeden reddedildi; kanıt normal belge commit'iyle korunup temiz kaynakla yeniden hazırlanır.
