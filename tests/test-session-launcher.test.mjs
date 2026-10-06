@@ -18,6 +18,9 @@ function run(body,launcher=path.join(root,'deploy/test-session-launcher.ps1')){
 test('PS5 library mode is inert and private state cannot overlap checkout',()=>{
   assert.equal(run(`if (!(Same-Path 'C:\\fixture\\repo\\' 'C:\\fixture\\repo')) { throw 'path' }; if (Outside-Checkout 'C:\\fixture\\repo\\runtime' 'C:\\fixture\\repo') { throw 'inside' }; if (!(Outside-Checkout 'C:\\fixture\\runtime' 'C:\\fixture\\repo')) { throw 'outside' }; 'PASS'`),'PASS');
 });
+test('native and supervisor recovery share bounded backoff; stable run alone resets circuit budget',()=>{
+  assert.equal(run(`$count=0;foreach($delay in @(5,10,20,40,60)){$result=Get-TestRecoveryDecision $count 1;if($result.DelaySeconds -ne $delay -or $result.State -ne 'restart-wait'){throw 'delay'};$count=$result.Failures};if((Get-TestRecoveryDecision $count 1).State -ne 'circuit-open'){throw 'circuit'};if((Get-TestRecoveryDecision $count 120).Failures -ne 1){throw 'stable'};'PASS'`),'PASS');
+});
 test('equivalent checkout spellings share the same mutex identity',()=>{
   assert.equal(run(`$sid='S-1-5-21-fixture'; $first=Get-TestMutexName 'C:\\fixture\\repo' $sid; foreach ($root in @('C:\\fixture\\repo\\','c:/FIXTURE/repo/','C:\\fixture\\repo\\.','C:\\fixture\\temporary\\..\\repo')) { if ((Get-TestMutexName $root $sid) -ne $first) {throw 'split mutex'} }; if ((Get-TestMutexName 'C:\\fixture\\other' $sid) -eq $first) {throw 'different roots share mutex'}; 'PASS'`),'PASS');
 });
@@ -191,7 +194,7 @@ function Invoke-CimMethod {
     if ($script:race -and $InputObject.ProcessId -eq 101) {$script:current=$null; throw (New-CimLookupFailure)}
     [pscustomobject]@{ReturnValue=0;Sid=$cfg.OwnerSid}
 }
-function Write-TestIdentityAtomic($Path,$Identity) {$script:writtenPid=$Identity.pid}
+function Write-TestIdentityAtomic($Path,$Identity) {if($Identity.ContainsKey('pid')){$script:writtenPid=$Identity.pid}}
 function Assert-NativeHealth {
     $script:healthChecks++
     if ($script:healthChecks -eq 2) {throw 'FIXTURE_RECOVERY_COMPLETE'}

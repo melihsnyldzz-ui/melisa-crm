@@ -15,5 +15,5 @@ if ($Action -eq 'Remove') { if ($existing) { Unregister-ScheduledTask -TaskName 
 $taskAction=New-ScheduledTaskAction -Execute $powershell -Argument $arguments -WorkingDirectory $config.RepoRoot
 $trigger=New-ScheduledTaskTrigger -AtLogOn -User $config.OwnerSid
 $principal=New-ScheduledTaskPrincipal -UserId $config.OwnerSid -LogonType Interactive -RunLevel Limited
-$settings=New-ScheduledTaskSettingsSet -MultipleInstances IgnoreNew -StartWhenAvailable -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -ExecutionTimeLimit ([timespan]::Zero) -RestartCount 999 -RestartInterval (New-TimeSpan -Minutes 1)
+$settings=New-ScheduledTaskSettingsSet -MultipleInstances IgnoreNew -StartWhenAvailable -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -ExecutionTimeLimit ([timespan]::Zero) -RestartCount 3 -RestartInterval (New-TimeSpan -Minutes 1)
 Register-ScheduledTask -TaskName $config.TaskName -TaskPath '\' -Action $taskAction -Trigger $trigger -Principal $principal -Settings $settings -Description 'Owned local CRM TEST session; starts at user logon.' -Force | Select-Object TaskName,State

@@ -242,6 +242,11 @@ function Get-ReadinessDecision($Alive, $Ready, $ElapsedSeconds, $GraceSeconds) {
     if ($ElapsedSeconds -ge $GraceSeconds) { return 'recover' }
     return 'wait'
 }
+function Get-TestRecoveryDecision($Failures,$StableSeconds) {
+    if ($StableSeconds -ge 120) {$Failures=0}
+    if ($Failures -ge 5) {return @{State='circuit-open';Failures=$Failures;DelaySeconds=0}}
+    return @{State='restart-wait';Failures=($Failures+1);DelaySeconds=([Math]::Min(60,5*[Math]::Pow(2,$Failures)))}
+}
 function Write-TestIdentityAtomic($Path, $Identity) {
     $temporary=$Path + '.' + [Guid]::NewGuid().ToString('N') + '.tmp'
     $backup=$temporary + '.bak'
@@ -308,6 +313,11 @@ function Invoke-TestSession($Config) {
         if ($Config.PSObject.Properties['CatalogAccessPath']) { $env:CRM_ERP_CATALOG_ACCESS_PATH=$Config.CatalogAccessPath }
         $env:CRM_ERP_BASELINE_ENV=$Config.ErpBaselineEnv; $env:CRM_ERP_PHOTO_ROOT=$Config.PhotoRoot
         $env:CRM_TEST_RUNTIME_DIR=$Config.RuntimeDir; $env:CRM_TEST_LOG_DIR=$Config.LogDir
+        $env:CRM_TEST_NATIVE_SOURCE_COMMIT=if ($Config.PSObject.Properties['NativeSourceCommit']) {$Config.NativeSourceCommit} else {''}
+        $env:CRM_TEST_NATIVE_PACKAGE_ID=if ($Config.PSObject.Properties['NativePackageId']) {$Config.NativePackageId} else {''}
+        $env:CRM_TEST_AUTOSTART_CONFIGURED=if ($Config.PSObject.Properties['TaskName']) {[string][bool](Get-ScheduledTask -TaskName $Config.TaskName -TaskPath '\' -ErrorAction SilentlyContinue)} else {'false'}
+        $env:CRM_TEST_AUTOSTART_CONFIGURED=$env:CRM_TEST_AUTOSTART_CONFIGURED.ToLowerInvariant()
+        $env:CRM_TEST_SOURCE_COMMIT=if ($Config.PSObject.Properties['PackageRoot']) {(Get-Content -LiteralPath (Join-Path $Config.PackageRoot 'release-manifest.json') -Raw | ConvertFrom-Json).source.commit} else {''}
         Set-TestLanEnvironment $Config
         $env:CRM_AI_SALES_MODE=$Config.AISalesMode
         $terminalPersonnelProperty=$Config.PSObject.Properties['TerminalPersonnelUsername']
@@ -328,8 +338,10 @@ function Invoke-TestSession($Config) {
             }
         }
         $nativeUnavailableSince=$null
+        $nativeFailures=0; $nativeNextAttempt=$null; $nativeCircuitOpen=$false; $nativeStartedAt=$null; $nativeLost=$false
         $pendingSupervisor=$null
         $pendingSince=$null
+        $supervisorFailures=0; $supervisorNextAttempt=$null; $supervisorCircuitOpen=$false; $supervisorStartedAt=$null; $supervisorLost=$false
         while ($true) {
             $identity=Read-SupervisorIdentity $Config
             if ($pendingSupervisor) {
@@ -373,12 +385,20 @@ function Invoke-TestSession($Config) {
             $checked=Assert-TestSessionListeners $listeners $expected $identity $Config $nativeSnapshot
             $identity=$checked.Identity; $listeners=$checked.Listeners; $expected=$checked.Expected
             if (!$nativeId) {
-                $native=Start-TestNode $Config $nativeScript (Join-Path $Config.NativeRelease 'apps/api') @($Config.NativeConfig) 'native-draft'
-                $nativeId=$native.Id
-                Start-Sleep -Seconds 5
+                if ($nativeStartedAt -and !$nativeLost) {
+                    $decision=Get-TestRecoveryDecision $nativeFailures ((Get-Date)-$nativeStartedAt).TotalSeconds
+                    $nativeFailures=$decision.Failures; $nativeCircuitOpen=$decision.State -eq 'circuit-open'; $nativeNextAttempt=(Get-Date).AddSeconds($decision.DelaySeconds);$nativeLost=$true
+                    Write-TestIdentityAtomic (Join-Path $Config.LogDir 'native-recovery-status.json') @{observedAt=(Get-Date).ToUniversalTime().ToString('o');state=$decision.State;failures=$nativeFailures;code='TEST_NATIVE_EXITED'}
+                }
+                if (!$nativeCircuitOpen -and (!$nativeNextAttempt -or (Get-Date) -ge $nativeNextAttempt)) {
+                    $native=Start-TestNode $Config $nativeScript (Join-Path $Config.NativeRelease 'apps/api') @($Config.NativeConfig) 'native-draft'
+                    $nativeId=$native.Id; $nativeStartedAt=Get-Date; $nativeLost=$false
+                    Start-Sleep -Seconds 5
+                }
             }
-            $native=Assert-OwnedProcess $nativeId $Config $nativeScript
-            if (!$native) { continue }
+            $native=if ($nativeId) {Assert-OwnedProcess $nativeId $Config $nativeScript} else {$null}
+            if ($nativeId -and !$native) { $nativeId=0;continue }
+            if ($native) {
             Write-TestIdentityAtomic $nativeRecord @{pid=$nativeId;release=$Config.NativeRelease;config=$Config.NativeConfig;createdAt=$native.CreationDate.ToUniversalTime().ToString('o')}
             try { Assert-NativeHealth $Config; $nativeUnavailableSince=$null } catch {
                 # Invalid health identity and HTTP error responses are never restart evidence.
@@ -389,9 +409,16 @@ function Invoke-TestSession($Config) {
                     $nativeId=0; $nativeUnavailableSince=$null
                     continue
                 }
-                Start-Sleep -Seconds 5; continue
+                # The independent UI/catalog children may start while native is warming up.
+            }
             }
             if (!$identity -or !$identity.Supervisor) {
+                if ($supervisorStartedAt -and !$supervisorLost) {
+                    $decision=Get-TestRecoveryDecision $supervisorFailures ((Get-Date)-$supervisorStartedAt).TotalSeconds
+                    $supervisorFailures=$decision.Failures; $supervisorCircuitOpen=$decision.State -eq 'circuit-open'; $supervisorNextAttempt=(Get-Date).AddSeconds($decision.DelaySeconds);$supervisorLost=$true
+                    Write-TestIdentityAtomic (Join-Path $Config.LogDir 'supervisor-recovery-status.json') @{observedAt=(Get-Date).ToUniversalTime().ToString('o');state=$decision.State;failures=$supervisorFailures;code='TEST_SUPERVISOR_EXITED'}
+                }
+                if ($supervisorCircuitOpen -or ($supervisorNextAttempt -and (Get-Date) -lt $supervisorNextAttempt)) {Start-Sleep -Seconds 5;continue}
                 # Only verified orphan TEST children may be stopped to free their ports.
                 if ($identity) {
                     foreach ($name in $identity.Children.Keys) {
@@ -405,6 +432,7 @@ function Invoke-TestSession($Config) {
                 $pendingSupervisor=Assert-OwnedProcess $started.Id $Config (Join-Path $executionRoot 'deploy/test-supervisor.mjs')
                 if (!$pendingSupervisor) { throw 'TEST_SUPERVISOR_START_FAILED' }
                 $pendingSince=Get-Date
+                $supervisorStartedAt=Get-Date; $supervisorLost=$false
                 Start-Sleep -Seconds 5
             }
             Start-Sleep -Seconds 5
