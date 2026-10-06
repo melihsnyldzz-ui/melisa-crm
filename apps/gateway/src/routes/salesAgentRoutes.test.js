@@ -33,7 +33,7 @@ test('real sales-draft route uses auth, trusted Chatwoot DTO and suggestion-only
   delete process.env.CRM_AI_SALES_RULES_FILE;
 
   let assignment = 3, modelCalls = 0, conversationReads = 0, modelBody, modelFailure = null,
-    afterModel = () => {}, duringFirstRead = () => {}, duringSecondRead = () => {}, chatwootFailure = false, phone = '+905387217733',
+    afterModel = () => {}, duringFirstRead = () => {}, duringSecondRead = () => {}, duringFirstPostModelRead = () => {}, postModelReads = 0, chatwootFailure = false, phone = '+905387217733',
     plannerQueries = [], catalogReads = 0, catalogFailure = false, price = 196, afterCatalog = () => {},
     selectProducts = false, priceChangesOnReadback = false, newMessage = false, proposalSequence = [], proposalCalls = 0;
   const draft = () => ({ action: 'reply', reply: 'Which age range do you need?',
@@ -86,6 +86,9 @@ test('real sales-draft route uses auth, trusted Chatwoot DTO and suggestion-only
         conversationReads++;
         if (conversationReads === 1) duringFirstRead();
         if (conversationReads === 2) duringSecondRead();
+        // Personnel detail adds a fresh assignment read before the model; target the
+        // semantic model/readback boundary instead of the second metadata request.
+        if (modelCalls > 0 && ++postModelReads === 1) duringFirstPostModelRead();
         return json({ id: 55, inbox_id: 1, status: 'open',
           meta: { sender: { name: 'Fixture', phone_number: phone },
             assignee: { id: assignment, name: `Fixture agent ${assignment}` } } });
@@ -110,7 +113,7 @@ test('real sales-draft route uses auth, trusted Chatwoot DTO and suggestion-only
     crmTranslationRateLimit.resetKey('crm-translation:sales-personel');
     assignment = 3; modelCalls = 0; conversationReads = 0; modelBody = null;
     modelFailure = null; afterModel = () => {}; chatwootFailure = false;
-    duringFirstRead = () => {}; duringSecondRead = () => {}; phone = '+905387217733';
+    duringFirstRead = () => {}; duringSecondRead = () => {}; duringFirstPostModelRead = () => {}; postModelReads = 0; phone = '+905387217733';
     plannerQueries = []; catalogReads = 0; catalogFailure = false; price = 196; afterCatalog = () => {};
     selectProducts = false; priceChangesOnReadback = false; newMessage = false;
     proposalSequence = []; proposalCalls = 0;
@@ -150,7 +153,7 @@ test('real sales-draft route uses auth, trusted Chatwoot DTO and suggestion-only
       duringFirstRead = () => { env.auth.users[1].chatwootAgentId = 4; };
       const result = await request({ authorization: `Bearer ${token('personel')}` });
       assert.equal(result.status, 403); assert.equal(result.body.error.code, 'WHATSAPP_CRM_CONVERSATION_FORBIDDEN');
-      assert.equal(modelCalls, 0); assert.equal(conversationReads, 1);
+      assert.equal(modelCalls, 0); assert.equal(conversationReads, 2);
     });
     await t.test('browser facts are ignored, server reads twice and returns a human-reviewed draft', async () => {
       reset();
@@ -213,7 +216,7 @@ test('real sales-draft route uses auth, trusted Chatwoot DTO and suggestion-only
       reset(); env.auth.personnelCanSend = true; afterModel = () => { assignment = 4; };
       const result = await request({ authorization: `Bearer ${token('personel')}` });
       assert.equal(result.status, 403); assert.equal(result.body.error.code, 'WHATSAPP_CRM_CONVERSATION_FORBIDDEN');
-      assert.equal(modelCalls, 1); assert.equal(conversationReads, 2);
+      assert.equal(modelCalls, 1); assert.equal(conversationReads, 3);
     });
     await t.test('phone changed during model request rejects generated suggestion', async () => {
       reset(); afterModel = () => { phone = '+15555550123'; };
@@ -228,17 +231,17 @@ test('real sales-draft route uses auth, trusted Chatwoot DTO and suggestion-only
       assert.equal(modelCalls, 1);
     });
     await t.test('send permission revoked during final Chatwoot read is rejected', async () => {
-      reset(); env.auth.personnelCanSend = true; duringSecondRead = () => { env.auth.personnelCanSend = false; };
+      reset(); env.auth.personnelCanSend = true; duringFirstPostModelRead = () => { env.auth.personnelCanSend = false; };
       const result = await request({ authorization: `Bearer ${token('personel')}` });
       assert.equal(result.status, 403); assert.equal(result.body.error.code, 'WHATSAPP_CRM_PERMISSION_DENIED');
-      assert.equal(modelCalls, 1); assert.equal(conversationReads, 2);
+      assert.equal(modelCalls, 1); assert.equal(conversationReads, 4); assert.equal(postModelReads, 2);
     });
     await t.test('staff binding changed during final Chatwoot read rejects result', async () => {
       reset(); env.auth.personnelCanSend = true;
-      duringSecondRead = () => { env.auth.users[1].chatwootAgentId = 4; };
+      duringFirstPostModelRead = () => { env.auth.users[1].chatwootAgentId = 4; };
       const result = await request({ authorization: `Bearer ${token('personel')}` });
       assert.equal(result.status, 403); assert.equal(result.body.error.code, 'WHATSAPP_CRM_CONVERSATION_FORBIDDEN');
-      assert.equal(modelCalls, 1); assert.equal(conversationReads, 2);
+      assert.equal(modelCalls, 1); assert.equal(conversationReads, 4); assert.equal(postModelReads, 2);
     });
     await t.test('mode disabled during awaited final Chatwoot read rejects result', async () => {
       reset(); duringSecondRead = () => { process.env.CRM_AI_SALES_MODE = 'off'; };
