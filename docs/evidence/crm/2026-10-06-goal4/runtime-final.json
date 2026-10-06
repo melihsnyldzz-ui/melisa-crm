@@ -1,0 +1,27 @@
+{
+  "crm": {
+    "sourceCommit": "9ea4dda207d4012776791df9089887c8c3e6015e",
+    "packageRoot": "C:/Sirket/CRM/releases/crm-test-9ea4dda207d4012776791df9089887c8c3e6015e",
+    "manifestSha256": "e6d0f29a153caed3c69a4d6ffab7574c5714f66b1c5e5fd83974f07889916528",
+    "uiOrigins": [
+      "http://127.0.0.1:62400",
+      "http://192.168.1.46:62400"
+    ],
+    "supervisorPid": 67376
+  },
+  "native": {
+    "sourceCommit": "0940c49f3c90bc365955d3e2f64fb5b541f0717d",
+    "sqlCommit": "3a1f404426e18181cae9c33a4aa25e502db2a676",
+    "port": 62404,
+    "pid": 44548
+  },
+  "dailyErp": {
+    "sourceCommit": "9ada67ca44947d16226a4894cfcf52aeb6e1c923",
+    "webPort": 5194,
+    "apiPort": 4144,
+    "nativePort": 4146
+  },
+  "liveTouched": false,
+  "mainMerged": false,
+  "humanAcceptance": "pending"
+}

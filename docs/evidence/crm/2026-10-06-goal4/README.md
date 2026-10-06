@@ -28,8 +28,16 @@ Son CRM9f81529 üç örnek medyanı: sohbet179ms,first50498,next50551,kod540,bar
 
 ## AI ve son kapanış
 
-Normal ekranda gerçek model ERP36724/15.78USD fiyat kartını önerdi; sayısal fiyat/stoğa ilişkin taahhüt üretmedi, composer korundu, autoSend=false/erpWrite=false. Açık İngilizce tercihin gerçek modelde Türkçe kaldığı bulundu; sabit doğrulanmış dil talimatı düzeltmesi107/107 test geçti. Son uygulama paketi ve gerçek İngilizce sonucu kapanışta eklenecek; bu ara kayıt Goal4 tamamlandı iddiası değildir.
+Normal ekranda gerçek model ERP36724/15.78USD fiyat kartını önerdi; sayısal fiyat/stoğa ilişkin taahhüt üretmedi, composer korundu, autoSend=false/erpWrite=false. Açık İngilizce tercihin gerçek modelde Türkçe kaldığı bulundu; sabit doğrulanmış dil talimatı düzeltmesi107/107 test geçti. Son9ea4dda pakette gerçek İngilizce reply/Türkçe özet doğrulandı. A04/A05 teknik hazır; insan dil/metin kabulü bekler. [Gerçek model sonucu](ai-english-context.json).
 
 Kota düzeltmesi8çağrı/5dk sınırını artırmaz: pasif okuyucu6, status+manuel gönderim için2 slot. Kuyruk/pagination korunur; belirsiz gönderim otomatik denenmez. Yalnız yerel pretransport429 doğru crm-send cooldown alır; katalog okumaları durmaz.34 hedefli test PASS, bağımsızreview CLEAR. Her teslimin exactHEADCI/secret kontrolü PR3/PR23'te izlenir.
 
 CRM-UA02/03/04,A04/A05 ve ERP-UA13–17 insan kabulü bekler. LIVE/Vega/mainmerge/başkaalıcı/finalize/ödeme yok. Goal4 kapanınca Goal5 başlamaz.
+
+## Son teknik kapanış
+
+Goal4 teknik tamamlandı / insan kabulü bekliyor. Gerçek ERP HTTP katalog → normal CRM ürün/fotoğraf/fiyat → yalnız7733 provider kabulü ve ayrı CRM GET → iki ürünlü native32,88USD taslak → ayrı ERP GET/refresh zinciri tamamlandı. A04/A05 teknik hazır; açık İngilizce tercih gerçek modelde İngilizce reply/Türkçe özet verdi. Hiçbir insan kabulü otomatik PASS yapılmadı. Goal4 sonunda duruldu; Goal5/fiziksel Zebra veya başka finish işi başlamaz.
+
+Son CRM paket/source `9ea4dda207d4012776791df9089887c8c3e6015e`, manifestSHA256 `e6d0f29a153caed3c69a4d6ffab7574c5714f66b1c5e5fd83974f07889916528`; quality/windows/secret/AI aynı source PASS. Son rollback config `C:\Sirket\CRM\runtime\test-completion\package-switches\20261006T160624349Z-ad20a0b5383d4695882188cf6b22e82d\previous-startup-config.json` önceki9f pakete dönüş için korunur. Goal4 başlangıçCRM48/native-04 config ayrıca `goal4-switch-20261006T152729Z` arşivinde. Eski R02 gerçek geri dönüş kabulü yeniden açılmaz; yeni Goal4 tam eski pakete geri dönüş uygulanmış sayılmaz. Native v2 disable kaynak builder exact TEST hedefinde EXECUTE yollarını kapatır, sipariş tarihçesini silmez; bu kapanışta disable uygulanmadı.
+
+FotoğrafReady1299ms: yeni sayfada0161MOLLY arama → doğal96×128thumbnail visible/complete. Tarayıcı otomasyon overhead dahil tek UI örneği; bytes405ms ayrı medyan. Son snapshot16:06:45Z üç native denemeyi kapsar; tüm10table+43guard aynı. [Fotoğraf ölçümü](photo-ready.json), [koruma karşılaştırması](guard-comparison.json).

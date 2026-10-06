@@ -1,0 +1,96 @@
+{
+  "input": {
+    "catalogSearch": "8023 CONCEPT",
+    "customerLanguage": "en",
+    "currentComposer": "Please keep my draft intact; confirm the recorded ERP product only.",
+    "draftContext": {
+      "requestId": "0d85b6dc-440b-4cf9-9b43-26d128099050",
+      "customerId": 595,
+      "items": [
+        {
+          "erpProductId": 36724,
+          "stockCode": "8023 CONCEPT",
+          "quantity": 1
+        },
+        {
+          "erpProductId": 30226,
+          "stockCode": "3344 CONCEPT",
+          "quantity": 2
+        }
+      ]
+    }
+  },
+  "result": {
+    "success": true,
+    "data": {
+      "action": "recommend",
+      "reply": "Hello! I can help you with the product you inquired about. We have the following recorded product available:\n\n- **Product Name:** TAKIM  \n- **Stock Code:** 8023 CONCEPT  \n\nThis product has a per-item price available. If you are interested in proceeding or need additional information, please let me know what you're looking for!",
+      "summaryTr": "Merhaba! İlgilendiğiniz ürünle ilgili yardımcı olabilirim. Mevcut olan kayıtlı ürünümüz:\n- **Ürün Adı:** TAKIM  \n- **Stok Kodu:** 8023 CONCEPT  \nBu ürünün adet fiyatı mevcuttur. Devam etmek isterseniz veya daha fazla bilgiye ihtiyacınız varsa, lütfen bizimle paylaşın!",
+      "productIds": [
+        "erp-36724"
+      ],
+      "lines": [],
+      "handoffReason": "",
+      "quote": null,
+      "conversationId": "55",
+      "conversationRevision": "05ff00026327efefb9af69fd20229ab2c9d2f209151022ddae9a84da4b3972cf",
+      "recommendedProducts": [
+        {
+          "id": "erp-36724",
+          "erpProductId": 36724,
+          "priceExact": "15.78000000",
+          "revision": "a1b303e0315a7f378b73277f4bdec3d7c016af0a91287db4e50ed441f976a112",
+          "unitLabel": "ADET",
+          "stockCode": "8023 CONCEPT",
+          "productName": "TAKIM",
+          "salePrice": 15.78,
+          "currency": "USD",
+          "priceBasis": "per-item",
+          "photoEligible": true
+        }
+      ],
+      "catalogFacts": {
+        "source": "melisa-erp-catalog",
+        "catalogVersion": "melisa-catalog.v1",
+        "environment": "CANONICAL_TEST",
+        "fetchedAt": "2026-10-06T16:07:34.685Z",
+        "expiresAt": "2026-10-06T16:12:34.685Z",
+        "sourceAsOf": "2026-09-30",
+        "freshLive": false,
+        "sourceDatabaseVerified": true,
+        "stockFreshness": "native-test",
+        "seriesVerified": false
+      },
+      "policyVersion": "owner-1791143732281-545cfd0e-43b8-4f30-bd05-9d452f07238e",
+      "policyFacts": {
+        "version": "owner-1791143732281-545cfd0e-43b8-4f30-bd05-9d452f07238e",
+        "minimumOrderMode": "unconfigured",
+        "minimumOrder": null,
+        "telegramUrl": null,
+        "countryRules": [],
+        "shippingTerms": "",
+        "salesNotes": "",
+        "countrySelection": "unverified",
+        "shippingConfirmation": "staff",
+        "requiresStaffConfirmation": true,
+        "discountAllowed": false,
+        "breakSeries": false,
+        "autoSend": false,
+        "writeErp": false,
+        "revision": "aa89deb166967afca4b46f4293e9e946c86b244d7d571c94f8f5eac4674776c9"
+      },
+      "generatedAt": "2026-10-06T16:07:39.369Z",
+      "mode": "copilot",
+      "requiresHumanReview": true,
+      "autoSend": false,
+      "erpWrite": false,
+      "warning": "AI metni personel önerisidir. Yapılandırılmış kontroller serbest metindeki tüm iddiaları doğrulamaz. Göndermeden önce inceleyin."
+    },
+    "meta": {
+      "source": "ai-sales-copilot",
+      "readOnly": true,
+      "autoSend": false,
+      "erpWrite": false
+    }
+  }
+}
