@@ -24,7 +24,7 @@ test('actual ERP connection panel exposes a clean corrective form only for recov
   }
   for (const state of ['idle','loading','credentials','disconnected','blocked','error','uncertain']) {
    const html=renderToStaticMarkup(React.createElement(CatalogConnectionPanel,{customer:{name:'Synthetic customer'},source:{state,message:'Synthetic status',diagnostic:{status:500,code:'WHATSAPP_CRM_INTERNAL_ERROR'}},authMode:'crm',onClose(){},onRead(){},onSignIn(){throw new Error('Must not call ERP auth');},onDisconnect(){throw new Error('Must not call ERP auth');}}));
-   assert.doesNotMatch(html,/<form|type="password"|name="username"|ERP’ye bağlan|ERP bağlantısını kapat/);assert.match(html,/Ek ERP girişi gerekmez/);assert.match(html,/HTTP 500/);assert.match(html,/WHATSAPP_CRM_INTERNAL_ERROR/);
+   assert.doesNotMatch(html,/<form|type="password"|name="username"|ERP’ye bağlan|ERP bağlantısını kapat/);assert.match(html,/Ek ERP girişi gerekmez/);assert.doesNotMatch(html,/HTTP 500|WHATSAPP_CRM_INTERNAL_ERROR/);
   }
  } finally {rmSync(file,{force:true});}
 });

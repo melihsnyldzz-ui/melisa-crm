@@ -1,3 +1,4 @@
+import {canonicalQuery,canonicalId} from './catalog/canonicalStock.js';
 import { existingQuery, existingId } from './catalog/existingStock.js';
 import { normalizeAccountIdentity } from "./accountIdentity.js";
 import { resolveContactIdentity } from "./contactIdentity.js";
@@ -517,9 +518,9 @@ function catalogEnvelope(payload, list) {
   // Preserve meta without guessing its meaning; the source adapter validates it separately.
   return payload;
 }
-async function catalogPhoto(accessToken, id, { signal: callerSignal } = {}) {
+async function catalogPhoto(accessToken, id, { signal: callerSignal, variant='preview' } = {}) {
   if (!accessToken) throw Object.assign(new Error("CRM oturumu gerekli."), { status: 401 });
-  const path = `/crm/catalog/products/${catalogId(id)}/photo`,controller = new AbortController();
+  const path = `/crm/catalog/products/${catalogId(id)}/photo${variant==='thumbnail'?'?variant=thumbnail':''}`,controller = new AbortController();
   const cancel = () => controller.abort();
   callerSignal?.addEventListener("abort", cancel, {once:true});
   if (callerSignal?.aborted) controller.abort();
@@ -542,6 +543,12 @@ async function catalogPhoto(accessToken, id, { signal: callerSignal } = {}) {
 }
 
 export const liveApi = {
+ canonicalCatalogProducts(token,input={}, {signal}={}) {const q=canonicalQuery(input);return request('/crm/catalog/products?'+new URLSearchParams({...q,page:String(q.page),limit:String(q.limit),hasImage:String(q.hasImage)}),token,{signal,preserveEnvelope:true,preserveAuthDenial:true,redirect:'error'});},
+ canonicalCatalogProduct(token,id,{signal}={}) {if(!canonicalId(id))throw Error('ERP ürün kimliği doğrulanamadı.');return request('/crm/catalog/products/'+id,token,{signal,preserveEnvelope:true,preserveAuthDenial:true,redirect:'error'});},
+ canonicalCatalogPhoto(token,id,options={}) {if(!canonicalId(id))throw Error('ERP ürün kimliği doğrulanamadı.');return catalogPhoto(token,id,options);},
+ erpV2Customers:(token,erpToken,conversationId,phone,search='')=>request('/crm/erp/v2/customers?'+new URLSearchParams({conversationId:String(conversationId),phone,search}),token,{headers:{'x-erp-token':erpToken}}),
+ erpV2DraftDetail:(token,erpToken,id)=>request('/crm/erp/v2/drafts/'+encodeURIComponent(id),token,{headers:{'x-erp-token':erpToken},timeoutMs:45000}),
+ erpV2Draft:(token,erpToken,body)=>request('/crm/erp/v2/drafts',token,{method:'POST',headers:{'x-erp-token':erpToken},body:JSON.stringify(body),timeoutMs:45000}),
   erpDrafts: token => request('/crm/erp/drafts',token),
   erpLogin: (token,credentials) => request('/crm/erp/login',token,{method:'POST',body:JSON.stringify(credentials)}),
   erpCustomers: (token,erpToken,search) => request(`/crm/erp/customers?search=${encodeURIComponent(search)}`,token,{headers:{'x-erp-token':erpToken}}),
@@ -633,9 +640,9 @@ export const liveApi = {
   assign: (token, id, agentId) => request(`/crm/conversations/${id}/assign`, token, { method: "POST", body: JSON.stringify({ agentId }) }),
   salesRules: (token, {signal}={}) => request('/crm/sales-rules', token, {signal,preserveAuthDenial:true,redirect:'error'}),
   saveSalesRules: (token, {policy,revision}, {signal}={}) => request('/crm/sales-rules', token, {method:'PUT',body:JSON.stringify({policy,revision}),signal,preserveAuthDenial:true,redirect:'error'}),
-  salesDraft: (token, id, {signal,catalogSearch=''} = {}) => {
+  salesDraft: (token, id, {signal,catalogSearch='',customerLanguage,currentComposer,draftContext} = {}) => {
     if(typeof catalogSearch!=='string'||catalogSearch.trim().length>120)throw new Error('Ürün araması en fazla 120 karakter olabilir.');
-    return request(`/crm/conversations/${encodeURIComponent(String(id))}/sales-draft`, token, { method: 'POST', body: JSON.stringify(catalogSearch.trim()?{catalogSearch:catalogSearch.trim()}:{}), signal, timeoutMs: 90000, preserveAuthDenial: true, redirect: 'error' });
+    return request(`/crm/conversations/${encodeURIComponent(String(id))}/sales-draft`, token, { method: 'POST', body: JSON.stringify({...(catalogSearch.trim()?{catalogSearch:catalogSearch.trim()}:{}),...(customerLanguage!==undefined?{customerLanguage}:{}),...(currentComposer!==undefined?{currentComposer}:{}),...(draftContext!==undefined?{draftContext}:{})}), signal, timeoutMs: 90000, preserveAuthDenial: true, redirect: 'error' });
   },
   async translate(token, id, { mode, text, targetLanguage }) {
     const body = { mode, text };

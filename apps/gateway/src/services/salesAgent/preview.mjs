@@ -2,6 +2,7 @@ import { conversationSnapshot, prepareSalesDraft } from './agent.mjs';
 import { createHash } from 'node:crypto';
 import { editablePolicy, salesError, validatePolicy } from './policy.mjs';
 import { searchSchema, validateCatalogSearch, validateSearchPlan } from './recordedCatalog.mjs';
+import {staffSalesContext} from './staffContext.mjs';
 
 /** Authenticated caller scope is forwarded on BOTH reads; request-body facts/rules are ignored. */
 export function assertSalesConversationScope(conversationId, configuredId) {
@@ -14,7 +15,8 @@ export function assertSalesConversationScope(conversationId, configuredId) {
 export function createSalesPreview({ getMode, loadPolicy, readConversation, generate,
   getAllowedConversationId = () => undefined, getAllowedTestPeer = () => undefined,
   normalizePhone, getCurrentUser, assertConversationAccess, catalogAdapter, now = Date.now }) {
-  return async ({ conversationId, user, catalogSearch }) => {
+  return async ({ conversationId, user, catalogSearch, staffContext }) => {
+    const reviewedContext=staffSalesContext(staffContext||{});
     if (!user) throw salesError('AI_AUTH_REQUIRED', 401);
     if (getMode() !== 'copilot') throw salesError('AI_SALES_DISABLED', 503);
     const allowedConversationId = getAllowedConversationId();
@@ -110,6 +112,7 @@ export function createSalesPreview({ getMode, loadPolicy, readConversation, gene
       if (queries.length) await readCurrentConversation(conversationId);
     }
     const result = await prepareSalesDraft({ conversation, policy: rawPolicy, policyRevision: initialPolicy.revision, products: [], recordedCatalog,
+      staffContext:reviewedContext,
       requireRecordedSelection: catalogSearch !== undefined }, {
       now,
       generate: request => {

@@ -51,6 +51,13 @@ export function createTestOrderHandler({ fetchFn = (...args) => fetch(...args) }
           if (typeof credentials.username !== 'string' || typeof credentials.password !== 'string' || !credentials.username || !credentials.password) fail('ERP_LOGIN_REQUIRED', 401);
           input = { username: credentials.username, password: credentials.password };
           nativePath = '/api/auth/login';
+        } else if(req.method==='GET'&&url.pathname==='/crm/erp/v2/customers'){
+          if([...url.searchParams.keys()].some(key=>!['phone','conversationId','search'].includes(key))||[...url.searchParams.keys()].some(key=>url.searchParams.getAll(key).length!==1)||!/^\d{7,15}$/.test(url.searchParams.get('phone')||'')||url.searchParams.get('conversationId')!=='55'||(url.searchParams.get('search')||'').length>120)fail('CRM_V2_CUSTOMER_MAPPING_REQUIRED');
+          nativePath='/api/test/crm/orders/v2/customers?'+url.searchParams;
+        } else if(req.method==='POST'&&url.pathname==='/crm/erp/v2/drafts'){
+          input=await readBody(req);nativePath='/api/test/crm/orders/v2/drafts';
+        } else if(req.method==='GET'&&/^\/crm\/erp\/v2\/drafts\/[0-9a-f-]{36}$/i.test(url.pathname)&&!url.search){
+          nativePath='/api/test/crm/orders/v2/drafts/'+url.pathname.split('/').at(-1);
         } else if (req.method === 'GET' && ['/crm/erp/context', '/crm/erp/customers'].includes(url.pathname)) {
           nativePath = '/api/test/crm/orders/context';
         } else if (req.method === 'POST' && url.pathname === '/crm/erp/drafts') {

@@ -1,3 +1,4 @@
+import { createCanonicalSession } from './canonicalSession.js';
 import { createExistingSession } from './existingSession.js';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { BookOpen, X } from '@phosphor-icons/react';
@@ -40,7 +41,7 @@ export function CatalogConnectionPanel({customer,source,onClose,onRead,onSignIn,
   return <div className="catalog-backdrop" onMouseDown={onClose}><section className="catalog-builder catalog-connect" ref={dialog} role="dialog" aria-modal="true" aria-label="ERP katalog bağlantısı" aria-busy={busy} onMouseDown={event=>event.stopPropagation()}>
     <header className="catalog-header"><span className="catalog-heading-icon"><BookOpen size={26}/></span><div><h2>ERP kataloğuna bağlan</h2><p>{customer.name}</p></div><button type="button" className="catalog-icon" aria-label="Kataloğu kapat" onClick={onClose}><X size={24}/></button></header>
     <div className="catalog-connect-body"><p className="catalog-connect-status" role={['blocked','error','uncertain'].includes(source.state)?'alert':'status'}>{source.message}</p>
-      {source.diagnostic?<p className="catalog-microcopy" aria-label="Katalog hata bilgisi">Hata bilgisi: {source.diagnostic.status?`HTTP ${source.diagnostic.status} · `:''}{source.diagnostic.code}</p>:null}
+      {false&&source.diagnostic?<p className="catalog-microcopy" aria-label="Katalog hata bilgisi">Hata bilgisi: {source.diagnostic.status?`HTTP ${source.diagnostic.status} · `:''}{source.diagnostic.code}</p>:null}
       {authMode==='crm'?<p className="catalog-microcopy">Katalog erişimi CRM hesabınızın yetkileriyle kontrol edilir. Ek ERP girişi gerekmez.</p>:null}
       {showForm ? <form ref={form} onSubmit={submit} autoComplete="off"><label className="catalog-field">ERP kullanıcı adı<input name="username" type="text" autoComplete="off" autoCapitalize="none" spellCheck={false} required disabled={busy}/></label><label className="catalog-field">ERP şifresi<input name="password" type="password" autoComplete="off" required disabled={busy}/></label><p className="catalog-microcopy">Normal ERP hesabınızla giriş yapın. CRM, ERP şifrenizi kaydetmez. Bağlantı geçicidir; ERP kayıtları değiştirilmez.</p><button className="catalog-primary" type="submit" disabled={busy}>ERP’ye bağlan</button></form> : null}
       {!busy ? <div className="catalog-connect-actions"><button type="button" className="catalog-secondary" disabled={cooling} onClick={onRead}>{cooling?`${Math.ceil((source.retryAt-clock)/1000)} saniye sonra yeniden deneyin`:'Bağlantıyı kontrol et'}</button>{authMode==='erp'&&source.state==='uncertain'?<button type="button" className="catalog-secondary" onClick={onDisconnect}>ERP bağlantısını kapat</button>:null}</div> : null}
@@ -55,7 +56,7 @@ export default function CatalogWorkspace({token,isCurrent,onClose,onSource,onSes
   props.current = {isCurrent,onClose,onSource,onSession,onCrmExpired};
   useEffect(() => {
     const previous = document.activeElement;
-    const session = (existingStock?createExistingSession:createCatalogSession)({api:liveApi,token,authMode,isCurrent:()=>props.current.isCurrent(),onCrmExpired:()=>props.current.onCrmExpired?.(),onState:next=>{setSource(next);props.current.onSource?.(next);}});
+    const session = (existingStock?createCanonicalSession:createCatalogSession)({api:liveApi,token,authMode,isCurrent:()=>props.current.isCurrent(),onCrmExpired:()=>props.current.onCrmExpired?.(),onState:next=>{setSource(next);props.current.onSource?.(next);}});
     controller.current = session;props.current.onSession?.(session);
     const close = () => {session.close();props.current.onClose();};
     window.addEventListener('popstate',close);window.addEventListener('pagehide',close);
@@ -65,11 +66,12 @@ export default function CatalogWorkspace({token,isCurrent,onClose,onSource,onSes
   },[token,authMode,existingStock]);
   const readPage=useCallback(query=>controller.current?.read(query),[]);
   const close = useCallback(() => {controller.current?.close();props.current.onClose();},[]);
-  const photo = useCallback(product=>controller.current?.photo(product) || Promise.reject(new Error('Katalog kapandı.')),[]);
+  const photo = useCallback((product,options)=>controller.current?.photo(product,options) || Promise.reject(new Error('Katalog kapandı.')),[]);
+  const verifyProducts=useCallback(products=>controller.current?.verifyProducts?.(products)||Promise.resolve(products),[]);
   const verifyOutput = useCallback(()=>controller.current?.verifyOutput() || Promise.reject(new Error('Katalog kapandı.')),[]);
   const usable = useCallback(()=>Boolean(controller.current?.isUsable()),[]);
   const signIn = credentials => {clearCatalogStorage(safeCatalogStorage());void controller.current?.signIn(credentials);};
   const disconnect = () => {clearCatalogStorage(safeCatalogStorage());void controller.current?.disconnect();};
-  if(source.state==='ready') return <CatalogBuilder {...builderProps} onPage={existingStock?readPage:undefined} products={source.products} sourceStatus={source} onClose={close} loadPhoto={photo} isContextCurrent={usable} beforeOutput={verifyOutput} onDisconnect={authMode==='erp'?disconnect:undefined}/>;
+  if(source.state==='ready') return <CatalogBuilder {...builderProps} onPage={existingStock?readPage:undefined} products={source.products} sourceStatus={source} onClose={close} loadPhoto={photo} isContextCurrent={usable} beforeOutput={verifyOutput} beforeProducts={verifyProducts} onDisconnect={authMode==='erp'?disconnect:undefined}/>;
   return <CatalogConnectionPanel existingStock={existingStock} customer={builderProps.customer} source={source} authMode={authMode} onClose={close} onRead={()=>void controller.current?.read()} onSignIn={signIn} onDisconnect={disconnect}/>;
 }

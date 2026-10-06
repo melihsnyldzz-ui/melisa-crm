@@ -16,6 +16,7 @@ const runtimeFiles = ['package.json','apps/gateway/package.json','apps/gateway/p
 // Older verified packages remain valid rollback targets. The pool is mandatory
 // only for an adapter that imports it, and is always sealed as a Git source blob.
 const stockPoolPath='packages/erp-adapter/services/crmStockWorkerPool.mjs';
+const canonicalCatalogPaths=['packages/erp-adapter/services/canonicalCatalog.mjs','packages/erp-adapter/services/canonicalCatalogReader.mjs'];
 const buildFiles = ['apps/frontend/index.html','apps/frontend/vite.config.mjs','apps/frontend/scripts/prepare-sites-build.mjs','apps/frontend/worker/index.js','apps/frontend/.openai/hosting.json'];
 
 export function safePackagePath(value) {
@@ -29,7 +30,7 @@ function privatePath(value) {
 }
 export function allowedSourcePath(value) {
   if(!safePackagePath(value)||privatePath(value)||/(?:^|\/)(?:tests?|__tests__)(?:\/|$)|\.test\.[^.]+$/i.test(value))return false;
-  if(runtimeFiles.includes(value)||buildFiles.includes(value)||value==='deploy/test-package.mjs'||value===stockPoolPath)return true;
+  if(runtimeFiles.includes(value)||buildFiles.includes(value)||value==='deploy/test-package.mjs'||value===stockPoolPath||canonicalCatalogPaths.includes(value))return true;
   return /^apps\/gateway\/src\/.+\.(?:js|mjs|json)$/.test(value)
     || /^apps\/frontend\/src\/.+\.(?:js|jsx|mjs|css|svg|png|webp|jpg|jpeg)$/.test(value)
     || /^apps\/frontend\/public\/.+\.(?:svg|png|webp|jpg|jpeg|ico|woff2?)$/.test(value);
@@ -164,6 +165,7 @@ export function verifyTestPackage({packageRoot,manifestSha256}) {
   }
   for(const source of manifest.sourceFiles){const bytes=fs.readFileSync(path.join(packageRoot,source.path));if(crypto.createHash('sha1').update(`blob ${bytes.length}\0`).update(bytes).digest('hex')!==source.gitBlob)failure('PACKAGE_GIT_BLOB_MISMATCH');}
   if(fs.readFileSync(path.join(packageRoot,'deploy/test-erp-catalog.mjs'),'utf8').includes('crmStockWorkerPool.mjs')&&!manifest.sourceFiles.some(row=>row.path===stockPoolPath))failure('PACKAGE_REQUIRED_FILE_MISSING');
+  if(fs.readFileSync(path.join(packageRoot,'deploy/test-erp-catalog.mjs'),'utf8').includes('canonicalCatalogReader.mjs')&&canonicalCatalogPaths.some(name=>!manifest.sourceFiles.some(row=>row.path===name)))failure('PACKAGE_REQUIRED_FILE_MISSING');
   return {packageRoot:path.resolve(packageRoot),manifestSha256,sourceCommit:manifest.source.commit,sourceTree:manifest.source.tree,supervisor:manifest.entrypoints.supervisor,environment:'TEST'};
 }
 function git(repo,args,options={}){return execFileSync('git',['-C',repo,...args],{stdio:['ignore','pipe','pipe'],windowsHide:true,maxBuffer:32*1024*1024,...options});}

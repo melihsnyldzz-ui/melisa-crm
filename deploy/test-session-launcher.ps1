@@ -88,8 +88,12 @@ function Read-TestConfig($File, [switch]$DeferLanInterface) {
     if (![IO.Path]::IsPathRooted($File)) { throw 'CONFIG_ABSOLUTE_PATH_REQUIRED' }
     $c = Get-Content -LiteralPath $File -Raw | ConvertFrom-Json
     $keys = @('RepoRoot','NodePath','BaselineEnv','ErpApiRoot','ErpBaselineEnv','PhotoRoot','RuntimeDir','LogDir','NativeRelease','NativeConfig')
-    $allowed = $keys + @('OwnerSid','NodeSha256','NativeSourceCommit','NativePackageId','ExpectedDatabase','TaskName','AISalesMode','PackageRoot','PackageManifestSha256','LanAddress')
+    $allowed = $keys + @('OwnerSid','NodeSha256','NativeSourceCommit','NativePackageId','ExpectedDatabase','TaskName','AISalesMode','PackageRoot','PackageManifestSha256','LanAddress','CatalogOrigin','CatalogAccessPath')
     foreach ($property in $c.PSObject.Properties.Name) { if ($property -notin $allowed) { throw 'CONFIG_UNKNOWN_FIELD' } }
+    if ($c.PSObject.Properties['CatalogOrigin'] -and $c.CatalogOrigin -ne 'http://127.0.0.1:4144') { throw 'TEST_CATALOG_ORIGIN_REJECTED' }
+    if ($c.PSObject.Properties['CatalogAccessPath']) {
+        if (!$c.CatalogAccessPath -or ![IO.Path]::IsPathRooted($c.CatalogAccessPath) -or !(Test-Path -LiteralPath $c.CatalogAccessPath -PathType Leaf) -or !(Outside-Checkout $c.CatalogAccessPath $c.RepoRoot)) { throw 'TEST_CATALOG_ACCESS_MUST_BE_PRIVATE' }
+    }
     $lanAddress=Get-TestLanAddress $c
     if (!$DeferLanInterface) { Assert-TestLanInterface $lanAddress }
     $aiProperty=$c.PSObject.Properties['AISalesMode']
@@ -298,6 +302,8 @@ function Invoke-TestSession($Config) {
         Set-TestPackageEnvironment $Config
         New-Item -ItemType Directory -Force -Path $Config.RuntimeDir,$Config.LogDir | Out-Null
         $env:CRM_BASELINE_ENV=$Config.BaselineEnv; $env:CRM_ERP_API_ROOT=$Config.ErpApiRoot
+        Remove-Item Env:CRM_ERP_CATALOG_ACCESS_PATH -ErrorAction SilentlyContinue
+        if ($Config.PSObject.Properties['CatalogAccessPath']) { $env:CRM_ERP_CATALOG_ACCESS_PATH=$Config.CatalogAccessPath }
         $env:CRM_ERP_BASELINE_ENV=$Config.ErpBaselineEnv; $env:CRM_ERP_PHOTO_ROOT=$Config.PhotoRoot
         $env:CRM_TEST_RUNTIME_DIR=$Config.RuntimeDir; $env:CRM_TEST_LOG_DIR=$Config.LogDir
         Set-TestLanEnvironment $Config

@@ -26,7 +26,8 @@ export function resolveTestDirectories(repoRoot,env=process.env){
 }
 
 export async function startTestSupervisor(){
-  for(const name of ['CRM_BASELINE_ENV','CRM_ERP_API_ROOT'])if(!process.env[name]||!fs.existsSync(process.env[name]))throw Error(name+'_REQUIRED');
+  for(const name of ['CRM_BASELINE_ENV','CRM_ERP_CATALOG_ACCESS_PATH'])if(!process.env[name]||!fs.existsSync(process.env[name]))throw Error(name+'_REQUIRED');
+  if(!path.isAbsolute(process.env.CRM_ERP_CATALOG_ACCESS_PATH)||!path.relative(root,path.resolve(process.env.CRM_ERP_CATALOG_ACCESS_PATH)).startsWith('..'))throw Error('TEST_CATALOG_ACCESS_MUST_BE_PRIVATE');
   const ports=[62400,62401,62402,62403];
   for(const port of ports)await new Promise((resolve,reject)=>{
     const socket=net.connect(port,'127.0.0.1');

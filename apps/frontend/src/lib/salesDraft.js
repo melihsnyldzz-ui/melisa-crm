@@ -5,9 +5,9 @@ const TEST_PHONE = '905387217733';
 export function salesDraftContextKey(context) {
   const conversation = context?.conversation;
   if (!context?.token || !context.identity || !context.canSend || !conversation?.id || context.blocked) return '';
-  if (context.testOnly && (String(conversation.id) !== '55' || String(conversation.phone || '').replace(/\D/g, '') !== TEST_PHONE)) return '';
+  if (context.testOnly && (String(conversation.phone || '').replace(/\D/g, '') !== TEST_PHONE)) return '';
   return JSON.stringify([context.token, context.identity, context.epoch, context.uiEpoch, String(conversation.id),
-    conversation.phone, conversation.owner, conversation.ownerId, conversation.assigneeId, conversation.assignedUserId,
+    conversation.language, conversation.languageCode, context.currentComposer, context.draftContext, conversation.phone, conversation.owner, conversation.ownerId, conversation.assigneeId, conversation.assignedUserId,
     conversation.assignedPersonnelId, conversation.assignedUserName, conversation.chatwootAgentId,
     conversation.status, conversation.lastMessageAt, conversation.preview,
     (conversation.messages || []).map(message => [message.id, message.direction, message.text, message.createdAt,
@@ -88,7 +88,7 @@ export function createSalesDraftFlow({ getContext, generate, onChange, readProdu
       const run = { key, controller: new AbortController() };
       unschedule(expiryTimer);expiryTimer=null;active = run; preview = null; emit({ busy: true, preview: null, error: '' });
       try {
-        const result = await generate(context.token, String(context.conversation.id), { signal: run.controller.signal, ...(catalogSearch.trim()?{catalogSearch:catalogSearch.trim()}:{}) });
+        const result = await generate(context.token, String(context.conversation.id), { signal: run.controller.signal,customerLanguage:context.conversation.languageCode||({Türkçe:"tr",İngilizce:"en",Arapça:"ar",İtalyanca:"it",Fransızca:"fr",Rusça:"ru"}[context.conversation.language]||"auto"),currentComposer:context.currentComposer||getDraft(),draftContext:context.draftContext||null,...(catalogSearch.trim()?{catalogSearch:catalogSearch.trim()}:{}) });
         if (active !== run || run.controller.signal.aborted || !current(key)) return false;
         // Production supplies readPolicy and must receive server-owned rules. Legacy
         // text-only offline fixtures without that dependency retain their old path.

@@ -54,3 +54,11 @@ test('native detail and context use health-checked read routes; mapping denial n
   const read=fixture();await invoke(read.handler,'GET',`/crm/erp/drafts/${requestId}`,undefined,{'x-erp-token':'synthetic'});assert(read.calls.at(-1).url.endsWith(`/api/test/crm/orders/drafts/${requestId}`));
   await invoke(read.handler,'GET','/crm/erp/context',undefined,{'x-erp-token':'synthetic'});assert(read.calls.at(-1).url.endsWith('/api/test/crm/orders/context'));
 });
+test('v2 exact phone customer lookup has no fixed-customer fallback and separate native draft/readback paths',async()=>{
+ const f=fixture({nativeResult:{status:'missing',entries:[]}}),headers={'x-erp-token':'synthetic-erp'};
+ const result=await invoke(f.handler,'GET','/crm/erp/v2/customers?phone=905387217733&conversationId=55',undefined,headers);
+ assert.equal(result.status,200);assert.deepEqual(result.data,{status:'missing',entries:[]});assert.equal(f.calls.at(-1).url,'http://127.0.0.1:62404/api/test/crm/orders/v2/customers?phone=905387217733&conversationId=55');
+ await invoke(f.handler,'POST','/crm/erp/v2/drafts',{requestId,items:[{productId:17}]},headers);assert(f.calls.at(-1).url.endsWith('/api/test/crm/orders/v2/drafts'));assert.equal(JSON.parse(f.calls.at(-1).options.body).items[0].productId,17);
+ await invoke(f.handler,'GET',`/crm/erp/v2/drafts/${requestId}`,undefined,headers);assert(f.calls.at(-1).url.endsWith(`/api/test/crm/orders/v2/drafts/${requestId}`));
+ const n=f.calls.length;assert.equal((await invoke(f.handler,'GET','/crm/erp/v2/customers?phone=905387217733&conversationId=56',undefined,headers)).status,400);assert.equal(f.calls.length,n+1);
+});

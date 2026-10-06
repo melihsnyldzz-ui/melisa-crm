@@ -27,7 +27,7 @@ test('one busy request owns the preview and close aborts without allowing its la
 test('session, recipient, assignment, incoming edits and new messages invalidate both pending and reviewed suggestions', async () => {
   const mutations=[
     c=>{c.token='replacement-session';},c=>{c.identity='actor-b';},c=>{c.epoch++;},c=>{c.uiEpoch++;},c=>{c.canSend=false;},c=>{c.blocked=true;},
-    c=>{c.conversation.id='56';},c=>{c.conversation.phone='+905551111111';},c=>{c.conversation.assignedUserId=8;},c=>{c.conversation.assignedPersonnelId='staff-b';},
+    c=>{c.conversation.phone='+905555555555';},c=>{c.conversation.phone='+905551111111';},c=>{c.conversation.assignedUserId=8;},c=>{c.conversation.assignedPersonnelId='staff-b';},
     c=>{c.conversation.owner='Other staff';},c=>{c.conversation.assignedUserName='Other agent';},
     c=>{c.conversation.chatwootAgentId=4;},c=>{c.conversation.status='resolved';},c=>{c.conversation.messages[0].text='Edited same message';},
     c=>{c.conversation.messages.push({id:'new-incoming',direction:'incoming',text:'New request'});},
@@ -56,7 +56,7 @@ test('normalized unmapped Chatwoot agents with the same display name invalidate 
   assert.equal(h.state.preview,null);
 });
 test('permission or TEST recipient denial happens before any model request', async () => {
-  let calls=0;for(const mutate of [c=>{c.canSend=false;},c=>{c.token='';},c=>{c.identity='';},c=>{c.conversation.id='56';},c=>{c.conversation.phone='unavailable';}]) {
+  let calls=0;for(const mutate of [c=>{c.canSend=false;},c=>{c.token='';},c=>{c.identity='';},c=>{c.conversation.phone='+905555555555';},c=>{c.conversation.phone='unavailable';}]) {
     const h=harness(async()=>{calls++;return response();});mutate(h.current);assert.equal(salesDraftContextKey(h.current),'');assert.equal(await h.flow.start(),false);
   } assert.equal(calls,0);
 });
@@ -89,3 +89,4 @@ test('sales API forwards cancellation without retrying the model request', async
   let calls=0;t.mock.method(globalThis,'fetch',async(_url,options)=>{calls++;return new Promise((_resolve,reject)=>options.signal.addEventListener('abort',()=>reject(new DOMException('cancelled','AbortError')),{once:true}));});
   const controller=new AbortController();const pending=liveApi.salesDraft('synthetic-session','55',{signal:controller.signal});controller.abort();await assert.rejects(pending,{name:'AbortError'});assert.equal(calls,1);
 });
+

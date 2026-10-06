@@ -10,6 +10,7 @@ import { createCrmCatalogReader } from '../services/catalogRouter.mjs';
 import { catalogAccess } from '../services/crmCatalogAccess.mjs';
 import { createSalesCatalogAdapter } from '../services/salesAgent/catalogAdapter.mjs';
 import { salesPolicyStore } from '../services/salesAgent/policyStore.mjs';
+import {staffSalesContext} from '../services/salesAgent/staffContext.mjs';
 
 const readCatalog = createCrmCatalogReader({ activationApproved: true,
   verifyCrmContext: token => verifyCrmAccessToken(token, { includeContext: true }),
@@ -97,6 +98,7 @@ export async function postConversationSalesDraft(req, res, next) {
         timeoutMs: Math.min(env.translation.timeoutMs || 20_000, 60_000), signal: controller.signal })(request),
     });
     const result = await preview({ conversationId: req.params.conversationId, user: req.user,
+      staffContext:staffSalesContext(req.body||{}),
       ...(Object.hasOwn(req.body || {}, 'catalogSearch') ? { catalogSearch: req.body.catalogSearch } : {}) });
     getCurrentUser();
     if (controller.signal.aborted) return;

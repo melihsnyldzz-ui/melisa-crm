@@ -75,12 +75,13 @@ export function createCatalogBridge({ deploymentApproved = false, transport, aut
     const url = new URL(request.url);
     if (request.method !== 'GET') return fail(405, 'GET_ONLY');
     const tail = url.pathname.slice(PREFIX.length);
-    if (!url.pathname.startsWith(PREFIX) || !/^(?:|\/vega-[1-9][0-9]*(?:\/photo)?)$/.test(tail)) return fail(404, 'ROUTE_NOT_ALLOWED');
+    if (!url.pathname.startsWith(PREFIX) || !/^(?:|\/(?:vega|erp)-[1-9][0-9]*(?:\/photo)?)$/.test(tail)) return fail(404, 'ROUTE_NOT_ALLOWED');
     const isPhoto = tail.endsWith('/photo'); const id = tail ? tail.split('/')[1] : null;
     const query = new URLSearchParams();
     for (const [key, value] of url.searchParams) {
-      if (tail || !['search', 'brand', 'category', 'hasImage', 'page', 'limit'].includes(key) || url.searchParams.getAll(key).length !== 1) return fail(400, 'INVALID_QUERY');
-      if (key === 'hasImage' ? !['true','false'].includes(value) : ['search', 'brand', 'category'].includes(key) ? value.length > 120 : !/^[1-9][0-9]*$/.test(value) || !Number.isSafeInteger(+value) || (key === 'limit' && +value > 100)) return fail(400, 'INVALID_QUERY');
+      if(isPhoto&&key==='variant'&&url.searchParams.getAll(key).length===1&&['thumbnail','preview'].includes(value)){query.set(key,value);continue;}
+      if (tail || !['search', 'barcode', 'brand', 'category', 'hasImage', 'page', 'limit'].includes(key) || url.searchParams.getAll(key).length !== 1) return fail(400, 'INVALID_QUERY');
+      if (key === 'hasImage' ? !['true','false'].includes(value) : ['search', 'barcode', 'brand', 'category'].includes(key) ? value.length > 120 : !/^[1-9][0-9]*$/.test(value) || !Number.isSafeInteger(+value) || (key === 'limit' && +value > 100)) return fail(400, 'INVALID_QUERY');
       query.set(key, value);
     }
     if (!deploymentApproved) return fail(503, 'BRIDGE_NOT_DEPLOYED');
@@ -100,6 +101,22 @@ export function createCatalogBridge({ deploymentApproved = false, transport, aut
       const upstream = await exchange(id ? `/api/crm-catalog/products/${id}` : `/api/crm-catalog/products?${query}`, session, assertCurrent, signal);
       if (upstream.status === 404 && upstream.code !== 'PRODUCT_NOT_FOUND') return fail(503, 'ERP_SINGLE_LOGIN_ROUTE_UNAVAILABLE');
       if (upstream.status !== 200) return fail(upstream.status >= 400 ? upstream.status : 502, upstream.code || 'ERP_READ_REJECTED');
+      if (upstream.data.meta?.catalogVersion === 'melisa-catalog.v1') {
+        const m=upstream.data.meta;
+        if(m.source!=='melisa-erp-catalog'||m.environment!=='CANONICAL_TEST'||m.sourceDatabaseVerified!==true||!sameId(m.verifiedCrmActorId,crm.id)||m.verifiedCrmRole!==crm.role||m.cached!==false) return fail(503,'ERP_SOURCE_IDENTITY_REQUIRED');
+        const validate=row=>{if(!row||!/^erp-[1-9]\d*$/.test(row.id||'')||row.id!==`erp-${row.erpProductId}`||!Number.isSafeInteger(row.erpProductId)||typeof row.stockCode!=='string'||!row.stockCode||!(row.productName===null||typeof row.productName==='string')||!/^[a-f0-9]{64}$/.test(row.revision||'')||!['guarded-path','unavailable'].includes(row.photoStatus)||row.photoPath!==(row.photoStatus==='guarded-path'?`${PREFIX}/${row.id}/photo`:null))throw Error('PRODUCT_CONTRACT');return row;};
+        const data=id?validate(upstream.data.data):upstream.data.data.map(validate);
+        if(id&&data.id!==id)return fail(502,'PRODUCT_ID_MISMATCH');
+        if(isPhoto){
+          if(!data.photoPath||data.photo?.validationStatus!=='CONFIRMED'||data.hold?.blocked!==false)return fail(404,'VERIFIED_PHOTO_PATH_REQUIRED');
+          const photo=await transport(new URL(`/api/crm-catalog/products/${id}/photo?variant=${query.get('variant')||'preview'}`,ERP_ORIGIN),{method:'GET',headers:{accept:'image/jpeg,image/png,image/webp',authorization:session.authorization},redirect:'manual',cache:'no-store',signal});assertCurrent();
+          const mime=(photo.headers.get('content-type')||'').split(';')[0];if(!photo.ok||!['image/jpeg','image/png','image/webp'].includes(mime))return fail(502,'PHOTO_REJECTED');
+          const body=await bytes(photo,3*1024*1024);const signature=mime==='image/jpeg'?body[0]===255&&body[1]===216&&body[2]===255:mime==='image/png'?[137,80,78,71,13,10,26,10].every((v,i)=>body[i]===v):new TextDecoder().decode(body.slice(0,4))==='RIFF'&&new TextDecoder().decode(body.slice(8,12))==='WEBP';
+          if(!signature)return fail(502,'PHOTO_BYTES_OR_FRESHNESS_REJECTED');return protect(new Response(body,{headers:{'content-type':mime,'cache-control':'no-store','x-content-type-options':'nosniff'}}));
+        }
+        if(!id&&(m.page!==Number(query.get('page')||1)||m.limit!==Number(query.get('limit')||50)||data.length!==Math.min(m.limit,Math.max(0,m.total-(m.page-1)*m.limit))))return fail(502,'PAGINATION_CONTRACT_REQUIRED');
+        return protect(Response.json({success:true,data,meta:m},{headers:{'cache-control':'no-store'}}));
+      }
       if (upstream.data.meta?.source !== 'crm-existing-stock-select-only' || upstream.data.meta?.sourceDatabaseVerified !== true || upstream.data.meta?.productDatabaseVerified!==true || upstream.data.meta?.imageDatabaseVerified!==true || upstream.data.meta?.imageDatabaseName !== ERP_DATABASE || upstream.data.meta?.productDatabaseName!==ERP_PRODUCT_DATABASE) return fail(503, 'ERP_SOURCE_IDENTITY_REQUIRED');
       if (!sameId(upstream.data.meta?.verifiedCrmActorId, crm.id) || upstream.data.meta?.verifiedCrmRole !== crm.role) return fail(502, 'CRM_SOURCE_ACTOR_MISMATCH');
       if (now() - started > maxReadAgeMs || session.expiresAt <= now()) return fail(503, 'FRESH_READ_REQUIRED');

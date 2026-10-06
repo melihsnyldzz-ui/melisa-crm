@@ -21,6 +21,7 @@ GitHub'daki ilgili PR/commit bu kayıtların sürümünü gösterir. Yerel check
 
 | ID | Tarih | Karar | Gerekçe | Etkilediği alan | Durum |
 | --- | --- | --- | --- | --- | --- |
+| CRM-DEC-004 | 2026-10-06 | Kullanıcının Uzun Goal4 önceliği: mevcut kabul edilmiş sohbet/katalog/paylaşım/çeviriyi koruyarak ERP melisa-catalog.v1 kaynağına geç; yalnız 7733 için değişen ürün/fotoğraf/fiyat paylaşımını doğrula; iki ürünlü native ERP TEST taslağı ve bağımsız readback ile E02'yi teknik hazır yap. A04/A05 insan kontrollü gerçek ERP önerisi, müşteri dili ve mevcut taslak bağlamıyla teknik tamamlanır. | Bu sohbetin açık “MELISA — UZUN Goal4” eki; CRM-D01 insan kabulünü beklerken onaylı D02–D04 teknik çalışmasını başlatır. İnsan PASS otomatik verilmez; eski yeşiller yeniden iş değildir. | CRM-D02/D03/D04; E02/A04/A05. Tek ticari kaynak ERP; LIVE, main merge, başka alıcı, AI otomatik gönderim, gerçek satış/finans, Vega/delta ve Goal5 dışarıda. | Onaylı |
 | CRM-DEC-001 | 2026-10-05 | ERP katalog verisinin ikinci kopyasını CRM'de üretme; onaylanmış ERP katalog sözleşmesini oku. | Ticari ürün gerçeğinin dağılmasını önlemek. | CRM katalog okuma | Onaylı |
 | CRM-DEC-002 | 2026-10-05 | CRM ürün/fotoğraf/fiyat paylaşım yüzüdür; ticari ürün gerçeğinin sahibi ERP'dir. | Kaynak sahipliğini ve satış yüzünü netleştirmek. | Katalog / paylaşım / ERP | Onaylı |
 | CRM-DEC-003 | 2026-10-05 | AI satış ajanı ilk aşamada insan kontrollü copilot'tur; otomatik gerçek müşteri gönderimi ayrı kullanıcı kararı gerektirir. | İnsan satış kontrolünü korumak. | AI / gerçek gönderim | Onaylı |

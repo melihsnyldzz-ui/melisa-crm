@@ -1,3 +1,4 @@
+import {exactPriceText} from './productActions.js';
 import { MAX_FILE_BYTES } from '../outboundMedia.js';
 import { copy, money, stockLabel, assertCatalogExportAllowed } from './model.js';
 export function outputFileName(model,ext,id=''){const safe=String(id).replace(/[^a-zA-Z0-9_-]/g,'').slice(0,60);return `melisa-katalog${safe?`-${safe}`:''}-${model.language}-${model.showPrices?model.currency:'fiyatsiz'}.${ext}`;}
@@ -11,7 +12,7 @@ export function drawProductPhoto(ctx,image,x,y,w,h,placeholder=''){
  if(!image){ctx.fillStyle='#667781';ctx.font='20px sans-serif';ctx.textAlign='center';ctx.fillText(placeholder,x+w/2,y+h/2);ctx.textAlign='left';return;}
  const scale=Math.min(w/image.width,h/image.height),width=image.width*scale,height=image.height*scale;ctx.drawImage(image,x+(w-width)/2,y+(h-height)/2,width,height);
 }
-function priceText(item,model,c){if(item.price==null)return c.priceUnverified;return `${money(item.price,model.currency,model.language)} / ${c.unit}${item.seriesPrice==null?'':` · ${money(item.seriesPrice,model.currency,model.language)} / ${c.pack}`}`;}
+function priceText(item,model,c){if(item.price==null)return c.priceUnverified;return `${Object.hasOwn(item,'priceExact')?`${model.currency} ${exactPriceText(item.priceExact)||c.priceUnverified}`:money(item.price,model.currency,model.language)} / ${Object.hasOwn(item,'unitLabel')?(item.unitLabel||({tr:'birim bilinmiyor',en:'unit unknown',fr:'unité inconnue'}[model.language])):c.unit}${item.seriesPrice==null?'':` · ${money(item.seriesPrice,model.currency,model.language)} / ${c.pack}`}`;}
 export async function generatePdf(model){
  assertCatalogExportAllowed(model);
  if(!model.items.length)throw new Error('Önce en az bir ürün seçin.');
