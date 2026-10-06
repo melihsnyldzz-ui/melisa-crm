@@ -88,7 +88,7 @@ function Read-TestConfig($File, [switch]$DeferLanInterface) {
     if (![IO.Path]::IsPathRooted($File)) { throw 'CONFIG_ABSOLUTE_PATH_REQUIRED' }
     $c = Get-Content -LiteralPath $File -Raw | ConvertFrom-Json
     $keys = @('RepoRoot','NodePath','BaselineEnv','ErpApiRoot','ErpBaselineEnv','PhotoRoot','RuntimeDir','LogDir','NativeRelease','NativeConfig')
-    $allowed = $keys + @('OwnerSid','NodeSha256','NativeSourceCommit','NativePackageId','ExpectedDatabase','TaskName','AISalesMode','PackageRoot','PackageManifestSha256','LanAddress','CatalogOrigin','CatalogAccessPath')
+    $allowed = $keys + @('OwnerSid','NodeSha256','NativeSourceCommit','NativePackageId','ExpectedDatabase','TaskName','AISalesMode','PackageRoot','PackageManifestSha256','LanAddress','CatalogOrigin','CatalogAccessPath','TerminalPersonnelUsername')
     foreach ($property in $c.PSObject.Properties.Name) { if ($property -notin $allowed) { throw 'CONFIG_UNKNOWN_FIELD' } }
     if ($c.PSObject.Properties['CatalogOrigin'] -and $c.CatalogOrigin -ne 'http://127.0.0.1:4144') { throw 'TEST_CATALOG_ORIGIN_REJECTED' }
     if ($c.PSObject.Properties['CatalogAccessPath']) {
@@ -99,6 +99,8 @@ function Read-TestConfig($File, [switch]$DeferLanInterface) {
     $aiProperty=$c.PSObject.Properties['AISalesMode']
     if (!$aiProperty) { $c | Add-Member -NotePropertyName AISalesMode -NotePropertyValue 'off' }
     if ($c.AISalesMode -notin @('off','copilot')) { throw 'CONFIG_AI_SALES_MODE_REJECTED' }
+    if (!$c.PSObject.Properties['TerminalPersonnelUsername']) { $c | Add-Member -NotePropertyName TerminalPersonnelUsername -NotePropertyValue '' }
+    if ($c.TerminalPersonnelUsername -notin @('','crm-ahmet')) { throw 'TEST_PERSONNEL_IDENTITY_REQUIRED' }
     foreach ($key in $keys) {
         if (!$c.$key -or ![IO.Path]::IsPathRooted($c.$key)) { throw ('CONFIG_PATH_REQUIRED_' + $key) }
         if ($c.$key.Contains('"') -or $c.$key.Contains("`r") -or $c.$key.Contains("`n")) { throw 'CONFIG_PATH_CHARACTERS_REJECTED' }
@@ -308,6 +310,10 @@ function Invoke-TestSession($Config) {
         $env:CRM_TEST_RUNTIME_DIR=$Config.RuntimeDir; $env:CRM_TEST_LOG_DIR=$Config.LogDir
         Set-TestLanEnvironment $Config
         $env:CRM_AI_SALES_MODE=$Config.AISalesMode
+        $terminalPersonnelProperty=$Config.PSObject.Properties['TerminalPersonnelUsername']
+        $terminalPersonnel=if ($terminalPersonnelProperty) { [string]$terminalPersonnelProperty.Value } else { '' }
+        if ($terminalPersonnel -notin @('','crm-ahmet')) { throw 'TEST_PERSONNEL_IDENTITY_REQUIRED' }
+        $env:CRM_TEST_TERMINAL_PERSONNEL_USERNAME=$terminalPersonnel
         Remove-Item Env:CRM_AI_SALES_RULES_FILE -ErrorAction SilentlyContinue
         $nativeScript=Join-Path $Config.NativeRelease 'apps/api/start-crm-order-test.mjs'
         $nativeId=0

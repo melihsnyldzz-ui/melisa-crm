@@ -1,3 +1,4 @@
+import { terminalEntry, catalogConversationHeaders } from './terminalNavigation.js';
 import {canonicalQuery,canonicalId} from './catalog/canonicalStock.js';
 import { existingQuery, existingId } from './catalog/existingStock.js';
 import { normalizeAccountIdentity } from "./accountIdentity.js";
@@ -107,8 +108,9 @@ export function validateErpDraftReceipt(receipt, submitted) {
   return receipt;
 }
 
-export function savedAccessKey() { try { return window.sessionStorage.getItem(STORAGE_KEY) || ""; } catch { return ""; } }
-export function saveAccessKey(value) { try { value ? window.sessionStorage.setItem(STORAGE_KEY, value) : window.sessionStorage.removeItem(STORAGE_KEY); } catch { /* The active session still works in memory when storage is unavailable. */ } }
+function authStorageKey() { return terminalEntry(window.location).enabled ? 'melisa-crm-terminal-access-token' : STORAGE_KEY; }
+export function savedAccessKey() { try { return window.sessionStorage.getItem(authStorageKey()) || ""; } catch { return ""; } }
+export function saveAccessKey(value) { try { value ? window.sessionStorage.setItem(authStorageKey(), value) : window.sessionStorage.removeItem(authStorageKey()); } catch { /* The active session still works in memory when storage is unavailable. */ } }
 
 function dataOf(payload) { return payload?.data ?? payload ?? {}; }
 
@@ -125,7 +127,7 @@ async function request(path, accessToken = "", options = {}) {
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   let response;
   try {
-  response = await requestControl.run(`${accessToken}:${path}`, () => fetch(`${API_ROOT}${path}`, {
+  response = await requestControl.run(`${accessToken}:${path}:${options.headers?.["x-crm-conversation-id"] || ""}`, () => fetch(`${API_ROOT}${path}`, {
     cache: "no-store",
     signal: controller.signal,
     ...fetchOptions,
@@ -518,7 +520,7 @@ function catalogEnvelope(payload, list) {
   // Preserve meta without guessing its meaning; the source adapter validates it separately.
   return payload;
 }
-async function catalogPhoto(accessToken, id, { signal: callerSignal, variant='preview' } = {}) {
+async function catalogPhoto(accessToken, id, { signal: callerSignal, variant='preview', conversationId } = {}) {
   if (!accessToken) throw Object.assign(new Error("CRM oturumu gerekli."), { status: 401 });
   const path = `/crm/catalog/products/${catalogId(id)}/photo${variant==='thumbnail'?'?variant=thumbnail':''}`,controller = new AbortController();
   const cancel = () => controller.abort();
@@ -527,7 +529,7 @@ async function catalogPhoto(accessToken, id, { signal: callerSignal, variant='pr
   let timedOut=false,response;
   const timer = setTimeout(() => { timedOut=true;controller.abort(); }, 20000);
   try {
-    response = await requestControl.run(`${accessToken}:${path}`, () => fetch(`${API_ROOT}${path}`, { cache: "no-store", redirect: "error", signal: controller.signal, headers: { Accept: "image/jpeg,image/png,image/webp", Authorization: `Bearer ${accessToken}` } }), false, { actor: accessToken, scope: requestBudgetScope(path) });
+    response = await requestControl.run(`${accessToken}:${path}:${conversationId || ""}`, () => fetch(`${API_ROOT}${path}`, { cache: "no-store", redirect: "error", signal: controller.signal, headers: { Accept: "image/jpeg,image/png,image/webp", Authorization: `Bearer ${accessToken}`, ...catalogConversationHeaders(conversationId) } }), false, { actor: accessToken, scope: requestBudgetScope(path) });
     if (!response.ok) { const payload=await response.json().catch(()=>({})); throw Object.assign(new Error(errorMessage(payload,response.status)),{status:response.status,code:payload?.error?.code||""}); }
     const type=(response.headers.get("content-type")||"").split(";")[0].trim().toLowerCase();
     if (!["image/jpeg","image/png","image/webp"].includes(type)) throw Object.assign(new Error("Ürün fotoğrafının dosya türü doğrulanamadı."), { status: 415 });
@@ -543,8 +545,8 @@ async function catalogPhoto(accessToken, id, { signal: callerSignal, variant='pr
 }
 
 export const liveApi = {
- canonicalCatalogProducts(token,input={}, {signal}={}) {const q=canonicalQuery(input);return request('/crm/catalog/products?'+new URLSearchParams({...q,page:String(q.page),limit:String(q.limit),hasImage:String(q.hasImage)}),token,{signal,preserveEnvelope:true,preserveAuthDenial:true,redirect:'error'});},
- canonicalCatalogProduct(token,id,{signal}={}) {if(!canonicalId(id))throw Error('ERP ürün kimliği doğrulanamadı.');return request('/crm/catalog/products/'+id,token,{signal,preserveEnvelope:true,preserveAuthDenial:true,redirect:'error'});},
+ canonicalCatalogProducts(token,input={}, {signal,conversationId}={}) {const q=canonicalQuery(input);return request('/crm/catalog/products?'+new URLSearchParams({...q,page:String(q.page),limit:String(q.limit),hasImage:String(q.hasImage)}),token,{signal,headers:catalogConversationHeaders(conversationId),preserveEnvelope:true,preserveAuthDenial:true,redirect:'error'});},
+ canonicalCatalogProduct(token,id,{signal,conversationId}={}) {if(!canonicalId(id))throw Error('ERP ürün kimliği doğrulanamadı.');return request('/crm/catalog/products/'+id,token,{signal,headers:catalogConversationHeaders(conversationId),preserveEnvelope:true,preserveAuthDenial:true,redirect:'error'});},
  canonicalCatalogPhoto(token,id,options={}) {if(!canonicalId(id))throw Error('ERP ürün kimliği doğrulanamadı.');return catalogPhoto(token,id,options);},
  erpV2Customers:(token,erpToken,conversationId,phone,search='')=>request('/crm/erp/v2/customers?'+new URLSearchParams({conversationId:String(conversationId),phone,search}),token,{headers:{'x-erp-token':erpToken}}),
  erpV2DraftDetail:(token,erpToken,id)=>request('/crm/erp/v2/drafts/'+encodeURIComponent(id),token,{headers:{'x-erp-token':erpToken},timeoutMs:45000}),

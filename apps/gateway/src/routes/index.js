@@ -1,3 +1,4 @@
+import { getChatwootConversationAccess } from '../services/chatwootInboxService.js';
 import { createCatalogRouter } from '../services/catalogRouter.mjs';
 import { verifyCrmAccessToken } from '../services/crmAuthService.js';
 import { Router } from 'express';
@@ -17,6 +18,7 @@ routes.use('/crm', requireCrmAuth);
 // Explicitly approved active CRM roles with crm.view; no ERP login or new credential.
 const catalogBinding = createCatalogRouter({
   Router,
+  readConversation:getChatwootConversationAccess,
   verifyCrmContext: token => verifyCrmAccessToken(token, { includeContext: true }),
   transport: (url, options) => fetch(url, options),
   activationApproved: true,

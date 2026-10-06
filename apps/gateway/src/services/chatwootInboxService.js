@@ -474,44 +474,34 @@ export async function listChatwootInboxOverview({ limit = 25, offset = 0, user =
   };
 }
 
+async function readAccessibleConversation({ conversationId, user }) {
+  const identity = backendIdentity(), policy = [env.chatwoot.inboxId, env.chatwoot.includeGroups];
+  const numericId = Number(conversationId);
+  if (!Number.isSafeInteger(numericId) || numericId < 1) throw Object.assign(new Error('Konusma kimligi gecersiz.'), {code:'WHATSAPP_CRM_CONVERSATION_INVALID',statusCode:400});
+  let raw;
+  try { raw = await chatwootApiRequest('/conversations/' + numericId); } catch(error) { if (error?.statusCode !== 404) throw error; }
+  assertBackendIdentity(identity); assertInboxPolicy(policy);
+  if (!raw || (env.chatwoot.inboxId && Number(raw.inbox_id) !== Number(env.chatwoot.inboxId)) || (!env.chatwoot.includeGroups && isGroupConversation(raw)))
+    throw Object.assign(new Error('Konusma bulunamadi.'), {code:'WHATSAPP_CRM_CONVERSATION_NOT_FOUND',statusCode:404});
+  const access = { id:numericId, chatwootAgentId:raw.meta?.assignee?.id || null };
+  assertConversationAccess(user, access);
+  return { raw, access, identity, policy };
+}
+// Fresh assignment metadata only: never hydrates message history or media.
+export async function getChatwootConversationAccess({ conversationId, user }) {
+  return (await readAccessibleConversation({conversationId,user})).access;
+}
 export async function getChatwootConversationDetail({ conversationId, user }) {
   await refreshWaapiReadiness();
-  const identity = backendIdentity();
-  const policy = [env.chatwoot.inboxId, env.chatwoot.includeGroups];
-  const numericId = Number(conversationId);
-  if (!Number.isInteger(numericId) || numericId < 1) {
-    const error = new Error('Konusma kimligi gecersiz.');
-    error.code = 'WHATSAPP_CRM_CONVERSATION_INVALID';
-    error.statusCode = 400;
-    throw error;
-  }
-
-  let rawConversation;
-  try {
-    rawConversation = await chatwootApiRequest(`/conversations/${numericId}`);
-  } catch (error) {
-    if (error?.statusCode !== 404) throw error;
-  }
-  assertBackendIdentity(identity);
-  assertInboxPolicy(policy);
-  if (!rawConversation
-    || (env.chatwoot.inboxId && Number(rawConversation.inbox_id) !== Number(env.chatwoot.inboxId))
-    || (!env.chatwoot.includeGroups && isGroupConversation(rawConversation))) {
-    const error = new Error('Konusma bulunamadi.');
-    error.code = 'WHATSAPP_CRM_CONVERSATION_NOT_FOUND';
-    error.statusCode = 404;
-    throw error;
-  }
-
-  const messageData = await readMessages(rawConversation);
-  assertBackendIdentity(identity);
-  assertInboxPolicy(policy);
-  const conversation = mapConversation(rawConversation, messageData, {
-    canSend: isChatwootSendEnabled() && Boolean(user?.permissions?.includes('crm.send')),
-    canAssign: Boolean(user?.permissions?.includes('crm.assign')),
-  });
-
-  return assertConversationAccess(user, conversation);
+  const {raw,identity,policy} = await readAccessibleConversation({conversationId,user});
+  const messageData = await readMessages(raw);
+  assertBackendIdentity(identity); assertInboxPolicy(policy);
+  // Reassignment while history is being read must not return the old actor's messages.
+  if (user?.role === 'personel') await getChatwootConversationAccess({conversationId,user});
+  return assertConversationAccess(user, mapConversation(raw, messageData, {
+    canSend:isChatwootSendEnabled() && Boolean(user?.permissions?.includes('crm.send')),
+    canAssign:Boolean(user?.permissions?.includes('crm.assign')),
+  }));
 }
 
 export async function listChatwootAgents() {

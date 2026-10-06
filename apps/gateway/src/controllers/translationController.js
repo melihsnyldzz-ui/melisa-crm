@@ -1,5 +1,6 @@
-import { getChatwootConversationDetail } from '../services/chatwootInboxService.js';
+import { getChatwootConversationDetail, getChatwootConversationAccess } from '../services/chatwootInboxService.js';
 import { translateConversationText } from '../services/translationService.js';
+import { verifyCrmAccessToken, assertCrmPermission } from '../services/crmAuthService.js';
 import { ok } from '../utils/response.js';
 
 export async function postConversationTranslation(req, res, next) {
@@ -14,6 +15,9 @@ export async function postConversationTranslation(req, res, next) {
       text: req.body?.text,
       targetLanguage: req.body?.targetLanguage,
     });
+    const currentUser = verifyCrmAccessToken((req.get('authorization') || '').slice(7));
+    assertCrmPermission(currentUser, 'crm.view');
+    await getChatwootConversationAccess({conversationId:req.params.conversationId,user:currentUser});
     return ok(res, result, {
       source: 'openai-translation',
       readOnly: true,

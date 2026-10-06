@@ -229,6 +229,15 @@ export async function sendCrmTextMessage(payload = {}, dependencies = {}) {
       await bridge.assertSafe();
       await bridge.resolveConversation(phone, conversationId);
     }
+    if (typeof dependencies.beforeProviderSend === 'function') {
+      try { await dependencies.beforeProviderSend(); }
+      catch (error) {
+        // Authorization rejection happened before any message transport. Keep
+        // the UUID journal truthful instead of recording an uncertain send.
+        error.meta = {...error.meta, transportAttempted:false};
+        throw error;
+      }
+    }
     providerResult = await provider.sendMessage({
       phone,
       remoteJid,

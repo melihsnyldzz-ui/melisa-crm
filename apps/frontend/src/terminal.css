@@ -1,0 +1,23 @@
+.terminal-entry.app-shell { display:block; }
+.terminal-entry > .sidebar,.terminal-entry .safety-strip,.terminal-entry .test-environment-label { display:none; }
+.terminal-entry .main-area { width:100%; min-width:0; }
+.terminal-entry .topbar { min-height:58px; padding:8px 12px; gap:8px; }
+.terminal-entry .workspace-title { min-width:0; gap:8px; }
+.terminal-entry .workspace-title > span { display:none; }
+.terminal-entry .topbar-actions { gap:8px; }
+.terminal-entry .terminal-home { min-width:44px; min-height:44px; display:flex; align-items:center; gap:6px; border:1px solid #d5e4d8; border-radius:12px; background:#fff; color:#1d6036; padding:8px; }
+.terminal-entry .workspace { height:calc(var(--crm-height,100dvh) - 60px); }
+.terminal-entry button,.terminal-entry select { min-height:44px; }
+.terminal-entry .conversation-row { min-height:78px; }
+.terminal-entry .automatic-translation-toggle { display:flex; flex-wrap:wrap; align-items:center; gap:8px; padding:6px 12px; font-size:12px; }
+.terminal-entry .automatic-translation-toggle select { min-width:140px; padding:4px; border:1px solid #d5e4d8; border-radius:8px; }
+.terminal-entry .connection-offline { background:#fff2d9; color:#704900; padding:8px 12px; font-size:13px; }
+.terminal-entry .composer-row textarea { min-height:48px; font-size:16px; }
+@media(max-width:480px) {
+ .terminal-entry .topbar .connection-label,.terminal-entry .topbar .notification-button { display:none; }
+ .terminal-entry .workspace-title strong { font-size:14px; }
+ .terminal-entry .terminal-home span { display:none; }
+ .terminal-entry .conversation-catalog-actions { gap:6px; }
+ .terminal-entry .composer-toolbar .composer-hint { display:none; }
+ .terminal-entry .composer-row { gap:5px; }
+}

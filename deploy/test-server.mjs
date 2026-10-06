@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import dotenv from '../apps/gateway/node_modules/dotenv/lib/main.js';
 import {resolveTestDirectories} from './test-supervisor.mjs';
 import {installTestAdminSession} from '../apps/gateway/src/services/testAdminSession.mjs';
+import {installTestPersonnelSession} from '../apps/gateway/src/services/testPersonnelSession.mjs';
 const mime = { '.html':'text/html; charset=utf-8', '.js':'text/javascript', '.css':'text/css', '.png':'image/png', '.svg':'image/svg+xml', '.woff2':'font/woff2' };
 
 export function validateTestLanAddress(value='') {
@@ -40,7 +41,16 @@ export function testUiRequestAllowed(req,lanNetwork=null) {
   }else return false;
   return req.headers.host===host&&(!req.headers.origin||req.headers.origin==='http://'+host)
     &&!req.headers['x-forwarded-host']&&!req.headers['x-forwarded-for']
-    &&(!req.headers['sec-fetch-site']||['same-origin','none'].includes(req.headers['sec-fetch-site']));
+    &&(!req.headers['sec-fetch-site']||['same-origin','none'].includes(req.headers['sec-fetch-site'])||testTerminalFrameAllowed(req,host));
+}
+
+export function testTerminalFrameAllowed(req,host) {
+  if(!['GET','HEAD'].includes(req.method)||req.headers['sec-fetch-site']!=='same-site'||req.headers['sec-fetch-dest']!=='iframe')return false;
+  if(!req.url.startsWith('/?terminal=1')||req.headers.origin)return false;
+  try {
+    const parent=new URL(req.headers.referer||'');
+    return parent.origin==='http://'+host.replace(':62400',':5194')&&parent.pathname==='/terminal.html';
+  } catch { return false; }
 }
 
 export function testAdminBootstrapAllowed(req) {
@@ -49,6 +59,12 @@ export function testAdminBootstrapAllowed(req) {
     && req.headers.origin==='http://127.0.0.1:62400'
     && !req.headers['x-forwarded-host'] && !req.headers['x-forwarded-for']
     && (!req.headers['sec-fetch-site'] || req.headers['sec-fetch-site']==='same-origin');
+}
+
+export function testPersonnelBootstrapAllowed(req) {
+  return testAdminBootstrapAllowed({method:req.method,socket:req.socket,headers:req.headers,url:req.url==='/api/test-personnel/session'?'/api/test-admin/session':req.url})
+    && req.url==='/api/test-personnel/session'
+    && !req.headers['forwarded']&&!req.headers['x-real-ip']&&!req.headers['x-forwarded-proto'];
 }
 
 const root = fileURLToPath(new URL('../', import.meta.url));
@@ -60,6 +76,8 @@ const lanAddress=validateTestLanAddress(env.CRM_TEST_LAN_ADDRESS||'');
 const uiOrigins=['http://127.0.0.1:62400',...(lanAddress?[`http://${lanAddress}:62400`]:[])];
 // AI activation is explicit for this TEST session, never inherited from baseline dotenv.
 const salesMode=env.CRM_AI_SALES_MODE==='copilot'?'copilot':'off';
+const terminalPersonnel=env.CRM_TEST_TERMINAL_PERSONNEL_USERNAME||'';
+if(terminalPersonnel!==''&&terminalPersonnel!=='crm-ahmet')throw Error('TEST_PERSONNEL_IDENTITY_REQUIRED');
 // Sales rules belong to this validated TEST runtime, never a baseline/LIVE policy file.
 const salesRules=path.join(runtime,'ai-sales-rules.json');
 // Read the existing protected configuration in process memory; never copy or log it.
@@ -82,12 +100,15 @@ Object.assign(env, {
   CRM_AI_SALES_MODE:salesMode, CRM_AI_SALES_CONVERSATION_ID:'55',
   CRM_AI_SALES_TEST_PEER:'905387217733',
   CRM_AI_SALES_RULES_FILE:salesRules,
+  CRM_TEST_TERMINAL_PERSONNEL_USERNAME:terminalPersonnel,
 });
 }
 async function startTestServer(){
 configureTestServerEnvironment(root);
 const lanNetwork=resolveTestLanNetwork(process.env.CRM_TEST_LAN_ADDRESS);
 const createTestSession=installTestAdminSession({uiOrigin:process.env.CRM_UI_ORIGIN,gatewayOrigin:'http://127.0.0.1:62401'});
+const {findCrmUserByUsername}=await import('../apps/gateway/src/services/crmAuthService.js');
+const createPersonnelSession=process.env.CRM_TEST_TERMINAL_PERSONNEL_USERNAME?installTestPersonnelSession({uiOrigin:process.env.CRM_UI_ORIGIN,gatewayOrigin:'http://127.0.0.1:62401',username:process.env.CRM_TEST_TERMINAL_PERSONNEL_USERNAME,resolveUser:findCrmUserByUsername}):null;
 // Passive incoming messages use existing identity/journal handling. Outbound and AI stay scoped to 7733.
 const { createApp } = await import('../apps/gateway/src/app.js');
 const { startTestIncomingReader } = await import('../apps/gateway/src/services/testIncomingReader.js');
@@ -96,15 +117,26 @@ const stopIncoming = startTestIncomingReader();
 const stopWorker = startWaapiWorker();
 const gateway = createApp().listen(62401, '127.0.0.1');
 const assets = path.join(root, 'apps/frontend/dist/client');
-const handler=createTestUiHandler({assets,createTestSession,lanNetwork});
+const handler=createTestUiHandler({assets,createTestSession,createPersonnelSession,lanNetwork});
 const ui=http.createServer(handler).listen(62400,'127.0.0.1',()=>console.log('Melisa CRM TEST hazır: http://127.0.0.1:62400'));
 const lanUi=lanNetwork?http.createServer(handler).listen(62400,lanNetwork.address,()=>console.log('Melisa CRM LAN UI hazır.')):null;
 for (const server of [ui,lanUi,gateway].filter(Boolean)) server.on('error', error => { console.error(error.code || 'TEST_START_FAILED'); process.exit(1); });
 for (const signal of ['SIGINT','SIGTERM']) process.on(signal, () => { stopIncoming(); stopWorker(); ui.close(); lanUi?.close(); gateway.close(); setTimeout(() => process.exit(0), 500).unref(); });
 }
-export function createTestUiHandler({assets,createTestSession,lanNetwork=null}) {
+export function createTestUiHandler({assets,createTestSession,createPersonnelSession=null,lanNetwork=null}) {
 return (req,res)=>{
   if(!testUiRequestAllowed(req,lanNetwork)){res.writeHead(403,{'cache-control':'no-store'});res.end('TEST_UI_ORIGIN_REQUIRED');return;}
+  if(req.url.startsWith('/api/test-personnel/')) {
+    res.setHeader('cache-control','no-store');res.setHeader('content-type','application/json');
+    if(!createPersonnelSession||!testPersonnelBootstrapAllowed(req)){res.writeHead(403);res.end(JSON.stringify({error:'TEST_PERSONNEL_ORIGIN_REQUIRED'}));return;}
+    let body='';req.setEncoding('utf8');
+    req.on('data',chunk=>{body+=chunk;if(body.length>32)req.destroy();});
+    req.on('end',()=>{
+      if(body.trim()!=='{}'){res.writeHead(400);res.end(JSON.stringify({error:'TEST_PERSONNEL_BODY_INVALID'}));return;}
+      try {const response=JSON.stringify(createPersonnelSession());res.writeHead(200);res.end(response);}
+      catch {res.writeHead(403);res.end(JSON.stringify({error:'TEST_PERSONNEL_IDENTITY_REQUIRED'}));}
+    });return;
+  }
   if (req.url.startsWith('/api/test-admin/')) {
     res.setHeader('cache-control','no-store');res.setHeader('content-type','application/json');
     if(!testAdminBootstrapAllowed(req)){res.writeHead(403);res.end(JSON.stringify({error:'TEST_ADMIN_ORIGIN_REQUIRED'}));return;}

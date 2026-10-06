@@ -6,6 +6,7 @@ import {randomUUID} from 'node:crypto';
 import {build} from 'esbuild';
 import React from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
+import {rememberTerminalShare} from '../src/terminalShareProof.js';
 import {TEXT_DRAFT_STORAGE_KEY,createTextDraftStorage} from '../src/lib/textDraftStorage.js';
 
 const frontend=fileURLToPath(new URL('../',import.meta.url)), temporary=frontend+'.sites-runtime/';
@@ -20,20 +21,42 @@ async function bundle(file,instrument=false){
   build.onLoad({filter:/liveApi\.js$/},args=>({loader:'js',contents:readFileSync(args.path,'utf8')+'\nfor(const name of Object.keys(globalThis.__draftHarness.api))liveApi[name]=(...args)=>globalThis.__draftHarness.api[name](...args);'}));
  }}]:[]});
 }
-async function fixture(run,{compact=false}={}){
+async function fixture(run,{compact=false,terminal=false,offline=false}={}){
  mkdirSync(temporary,{recursive:true});const file=temporary+'text-draft-handlers-'+randomUUID()+'.mjs', previous={window:globalThis.window,document:globalThis.document,hooks:globalThis.__draftHooks,harness:globalThis.__draftHarness};
  const local=storage(),values=[],effects=[];let cursor=0;
  globalThis.window=fakeWindow(local);
+ if(terminal){globalThis.window.location={pathname:"/",search:"?terminal=1",origin:"http://127.0.0.1:62400",hostname:"127.0.0.1"};globalThis.window.navigator={onLine:!offline};local.setItem("melisa-crm-access-token","desktop-synthetic-session");}
  if(compact)globalThis.window.localStorage.getItem=()=> 'terminal';
  globalThis.document={visibilityState:'visible',addEventListener(){},removeEventListener(){}};
  globalThis.__draftHooks={useState(initial){const i=cursor++;if(!(i in values))values[i]=typeof initial==='function'?initial():initial;return [values[i],update=>{values[i]=typeof update==='function'?update(values[i]):update;}];},useRef(initial){const i=cursor++;if(!(i in values))values[i]={current:initial};return values[i];},useMemo:fn=>fn(),useCallback:fn=>fn,useEffect:fn=>effects.push(fn)};
- const harness=globalThis.__draftHarness={api:{erpDrafts:async()=>({orders:[]}),catalogSignOut:async()=>({}),session:async()=>actor(),inbox:async()=>({conversations:[row()],summary:{total:1}}),conversation:async()=>({conversation:row()}),send:async()=>({message:{id:'synthetic-accepted',direction:'outgoing',text:'sent'}})},actions:null};
+ const harness=globalThis.__draftHarness={api:{canonicalCatalogProduct:async()=>({}),erpDrafts:async()=>({orders:[]}),catalogSignOut:async()=>({}),session:async()=>actor(),inbox:async()=>({conversations:[row()],summary:{total:1}}),conversation:async()=>({conversation:row()}),send:async()=>({message:{id:'synthetic-accepted',direction:'outgoing',text:'sent'}})},actions:null};
  try{await bundle(file,true);const {App}=await import(pathToFileURL(file).href);const render=()=>{cursor=0;effects.length=0;return App();};const connect=(session=actor(),rows=[row(),row('56')],inboxExtra={})=>{harness.actions.commitLiveSession({key:'synthetic-session',session,inbox:{conversations:rows,summary:{total:rows.length},...inboxExtra},agents:{agents:[]}});return render();};
   render();await run({local,harness,render,connect,pollBackground:()=>effects.filter(fn=>String(fn).includes('const refreshInbox = async')||String(fn).includes('permissionPollRef.current')).forEach(fn=>fn()),pollDrafts:()=>effects.filter(fn=>String(fn).includes('textDraftStorageRef.current.synchronize')).forEach(fn=>fn()),pollConversation:()=>effects.filter(fn=>String(fn).includes('const refreshConversation = async')).forEach(fn=>fn())});
  }finally{globalThis.window=previous.window;globalThis.document=previous.document;globalThis.__draftHooks=previous.hooks;globalThis.__draftHarness=previous.harness;rmSync(file,{force:true});}
 }
 function find(tree,predicate){if(!tree||typeof tree!=='object')return null;if(predicate(tree))return tree;for(const child of React.Children.toArray(tree.props?.children)){const found=find(child,predicate);if(found)return found;}return null;}
 const composer=tree=>find(tree,node=>node.type==='textarea'&&node.props['aria-label']==='Mesajınız');
+
+test('actual terminal entry has an isolated auth session and offline keyboard send cannot reach transport',async()=>fixture(async h=>{
+ let sends=0;h.harness.api.send=async()=>{sends++;};
+ assert.equal(h.local.getItem('melisa-crm-access-token'),'desktop-synthetic-session');
+ const tree=h.connect();assert.match(tree.props.className,/terminal-entry/);
+ const html=renderToStaticMarkup(tree);assert.match(html,/MELISA TERMINAL|Müşterilerim/);assert.match(html,/Bağlantı yok/);
+ assert.equal(h.local.getItem('melisa-crm-terminal-access-token'),'synthetic-session');
+ h.harness.actions.setDraft('Human text');h.render();await h.harness.actions.sendMessage();assert.equal(sends,0);
+ await h.harness.actions.closeLiveSession('',true);
+ assert.equal(h.local.getItem('melisa-crm-terminal-access-token'),null);assert.equal(h.local.getItem('melisa-crm-access-token'),'desktop-synthetic-session');
+},{terminal:true,offline:true}));
+
+test('actual terminal manual price send fresh-checks ERP before transport and preserves message on source failure',async()=>fixture(async h=>{
+ h.connect();h.harness.actions.setDraft('Recorded product price');h.render();
+ const p={id:'erp-36724',revision:'a'.repeat(64)};rememberTerminalShare(h.local,'id:42','55',[p]);let sends=0,reads=0;
+ h.harness.api.send=async()=>{sends++;return{message:{id:'synthetic-result',direction:'outgoing',text:'accepted'}};};
+ h.harness.api.canonicalCatalogProduct=async()=>{reads++;throw Error('offline');};
+ await h.harness.actions.sendMessage();assert.equal(reads,1);assert.equal(sends,0);assert.equal(composer(h.render()).props.value,'Recorded product price');
+ h.harness.api.canonicalCatalogProduct=async()=>{reads++;return{data:{...p,status:'active',hold:{blocked:false}},meta:{catalogVersion:'melisa-catalog.v1',sourceDatabaseVerified:true,cached:false}};};
+ await h.harness.actions.sendMessage();assert.equal(reads,2);assert.equal(sends,1);assert.equal(composer(h.render()).props.value,'');
+},{terminal:true}));
 
 test('actual compact App exposes the first real bootstrap list, truthful partial search and selected-history loading',async()=>fixture(async h=>{
  const boot={...row(),messagesLoaded:false,detailLoaded:false,preview:'Son mesaj yükleniyor…'};

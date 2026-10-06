@@ -50,20 +50,20 @@ export function CatalogConnectionPanel({customer,source,onClose,onRead,onSignIn,
   </section></div>;
 }
 
-export default function CatalogWorkspace({token,isCurrent,onClose,onSource,onSession,onCrmExpired,authMode='erp',existingStock=false, ...builderProps}) {
+export default function CatalogWorkspace({token,conversationId,isCurrent,onClose,onSource,onSession,onCrmExpired,authMode='erp',existingStock=false, ...builderProps}) {
   const [source,setSource] = useState({...catalogSource,state:'loading',message:'ERP katalog erişimi kontrol ediliyor…'});
   const controller = useRef(null), props = useRef({isCurrent,onClose,onSource,onSession,onCrmExpired});
   props.current = {isCurrent,onClose,onSource,onSession,onCrmExpired};
   useEffect(() => {
     const previous = document.activeElement;
-    const session = (existingStock?createCanonicalSession:createCatalogSession)({api:liveApi,token,authMode,isCurrent:()=>props.current.isCurrent(),onCrmExpired:()=>props.current.onCrmExpired?.(),onState:next=>{setSource(next);props.current.onSource?.(next);}});
+    const session = (existingStock?createCanonicalSession:createCatalogSession)({api:liveApi,token,conversationId,authMode,isCurrent:()=>props.current.isCurrent(),onCrmExpired:()=>props.current.onCrmExpired?.(),onState:next=>{setSource(next);props.current.onSource?.(next);}});
     controller.current = session;props.current.onSession?.(session);
     const close = () => {session.close();props.current.onClose();};
     window.addEventListener('popstate',close);window.addEventListener('pagehide',close);
     window.addEventListener('melisa-crm-session-cleared',close);
     void session.read();
     return () => {session.close();if(controller.current===session)controller.current=null;window.removeEventListener('popstate',close);window.removeEventListener('pagehide',close);window.removeEventListener('melisa-crm-session-cleared',close);if(previous?.isConnected)previous.focus?.();};
-  },[token,authMode,existingStock]);
+  },[token,conversationId,authMode,existingStock]);
   const readPage=useCallback(query=>controller.current?.read(query),[]);
   const close = useCallback(() => {controller.current?.close();props.current.onClose();},[]);
   const photo = useCallback((product,options)=>controller.current?.photo(product,options) || Promise.reject(new Error('Katalog kapandı.')),[]);

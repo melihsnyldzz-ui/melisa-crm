@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import { env } from '../config/env.js';
 import { waapiSendReady } from './waapiReadiness.js';
 import { verifyTestAdminSession } from './testAdminSession.mjs';
+import { verifyTestPersonnelSession } from './testPersonnelSession.mjs';
 
 const ROLE_PERMISSIONS = Object.freeze({
   patron: ['crm.view', 'crm.send', 'crm.assign', 'crm.agents', 'crm.manage'],
@@ -79,6 +80,7 @@ export function publicCrmUser(user) {
     chatwootAgentId: user.chatwootAgentId,
     permissions: [...user.permissions],
     ...(user.testAdmin === true ? {testAdmin:true} : {}),
+    ...(user.testPersonnel === true ? {testPersonnel:true,testPersonnelScope:user.testPersonnelScope} : {}),
     liveSendEnabled: Boolean(
       env.whatsapp.sendEnabled
       && (env.whatsapp.provider !== 'waapi' || waapiSendReady())
@@ -129,7 +131,7 @@ export function authenticateCrmUser({ username, password }) {
 }
 
 export function verifyCrmAccessToken(token, { includeContext = false } = {}) {
-  const testUser = verifyTestAdminSession(token, {includeContext});
+  const testUser = verifyTestAdminSession(token, {includeContext}) || verifyTestPersonnelSession(token, {includeContext});
   if(testUser) return testUser;
   if (!env.auth.jwtSecret || env.auth.jwtSecret.length < 32) {
     throw authError('WHATSAPP_CRM_AUTH_SECRET_MISSING', 'CRM kimlik dogrulama anahtari yapilandirilmamis.', 503);

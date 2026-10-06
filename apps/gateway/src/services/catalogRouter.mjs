@@ -1,22 +1,24 @@
+import {scopeCatalogConversation} from './catalogConversationScope.mjs';
 import {createCatalogBridge,CATALOG_RESPONSE_GUARD} from './catalogBridge.mjs';
 import {catalogAccess} from './crmCatalogAccess.mjs';
 export function createCrmCatalogReader({verifyCrmContext,transport,activationApproved=false,
-  access=catalogAccess,photoCrmAuthorization=false}={}) {
+  access=catalogAccess,photoCrmAuthorization=false,readConversation}={}) {
   if(typeof verifyCrmContext!=='function')throw Error('REVIEWED_GATEWAY_HOOKS_REQUIRED');
   const context=request=>{
     const header=request.headers.get('authorization')||'';
     if(!/^Bearer [^\s]+$/.test(header))throw Object.assign(Error('CURRENT_CRM_SESSION_REQUIRED'),{status:401});
     return verifyCrmContext(header.slice(7));
   };
-  return createCatalogBridge({deploymentApproved:activationApproved,transport,photoCrmAuthorization,
+  const read=createCatalogBridge({deploymentApproved:activationApproved,transport,photoCrmAuthorization,
     authorizeCrm:async request=>{
       const current=context(request),header=request.headers.get('authorization');
       return {...current.user,catalogReadApproved:access.base(current.user),catalogReadRevoked:access.isRevoked(current.user,header)};
     },
     resolveCrmReadSession:async(_actor,request)=>access.lease(context(request),request,verifyCrmContext),
   });
+  return scopeCatalogConversation({read,verifyCrmContext,readConversation});
 }
-export function createCatalogRouter({Router,verifyCrmContext,transport,activationApproved=false,uiOrigin,additionalUiOrigins=[],logoutOrigin=null,access=catalogAccess,photoCrmAuthorization=false}={}) {
+export function createCatalogRouter({Router,verifyCrmContext,transport,activationApproved=false,uiOrigin,additionalUiOrigins=[],logoutOrigin=null,access=catalogAccess,photoCrmAuthorization=false,readConversation}={}) {
   if(typeof Router!=='function'||typeof verifyCrmContext!=='function')throw Error('REVIEWED_GATEWAY_HOOKS_REQUIRED');
   if(logoutOrigin!==null&&logoutOrigin!=='http://127.0.0.1:4212')throw Error('EXACT_LOCAL_LOGOUT_ORIGIN_REQUIRED');
   if(!Array.isArray(additionalUiOrigins)||additionalUiOrigins.some(value=>{try{const url=new URL(value);return typeof value!=='string'||value.includes('*')||!['http:','https:'].includes(url.protocol)||url.origin!==value||!!url.username||!!url.password}catch{return true}}))throw Error('EXACT_CATALOG_UI_ORIGINS_REQUIRED');
@@ -28,7 +30,7 @@ export function createCatalogRouter({Router,verifyCrmContext,transport,activatio
     if(!/^Bearer [^\s]+$/.test(header))throw Object.assign(Error('CURRENT_CRM_SESSION_REQUIRED'),{status:401});
     return verifyCrmContext(header.slice(7));
   };
-  const bridge=createCrmCatalogReader({verifyCrmContext,transport,activationApproved,access,photoCrmAuthorization});
+  const bridge=createCrmCatalogReader({verifyCrmContext,transport,activationApproved,access,photoCrmAuthorization,readConversation});
   const auth=async request=>{
     if(!activationApproved)return fail(503,'BRIDGE_NOT_DEPLOYED');
     const signOut=new URL(request.url).pathname==='/crm/catalog/auth/sign-out';
@@ -48,7 +50,7 @@ export function createCatalogRouter({Router,verifyCrmContext,transport,activatio
   const handler=fn=>async(req,res)=>{
     const controller=new AbortController(),close=()=>{if(!res.writableEnded)controller.abort()};req.once('aborted',close);res.once('close',close);
     try {
-      const headers={authorization:req.get('authorization')||'',origin:req.get('origin')||''};
+      const headers={authorization:req.get('authorization')||'',origin:req.get('origin')||'',...(req.get('x-crm-conversation-id')!==undefined?{'x-crm-conversation-id':req.get('x-crm-conversation-id')}:{})};
       const request=new Request('http://127.0.0.1:4200'+req.originalUrl,{method:req.method,headers,signal:controller.signal,...(req.method==='POST'?{body:JSON.stringify(req.body)}:{})});
       const response=await fn(request),body=Buffer.from(await response.arrayBuffer());
       if(controller.signal.aborted)return;response[CATALOG_RESPONSE_GUARD]?.();

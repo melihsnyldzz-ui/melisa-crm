@@ -729,3 +729,11 @@ test('conversation detail rejects backend or inbox policy changes during the sha
       e => e.code === 'WHATSAPP_CRM_CHATWOOT_READ_IDENTITY_CHANGED' && e.statusCode === 503);
   }
 });
+
+test('personnel detail rejects another assignment before hydrating messages and reassignment during history read',async t=>{
+ inboxFixture(t,'terminal-assignment');let assignee=8,messageReads=0;
+ const user={role:'personel',chatwootAgentId:7,permissions:['crm.view']};
+ global.fetch=async url=>{if(String(url).includes('/messages')){messageReads++;assignee=8;return jsonResponse({payload:[{id:1,message_type:0,content:'Must stay private'}]});}return jsonResponse(syntheticConversation(1,assignee));};
+ await assert.rejects(()=>getChatwootConversationDetail({conversationId:1,user}),e=>e.statusCode===403);assert.equal(messageReads,0);
+ assignee=7;await assert.rejects(()=>getChatwootConversationDetail({conversationId:1,user}),e=>e.statusCode===403);assert.equal(messageReads,1);
+});
