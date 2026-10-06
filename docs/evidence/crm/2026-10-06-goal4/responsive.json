@@ -1,0 +1,23 @@
+[
+  {
+    "clientWidth": 1150,
+    "scrollWidth": 1150,
+    "viewport": 1440,
+    "width": 1150.103271484375,
+    "x": 19.989667892456055
+  },
+  {
+    "clientWidth": 806,
+    "scrollWidth": 806,
+    "viewport": 1024,
+    "width": 806.3016357421875,
+    "x": 19.989667892456055
+  },
+  {
+    "clientWidth": 322,
+    "scrollWidth": 322,
+    "viewport": 390,
+    "width": 322.31402587890625,
+    "x": 0
+  }
+]

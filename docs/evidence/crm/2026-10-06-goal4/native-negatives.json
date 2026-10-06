@@ -1,0 +1,77 @@
+[
+  {
+    "case": "tierExponent",
+    "rejected": true,
+    "sqlError": 51208
+  },
+  {
+    "case": "tierOverflow",
+    "rejected": true,
+    "sqlError": 51208
+  },
+  {
+    "case": "zeroQty",
+    "rejected": true,
+    "sqlError": 51208
+  },
+  {
+    "case": "negativeQty",
+    "rejected": true,
+    "sqlError": 51208
+  },
+  {
+    "case": "phoneSpace",
+    "rejected": true,
+    "sqlError": 51208
+  },
+  {
+    "case": "wrongCurrency",
+    "rejected": true,
+    "sqlError": 51208
+  },
+  {
+    "case": "priceLeadingZero",
+    "rejected": true,
+    "sqlError": 51208
+  },
+  {
+    "case": "rateLeadingZero",
+    "rejected": true,
+    "sqlError": 51208
+  },
+  {
+    "case": "unauthorizedActor",
+    "rejected": true,
+    "sqlError": 51201
+  },
+  {
+    "case": "directDML-sales_orders",
+    "rejected": true,
+    "sqlError": 229
+  },
+  {
+    "case": "directDML-sales_order_items",
+    "rejected": true,
+    "sqlError": 229
+  },
+  {
+    "case": "directDML-crm_order_v2_requests",
+    "rejected": true,
+    "sqlError": 229
+  },
+  {
+    "case": "directDML-crm_order_v2_lines",
+    "rejected": true,
+    "sqlError": 229
+  },
+  {
+    "case": "directDML-crm_order_v2_intents",
+    "rejected": true,
+    "sqlError": 229
+  },
+  {
+    "case": "directDML-crm_order_v2_definitions",
+    "rejected": true,
+    "sqlError": 229
+  }
+]

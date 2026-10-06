@@ -1,0 +1,78 @@
+{
+  "capturedAt": "2026-10-06T15:56:25.9Z",
+  "measurements": [
+    {
+      "label": "conversation",
+      "samples": [
+        177,
+        193,
+        179
+      ],
+      "medianMs": 179
+    },
+    {
+      "label": "first50",
+      "samples": [
+        467,
+        547,
+        498
+      ],
+      "medianMs": 498
+    },
+    {
+      "label": "next50",
+      "samples": [
+        551,
+        529,
+        609
+      ],
+      "medianMs": 551
+    },
+    {
+      "label": "code",
+      "samples": [
+        675,
+        540,
+        508
+      ],
+      "medianMs": 540
+    },
+    {
+      "label": "barcode",
+      "samples": [
+        355,
+        297,
+        362
+      ],
+      "medianMs": 355
+    },
+    {
+      "label": "productCard",
+      "samples": [
+        223,
+        237,
+        165
+      ],
+      "medianMs": 223
+    },
+    {
+      "label": "photoBytes",
+      "samples": [
+        405,
+        404,
+        458
+      ],
+      "medianMs": 405
+    },
+    {
+      "label": "draftReadback",
+      "samples": [
+        110,
+        104,
+        98
+      ],
+      "medianMs": 104
+    }
+  ],
+  "note": "createMs is replay; UI first creation measured separately"
+}

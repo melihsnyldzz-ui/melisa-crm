@@ -1,0 +1,15 @@
+{
+  "requestId": "0d85b6dc-440b-4cf9-9b43-26d128099050",
+  "sameReceipt": true,
+  "events": [
+    {
+      "path": "/api/live/crm/erp/login",
+      "method": "POST"
+    },
+    {
+      "path": "/api/live/crm/erp/v2/drafts/0d85b6dc-440b-4cf9-9b43-26d128099050",
+      "method": "GET"
+    }
+  ],
+  "newDraftPostCount": 0
+}

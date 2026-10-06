@@ -6,21 +6,21 @@
 
 ## ŞİMDİ
 
-**Goal4 — 6 Ekim 2026:** CRM-DEC-004 ile D02 → D03 → D04 teknik çalışması açıkça başlatıldı. D01'in insan kabulü ayrı bekler; bu teknik sıranın yeni engeli değildir. Goal4 bittiğinde durulur; D05 veya fiziksel terminal kendiliğinden başlamaz. Başlangıç finish tree: 12 🟢 / 12 🟡 / 1 🔴; teknik sonuç insan PASS değildir.
+**Goal4 — 6 Ekim 2026:** CRM-DEC-004 ile D02 ortak ERP HTTP katalog tüketimi teknik teslim edildi; D04 iki ürünlü native32,88USD taslak/readback/refresh ve D03 yalnız7733 gerçek fotoğraf/15,78USD paylaşımı provider201/CRM12273 GET kanıtlı. D03/D04 teknik hazır, insan CRM-UA03/04 bekler; telefon delivered/read/açma kabulü yok. A05 dar dil düzeltmesi ve1440/1024/390 son kanıtı sürüyor; Goal4 henüz teknik kapanmadı. D01 insan kabulü bu teknik sıranın engeli değildir. Güncel finish **12🟢 / 13🟡 / 0🔴**,25toplam,kalan13; insan CRM-UA01–04 bekler. Goal4 sonunda durulur; D05/fiziksel terminal/Goal5 kendiliğinden başlamaz. [Kanıt](docs/evidence/crm/2026-10-06-goal4/README.md).
 
 | ID | Hedef | Kabul kriteri | Durum | Bağımlılık |
 | --- | --- | --- | --- | --- |
-| CRM-D01 | Yalnız TEST'te otomatik TEST ADMIN erişimini tamamla/kabul et. | Doğrulanmış TEST'te normal CRM TEST ADMIN olarak açılır ve yenilenir; yalnız TEST sınırı hedefli kontrolde doğrulanır; kullanıcı CRM-UA01'i dener. | Teknik hazır / kullanıcı kabulü bekliyor; 62400 normal ekran, katalog/fiyat/ayarlar ve gerçek rollere dönüş provası geçti. Paket f1899b0, kanıt CRM_STATUS'ta. | CRM-UA01 kullanıcı sonucu |
+| CRM-D02 | Onaylanmış ERP API'sinden ürün/fiyat/fotoğrafı oku. | ERP-D05'in exact sözleşme commit'ine bağlanılır; normal CRM doğru kimlik/fiyat/para birimi/fotoğrafı gösterir; ikinci ticari kaynak/HTML scrape yok; yalnız değişen kapsam CRM-UA02'de denenir. | Tamam — ortak katalog tüketiminin teknik teslimi; source9f81529 exact CI PASS. `melisa-catalog.v1` ve `melisa-photo.v1`,16.622kabul edilmiş+54hold,3.830CONFIRMED,exact8fiyat/döviz/NULL kimliği gerçek normal CRM'de kanıtlı. CRM-UA02 insan sonucu bekler. | ERP-D05 teknik teslimi/a2b9e9f; CRM-DEC-004 |
+| CRM-D03 | CRM'den 7733 gerçek paylaşım kabulü. | Yalnız yeni/değişen ürün/fiyat/fotoğraf paylaşımı doğru konuşma/telefonda açılır; kullanıcı CRM-UA03 sonucunu verir; önceki K01–K03 kabulü korunur. | Teknik hazır / insan kabulü bekliyor — yalnız7733 gerçek8023fotoğraf/15,78USD provider201 kabulü ve ayrı CRM12273 GET/source_id/image kanıtlı; providerAccepted/chatwootRecorded=true, delivered/read=false. Toplam8/5dk sınırı aynı; telefon açma/insan CRM-UA03 bekler. | CRM-D02 teknik teslimi; CRM-DEC-004; yalnız +905387217733 |
+| CRM-D04 | Aynı katalogdan taslak sipariş akışını tamamla. | Yeni/değişen E02 kapsamı normal CRM'den ayrı ERP readback ile doğrulanır; taslak stok/cari etkisi yaratmaz; CRM-UA04 kaydı tutulur. E01 dar PASS yeniden açılmaz. | Teknik hazır / insan kabulü bekliyor — normal iki ürünlü32,88USD sipariş6/7/8, bağımsız GET/SQL ve aynı UUID refresh;10tabloda count/hash aynı,43eski guard korunur.7733 exact müşteri yok;595 gerekçeli kontrollü TEST seçimi. CRM-UA04 bekler, E02🟡; Goal4 A05/üç genişlik son kanıtı sürüyor. | CRM-D02 ortak katalog; CRM-D03 teknik hazır; aynı TEST DB ve mevcut aktör/izinler |
+| CRM-D01 | Yalnız TEST'te otomatik TEST ADMIN erişimini tamamla/kabul et. | Doğrulanmış TEST'te normal CRM TEST ADMIN olarak açılır ve yenilenir; yalnız TEST sınırı hedefli kontrolde doğrulanır; kullanıcı CRM-UA01'i dener. | Teknik hazır / kullanıcı kabulü bekliyor; 62400 normal ekran, katalog/fiyat/ayarlar ve gerçek rollere dönüş provası geçti. Önceki paket f1899b0 kabul hazırlığı korunur; güncel paket9f81529, kanıt CRM_STATUS'ta. | CRM-UA01 kullanıcı sonucu |
 
-ERP sözleşmesi hazır olana kadar kabul edilmiş mesajlaşma baseline'ı korunur. Mevcut I02–I04, T01, K01–K03 ve E01 kabulleri finish tree'de kayıtlı kapsamlarıyla geçerlidir; yeniden geliştirme veya yeniden kabul işi değildir.
+ERP sözleşmesi teknik hazırdır; kabul edilmiş mesajlaşma baseline'ı korunur. Mevcut I02–I04, T01, K01–K03 ve E01 kabulleri finish tree'de önceki kayıtlı kapsamlarıyla geçerlidir; yeni Goal4 insan kabulü CRM-UA02–04'tür, eski PASS yeniden açılmaz.
 
 ## SONRA
 
 | ID | Hedef | Kabul kriteri | Durum | Bağımlılık |
 | --- | --- | --- | --- | --- |
-| CRM-D02 | Onaylanmış ERP API'sinden ürün/fiyat/fotoğrafı oku. | ERP-D05'in exact sözleşme commit'ine bağlanılır; normal CRM doğru kimlik/fiyat/para birimi/fotoğrafı gösterir; ikinci ticari kaynak/HTML scrape yok; yalnız değişen kapsam CRM-UA02'de denenir. | Goal4 uygulanıyor; teknik kanıt hazırlanıyor | ERP-D05; CRM-DEC-004 |
-| CRM-D03 | CRM'den 7733 gerçek paylaşım kabulü. | Yalnız yeni/değişen ürün/fiyat/fotoğraf paylaşımı doğru konuşma/telefonda açılır; kullanıcı CRM-UA03 sonucunu verir; önceki K01–K03 kabulü korunur. | Goal4 onaylı teknik sıra; D02 bekliyor | CRM-D02; CRM-DEC-004; yalnız +905387217733 |
-| CRM-D04 | Aynı katalogdan taslak sipariş akışını tamamla. | Yeni/değişen E02 kapsamı normal CRM'den ayrı ERP readback ile doğrulanır; taslak stok/cari etkisi yaratmaz; CRM-UA04 kaydı tutulur. E01 dar PASS yeniden açılmaz. | Onaylı sıra; bağımlılık bekliyor | CRM-D03; onaylı ERP müşteri/ürün kimliği ve taslak sözleşmesi; TEST yetkisi |
 | CRM-D05 | Teslim haritasındaki kalan kritik işlere dön. | [Finish tree](CRM_FINISH_PLAN.md) / [ortak harita](MELISA_TESLIM_HARITASI_V1.md) içinden somut kritik dilim kullanıcı önceliğiyle ŞİMDİ'ye taşınır; personel/mobil/AI/logon/yayın açıkları silinmez. | Onaylı dönüş noktası | CRM-D04; ilgili kritik iş bağımlılıkları; yayın ayrıca yetkili |
 
 ## CANLIDAN SONRA
