@@ -62,6 +62,18 @@ function Assert-SwitchNativeUnchanged($Config,$Snapshot) {
     $current=Get-SwitchNative $Config
     if ($current.ProcessId -ne $Snapshot.ProcessId -or $current.CreationDate -ne $Snapshot.CreationDate) {throw 'TEST_SWITCH_NATIVE_CHANGED'}
 }
+function Wait-SwitchLauncherExit($Snapshot) {
+    # Stop-ScheduledTask is asynchronous. Wait only for this prevalidated process
+    # to disappear; a live process is never adopted or stopped by this wait.
+    $deadline=(Get-Date).AddSeconds(3)
+    while ($true) {
+        $current=Get-TestProcess $Snapshot.ProcessId
+        if (!$current) {return $true}
+        if ($current.CreationDate -ne $Snapshot.CreationDate) {throw 'TEST_SWITCH_LAUNCHER_PID_REUSED'}
+        if ((Get-Date) -ge $deadline) {return $false}
+        Start-Sleep -Milliseconds 100
+    }
+}
 function Stop-SwitchCrm($Config,$ConfigFile,$History,$Phase) {
     $task=Get-SwitchTask $Config $ConfigFile
     $launchers=@(Get-SwitchLaunchers $Config $ConfigFile)
@@ -81,6 +93,7 @@ function Stop-SwitchCrm($Config,$ConfigFile,$History,$Phase) {
     Assert-TestListeners $listeners $expected (Get-TestLanAddress $Config)
     Stop-ScheduledTask -InputObject $task
     foreach ($snapshot in $launchers) {
+        if (Wait-SwitchLauncherExit $snapshot) {continue}
         $current=Assert-SwitchLauncher $snapshot $Config $ConfigFile
         if ($current) {
             try {Stop-Process -Id $current.ProcessId -ErrorAction Stop}

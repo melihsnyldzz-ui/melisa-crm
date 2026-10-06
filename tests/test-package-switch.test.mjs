@@ -11,7 +11,114 @@ const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const ps=path.join(process.env.SystemRoot||'C:\\Windows','System32/WindowsPowerShell/v1.0/powershell.exe');
 const script=path.join(root,'deploy/switch-test-package.ps1').replaceAll("'","''");
 const test=(name,body)=>nodeTest(name,{skip:process.platform!=='win32'?'Package switch contracts run in the Windows CI job':false},body);
-const run=body=>execFileSync(ps,['-NoProfile','-NonInteractive','-Command',`. '${script}' -Library; ${body}`],{encoding:'utf8'}).trim();
+const run=(body,switchScript=script)=>execFileSync(ps,['-NoProfile','-NonInteractive','-Command',`. '${switchScript}' -Library; ${body}`],{encoding:'utf8',stdio:['ignore','pipe','pipe']}).trim();
+
+test('passive launcher wait is bounded to three seconds, probes creation only and rejects PID reuse or lookup errors',()=>{
+  assert.equal(run(String.raw`
+$snapshot=[pscustomobject]@{ProcessId=77;CreationDate=[datetime]'2026-10-06T00:00:00Z';ExecutablePath='verified-before-stop';CommandLine='verified-before-stop'}
+function Get-Date {$script:clock}
+function Start-Sleep {param($Milliseconds) if ($Milliseconds -ne 100) {throw 'UNEXPECTED_WAIT'}; $script:sleeps++; $script:clock=$script:clock.AddMilliseconds($Milliseconds)}
+function Invoke-CimMethod {throw 'PASSIVE_WAIT_OWNER_LOOKUP'}
+function Stop-Process {throw 'PASSIVE_WAIT_PROCESS_STOP'}
+function Get-TestProcess($ProcessId) {
+    if ($ProcessId -ne 77) {throw 'PASSIVE_WAIT_FOREIGN_PID'}
+    $script:reads++
+    if ($script:mode -eq 'lookup-error') {throw 'FIXTURE_PROCESS_LOOKUP_FAILED'}
+    if ($script:mode -eq 'gone' -and $script:sleeps -eq 2) {return $null}
+    $current=$snapshot.PSObject.Copy(); $current.ExecutablePath=$null
+    if ($script:mode -eq 'reused' -and $script:sleeps) {$current.CreationDate=$snapshot.CreationDate.AddMinutes(1)}
+    if ($script:mode -eq 'missing-creation') {$current.CreationDate=$null}
+    $current
+}
+foreach ($mode in @('gone','timeout','reused','missing-creation','lookup-error')) {
+    $script:mode=$mode; $script:clock=$snapshot.CreationDate; $script:sleeps=0; $script:reads=0; $result=$null; $caught=''
+    try {$result=Wait-SwitchLauncherExit $snapshot} catch {$caught=$_.Exception.Message}
+    if ($mode -eq 'gone') {if ($result -ne $true -or $caught -or $script:reads -ne 3 -or $script:sleeps -ne 2) {throw 'MISSING_EXIT_NOT_CONFIRMED'}}
+    elseif ($mode -eq 'timeout') {if ($result -ne $false -or $caught -or $script:reads -ne 31 -or $script:sleeps -ne 30 -or $script:clock -ne $snapshot.CreationDate.AddSeconds(3)) {throw 'UNBOUNDED_PASSIVE_WAIT'}}
+    else {
+        $expected=if ($mode -eq 'lookup-error') {'FIXTURE_PROCESS_LOOKUP_FAILED'} else {'TEST_SWITCH_LAUNCHER_PID_REUSED'}
+        if ($result -or $caught -ne $expected -or $script:sleeps -gt 1) {throw ('UNSAFE_PASSIVE_WAIT_'+$mode)}
+    }
+}
+'PASS'
+`),'PASS');
+});
+
+const passiveSwitchFixture=String.raw`
+$cfg=[pscustomobject]@{RepoRoot=[IO.Path]::GetFullPath('C:/fixture/repo');RuntimeDir=[IO.Path]::GetFullPath('C:/fixture/runtime');OwnerSid='fixture-owner'}
+$file=[IO.Path]::GetFullPath('C:/fixture/runtime/startup.json')
+$script:fixtureLauncher=[pscustomobject]@{ProcessId=77;CreationDate=[datetime]'2026-10-06T00:00:00Z';ExecutablePath=(Join-Path $env:SystemRoot 'System32/WindowsPowerShell/v1.0/powershell.exe');CommandLine=('powershell.exe -File "'+(Join-Path $cfg.RepoRoot 'deploy/test-session-launcher.ps1')+'" -ConfigPath "'+$file+'"')}
+$fixtureNative=[pscustomobject]@{ProcessId=10;CreationDate=$script:fixtureLauncher.CreationDate}
+function Get-SwitchTask {[pscustomobject]@{TaskName='fixture'}}
+function Get-SwitchNative {$fixtureNative}
+function Read-SupervisorIdentity {return $null}
+function Get-TestListeners {[pscustomobject]@{LocalPort=62404;LocalAddress='127.0.0.1';OwningProcess=10}}
+function Test-Path {return $false}
+function Get-CimInstance {$script:fixtureLauncher.PSObject.Copy()}
+function Get-TestProcess($ProcessId) {if ($ProcessId -ne 77) {throw 'FOREIGN_PID_LOOKUP'}; if ($script:current) {$script:current.PSObject.Copy()}}
+function Get-Date {$script:clock}
+function Start-Sleep {
+    param($Milliseconds)
+    if ($Milliseconds -ne 100 -or !$script:taskStopped) {throw 'UNEXPECTED_WAIT'}
+    $script:clock=$script:clock.AddMilliseconds($Milliseconds)
+    if ($script:mode -eq 'gone') {$script:current=$null}
+}
+function Invoke-CimMethod {
+    if ($script:taskStopped) {
+        $script:afterOwnerChecks++
+        if ($script:mode -eq 'gone') {throw 'UNEXPECTED_STOPPING_OWNER_LOOKUP'}
+    }
+    $sid=if ($script:taskStopped -and $script:mode -eq 'foreign-owner') {'foreign-owner'} else {$cfg.OwnerSid}
+    [pscustomobject]@{ReturnValue=0;Sid=$sid}
+}
+function Stop-ScheduledTask {
+    $script:taskStopped=$true
+    if ($script:mode -in @('gone','null-executable')) {$script:current.ExecutablePath=$null}
+    if ($script:mode -eq 'foreign-executable') {$script:current.ExecutablePath='C:\foreign\powershell.exe'}
+    if ($script:mode -eq 'foreign-script') {$script:current.CommandLine=$script:current.CommandLine.Replace('test-session-launcher.ps1','LIVE.ps1')}
+    if ($script:mode -eq 'foreign-config') {$script:current.CommandLine=$script:current.CommandLine.Replace('startup.json','foreign.json')}
+    if ($script:mode -eq 'reused') {$script:current.CreationDate=$script:fixtureLauncher.CreationDate.AddMinutes(1)}
+}
+function Stop-Process {
+    param($Id)
+    if ($Id -ne 77 -or $script:mode -ne 'verified-timeout') {throw 'FOREIGN_PROCESS_STOP'}
+    $script:processStops++; $script:current=$null
+}
+foreach ($mode in @('gone','verified-timeout','foreign-owner','null-executable','foreign-executable','foreign-script','foreign-config','reused')) {
+    $script:mode=$mode; $script:current=$script:fixtureLauncher.PSObject.Copy(); $script:clock=$script:fixtureLauncher.CreationDate; $script:taskStopped=$false; $script:processStops=0; $script:afterOwnerChecks=0; $result=$null; $caught=''
+    try {$result=Stop-SwitchCrm $cfg $file 'unused' 'previous'} catch {$caught=$_.Exception.Message}
+    if ($mode -in @('gone','verified-timeout')) {
+        $expectedStops=if ($mode -eq 'gone') {0} else {1}
+        $expectedChecks=if ($mode -eq 'gone') {0} else {1}
+        if ($caught -or !$result -or $result.ProcessId -ne 10 -or $script:processStops -ne $expectedStops -or $script:afterOwnerChecks -ne $expectedChecks) {throw ('UNSAFE_PASSIVE_SWITCH_'+$mode+'_'+$caught)}
+    } else {
+        $expected=if ($mode -eq 'reused') {'TEST_SWITCH_LAUNCHER_PID_REUSED'} else {'TEST_SWITCH_LAUNCHER_IDENTITY_MISMATCH'}
+        if ($result -or $caught -ne $expected -or $script:processStops -ne 0) {throw ('UNSAFE_PASSIVE_SWITCH_'+$mode+'_'+$caught)}
+    }
+    $expectedElapsed=if ($mode -eq 'gone') {100} elseif ($mode -eq 'reused') {0} else {3000}
+    if (($script:clock-$script:fixtureLauncher.CreationDate).TotalMilliseconds -ne $expectedElapsed) {throw ('PASSIVE_SWITCH_WAIT_WRONG_'+$mode)}
+}
+'PASS'
+`;
+test('actual stop waits out disappearing metadata but still rejects live owner, executable, script and config mismatches',()=>{
+  assert.equal(run(passiveSwitchFixture),'PASS');
+});
+test('passive switch fixture rejects a mutant that skips the scheduled-task exit wait',()=>{
+  const fixture=fs.mkdtempSync(path.join(os.tmpdir(),'crm-switch-passive-wait-mutant-'));
+  try {
+    fs.copyFileSync(path.join(root,'deploy/test-session-launcher.ps1'),path.join(fixture,'test-session-launcher.ps1'));
+    const source=fs.readFileSync(path.join(root,'deploy/switch-test-package.ps1'),'utf8');
+    const needle='if (Wait-SwitchLauncherExit $snapshot) {continue}';
+    assert.equal(source.split(needle).length,2,'unique wait mutant site');
+    const mutant=path.join(fixture,'switch-test-package.ps1');
+    fs.writeFileSync(mutant,source.replace(needle,'# exit wait skipped'));
+    assert.throws(()=>run(passiveSwitchFixture,mutant.replaceAll("'","''")),error=>error.status !== 0 && /UNSAFE_PASSIVE_SWITCH_gone_UNEXPECTED_STOPPING_OWNER_LOOKUP/.test(error.stderr));
+  } finally {
+    assert.equal(path.dirname(path.resolve(fixture)),path.resolve(os.tmpdir()));
+    assert.match(path.basename(fixture),/^crm-switch-passive-wait-mutant-/);
+    fs.rmSync(fixture,{recursive:true,force:true});
+  }
+});
 
 test('optional LAN package candidate preserves previous config and distinguishes absent, enable and explicit disable',()=>{
   assert.equal(run(`$previous=[pscustomobject]@{PackageRoot='old';PackageManifestSha256=('a'*64)}; $original=$previous|ConvertTo-Json -Compress; $candidate=New-TestPackageCandidate $previous 'new' ('b'*64); if ($candidate.PSObject.Properties['LanAddress']) {throw 'absent changed'}; $enabled=New-TestPackageCandidate $previous 'new' ('b'*64) $true '192.168.1.46'; if ($enabled.LanAddress -cne '192.168.1.46') {throw 'enable missing'}; $disabled=New-TestPackageCandidate $enabled 'newer' ('c'*64) $true ''; if ($disabled.LanAddress -cne '') {throw 'disable missing'}; $preserved=New-TestPackageCandidate $enabled 'newer' ('c'*64); if ($preserved.LanAddress -cne '192.168.1.46') {throw 'existing LAN lost'}; if (($previous|ConvertTo-Json -Compress) -ne $original) {throw 'rollback mutated'}; $script:reads=0;$script:stops=0; function Read-TestConfig {$script:reads++;$previous}; function Get-SwitchTask {throw 'unsafe reached task'}; function Stop-SwitchCrm {$script:stops++}; foreach($value in @('0.0.0.0','8.8.8.8','192.168.01.46')) {$bad=$false;try {Invoke-TestPackageSwitch 'unused' 'new' ('b'*64) 20 $true $value | Out-Null} catch {$bad=$_.Exception.Message -eq 'TEST_LAN_ADDRESS_INVALID'}; if (!$bad) {throw 'invalid reached switch'}}; if($script:stops -ne 0) {throw 'invalid stopped runtime'}; 'PASS'`),'PASS');
@@ -51,11 +158,11 @@ test('launcher enumeration filters a process that disappears during GetOwnerSid,
 });
 
 test('actual stop branch survives scheduled-task launcher exit between PID read and owner lookup, leaving native untouched',()=>{
-  assert.equal(run(`$cfg=[pscustomobject]@{RepoRoot=[IO.Path]::GetFullPath('C:/fixture/repo');RuntimeDir=[IO.Path]::GetFullPath('C:/fixture/runtime');OwnerSid='fixture-owner'}; $file=[IO.Path]::GetFullPath('C:/fixture/runtime/startup.json'); $script:p=[pscustomobject]@{ProcessId=77;CreationDate=[datetime]'2026-10-04T00:00:00Z';ExecutablePath=(Join-Path $env:SystemRoot 'System32/WindowsPowerShell/v1.0/powershell.exe');CommandLine=('powershell.exe -File "'+(Join-Path $cfg.RepoRoot 'deploy/test-session-launcher.ps1')+'" -ConfigPath "'+$file+'"')}; $script:current=$script:p;$script:stopped=$false;$script:ownerRace=0;$script:pidReadsAfterStop=0;$script:processStops=0; $native=[pscustomobject]@{ProcessId=10;CreationDate=[datetime]'2026-10-04T00:00:00Z'}; function Get-SwitchTask {[pscustomobject]@{TaskName='fixture'}}; function Get-SwitchNative {$native}; function Get-CimInstance {if(!$script:stopped) {$script:p}}; function Get-TestProcess($ProcessId) {if($script:stopped){$script:pidReadsAfterStop++};$script:current}; function Invoke-CimMethod {if($script:stopped){$script:ownerRace++;$script:current=$null;throw 'FIXTURE_CIM_PROCESS_DISAPPEARED'};[pscustomobject]@{ReturnValue=0;Sid='fixture-owner'}}; function Stop-ScheduledTask {$script:stopped=$true}; function Stop-Process {$script:processStops++;throw 'UNEXPECTED_PROCESS_STOP'}; function Read-SupervisorIdentity {return $null}; function Get-TestListeners {[pscustomobject]@{LocalPort=62404;LocalAddress='127.0.0.1';OwningProcess=10}}; function Test-Path {return $false}; $result=Stop-SwitchCrm $cfg $file 'unused' 'previous'; if($result.ProcessId -ne 10 -or $script:ownerRace -ne 1 -or $script:pidReadsAfterStop -ne 2 -or $script:processStops -ne 0) {throw 'task-exit race not safely handled'}; 'PASS'`),'PASS');
+  assert.equal(run(`$cfg=[pscustomobject]@{RepoRoot=[IO.Path]::GetFullPath('C:/fixture/repo');RuntimeDir=[IO.Path]::GetFullPath('C:/fixture/runtime');OwnerSid='fixture-owner'}; $file=[IO.Path]::GetFullPath('C:/fixture/runtime/startup.json'); $script:p=[pscustomobject]@{ProcessId=77;CreationDate=[datetime]'2026-10-04T00:00:00Z';ExecutablePath=(Join-Path $env:SystemRoot 'System32/WindowsPowerShell/v1.0/powershell.exe');CommandLine=('powershell.exe -File "'+(Join-Path $cfg.RepoRoot 'deploy/test-session-launcher.ps1')+'" -ConfigPath "'+$file+'"')}; $script:current=$script:p;$script:stopped=$false;$script:ownerRace=0;$script:pidReadsAfterStop=0;$script:processStops=0; $native=[pscustomobject]@{ProcessId=10;CreationDate=[datetime]'2026-10-04T00:00:00Z'}; function Get-SwitchTask {[pscustomobject]@{TaskName='fixture'}}; function Get-SwitchNative {$native}; function Get-CimInstance {if(!$script:stopped) {$script:p}}; function Get-TestProcess($ProcessId) {if($script:stopped){$script:pidReadsAfterStop++};$script:current}; function Invoke-CimMethod {if($script:stopped){$script:ownerRace++;$script:current=$null;throw 'FIXTURE_CIM_PROCESS_DISAPPEARED'};[pscustomobject]@{ReturnValue=0;Sid='fixture-owner'}}; function Stop-ScheduledTask {$script:stopped=$true}; function Wait-SwitchLauncherExit {return $false}; function Stop-Process {$script:processStops++;throw 'UNEXPECTED_PROCESS_STOP'}; function Read-SupervisorIdentity {return $null}; function Get-TestListeners {[pscustomobject]@{LocalPort=62404;LocalAddress='127.0.0.1';OwningProcess=10}}; function Test-Path {return $false}; $result=Stop-SwitchCrm $cfg $file 'unused' 'previous'; if($result.ProcessId -ne 10 -or $script:ownerRace -ne 1 -or $script:pidReadsAfterStop -ne 2 -or $script:processStops -ne 0) {throw 'task-exit race not safely handled'}; 'PASS'`),'PASS');
 });
 
 test('launcher stop errors are ignored only after a fresh missing PID; alive and reused PID failures remain closed',()=>{
-  assert.equal(run(`$cfg=[pscustomobject]@{RepoRoot=[IO.Path]::GetFullPath('C:/fixture/repo');RuntimeDir=[IO.Path]::GetFullPath('C:/fixture/runtime');OwnerSid='fixture-owner'}; $file=[IO.Path]::GetFullPath('C:/fixture/runtime/startup.json'); $snapshot=[pscustomobject]@{ProcessId=77;CreationDate=[datetime]'2026-10-04T00:00:00Z';ExecutablePath=(Join-Path $env:SystemRoot 'System32/WindowsPowerShell/v1.0/powershell.exe');CommandLine=('powershell.exe -File "'+(Join-Path $cfg.RepoRoot 'deploy/test-session-launcher.ps1')+'" -ConfigPath "'+$file+'"')}; $native=[pscustomobject]@{ProcessId=10;CreationDate=[datetime]'2026-10-04T00:00:00Z'}; function Get-SwitchTask {[pscustomobject]@{TaskName='fixture'}}; function Get-SwitchNative {$native}; function Get-CimInstance {if(!$script:taskStopped) {$snapshot}}; function Get-TestProcess($ProcessId) {if($script:stopAttempted) {$script:readsAfterStop++};$script:current}; function Invoke-CimMethod {[pscustomobject]@{ReturnValue=0;Sid='fixture-owner'}}; function Stop-ScheduledTask {$script:taskStopped=$true}; function Stop-Process {param($Id,$ErrorAction) if($Id -ne 77) {throw 'FOREIGN_PID_STOP'}; $script:stopCalls++;$script:stopAttempted=$true; if($script:mode -eq 'gone') {$script:current=$null}; if($script:mode -eq 'reused') {$script:current=$snapshot.PSObject.Copy();$script:current.CreationDate=$snapshot.CreationDate.AddMinutes(1)}; throw 'FIXTURE_STOP_FAILED'}; function Read-SupervisorIdentity {return $null}; function Get-TestListeners {[pscustomobject]@{LocalPort=62404;LocalAddress='127.0.0.1';OwningProcess=10}}; function Test-Path {return $false}; foreach($mode in @('gone','alive','reused')) {$script:mode=$mode;$script:current=$snapshot;$script:taskStopped=$false;$script:stopAttempted=$false;$script:stopCalls=0;$script:readsAfterStop=0; if($mode -eq 'gone') {$result=Stop-SwitchCrm $cfg $file 'unused' 'previous';if($result.ProcessId -ne 10) {throw 'native changed'}} else {$bad=$false;try {Stop-SwitchCrm $cfg $file 'unused' 'previous' | Out-Null} catch {$expected=if($mode -eq 'reused') {'TEST_SWITCH_LAUNCHER_PID_REUSED'} else {'FIXTURE_STOP_FAILED'};$bad=$_.Exception.Message -eq $expected};if(!$bad) {throw ('unsafe stop error '+$mode)}}; if($script:stopCalls -ne 1 -or $script:readsAfterStop -ne 1) {throw 'stop not rechecked once'}}; 'PASS'`),'PASS');
+  assert.equal(run(`$cfg=[pscustomobject]@{RepoRoot=[IO.Path]::GetFullPath('C:/fixture/repo');RuntimeDir=[IO.Path]::GetFullPath('C:/fixture/runtime');OwnerSid='fixture-owner'}; $file=[IO.Path]::GetFullPath('C:/fixture/runtime/startup.json'); $snapshot=[pscustomobject]@{ProcessId=77;CreationDate=[datetime]'2026-10-04T00:00:00Z';ExecutablePath=(Join-Path $env:SystemRoot 'System32/WindowsPowerShell/v1.0/powershell.exe');CommandLine=('powershell.exe -File "'+(Join-Path $cfg.RepoRoot 'deploy/test-session-launcher.ps1')+'" -ConfigPath "'+$file+'"')}; $native=[pscustomobject]@{ProcessId=10;CreationDate=[datetime]'2026-10-04T00:00:00Z'}; function Get-SwitchTask {[pscustomobject]@{TaskName='fixture'}}; function Get-SwitchNative {$native}; function Get-CimInstance {if(!$script:taskStopped) {$snapshot}}; function Get-TestProcess($ProcessId) {if($script:stopAttempted) {$script:readsAfterStop++};$script:current}; function Invoke-CimMethod {[pscustomobject]@{ReturnValue=0;Sid='fixture-owner'}}; function Stop-ScheduledTask {$script:taskStopped=$true}; function Wait-SwitchLauncherExit {return $false}; function Stop-Process {param($Id,$ErrorAction) if($Id -ne 77) {throw 'FOREIGN_PID_STOP'}; $script:stopCalls++;$script:stopAttempted=$true; if($script:mode -eq 'gone') {$script:current=$null}; if($script:mode -eq 'reused') {$script:current=$snapshot.PSObject.Copy();$script:current.CreationDate=$snapshot.CreationDate.AddMinutes(1)}; throw 'FIXTURE_STOP_FAILED'}; function Read-SupervisorIdentity {return $null}; function Get-TestListeners {[pscustomobject]@{LocalPort=62404;LocalAddress='127.0.0.1';OwningProcess=10}}; function Test-Path {return $false}; foreach($mode in @('gone','alive','reused')) {$script:mode=$mode;$script:current=$snapshot;$script:taskStopped=$false;$script:stopAttempted=$false;$script:stopCalls=0;$script:readsAfterStop=0; if($mode -eq 'gone') {$result=Stop-SwitchCrm $cfg $file 'unused' 'previous';if($result.ProcessId -ne 10) {throw 'native changed'}} else {$bad=$false;try {Stop-SwitchCrm $cfg $file 'unused' 'previous' | Out-Null} catch {$expected=if($mode -eq 'reused') {'TEST_SWITCH_LAUNCHER_PID_REUSED'} else {'FIXTURE_STOP_FAILED'};$bad=$_.Exception.Message -eq $expected};if(!$bad) {throw ('unsafe stop error '+$mode)}}; if($script:stopCalls -ne 1 -or $script:readsAfterStop -ne 1) {throw 'stop not rechecked once'}}; 'PASS'`),'PASS');
 });
 test('actual CLI preserves config and package arguments through the library import',()=>{
   const output=execFileSync(ps,['-NoProfile','-NonInteractive','-Command',`function Get-Content {param($LiteralPath,[switch]$Raw) if ($LiteralPath -eq 'C:\\fixture\\runtime\\startup.json') {throw 'EXPECTED_CONFIG_READ'}; throw 'CLI_CONFIG_LOST'}; function Get-ScheduledTask {throw 'TASK_BEFORE_CONFIG'}; $bad=$false; try {& '${script}' -ConfigPath 'C:\\fixture\\runtime\\startup.json' -PackageRoot 'C:\\fixture\\release' -PackageManifestSha256 ('a'*64)} catch {$bad=$_.Exception.Message -eq 'EXPECTED_CONFIG_READ'}; if (!$bad) {throw 'CLI was inert or config was lost'}; 'PASS'`],{encoding:'utf8'}).trim();
