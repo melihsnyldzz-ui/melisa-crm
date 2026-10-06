@@ -83,7 +83,7 @@ test('bounded queue retains a partially discovered page until all 330 recent pee
  const chats=Array.from({length:330},(_,i)=>chat(`${19999000000+i}@c.us`,ts));
  const r=await reader(t,(action,body)=>action==='action/get-chats'?success(chats.slice(body.offset,body.offset+body.limit)):
   success([messageRow('one-per-peer',body.chatId,ts)]),{time});
- for(let i=0;i<1000&&r.accepted.length<330;i++)await r.tick();
+ for(let i=0;i<1600&&r.accepted.length<330;i++)await r.tick();
  assert.equal(r.accepted.length,330);assert.equal(new Set(r.accepted.map(event=>event.phone)).size,330);
  assert(r.calls.every(call=>call.body.limit===100));
 });
@@ -331,7 +331,7 @@ test('peer failure does not starve another queued peer',async t=>{
  await r.tick();await r.tick();await r.tick();assert.equal(r.accepted[0].phone,'19999999992');
 });
 
-test('eight-call quota counts discovery, authenticated LID and fetch; full-page continuation waits without losing rows',async t=>{
+test('six passive calls reserve two operator slots and count discovery, LID and fetch without losing continuation',async t=>{
  const ts=Math.floor(Date.now()/1000),time=clock(),lid='22252259123221@lid',calls=[];
  const provider=new WaapiProvider({config:{},now:()=>time.value});
  provider.request=async(action,body)=>{
@@ -341,10 +341,10 @@ test('eight-call quota counts discovery, authenticated LID and fetch; full-page 
   return success(Array.from({length:100},(_,i)=>messageRow('burst-'+(body.offset+i),lid,ts)));
  };
  const r=await reader(t,null,{time,provider});for(let i=0;i<8;i++)await r.tick(0);
- assert.equal(calls.length,8);assert.equal(r.accepted.length,600,JSON.stringify(calls));
+ assert.equal(calls.length,6);assert.equal(r.accepted.length,400,JSON.stringify(calls));
  assert.equal(calls.filter(call=>call.action==='action/get-lid').length,1);
- const offset=calls.at(-1).body.offset;await r.tick(1);assert.equal(calls.length,8);
- await r.tick(300000);await r.tick(0);assert.equal(calls.at(-1).body.offset,offset+100);assert.equal(r.accepted.length,700);
+ const offset=calls.at(-1).body.offset;await r.tick(1);assert.equal(calls.length,6);
+ await r.tick(300000);await r.tick(0);assert.equal(calls.at(-1).body.offset,offset+100);assert.equal(r.accepted.length,500);
 });
 
 test('repeated full discovery page is reported incomplete and does not spin or ingest lastMessage',async t=>{
@@ -375,10 +375,10 @@ test('a provider-local quota resumes at its exact oldest-call expiry instead of 
    return{ok:true,json:async()=>success(action==='action/get-chats'?[chat(peerA,ts)]:[messageRow('exact-resume',peerA,ts)])};
   }});
  provider.calls=Array.from({length:7},()=>time.value-250000);
- const r=await reader(t,null,{time,provider});assert.equal(requests.length,1);
- await r.tick();assert.equal(requests.length,1,'the provider budget must remain eight calls');
- await r.tick(4999);assert.equal(requests.length,1);
- await r.tick(1);assert.equal(requests.length,2,'resume at 50s, not a new 5-minute block from the 45s rejection');
+ const r=await reader(t,null,{time,provider});assert.equal(requests.length,0);
+ await r.tick();assert.equal(requests.length,0,'passive transport must leave two provider slots');
+ await r.tick(4999);assert.equal(requests.length,0);
+ await r.tick(1);assert.equal(requests.length,1,'resume at 50s, not a new 5-minute block from the 45s rejection');
  await r.tick(0);
  assert.equal(r.accepted.length,1);assert.equal(requests.at(-1).action,'action/fetch-messages');
 });
@@ -396,7 +396,7 @@ test('an explicit provider retry-after blocks every peer and discovery only unti
  await r.tick(0);assert.equal(r.accepted.length,1);
 });
 
-test('provider pretransport rejection consumes no reader transport slot and both eight-call caps remain intact',async t=>{
+test('shared operator occupancy blocks passive transport at six total calls and resumes at oldest expiry',async t=>{
  const time=clock(),ts=Math.floor(time.value/1000),requests=[];
  const provider=new WaapiProvider({config:{instanceId:WAAPI_INSTANCE,apiToken:'synthetic-offline-token'},now:()=>time.value,
   fetchFn:async(url,options)=>{
@@ -408,11 +408,11 @@ test('provider pretransport rejection consumes no reader transport slot and both
  provider.calls=[time.value-250000];
  const r=await reader(t,null,{time,provider});
  for(let i=0;i<7;i++)await r.tick(0);
- assert.equal(requests.length,7);assert.equal(provider.calls.length,8);
- await r.tick(49999);assert.equal(requests.length,7);
- await r.tick(1);assert.equal(requests.length,8);assert.equal(provider.calls.length,8);
+ assert.equal(requests.length,5);assert.equal(provider.calls.length,6);
+ await r.tick(49999);assert.equal(requests.length,5);
+ await r.tick(1);assert.equal(requests.length,6);assert.equal(provider.calls.length,6);
  assert.equal(requests.at(-1).at-requests[0].at,50000);
- for(let i=0;i<5;i++)await r.tick(0);assert.equal(requests.length,8);
+ for(let i=0;i<5;i++)await r.tick(0);assert.equal(requests.length,6);
 });
 test('TEST receiver imports only recent incoming messages from the verified peer, once, without sends',async()=>{
  const now=Date.now(),ts=Math.floor(now/1000),peer=WAAPI_RECIPIENT+'@c.us';let tick;const imports=[],requests=[];
@@ -433,4 +433,28 @@ test('TEST reader resolves its verified linked peer but never imports another pe
  await new Promise(resolve=>setImmediate(resolve));await tick();stop();
  assert.equal(imports.length,1);assert.equal(imports[0].id,55);assert.equal(imports[0].event.phone,WAAPI_RECIPIENT);assert.equal(imports[0].event.peerJid,lid);
  assert(requests.every(call=>call.path==='action/fetch-messages'&&call.body.chatId===WAAPI_RECIPIENT+'@c.us'));
+});
+
+test('six passive transports leave the same provider two slots for status plus explicit send, never enlarging eight-call quota',async t=>{
+ const time=clock(),ts=Math.floor(time.value/1000),requests=[];
+ const provider=new WaapiProvider({config:{instanceId:WAAPI_INSTANCE,apiToken:'synthetic-offline-token'},now:()=>time.value,fetchFn:async(url,options)=>{
+  const action=url.slice(url.lastIndexOf('/client/')+8),body=options.body?JSON.parse(options.body):undefined;requests.push({action,body,at:time.value});
+  const result=action==='status'?{status:'success',clientStatus:{status:'success',instanceId:WAAPI_INSTANCE,instanceStatus:'ready'}}:
+   action==='action/send-message'?success({id:{_serialized:'true_'+WAAPI_RECIPIENT+'@c.us_synthetic-explicit',fromMe:true,remote:WAAPI_RECIPIENT+'@c.us'}}):
+   action==='action/get-chats'?success([chat(peerA,ts)]):success(Array.from({length:100},(_,i)=>messageRow('retained-'+(body.offset+i),peerA,ts)));
+  return {ok:true,json:async()=>result};
+ }});
+ const r=await reader(t,null,{time,provider});for(let i=0;i<8;i++)await r.tick(0);
+ assert.equal(requests.length,6);assert.equal(provider.calls.length,6);assert.equal(r.accepted.length,500);
+ assert.equal((await provider.getStatus()).providerConnected,true);
+ const sent=await provider.sendMessage({phone:WAAPI_RECIPIENT,text:'Synthetic explicit operator test'});
+ assert.equal(sent.providerAccepted,true);assert.equal(requests.length,8);assert.equal(provider.calls.length,8);
+ assert.deepEqual(requests.slice(-2).map(r=>r.action),['status','action/send-message']);
+ await r.tick(0);assert.equal(requests.length,8,'passive scheduler cannot spend the operator reserve or retry');
+ await assert.rejects(()=>provider.request('status'),e=>e.code==='WHATSAPP_CRM_WAAPI_RATE_LIMIT'&&e.meta.transportAttempted===false);
+ assert.equal(requests.length,8,'the total provider quota remains eight');
+ await r.tick(299999);assert.equal(requests.length,8);await r.tick(1);
+ assert.equal(requests.length,9);await r.tick(0);
+ assert.equal(requests.length,10);assert.equal(requests.at(-1).body.offset,500,'retained continuation resumes after the scheduled head refresh');
+ assert.equal(r.accepted.length,600);assert.equal(provider.calls.length,2);
 });

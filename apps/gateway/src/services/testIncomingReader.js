@@ -14,6 +14,9 @@ const MAX_PEERS = 1024;
 const MAX_MESSAGE_PAGES = 200;
 const MAX_PENDING_MEDIA = 1000;
 const WINDOW_MS = 300000;
+const PROVIDER_WINDOW_LIMIT = 8;
+const OPERATOR_CALL_RESERVE = 2;
+const PASSIVE_WINDOW_LIMIT = PROVIDER_WINDOW_LIMIT - OPERATOR_CALL_RESERVE;
 const digest = value => createHash('sha256').update(value).digest('hex');
 const peerValue = value => typeof value === 'string' ? value : value?._serialized;
 const isPeer = peer => /^(?:[1-9]\d{6,14}@c\.us|[1-9]\d{9,19}@lid)$/.test(peer || '');
@@ -41,9 +44,15 @@ export function startTestIncomingReader({provider = waapiProvider, bridge = waap
   const readerProvider = Object.create(provider);
   readerProvider.request = async (path, body) => {
     while (calls.length && calls[0] <= now() - WINDOW_MS) calls.shift();
-    if (now() < blockedUntil || calls.length >= 8) {
+    // Status and explicit sends use the same provider ledger. Passive reads leave
+    // two of its existing eight slots free; this does not increase the provider quota.
+    const sharedCalls = Array.isArray(provider.calls) ? provider.calls.filter(at => at > now() - WINDOW_MS) : [];
+    if (now() < blockedUntil || calls.length >= PASSIVE_WINDOW_LIMIT || sharedCalls.length >= PASSIVE_WINDOW_LIMIT) {
       const error = Object.assign(Error('WAAPI_READER_RATE_LIMIT'), {statusCode: 429});
-      blockedUntil = Math.max(blockedUntil, calls.length ? calls[0] + WINDOW_MS : now() + WINDOW_MS);
+      const deadlines = [blockedUntil];
+      if (calls.length >= PASSIVE_WINDOW_LIMIT) deadlines.push(calls[0] + WINDOW_MS);
+      if (sharedCalls.length >= PASSIVE_WINDOW_LIMIT) deadlines.push(sharedCalls[0] + WINDOW_MS);
+      blockedUntil = Math.max(...deadlines);
       throw error;
     }
     calls.push(now());

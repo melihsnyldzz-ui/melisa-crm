@@ -25,7 +25,11 @@ export class WaapiProvider {
     if (!this.config.apiToken || this.config.instanceId !== WAAPI_INSTANCE) throw waapiError('WAAPI_NOT_CONFIGURED');
     this.calls = this.calls.filter(t => t > this.now() - 300000);
     // Reserve quota for the operator/panel; never automatically retry provider calls.
-    if (this.calls.length >= 8) throw waapiError('WAAPI_RATE_LIMIT', false, 429);
+    if (this.calls.length >= 8) {
+      const error = waapiError('WAAPI_RATE_LIMIT', false, 429);
+      error.meta.retryAfterMs = Math.max(1, this.calls[0] + 300000 - this.now());
+      throw error;
+    }
     this.calls.push(this.now());
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), this.config.timeoutMs || 15000);
