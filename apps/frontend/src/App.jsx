@@ -176,14 +176,14 @@ function Modal({ title, children, onClose }) {
   );
 }
 
-function LoginGate({ credentials, onChange, onConnect, busy, error, retryAvailable, onRetry, onChangeAccount, extraAction }) {
+function LoginGate({ credentials, onChange, onConnect, busy, error, retryAvailable, onRetry, onChangeAccount, extraAction, terminal = false }) {
   return (
-    <div className="login-gate">
+    <div className={`login-gate${terminal ? " terminal-login" : ""}`}>
       <section className="login-card" aria-label="Melisa CRM güvenli giriş">
         <span className="login-mark"><Butterfly size={34} weight="duotone" /></span>
         {extraAction}
-        <span className="eyebrow">{import.meta.env?.VITE_CRM_TEST === "1" ? "MELİSA BABY · TEST CRM" : "MELİSA BABY · CANLI CRM"}</span>
-        <h1>CRM Yönetim Merkezi</h1>
+        <span className="eyebrow">{terminal ? "MELİSA · PERSONEL" : import.meta.env?.VITE_CRM_TEST === "1" ? "MELİSA BABY · TEST CRM" : "MELİSA BABY · CANLI CRM"}</span>
+        <h1>{terminal ? "Müşterilerim" : "CRM Yönetim Merkezi"}</h1>
         <p>Gerçek WhatsApp konuşmalarınıza erişmek için CRM hesabınızla giriş yapın.</p>
         {!retryAvailable ? <><label>Kullanıcı adı<input value={credentials.username} onChange={(event) => onChange({ ...credentials, username: event.target.value })} autoComplete="username" placeholder="Kullanıcı adı" autoFocus /></label>
         <label>Parola<input type="password" value={credentials.password} onChange={(event) => onChange({ ...credentials, password: event.target.value })} onKeyDown={(event) => { if (event.key === "Enter" && !busy) onConnect(); }} autoComplete="current-password" placeholder="Parola" /></label></> : <p>Kaydedilen CRM oturumunuzla bağlantı kuruluyor.</p>}
@@ -1218,7 +1218,7 @@ export function App() {
   };
 
   if(liveMode&&!liveSession&&testAdminEnabled&&!manualTestLogin)return <div className="login-gate"><section className="login-card"><h1>TEST ADMIN</h1><p>{liveBusy?'CRM TEST açılıyor…':liveError||'CRM TEST oturumu hazırlanıyor…'}</p>{!liveBusy?<button className="primary-button" onClick={openTestAdmin}>Yeniden dene</button>:null}<button className="secondary-button" onClick={switchTestRole}>Gerçek rollerle giriş</button></section></div>;
-  if (liveMode && !liveSession) return <LoginGate credentials={loginCredentials} onChange={setLoginCredentials} onConnect={connectLive} busy={liveBusy} error={liveError} retryAvailable={Boolean(liveKey)} onRetry={resumeLiveSession} onChangeAccount={() => closeLiveSession("", true)} extraAction={entry.enabled && window.location.origin === "http://127.0.0.1:62400" ? <button className="secondary-button" onClick={openTestPersonnel} disabled={liveBusy}>Personel oturumunu aç</button> : testAdminEnabled?<button className="secondary-button" onClick={returnToTestAdmin}>TEST ADMIN ile aç</button>:null} />;
+  if (liveMode && !liveSession) return <LoginGate terminal={entry.enabled} credentials={loginCredentials} onChange={setLoginCredentials} onConnect={connectLive} busy={liveBusy} error={liveError} retryAvailable={Boolean(liveKey)} onRetry={resumeLiveSession} onChangeAccount={() => closeLiveSession("", true)} extraAction={entry.enabled && window.location.origin === "http://127.0.0.1:62400" ? <button className="secondary-button" onClick={openTestPersonnel} disabled={liveBusy}>Personel oturumunu aç</button> : testAdminEnabled?<button className="secondary-button" onClick={returnToTestAdmin}>TEST ADMIN ile aç</button>:null} />;
 
   return (
     <div className={`app-shell redesigned whatsapp-ui${entry.enabled ? " terminal-entry" : ""}${inboxView ? " inbox-view" : ""}${terminalMode ? " compact-mode" : ""}${mobileChatOpen && inboxView ? " chat-open" : ""}${tabletInspectorOpen || desktopInspectorOpen ? " inspector-open" : ""}`}>

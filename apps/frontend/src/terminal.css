@@ -1,3 +1,4 @@
+.terminal-login button,.terminal-login input { min-height:44px; }
 .terminal-entry.app-shell { display:block; }
 .terminal-entry > .sidebar,.terminal-entry .safety-strip,.terminal-entry .test-environment-label { display:none; }
 .terminal-entry .main-area { width:100%; min-width:0; }

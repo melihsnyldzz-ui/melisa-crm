@@ -39,6 +39,9 @@ const composer=tree=>find(tree,node=>node.type==='textarea'&&node.props['aria-la
 
 test('actual terminal entry has an isolated auth session and offline keyboard send cannot reach transport',async()=>fixture(async h=>{
  let sends=0;h.harness.api.send=async()=>{sends++;};
+ const login=renderToStaticMarkup(h.render());
+ assert.match(login,/login-gate terminal-login/); assert.match(login,/<h1>Müşterilerim<\/h1>/);
+ assert.doesNotMatch(login,/TEST CRM|CANLI CRM|CRM Yönetim Merkezi/);
  assert.equal(h.local.getItem('melisa-crm-access-token'),'desktop-synthetic-session');
  const tree=h.connect();assert.match(tree.props.className,/terminal-entry/);
  const html=renderToStaticMarkup(tree);assert.match(html,/MELISA TERMINAL|Müşterilerim/);assert.match(html,/Bağlantı yok/);
