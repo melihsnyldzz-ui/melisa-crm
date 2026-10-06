@@ -69,7 +69,7 @@ export async function startTestSupervisor(){
     const names={'test-server.mjs':'server','test-erp-catalog.mjs':'catalog','test-erp-orders.mjs':'orders'};
     const services=Object.fromEntries([...serviceStates].map(([file,state])=>[names[file],{pid:children.get(file)?.pid||0,state:state.state,restartCount:state.restartCount,lastCode:state.lastCode||null,nextRestartAt:state.nextRestartAt||null}]));
     const ready=[...serviceStates.values()].every(state=>state.state==='running')&&Object.values(dependencies).every(value=>value.state==='ready');
-    atomic(path.join(runtime,'health-status.json'),{version:1,environment:'CANONICAL_TEST',observedAt:new Date().toISOString(),sourceCommit:process.env.CRM_TEST_SOURCE_COMMIT||null,startup:{taskName:'Melisa-CRM-TEST-Completion',configured:process.env.CRM_TEST_AUTOSTART_CONFIGURED==='true',supervisorPid:process.pid,state:stopping?'stopping':ready?'running':'degraded'},services,dependencies});
+    atomic(path.join(runtime,'health-status.json'),{version:1,environment:'CANONICAL_TEST',observedAt:new Date().toISOString(),sourceCommit:process.env.CRM_TEST_SOURCE_COMMIT||null,packageId:process.env.CRM_TEST_SOURCE_COMMIT?'crm-test-'+process.env.CRM_TEST_SOURCE_COMMIT:null,packageManifestSha256:process.env.CRM_TEST_PACKAGE_MANIFEST_SHA256||null,startup:{taskName:'Melisa-CRM-TEST-Completion',configured:process.env.CRM_TEST_AUTOSTART_CONFIGURED==='true',supervisorPid:process.pid,state:stopping?'stopping':ready?'running':'degraded'},services,dependencies});
   }
   async function dependenciesTick(){
     if(stopping||dependencyBusy)return;dependencyBusy=true;
