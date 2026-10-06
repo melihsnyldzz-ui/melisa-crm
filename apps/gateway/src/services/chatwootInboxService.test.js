@@ -427,6 +427,66 @@ test('personnel and unknown bootstrap retain fresh full traversal and personnel 
   assert.equal(listReads, 3); assert.equal(messageReads, 2); assert.equal(unknown.summary.total, 1);
 });
 
+test('personnel bootstrap reads bounded fresh pages concurrently, keeps exact assignment totals and defers history', async t => {
+  inboxFixture(t, 'staff-parallel');
+  const rows = Array.from({ length: 751 }, (_, i) => syntheticConversation(i + 1, i < 23 ? 7 : 8));
+  let active = 0, peak = 0, historyReads = 0;
+  const pages = [];
+  global.fetch = async url => {
+    const parsed = new URL(String(url));
+    if (parsed.pathname.endsWith('/messages')) { historyReads++; return jsonResponse({ payload: [] }); }
+    assert.equal(parsed.searchParams.get('sort_by'), 'created_at_desc');
+    const page = Number(parsed.searchParams.get('page')); pages.push(page);
+    active++; peak = Math.max(peak, active);
+    // Different completion order must not reorder page consumption or leak the other agent.
+    await new Promise(resolve => setTimeout(resolve, page % 4 + 1));
+    active--;
+    return jsonResponse({ data: { meta: { all_count: rows.length }, payload: rows.slice((page - 1) * 25, page * 25) } });
+  };
+  const user = { role: 'personel', chatwootAgentId: 7, permissions: [] };
+  const result = await listChatwootInboxOverview({ view: 'bootstrap', limit: 100, user });
+  assert.equal(peak, 4); assert.equal(pages.length, 31); assert.equal(historyReads, 0);
+  assert.deepEqual(result.conversations.map(row => row.id), Array.from({ length: 23 }, (_, i) => i + 1));
+  assert.equal(result.pagination.total, 23); assert.equal(result.pagination.hasNext, false);
+  assert.equal(result.summary.pendingHumanReply, null);
+  for (const row of result.conversations) {
+    assert.equal(row.chatwootAgentId, 7); assert.equal(row.messagesLoaded, false); assert.equal(row.detailLoaded, false);
+    for (const key of ['messages', 'notes', 'tasks', 'productInterests', 'quotes']) assert.equal(Object.hasOwn(row, key), false);
+  }
+  rows[0].meta.assignee.id = 8;
+  const refreshed = await listChatwootInboxOverview({ view: 'bootstrap', limit: 100, user });
+  assert.equal(pages.length, 62); assert.equal(refreshed.pagination.total, 22);
+  assert.equal(refreshed.conversations.some(row => row.id === 1), false); assert.equal(historyReads, 0);
+});
+
+test('parallel personnel traversal rejects failed, duplicated or policy-drifted pages before returning any history', async t => {
+  for (const mode of ['failure', 'duplicate', 'policy']) {
+    await t.test(mode, async t => {
+      inboxFixture(t, 'staff-parallel-' + mode);
+      let historyReads = 0;
+      global.fetch = async url => {
+        const parsed = new URL(String(url));
+        if (parsed.pathname.endsWith('/messages')) { historyReads++; return jsonResponse({ payload: [] }); }
+        const page = Number(parsed.searchParams.get('page'));
+        if (page === 3 && mode === 'failure') throw new Error('synthetic provider failure');
+        if (page === 3 && mode === 'policy') env.chatwoot.inboxId = 2;
+        return jsonResponse({ data: { meta: { all_count: 125 }, payload: Array.from({ length: 25 }, (_, i) =>
+          syntheticConversation(((page === 3 && mode === 'duplicate' ? 2 : page) - 1) * 25 + i + 1)) } });
+      };
+      await assert.rejects(listChatwootInboxOverview({ view: 'bootstrap', user: { role: 'personel', chatwootAgentId: 7 } }));
+      assert.equal(historyReads, 0);
+    });
+  }
+});
+
+test('personnel without a bound agent cannot inherit unassigned bootstrap rows', async t => {
+  inboxFixture(t, 'staff-no-agent');
+  const row = syntheticConversation(1); row.meta.assignee = null;
+  global.fetch = async () => jsonResponse({ data: { meta: { all_count: 1 }, payload: [row] } });
+  const result = await listChatwootInboxOverview({ view: 'bootstrap', user: { role: 'personel', chatwootAgentId: null } });
+  assert.deepEqual(result.conversations, []); assert.equal(result.pagination.total, 0);
+});
+
 test('concurrent overview offsets share one complete page traversal and overlapping in-flight message reads', async t => {
   inboxFixture(t, 'coalesce'); const rows = Array.from({ length: 27 }, (_, i) => syntheticConversation(i + 1));
   const pageReads = []; const messageReads = [];

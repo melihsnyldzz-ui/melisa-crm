@@ -200,7 +200,7 @@ function isGroupConversation(conversation) {
     || String(sender.name || '').toLocaleUpperCase('tr-TR').includes('(GROUP)');
 }
 
-async function readAllConversationPagesUnshared(identity) {
+async function readAllConversationPagesUnshared(identity, { parallelPages = 1 } = {}) {
   const conversations = [];
   const positions = new Map();
   let page = 1;
@@ -211,11 +211,7 @@ async function readAllConversationPagesUnshared(identity) {
     code: 'WHATSAPP_CRM_CHATWOOT_READ_INVALID', statusCode: 502,
   });
 
-  while (page <= CHATWOOT_MAX_TRAVERSAL_PAGES) {
-    assertBackendIdentity(identity);
-    // Message activity changes offset ordering while pages are being read.
-    // Traverse by creation order, then restore recent-activity order in memory.
-    const response = await chatwootApiRequest(`/conversations?status=all&page=${page}&sort_by=created_at_desc`);
+  const acceptPage = response => {
     assertBackendIdentity(identity);
     const rows = response?.data?.payload;
     if (!Array.isArray(rows) || rows.length > CHATWOOT_PAGE_SIZE) throw invalid();
@@ -245,8 +241,26 @@ async function readAllConversationPagesUnshared(identity) {
     if (conversations.length > reportedTotal
       || (rows.length < CHATWOOT_PAGE_SIZE && visited < reportedTotal)) throw invalid();
 
-    if (rows.length < CHATWOOT_PAGE_SIZE || visited >= reportedTotal) break;
-    page += 1;
+    return rows.length < CHATWOOT_PAGE_SIZE || visited >= reportedTotal;
+  };
+
+  while (page <= CHATWOOT_MAX_TRAVERSAL_PAGES) {
+    // The first fresh page proves the bounded count. Read subsequent creation-
+    // ordered pages in small concurrent batches, consuming in page order so
+    // duplicate/progress/count checks retain their existing semantics.
+    const remaining = cacheable && reportedTotal > visited
+      ? Math.ceil((reportedTotal - visited) / CHATWOOT_PAGE_SIZE) : 1;
+    const batchSize = Math.min(parallelPages, remaining, CHATWOOT_MAX_TRAVERSAL_PAGES - page + 1);
+    const responses = await Promise.all(Array.from({ length: batchSize }, (_, index) => {
+      assertBackendIdentity(identity);
+      return chatwootApiRequest(`/conversations?status=all&page=${page + index}&sort_by=created_at_desc`);
+    }));
+    let complete = false;
+    for (const response of responses) {
+      if (acceptPage(response)) { complete = true; break; }
+    }
+    if (complete) break;
+    page += batchSize;
   }
 
   if (visited < reportedTotal) throw invalid();
@@ -259,7 +273,7 @@ function readAllConversationPages({ fresh = false } = {}) {
   const identity = backendIdentity();
   // Personnel access must not inherit any traversal that started before its request.
   // Do not publish a personnel traversal into the management snapshot either.
-  if (fresh) return readAllConversationPagesUnshared(identity).then(result => result.rows);
+  if (fresh) return readAllConversationPagesUnshared(identity, { parallelPages: 4 }).then(result => result.rows);
   if (conversationSnapshot?.identity === identity) {
     if (conversationSnapshot.pending) return conversationSnapshot.pending;
     if (conversationSnapshot.expiresAt > Date.now()) return Promise.resolve(conversationSnapshot.rows);
@@ -407,18 +421,17 @@ export async function listChatwootInboxOverview({ limit = 25, offset = 0, user =
   if (view === 'bootstrap' && ['patron', 'mudur'].includes(user?.role)) {
     return listChatwootInboxBootstrap({ limit, user });
   }
-  await refreshWaapiReadiness();
+  const readiness = refreshWaapiReadiness();
+  // Observe failures immediately while the independent read-only traversal runs.
+  readiness.catch(() => {});
   const identity = backendIdentity();
+  const policy = [env.chatwoot.inboxId, env.chatwoot.includeGroups];
   const safeOffset = Math.max(Number(offset) || 0, 0);
   const safeLimit = Math.min(Math.max(Number(limit) || CHATWOOT_PAGE_SIZE, 1), CHATWOOT_MAX_OVERVIEW_LIMIT);
   // Personnel assignment is an access boundary: its own fresh traversal cannot
   // reuse either a settled snapshot or another request's older in-flight rows.
   const allRows = await readAllConversationPages({ fresh: user?.role === 'personel' || view === 'bootstrap' });
   assertBackendIdentity(identity);
-  const sendEnabled = isChatwootSendEnabled();
-  const canSend = sendEnabled && (!user || user.permissions?.includes('crm.send'));
-  const canAssign = (!user || user.permissions?.includes('crm.assign'));
-  const policy = [env.chatwoot.inboxId, env.chatwoot.includeGroups];
   const inboxRows = env.chatwoot.inboxId
     ? allRows.filter((conversation) => Number(conversation.inbox_id) === Number(env.chatwoot.inboxId))
     : allRows;
@@ -426,19 +439,27 @@ export async function listChatwootInboxOverview({ limit = 25, offset = 0, user =
     ? inboxRows
     : inboxRows.filter((conversation) => !isGroupConversation(conversation));
   const accessibleRows = user?.role === 'personel'
-    ? visibleRows.filter((conversation) => Number(conversation.meta?.assignee?.id) === Number(user.chatwootAgentId))
+    ? visibleRows.filter((conversation) => user.chatwootAgentId && Number(conversation.meta?.assignee?.id) === Number(user.chatwootAgentId))
     : visibleRows;
   const rows = accessibleRows.slice(safeOffset, safeOffset + safeLimit);
-  const messagesByConversation = await mapWithConcurrency(rows, 5, readMessages);
+  const metadataOnly = user?.role === 'personel' && view === 'bootstrap';
+  const [messagesByConversation] = await Promise.all([
+    metadataOnly ? Promise.resolve([]) : mapWithConcurrency(rows, 5, readMessages), readiness,
+  ]);
   assertBackendIdentity(identity);
   assertInboxPolicy(policy);
   const total = accessibleRows.length;
+  const sendEnabled = isChatwootSendEnabled();
+  const canSend = sendEnabled && (!user || user.permissions?.includes('crm.send'));
+  const canAssign = (!user || user.permissions?.includes('crm.assign'));
 
-  const conversations = rows.map((conversation, rowIndex) => mapConversation(
-    conversation,
-    messagesByConversation[rowIndex] || { messages: [], workflow: [] },
-    { canSend, canAssign },
-  ));
+  const conversations = rows.map((conversation, rowIndex) => {
+    const mapped = mapConversation(conversation,
+      messagesByConversation[rowIndex] || { messages: [], workflow: [] }, { canSend, canAssign });
+    if (!metadataOnly) return mapped;
+    for (const key of ['messages', 'notes', 'tasks', 'productInterests', 'quotes']) delete mapped[key];
+    return { ...mapped, messagesLoaded: false, detailLoaded: false, preview: 'Son mesaj yükleniyor…', waitingForReply: null };
+  });
 
   return {
     conversations,
@@ -446,7 +467,7 @@ export async function listChatwootInboxOverview({ limit = 25, offset = 0, user =
       total,
       open: accessibleRows.filter((item) => item.status === 'open').length,
       unread: accessibleRows.reduce((sum, item) => sum + Number(item.unread_count || 0), 0),
-      pendingHumanReply: conversations.filter((item) => item.status === 'open' && item.messages.at(-1)?.direction === 'incoming').length,
+      pendingHumanReply: metadataOnly ? null : conversations.filter((item) => item.status === 'open' && item.messages.at(-1)?.direction === 'incoming').length,
       source: 'chatwoot-crm',
     },
     pagination: {
