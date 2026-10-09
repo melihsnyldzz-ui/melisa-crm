@@ -22,6 +22,7 @@ export class WaapiProvider {
   invalidate() { this.cached = null; this.generation++; }
   connected() { return Boolean(this.cached?.value.providerConnected && this.now() - this.cached.at < 60000); }
   async request(path, body) {
+    if (process.env.CRM_ISOLATED_PREPARATION === 'true') throw waapiError('PREPARATION_PROVIDER_DISABLED');
     if (!this.config.apiToken || this.config.instanceId !== WAAPI_INSTANCE) throw waapiError('WAAPI_NOT_CONFIGURED');
     this.calls = this.calls.filter(t => t > this.now() - 300000);
     // Reserve quota for the operator/panel; never automatically retry provider calls.

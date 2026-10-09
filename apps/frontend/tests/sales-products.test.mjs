@@ -88,9 +88,9 @@ test('actual suggestion markup shows guarded photo status, recorded price/ISO cu
     const denied=renderToStaticMarkup(React.createElement(Suggestion,{...props,allowed:false}));assert.match(denied,/disabled=""/);
   }finally{rmSync(file,{force:true});}
 });
-test('optional search is the only added POST field; detail is an authenticated read, not a facts submission',async t=>{
+test('explicit action and optional search are the only POST fields; detail is an authenticated read, not a facts submission',async t=>{
   const calls=[];t.mock.method(globalThis,'fetch',async(url,options)=>{calls.push({url,options});return Response.json(url.includes('sales-draft')?{success:true,data:response()}:envelope());});
-  await liveApi.salesDraft('synthetic-session','55',{catalogSearch:' 0007 ',prices:[9],stock:999});assert.deepEqual(JSON.parse(calls[0].options.body),{catalogSearch:'0007'});
+  await liveApi.salesDraft('synthetic-session','55',{catalogSearch:' 0007 ',prices:[9],stock:999});assert.deepEqual(JSON.parse(calls[0].options.body),{aiIntent:{userInitiated:true,action:'manual'},catalogSearch:'0007'});
   const detail=await liveApi.existingCatalogProduct('synthetic-session','vega-7',{signal:new AbortController().signal});assert.equal(detail.success,true);assert.equal(calls[1].url,'/api/live/crm/catalog/products/vega-7');assert.equal(calls[1].options.method,undefined);assert.equal(calls[1].options.body,undefined);assert.equal(calls[1].options.headers.Authorization,'Bearer synthetic-session');
   assert.throws(()=>liveApi.existingCatalogProduct('synthetic-session','7'));assert.throws(()=>liveApi.salesDraft('synthetic-session','55',{catalogSearch:'x'.repeat(121)}));assert.equal(calls.length,2);
 });

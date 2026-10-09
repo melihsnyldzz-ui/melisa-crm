@@ -10,7 +10,7 @@ const STORAGE_KEY = "melisa-crm-access-token";
 const API_ROOT = "/api/live";
 const requestControl = createRequestControl();
 
-export const ERP_ORDER_TEST_DATABASE = 'MELISA_ERP_SIRKET_TEST_20260929_01';
+export const ERP_ORDER_TEST_DATABASE = import.meta.env?.VITE_ERP_ORDER_TEST_DATABASE || 'MELISA_ERP_SIRKET_TEST_20260929_01';
 export function validateErpOrderPayload(payload) {
   const rate=payload?.exchangeRate, lines=payload?.items;
   if (!/^[0-9a-f-]{36}$/i.test(payload?.requestId||'') || payload.conversationId !== '55' || payload.customerId !== 593 || typeof rate !== 'number' || !Number.isFinite(rate) || rate <= 0 || rate > 10000 || Number(rate.toFixed(8)) !== rate || !Array.isArray(lines) || !lines.length || lines.length > 50) throw new Error('TEST sipariş bilgileri veya kuru geçerli değil.');
@@ -182,7 +182,7 @@ function enabledFlag(value) {
 }
 
 export function sessionPermissionSignals(value = {}) {
-  const fields = ["liveSendEnabled", "sendEnabled", "sendReady", "liveSendApproved", "canSend", "send", "assignmentEnabled", "canAssign", "assign", "translationEnabled", "providerConnected", "bridgeReady"];
+  const fields = ["liveSendEnabled", "sendEnabled", "sendReady", "liveSendApproved", "canSend", "send", "assignmentEnabled", "canAssign", "assign", "translationEnabled", "paidAiEnabled", "providerConnected", "bridgeReady"];
   const containers = [["", value], ...["permissions", "effectivePermissions", "features", "flags", "capabilities"].map((key) => [key, value[key]])];
   return containers.flatMap(([path, object]) => fields.flatMap((key) => {
     const flag = object?.[key];
@@ -205,6 +205,7 @@ export function normalizePermissions(value = {}) {
     displayName: value.displayName || role.displayName,
     canAssign: includes("crm.assign") || ["patron", "mudur"].includes(role.code),
     canSend,
+    paidAiEnabled: value.paidAiEnabled === true,
     assignmentEnabled: includes("crm.assign") || ["patron", "mudur"].includes(role.code),
     liveSendEnabled: canSend && enabledFlag(sendFlag),
     liveSendState: !canSend ? "forbidden" : !sendFlagKnown ? "unknown" : enabledFlag(sendFlag) ? "enabled" : "disabled",
@@ -645,7 +646,7 @@ export const liveApi = {
   saveSalesRules: (token, {policy,revision}, {signal}={}) => request('/crm/sales-rules', token, {method:'PUT',body:JSON.stringify({policy,revision}),signal,preserveAuthDenial:true,redirect:'error'}),
   salesDraft: (token, id, {signal,catalogSearch='',customerLanguage,currentComposer,draftContext} = {}) => {
     if(typeof catalogSearch!=='string'||catalogSearch.trim().length>120)throw new Error('Ürün araması en fazla 120 karakter olabilir.');
-    return request(`/crm/conversations/${encodeURIComponent(String(id))}/sales-draft`, token, { method: 'POST', body: JSON.stringify({...(catalogSearch.trim()?{catalogSearch:catalogSearch.trim()}:{}),...(customerLanguage!==undefined?{customerLanguage}:{}),...(currentComposer!==undefined?{currentComposer}:{}),...(draftContext!==undefined?{draftContext}:{})}), signal, timeoutMs: 90000, preserveAuthDenial: true, redirect: 'error' });
+    return request(`/crm/conversations/${encodeURIComponent(String(id))}/sales-draft`, token, { method: 'POST', body: JSON.stringify({aiIntent:{userInitiated:true,action:'manual'},...(catalogSearch.trim()?{catalogSearch:catalogSearch.trim()}:{}),...(customerLanguage!==undefined?{customerLanguage}:{}),...(currentComposer!==undefined?{currentComposer}:{}),...(draftContext!==undefined?{draftContext}:{})}), signal, timeoutMs: 90000, preserveAuthDenial: true, redirect: 'error' });
   },
   async sendStatus(token, id, text, clientRequestId, media = null) {
     const payload = {text,media,clientRequestId};
@@ -653,8 +654,8 @@ export const liveApi = {
     return request(`/crm/conversations/${encodeURIComponent(String(id))}/messages/status`,token,
       {method:'POST',body:JSON.stringify(payload),preserveAuthDenial:true,redirect:'error'});
   },
-  async translate(token, id, { mode, text, targetLanguage }) {
-    const body = { mode, text };
+  async translate(token, id, { mode, text, targetLanguage, aiIntent = {userInitiated:true,action:'manual'} }) {
+    const body = { mode, text, aiIntent };
     if (mode === "incoming_to_tr") targetLanguage = "tr";
     if (targetLanguage && targetLanguage !== "auto") body.targetLanguage = targetLanguage;
     const result = normalizeTranslationResponse(await request(`/crm/conversations/${id}/translate`, token, { method: "POST", body: JSON.stringify(body), timeoutMs: 45000 }));
@@ -666,7 +667,7 @@ export const liveApi = {
     if (mode === "outgoing_from_tr" && (!result.backTranslation.trim() || comparable(result.backTranslation) === comparable(result.translatedText))) {
       const back = normalizeTranslationResponse(await request(`/crm/conversations/${id}/translate`, token, {
         method: "POST", timeoutMs: 45000,
-        body: JSON.stringify({ mode: "incoming_to_tr", text: result.translatedText, targetLanguage: "tr" }),
+        body: JSON.stringify({ mode: "incoming_to_tr", text: result.translatedText, targetLanguage: "tr", aiIntent }),
       }));
       if (!back.translatedText.trim()) throw new Error("Türkçe geri çeviri alınamadı. Taslağınız korunuyor.");
       result.backTranslation = validateTurkishTranslation(back, result.translatedText).translatedText;

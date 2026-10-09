@@ -1,5 +1,7 @@
 # MELISA CRM — Ana Bitiş Planı
 
+**9 Ekim CRM-DEC-007 / ERP-CRM-PREP01:** Ortak izole TEST hazırlığı uygulanıyor. **25 toplam /12🟢 /13🟡 /0🔴** insan kabulü değişmeden korunur. Güncel ERP sipariş/katalog sözleşmesi ve ücretli AI kapatma bu teslimin sınırıdır; tam işletme TEST'i ve LIVE kabulü değildir.
+
 **6 Ekim Goal6 / CRM-DEC-006:** O02 mevcut startup zinciri teknik tamamlandı. Source77a2fa34/immutable paket, Limited logon/IgnoreNew/max3 task retry, sınırlı child recovery, authenticated Chatwoot bağımlılığı ve ERP exactTEST/native bağlantısı kanıtlı. Gerçek server child kapanışı ve ikinci launcher;76/77 ERP ile bağımsız sağlık görünümü doğrulandı. Gerçek reboot/logon/işyeri kabulü CRM-UA06 bekler. **25 toplam /12🟢 /13🟡 /0🔴** değişmez; M01/önceki kullanıcı kabulleri değişmez. Goal6 sonunda durulur; Goal7/LIVE/main/provider/gerçek mesaj/rol değişikliği yok. [Goal6 kanıtı](docs/evidence/crm/2026-10-06-goal6/README.md).
 
 

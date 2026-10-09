@@ -2,9 +2,11 @@ import { getChatwootConversationDetail, getChatwootConversationAccess } from '..
 import { translateConversationText } from '../services/translationService.js';
 import { verifyCrmAccessToken, assertCrmPermission } from '../services/crmAuthService.js';
 import { ok } from '../utils/response.js';
+import { assertPaidAiAllowed } from '../services/paidAiPolicy.mjs';
 
 export async function postConversationTranslation(req, res, next) {
   try {
+    assertPaidAiAllowed(req.body?.aiIntent);
     const conversation = await getChatwootConversationDetail({
       conversationId: req.params.conversationId,
       user: req.user,

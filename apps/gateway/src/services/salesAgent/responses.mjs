@@ -9,6 +9,7 @@ export function createSalesGenerator({ apiKey, model, timeoutMs = 20_000, signal
     throw salesError('AI_SALES_CONFIG_INVALID', 503);
   }
   return async ({ instructions, schema, context }) => {
+    if (process.env.CRM_ISOLATED_PREPARATION === 'true') throw salesError('AI_PAID_DISABLED',403);
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), timeoutMs);
     try {

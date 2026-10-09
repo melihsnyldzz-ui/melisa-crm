@@ -1,5 +1,7 @@
 # CRM teslim panosu
 
+**ŞİMDİ — CRM-DEC-007 / ERP-CRM-PREP01:** Güncel native sipariş sözleşmesi ve ayrı ortak TEST ortamına bağlantı, açılışta otomatik ücretli AI çağrısı engeli ve mevcut rollerle ekran doğrulaması tek hazırlık teslimidir. Eski624xx runtime ve önceki kullanıcı kabulleri korunur. Tam işletme testi başlamaz, insan sonucu otomatik PASS yapılmaz; hazırlık sonunda DUR.
+
 **6 Ekim Goal6 / CRM-DEC-006:** O02 mevcut startup zinciri teknik tamamlandı. Source77a2fa34/immutable paket, Limited logon/IgnoreNew/max3 task retry, sınırlı child recovery, authenticated Chatwoot bağımlılığı ve ERP exactTEST/native bağlantısı kanıtlı. Gerçek server child kapanışı ve ikinci launcher;76/77 ERP ile bağımsız sağlık görünümü doğrulandı. Gerçek reboot/logon/işyeri kabulü CRM-UA06 bekler. **25 toplam /12🟢 /13🟡 /0🔴** değişmez; M01/önceki kullanıcı kabulleri değişmez. Goal6 sonunda durulur; Goal7/LIVE/main/provider/gerçek mesaj/rol değişikliği yok. [Goal6 kanıtı](docs/evidence/crm/2026-10-06-goal6/README.md).
 
 

@@ -31,7 +31,7 @@ async function fixture(run,{compact=false,terminal=false,offline=false}={}){
  globalThis.__draftHooks={useState(initial){const i=cursor++;if(!(i in values))values[i]=typeof initial==='function'?initial():initial;return [values[i],update=>{values[i]=typeof update==='function'?update(values[i]):update;}];},useRef(initial){const i=cursor++;if(!(i in values))values[i]={current:initial};return values[i];},useMemo:fn=>fn(),useCallback:fn=>fn,useEffect:fn=>effects.push(fn)};
  const harness=globalThis.__draftHarness={api:{sendStatus:async()=>({}),canonicalCatalogProduct:async()=>({}),erpDrafts:async()=>({orders:[]}),catalogSignOut:async()=>({}),session:async()=>actor(),inbox:async()=>({conversations:[row()],summary:{total:1}}),conversation:async()=>({conversation:row()}),send:async()=>({message:{id:'synthetic-accepted',direction:'outgoing',text:'sent'}})},actions:null};
  try{await bundle(file,true);const {App}=await import(pathToFileURL(file).href);const render=()=>{cursor=0;effects.length=0;return App();};const connect=(session=actor(),rows=[row(),row('56')],inboxExtra={})=>{harness.actions.commitLiveSession({key:'synthetic-session',session,inbox:{conversations:rows,summary:{total:rows.length},...inboxExtra},agents:{agents:[]}});return render();};
-  render();await run({local,harness,render,connect,pollBackground:()=>effects.filter(fn=>String(fn).includes('const refreshInbox = async')||String(fn).includes('permissionPollRef.current')).forEach(fn=>fn()),pollDrafts:()=>effects.filter(fn=>String(fn).includes('textDraftStorageRef.current.synchronize')).forEach(fn=>fn()),pollConversation:()=>effects.filter(fn=>String(fn).includes('const refreshConversation = async')).forEach(fn=>fn())});
+  render();await run({local,harness,render,connect,pollAutomatic:()=>effects.filter(fn=>String(fn).includes("automaticTranslationBusy.current")).forEach(fn=>fn()),pollBackground:()=>effects.filter(fn=>String(fn).includes('const refreshInbox = async')||String(fn).includes('permissionPollRef.current')).forEach(fn=>fn()),pollDrafts:()=>effects.filter(fn=>String(fn).includes('textDraftStorageRef.current.synchronize')).forEach(fn=>fn()),pollConversation:()=>effects.filter(fn=>String(fn).includes('const refreshConversation = async')).forEach(fn=>fn())});
  }finally{globalThis.window=previous.window;globalThis.document=previous.document;globalThis.__draftHooks=previous.hooks;globalThis.__draftHarness=previous.harness;rmSync(file,{force:true});}
 }
 function find(tree,predicate){if(!tree||typeof tree!=='object')return null;if(predicate(tree))return tree;for(const child of React.Children.toArray(tree.props?.children)){const found=find(child,predicate);if(found)return found;}return null;}
@@ -188,3 +188,12 @@ test('actual App view-only conversation 403/404 removes only that RAM draft and 
   h.harness.actions.selectConversation(row('56'));assert.equal(composer(h.render()).props.value,'second RAM draft');assert.equal(h.local.getItem(TEXT_DRAFT_STORAGE_KEY),null);
  });
 });
+
+test('actual App opens passively despite a stored automatic-translation preference',async()=>fixture(async h=>{
+ h.local.setItem('melisa-crm-auto-translate','true');let calls=0;
+ h.harness.api.translate=async()=>{calls++;return {translatedText:'Synthetic translation'};};
+ const incoming={...row(),messages:[{id:'synthetic-incoming',direction:'incoming',text:'Foreign synthetic text'}]};
+ const tree=h.connect(actor(),[incoming]);const toggle=find(tree,node=>node.type==='input'&&node.props.type==='checkbox');
+ assert.equal(toggle.props.checked,false);h.pollAutomatic();await settle();assert.equal(calls,0);
+ h.render();h.pollAutomatic();await settle();assert.equal(calls,0,'read render/poll never restores paid consent');
+}));

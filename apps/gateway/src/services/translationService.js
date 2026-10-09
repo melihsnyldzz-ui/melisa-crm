@@ -70,6 +70,7 @@ export async function translateConversationText({
   text,
   targetLanguage,
 }, dependencies = {}) {
+  if (process.env.CRM_ISOLATED_PREPARATION === 'true') throw translationError('AI_PAID_DISABLED','Ücretli AI işlemleri bu ortamda kapalı.',403);
   if (!TRANSLATION_MODES.has(mode)) {
     throw translationError(
       'WHATSAPP_CRM_TRANSLATION_MODE_INVALID',

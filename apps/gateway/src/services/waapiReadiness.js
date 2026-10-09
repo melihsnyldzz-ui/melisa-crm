@@ -3,12 +3,14 @@ import { waapiProvider } from '../providers/waapiProvider.js';
 import { waapiChatwootBridge } from './waapiChatwootBridge.js';
 let check = null;
 export function waapiSendReady() {
+  if (process.env.CRM_ISOLATED_PREPARATION === 'true') return false;
   const safety = waapiChatwootBridge.lastSafety;
   return Boolean(env.whatsapp.provider === 'waapi' && env.whatsapp.sendEnabled && env.whatsapp.liveSendApproved
     && !env.whatsapp.autoReply.enabled && env.waapi.bridgeEnabled && waapiProvider.connected()
     && safety.bridgeReady && Date.now() - Date.parse(safety.checkedAt) < 60000);
 }
 export async function refreshWaapiReadiness() {
+  if (process.env.CRM_ISOLATED_PREPARATION === 'true') return;
   if (env.whatsapp.provider !== 'waapi') return;
   if (!check) check = (async () => {
     await waapiProvider.getStatus();

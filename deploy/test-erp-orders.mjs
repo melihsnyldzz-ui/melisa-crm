@@ -1,8 +1,10 @@
 import http from 'node:http';
 import { pathToFileURL } from 'node:url';
-export const ERP_TEST_IDENTITY = Object.freeze({ database: 'MELISA_ERP_SIRKET_TEST_20260929_01', environment: 'CANONICAL_TEST', purpose: 'crm-order-draft-only' });
-const crmOrigin = 'http://127.0.0.1:62401';
-const nativeOrigin = 'http://127.0.0.1:62404';
+import {resolveTestEndpoints,sharedTestHealthSafe} from './test-endpoints.mjs';
+const endpoints=resolveTestEndpoints();
+export const ERP_TEST_IDENTITY = Object.freeze({ database:endpoints.database, environment: 'CANONICAL_TEST', purpose: 'crm-order-draft-only' });
+const crmOrigin = endpoints.gatewayOrigin;
+const nativeOrigin = endpoints.nativeOrigin;
 function fail(code, statusCode = 400) { throw Object.assign(new Error(code), { code, statusCode }); }
 async function readBody(req) {
   let text = '';
@@ -11,7 +13,9 @@ async function readBody(req) {
 }
 function bearer(value) { return typeof value === 'string' && /^Bearer [^\s]+$/.test(value); }
 // Only HTTP contracts cross this boundary; no SQL, imported ERP modules or fallback writer.
-export function createTestOrderHandler({ fetchFn = (...args) => fetch(...args) } = {}) {
+export function createTestOrderHandler({ fetchFn = (...args) => fetch(...args),testEndpoints=resolveTestEndpoints(),nativeSourceCommit=process.env.CRM_TEST_NATIVE_SOURCE_COMMIT,nativePackageId=process.env.CRM_TEST_NATIVE_PACKAGE_ID } = {}) {
+  const crmOrigin=testEndpoints.gatewayOrigin,nativeOrigin=testEndpoints.nativeOrigin;
+  const expectedIdentity={...ERP_TEST_IDENTITY,database:testEndpoints.database,environment:testEndpoints.isolated?'ISOLATED_TEST_COPY':'CANONICAL_TEST'};
   const loginAttempts = new Map();
   async function call(origin, path, options = {}) {
     let response;
@@ -27,7 +31,11 @@ export function createTestOrderHandler({ fetchFn = (...args) => fetch(...args) }
   }
   async function identity() {
     const health = await call(nativeOrigin, '/test-health');
-    if (!Object.entries(ERP_TEST_IDENTITY).every(([key, value]) => health[key] === value)) fail('ERP_TEST_IDENTITY_MISMATCH', 503);
+    if (!Object.entries(expectedIdentity).every(([key, value]) => health[key] === value)) fail('ERP_TEST_IDENTITY_MISMATCH', 503);
+    if(testEndpoints.isolated&&(!sharedTestHealthSafe(health)||health.automaticJobs!==false||health.reservationEffect!==false))fail('ERP_TEST_IDENTITY_MISMATCH',503);
+    if(testEndpoints.isolated||nativeSourceCommit||nativePackageId){
+      if(!/^[a-f0-9]{40}$/.test(nativeSourceCommit||'')||typeof nativePackageId!=='string'||!nativePackageId||health.sourceCommit!==nativeSourceCommit||health.packageId!==nativePackageId||health.port!==testEndpoints.native||health.stockEffect!==false||health.ledgerEffect!==false)fail('ERP_TEST_IDENTITY_MISMATCH',503);
+    }
   }
   return async (req, res) => {
     res.setHeader('content-type', 'application/json; charset=utf-8');
@@ -69,14 +77,17 @@ export function createTestOrderHandler({ fetchFn = (...args) => fetch(...args) }
         const nativeToken = req.headers['x-erp-token'];
         if (nativePath !== '/api/auth/login' && (typeof nativeToken !== 'string' || !nativeToken || /\s/.test(nativeToken))) fail('ERP_LOGIN_REQUIRED', 401);
         await identity();
-        data = await call(nativeOrigin, nativePath, {
+        const sharedLogin=testEndpoints.isolated&&nativePath==='/api/auth/login';
+        if(sharedLogin){const health=await call(testEndpoints.erpOrigin,'/test-health');if(!health.ok||!sharedTestHealthSafe(health)||health.databaseName!==testEndpoints.database||health.port!==testEndpoints.erpPort||health.mode!=='erp'||health.writes!==true)fail('ERP_TEST_IDENTITY_MISMATCH',503);}
+        data = await call(sharedLogin?testEndpoints.erpOrigin:nativeOrigin, nativePath, {
           method: req.method,
-          headers: { 'X-CRM-Authorization': authorization, ...(nativeToken ? { Authorization: `Bearer ${nativeToken}` } : {}), ...(input ? { 'Content-Type': 'application/json' } : {}) },
+          headers: { ...(sharedLogin?{origin:'http://127.0.0.1:5224'}:{}),'X-CRM-Authorization': authorization, ...(nativeToken ? { Authorization: `Bearer ${nativeToken}` } : {}), ...(input ? { 'Content-Type': 'application/json' } : {}) },
           ...(input ? { body: JSON.stringify(input) } : {}),
         });
         if (nativePath === '/api/auth/login') {
           if (!data.user?.permissions?.includes('sales.create') || !data.accessToken) fail('ERP_PERMISSION_REQUIRED', 403);
-          data = { accessToken: data.accessToken, user: { id: data.user.id, displayName: data.user.displayName }, ...ERP_TEST_IDENTITY };
+          if(sharedLogin){const current=await call(testEndpoints.erpOrigin,'/api/auth/me',{headers:{authorization:`Bearer ${data.accessToken}`}});const user=current.user??current;if(String(user.id)!==String(data.user.id)||!user.permissions?.includes('sales.create'))fail('ERP_PERMISSION_REQUIRED',403);}
+          data = { accessToken: data.accessToken, user: { id: data.user.id, displayName: data.user.displayName }, ...expectedIdentity };
         }
         if (url.pathname === '/crm/erp/customers') {
           if (data.customer?.id !== 593 || data.customer?.code !== 'TEST-V70-20260929-C') fail('ERP_TEST_CONTEXT_INVALID', 502);
@@ -93,7 +104,7 @@ export function createTestOrderHandler({ fetchFn = (...args) => fetch(...args) }
   };
 }
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
-  const server = http.createServer(createTestOrderHandler()).listen(62403, '127.0.0.1', () => console.log('Kanonik ERP TEST sözleşme adapteri hazır.'));
+  const server = http.createServer(createTestOrderHandler()).listen(endpoints.orders, '127.0.0.1', () => console.log('Kanonik ERP TEST sözleşme adapteri hazır.'));
   server.on('error', error => { console.error(error.code); process.exit(1); });
   process.on('SIGTERM', () => server.close(() => process.exit(0)));
 }

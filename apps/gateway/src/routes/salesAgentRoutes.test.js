@@ -15,7 +15,7 @@ test('real sales-draft route uses auth, trusted Chatwoot DTO and suggestion-only
   const original = { auth: { ...env.auth }, chatwoot: { ...env.chatwoot },
     translation: { ...env.translation }, whatsapp: { ...env.whatsapp } };
   const environment = Object.fromEntries(['CRM_AI_SALES_MODE', 'CRM_AI_SALES_CONVERSATION_ID',
-    'CRM_AI_SALES_TEST_PEER', 'CRM_AI_SALES_RULES_FILE'].map(key => [key, process.env[key]]));
+    'CRM_AI_SALES_TEST_PEER', 'CRM_AI_SALES_RULES_FILE', 'CRM_PAID_AI_ENABLED'].map(key => [key, process.env[key]]));
   const guardedFetch = globalThis.fetch;
   const password = 'Synthetic-sales-route-2026!';
   Object.assign(env.auth, { jwtSecret: 'synthetic-sales-route-secret-longer-than-thirty-two',
@@ -28,6 +28,7 @@ test('real sales-draft route uses auth, trusted Chatwoot DTO and suggestion-only
   Object.assign(env.whatsapp, { provider: 'evolution', sendEnabled: false });
   Object.assign(env.translation, { apiKey: 'synthetic-model-key', model: 'synthetic-model' });
   process.env.CRM_AI_SALES_MODE = 'copilot';
+  process.env.CRM_PAID_AI_ENABLED = 'true';
   process.env.CRM_AI_SALES_CONVERSATION_ID = '55';
   process.env.CRM_AI_SALES_TEST_PEER = '905387217733';
   delete process.env.CRM_AI_SALES_RULES_FILE;
@@ -103,7 +104,7 @@ test('real sales-draft route uses auth, trusted Chatwoot DTO and suggestion-only
   const request = async ({ conversationId = '55', authorization = `Bearer ${token('patron')}`, body = {} } = {}) => {
     const response = await guardedFetch(`http://127.0.0.1:${server.address().port}/crm/conversations/${conversationId}/sales-draft`, {
       method: 'POST', headers: { 'content-type': 'application/json', ...(authorization ? { authorization } : {}) },
-      body: JSON.stringify(body),
+      body: JSON.stringify({aiIntent:{userInitiated:true,action:'manual'},...body}),
     });
     return { status: response.status, body: await response.json() };
   };
@@ -117,7 +118,8 @@ test('real sales-draft route uses auth, trusted Chatwoot DTO and suggestion-only
     plannerQueries = []; catalogReads = 0; catalogFailure = false; price = 196; afterCatalog = () => {};
     selectProducts = false; priceChangesOnReadback = false; newMessage = false;
     proposalSequence = []; proposalCalls = 0;
-    process.env.CRM_AI_SALES_MODE = 'copilot'; process.env.CRM_AI_SALES_CONVERSATION_ID = '55';
+    process.env.CRM_AI_SALES_MODE = 'copilot';
+    process.env.CRM_PAID_AI_ENABLED = 'true'; process.env.CRM_AI_SALES_CONVERSATION_ID = '55';
     process.env.CRM_AI_SALES_TEST_PEER = '905387217733';
     env.auth.personnelCanSend = false;
     env.auth.users.forEach(user => { user.active = true; });

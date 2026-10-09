@@ -79,6 +79,7 @@ export function publicCrmUser(user) {
     role: user.role,
     chatwootAgentId: user.chatwootAgentId,
     permissions: [...user.permissions],
+    paidAiEnabled: process.env.CRM_PAID_AI_ENABLED === 'true' && process.env.CRM_ISOLATED_PREPARATION !== 'true',
     ...(user.testAdmin === true ? {testAdmin:true} : {}),
     ...(user.testPersonnel === true ? {testPersonnel:true,testPersonnelScope:user.testPersonnelScope} : {}),
     liveSendEnabled: Boolean(

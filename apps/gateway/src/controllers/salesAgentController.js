@@ -11,6 +11,7 @@ import { catalogAccess } from '../services/crmCatalogAccess.mjs';
 import { createSalesCatalogAdapter } from '../services/salesAgent/catalogAdapter.mjs';
 import { salesPolicyStore } from '../services/salesAgent/policyStore.mjs';
 import {staffSalesContext} from '../services/salesAgent/staffContext.mjs';
+import { assertPaidAiAllowed } from '../services/paidAiPolicy.mjs';
 
 const readCatalog = createCrmCatalogReader({ activationApproved: true,
   verifyCrmContext: token => verifyCrmAccessToken(token, { includeContext: true }),
@@ -71,6 +72,7 @@ export async function postConversationSalesDraft(req, res, next) {
   req.once('aborted', close); res.once('close', close);
   try {
     if (process.env.CRM_AI_SALES_MODE !== 'copilot') throw salesError('AI_SALES_DISABLED', 503);
+    assertPaidAiAllowed(req.body?.aiIntent);
     const authorization = req.get('authorization') || '';
     const getCurrentUser = () => {
       const [type, token] = authorization.split(' ');

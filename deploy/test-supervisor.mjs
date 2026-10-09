@@ -4,13 +4,14 @@ import net from 'node:net';
 import {spawn} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 import {verifyTestPackage} from './test-package.mjs';
+import {resolveTestEndpoints,sharedTestHealthSafe} from './test-endpoints.mjs';
 
 const root=fileURLToPath(new URL('../',import.meta.url));
 export function recoveryDecision(failures,stableMs=0){
   const count=stableMs>=120000?0:failures;
   return count>=5?{state:'circuit-open',failures:count,delayMs:0}:{state:'restart-wait',failures:count+1,delayMs:Math.min(60000,5000*2**count)};
 }
-export async function probeTestDependencies({fetchImpl=fetch,chatwootUrl,chatwootToken,expectedDatabase='MELISA_ERP_SIRKET_TEST_20260929_01',nativeSourceCommit,nativePackageId}={}){
+export async function probeTestDependencies({fetchImpl=fetch,chatwootUrl,chatwootToken,expectedDatabase='MELISA_ERP_SIRKET_TEST_20260929_01',nativeSourceCommit,nativePackageId,endpoints=resolveTestEndpoints()}={}){
   const probe=async(url,headers,validate)=>{
     try{const response=await fetchImpl(url,{headers,signal:AbortSignal.timeout(2500),redirect:'error'});if(!response.ok)return {state:'unavailable'};const body=await response.json();return {state:validate(body)?'ready':'identity-mismatch'};}catch{return {state:'unavailable'};}
   };
@@ -22,8 +23,8 @@ export async function probeTestDependencies({fetchImpl=fetch,chatwootUrl,chatwoo
     }catch{chatwoot={state:'identity-mismatch'};}
   }
   const [erp,native]=await Promise.all([
-    probe('http://127.0.0.1:4144/test-health',{},body=>body.ok&&body.environment==='CANONICAL_TEST'&&body.port===4144&&body.databaseName===expectedDatabase),
-    probe('http://127.0.0.1:62404/test-health',{},body=>body.ok&&body.environment==='CANONICAL_TEST'&&body.port===62404&&body.database===expectedDatabase&&body.purpose==='crm-order-draft-only'&&body.stockEffect===false&&body.ledgerEffect===false&&body.sourceCommit===nativeSourceCommit&&body.packageId===nativePackageId),
+    probe(endpoints.erpOrigin+'/test-health',{},body=>body.ok&&(endpoints.isolated?sharedTestHealthSafe(body):body.environment==='CANONICAL_TEST')&&body.port===endpoints.erpPort&&body.databaseName===expectedDatabase),
+    probe(endpoints.nativeOrigin+'/test-health',{},body=>body.ok&&(endpoints.isolated?sharedTestHealthSafe(body)&&body.automaticJobs===false&&body.reservationEffect===false:body.environment==='CANONICAL_TEST')&&body.port===endpoints.native&&body.database===expectedDatabase&&body.purpose==='crm-order-draft-only'&&body.stockEffect===false&&body.ledgerEffect===false&&body.sourceCommit===nativeSourceCommit&&body.packageId===nativePackageId),
   ]);
   return {chatwoot,erp,native};
 }
@@ -49,7 +50,8 @@ export function resolveTestDirectories(repoRoot,env=process.env){
 export async function startTestSupervisor(){
   for(const name of ['CRM_BASELINE_ENV','CRM_ERP_CATALOG_ACCESS_PATH'])if(!process.env[name]||!fs.existsSync(process.env[name]))throw Error(name+'_REQUIRED');
   if(!path.isAbsolute(process.env.CRM_ERP_CATALOG_ACCESS_PATH)||!path.relative(root,path.resolve(process.env.CRM_ERP_CATALOG_ACCESS_PATH)).startsWith('..'))throw Error('TEST_CATALOG_ACCESS_MUST_BE_PRIVATE');
-  const ports=[62400,62401,62402,62403];
+  const endpoints=resolveTestEndpoints();
+  const ports=[endpoints.ui,endpoints.gateway,endpoints.catalog,endpoints.orders];
   for(const port of ports)await new Promise((resolve,reject)=>{
     const socket=net.connect(port,'127.0.0.1');
     socket.once('connect',()=>{socket.destroy();reject(Error('TEST_PORT_IN_USE_'+port));});
@@ -69,11 +71,11 @@ export async function startTestSupervisor(){
     const names={'test-server.mjs':'server','test-erp-catalog.mjs':'catalog','test-erp-orders.mjs':'orders'};
     const services=Object.fromEntries([...serviceStates].map(([file,state])=>[names[file],{pid:children.get(file)?.pid||0,state:state.state,restartCount:state.restartCount,lastCode:state.lastCode||null,nextRestartAt:state.nextRestartAt||null}]));
     const ready=[...serviceStates.values()].every(state=>state.state==='running')&&Object.values(dependencies).every(value=>value.state==='ready');
-    atomic(path.join(runtime,'health-status.json'),{version:1,environment:'CANONICAL_TEST',observedAt:new Date().toISOString(),sourceCommit:process.env.CRM_TEST_SOURCE_COMMIT||null,packageId:process.env.CRM_TEST_SOURCE_COMMIT?'crm-test-'+process.env.CRM_TEST_SOURCE_COMMIT:null,packageManifestSha256:process.env.CRM_TEST_PACKAGE_MANIFEST_SHA256||null,startup:{taskName:'Melisa-CRM-TEST-Completion',configured:process.env.CRM_TEST_AUTOSTART_CONFIGURED==='true',supervisorPid:process.pid,state:stopping?'stopping':ready?'running':'degraded'},services,dependencies});
+    atomic(path.join(runtime,'health-status.json'),{version:1,environment:'CANONICAL_TEST',observedAt:new Date().toISOString(),sourceCommit:process.env.CRM_TEST_SOURCE_COMMIT||null,packageId:process.env.CRM_TEST_SOURCE_COMMIT?path.basename(path.resolve(root)):null,packageManifestSha256:process.env.CRM_TEST_PACKAGE_MANIFEST_SHA256||null,startup:{taskName:'Melisa-CRM-TEST-Completion',configured:process.env.CRM_TEST_AUTOSTART_CONFIGURED==='true',supervisorPid:process.pid,state:stopping?'stopping':ready?'running':'degraded'},services,dependencies});
   }
   async function dependenciesTick(){
     if(stopping||dependencyBusy)return;dependencyBusy=true;
-    try{dependencies=await probeTestDependencies({chatwootUrl:baseline.CHATWOOT_BASE_URL,chatwootToken:baseline.CHATWOOT_API_ACCESS_TOKEN,nativeSourceCommit:process.env.CRM_TEST_NATIVE_SOURCE_COMMIT,nativePackageId:process.env.CRM_TEST_NATIVE_PACKAGE_ID});persist();}finally{dependencyBusy=false;}
+    try{dependencies=await probeTestDependencies({chatwootUrl:baseline.CHATWOOT_BASE_URL,chatwootToken:baseline.CHATWOOT_API_ACCESS_TOKEN,expectedDatabase:endpoints.database,endpoints,nativeSourceCommit:process.env.CRM_TEST_NATIVE_SOURCE_COMMIT,nativePackageId:process.env.CRM_TEST_NATIVE_PACKAGE_ID});persist();}finally{dependencyBusy=false;}
   }
   function start(file){
     if(stopping)return;
@@ -105,7 +107,8 @@ export async function startTestSupervisor(){
   process.on('SIGINT',stop);process.on('SIGTERM',stop);
 }
 async function servicePortOccupied(file){
-  const ports=file==='test-server.mjs'?[62400,62401]:file==='test-erp-catalog.mjs'?[62402]:[62403];
+  const endpoints=resolveTestEndpoints();
+  const ports=file==='test-server.mjs'?[endpoints.ui,endpoints.gateway]:file==='test-erp-catalog.mjs'?[endpoints.catalog]:[endpoints.orders];
   for(const port of ports){const occupied=await new Promise(resolve=>{const socket=net.connect(port,'127.0.0.1');socket.setTimeout(1000);socket.once('connect',()=>{socket.destroy();resolve(true)});socket.once('error',()=>resolve(false));socket.once('timeout',()=>{socket.destroy();resolve(true)});});if(occupied)return true;}
   return false;
 }

@@ -24,3 +24,11 @@ test('conversation scope is explicit and preserves IDs without accepting paths o
  assert.deepEqual(catalogConversationHeaders(undefined),{});assert.deepEqual(catalogConversationHeaders('55'),{'x-crm-conversation-id':'55'});
  for(const bad of ['0','055','55, 66','../55',{},Number.MAX_SAFE_INTEGER+1])assert.throws(()=>catalogConversationHeaders(bad));
 });
+
+test('shared terminal permits only the exact same-host ERP5224 on shared CRM62500',()=>{
+ for(const host of ['127.0.0.1','192.168.1.46']){
+  const target='http://'+host+':5224';
+  assert.equal(terminalEntry({hostname:host,origin:'http://'+host+':62500',search:'?terminal=1&erpOrigin='+encodeURIComponent(target)}).erpOrigin,target);
+  assert.equal(terminalEntry({hostname:host,origin:'http://'+host+':62400',search:'?terminal=1&erpOrigin='+encodeURIComponent(target)}).erpOrigin,null);
+ }
+});

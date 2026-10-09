@@ -6,6 +6,7 @@ import { acceptWaapiWebhook } from '../services/waapiWebhookService.js';
 export function createWaapiWebhookRoutes({ config = env.waapi, accept = acceptWaapiWebhook } = {}) {
   const router = Router();
   router.post('/webhooks/waapi/:secret', (req, res, next) => {
+    if (process.env.CRM_ISOLATED_PREPARATION === 'true') return res.sendStatus(503);
     const expected = Buffer.from(config.webhookSecret || ''); const actual = Buffer.from(req.params.secret || '');
     if (expected.length < 43 || expected.length !== actual.length || !crypto.timingSafeEqual(expected, actual)) return res.sendStatus(401);
     return next();

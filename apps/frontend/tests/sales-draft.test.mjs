@@ -78,11 +78,11 @@ test('failure labels never expose upstream errors, model contents, credentials o
     const h=harness(async()=>{throw value;});await h.flow.start();assert.equal(h.state.error,label);
   }
 });
-test('sales API sends only an empty body and existing auth to the selected read-only endpoint', async t => {
+test('sales API sends only explicit action intent and existing auth to the selected read-only endpoint', async t => {
   let call;t.mock.method(globalThis,'fetch',async(url,options)=>{call={url,options};return Response.json({success:true,data:response()});});
   const controller=new AbortController();const result=await liveApi.salesDraft('synthetic-session','55',{signal:controller.signal,history:['must not be sent'],price:1});
   assert.equal(result.reply,response().reply);assert.equal(call.url,'/api/live/crm/conversations/55/sales-draft');assert.equal(call.options.method,'POST');
-  assert.equal(call.options.headers.Authorization,'Bearer synthetic-session');assert.deepEqual(JSON.parse(call.options.body),{});assert.equal(call.options.redirect,'error');
+  assert.equal(call.options.headers.Authorization,'Bearer synthetic-session');assert.deepEqual(JSON.parse(call.options.body),{aiIntent:{userInitiated:true,action:'manual'}});assert.equal(call.options.redirect,'error');
   assert.ok(call.options.signal instanceof AbortSignal);
 });
 test('sales API forwards cancellation without retrying the model request', async t => {

@@ -19,6 +19,15 @@ export function createApp() {
   app.use(crmCors());
   app.use(requestContext);
   app.use(apiRateLimit());
+  // Shared preparation reads existing CRM data; all upstream writes are closed.
+  // Native ERP drafts use the separate isolated order proxy, never this gateway.
+  app.use((req,res,next)=>{
+    if(process.env.CRM_ISOLATED_PREPARATION==='true'&&!['GET','HEAD','OPTIONS'].includes(req.method)
+      &&!(req.method==='POST'&&req.path==='/auth/login')){
+      return res.status(403).json({success:false,error:{code:'CRM_PREPARATION_READ_ONLY',message:'Ortak hazýrlýk ortamýnda mevcut CRM kayýtlarý deðiþtirilemez.'}});
+    }
+    next();
+  });
   app.use(createWaapiWebhookRoutes());
   app.use(createMessageUploadParser());
   app.use(express.json({ limit: env.requestBodyLimit }));

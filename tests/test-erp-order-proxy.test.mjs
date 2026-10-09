@@ -1,3 +1,4 @@
+import {resolveTestEndpoints} from '../deploy/test-endpoints.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { Readable } from 'node:stream';
@@ -61,4 +62,25 @@ test('v2 exact phone customer lookup has no fixed-customer fallback and separate
  await invoke(f.handler,'POST','/crm/erp/v2/drafts',{requestId,items:[{productId:17}]},headers);assert(f.calls.at(-1).url.endsWith('/api/test/crm/orders/v2/drafts'));assert.equal(JSON.parse(f.calls.at(-1).options.body).items[0].productId,17);
  await invoke(f.handler,'GET',`/crm/erp/v2/drafts/${requestId}`,undefined,headers);assert(f.calls.at(-1).url.endsWith(`/api/test/crm/orders/v2/drafts/${requestId}`));
  const n=f.calls.length;assert.equal((await invoke(f.handler,'GET','/crm/erp/v2/customers?phone=905387217733&conversationId=56',undefined,headers)).status,400);assert.equal(f.calls.length,n+1);
+});
+
+test('shared native read requires exact isolated source/package/effects and never falls back to normal TEST',async()=>{
+ const endpoints=resolveTestEndpoints({CRM_TEST_PORT_BASE:'62500',CRM_ISOLATED_PREPARATION:'true',CRM_TEST_ERP_ORIGIN:'http://127.0.0.1:4174',CRM_TEST_EXPECTED_DATABASE:'MELISA_ERP_CRM_SHARED_TEST_20261009_01'});
+ const source='a'.repeat(40),packageId='SHARED-NATIVE-FIXTURE',health={serverName:'Semih\\MELISADEV',originalDatabaseAccess:0,liveDatabaseAccess:0,sysadmin:0,databaseControl:0,externalOperations:false,actualT1:false,automaticJobs:false,reservationEffect:false,database:endpoints.database,environment:'ISOLATED_TEST_COPY',purpose:'crm-order-draft-only',sourceCommit:source,packageId,port:62504,stockEffect:false,ledgerEffect:false};
+ for(const override of [{},{database:'MELISA_ERP_SIRKET_TEST_20260929_01'},{sourceCommit:'b'.repeat(40)},{packageId:'OTHER'},{stockEffect:true},{port:62404},{actualT1:true},{originalDatabaseAccess:1},{environment:'CANONICAL_TEST'}]){
+  const calls=[];const handler=createTestOrderHandler({testEndpoints:endpoints,nativeSourceCommit:source,nativePackageId:packageId,fetchFn:async(url,options)=>{calls.push(String(url));if(url.pathname==='/auth/me')return Response.json({data:{id:'synthetic',permissions:['crm.send']}});if(url.pathname==='/test-health')return Response.json({data:{...health,...override}});return Response.json({data:{draft:'synthetic-read-only'}});}});
+  const result=await invoke(handler,'GET',`/crm/erp/v2/drafts/${requestId}`,undefined,{'x-erp-token':'synthetic-native'});
+  assert.ok(calls.every(u=>u.startsWith('http://127.0.0.1:62501/')||u.startsWith('http://127.0.0.1:62504/')));
+  assert.equal(result.status,Object.keys(override).length?503:200);assert.equal(calls.length,Object.keys(override).length?2:3);
+ }
+});
+test('shared existing-account login uses health-verified ERP4174 and never native auth',async()=>{
+ const endpoints=resolveTestEndpoints({CRM_TEST_PORT_BASE:'62500',CRM_ISOLATED_PREPARATION:'true',CRM_TEST_ERP_ORIGIN:'http://127.0.0.1:4174',CRM_TEST_EXPECTED_DATABASE:'MELISA_ERP_CRM_SHARED_TEST_20261009_01'}),source='a'.repeat(40),packageId='native-fixture';
+ const base={ok:true,environment:'ISOLATED_TEST_COPY',serverName:'Semih\\MELISADEV',originalDatabaseAccess:0,liveDatabaseAccess:0,sysadmin:0,databaseControl:0,externalOperations:false,actualT1:false,automaticJobs:false};
+ for(const wrong of [false,true]){
+  const calls=[],handler=createTestOrderHandler({testEndpoints:endpoints,nativeSourceCommit:source,nativePackageId:packageId,fetchFn:async(url,options)=>{calls.push({url:String(url),options});if(url.pathname==='/auth/me')return Response.json({data:{id:'crm-existing',permissions:['crm.send']}});if(url.pathname==='/test-health')return Response.json({data:url.port==='62504'?{...base,database:endpoints.database,port:62504,purpose:'crm-order-draft-only',sourceCommit:source,packageId,stockEffect:false,ledgerEffect:false,reservationEffect:false}:{...base,databaseName:wrong?'OTHER':endpoints.database,port:4174,mode:'erp',writes:true}});if(url.pathname==='/api/auth/login')return Response.json({data:{accessToken:'synthetic-only',user:{id:23,displayName:'existing-fixture',permissions:['sales.create']}}});if(url.pathname==='/api/auth/me')return Response.json({data:{id:23,permissions:['sales.create']}});throw Error('unexpected route');}});
+  const r=await invoke(handler,'POST','/crm/erp/login',{username:'existing-fixture',password:'synthetic-only'});assert.equal(r.status,wrong?503:200);
+  assert(!calls.some(c=>c.url==='http://127.0.0.1:62504/api/auth/login'));
+  const login=calls.find(c=>c.url==='http://127.0.0.1:4174/api/auth/login');if(wrong)assert.equal(login,undefined);else{assert.equal(login.options.headers.origin,'http://127.0.0.1:5224');assert(calls.some(c=>c.url==='http://127.0.0.1:4174/api/auth/me'));assert.equal(r.data.user.id,23);assert.equal(r.data.environment,'ISOLATED_TEST_COPY');}
+ }
 });
