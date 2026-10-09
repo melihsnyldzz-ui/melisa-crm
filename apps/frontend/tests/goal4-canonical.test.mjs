@@ -55,3 +55,11 @@ test('new native draft retains immutable source adjunct across response loss and
  assert.throws(()=>validateNativeReceipt({...saved,currentSource:null,sourceMetadataStatus:'legacy-persisted'},payload,source));
  assert.doesNotThrow(()=>validateNativeReceipt({...saved,currentSource:null,sourceMetadataStatus:'legacy-persisted'},payload));
 });
+test('DB02 business marker permits EUR exact tuple while malformed scope and missing price stay closed',async()=>{
+ const {availableCurrencies}=await import('../src/catalog/model.js');
+ const scope={scopeKind:'VERIFIED_BUSINESS_TEST',database:'MELISA_ERP_CRM_SHARED_TEST_20261009_02',supportedCurrencies:['TRY','USD','EUR']};
+ const m={...meta,businessScope:scope},r=photoRow();r.salePrices=r.salePrices.map(p=>({...p,currency:'EUR'}));r.currency='EUR';
+ const p=canonicalProduct(r,m);assert.equal(p.prices.EUR,196);assert.equal(selectedSaleLines([{...p,currency:'EUR',priceExact:r.salePrices[0].priceExact}])[0].currency,'EUR');
+ assert.equal(canonicalQuery().hasImage,true);assert.deepEqual(availableCurrencies([canonicalProduct(photoRow(),m)],scope),['TRY','USD','EUR']);
+ for(const bad of [{...scope,database:'LIVE'},{...scope,supportedCurrencies:['EUR']},{...scope,extra:true},null])assert.throws(()=>canonicalProduct(photoRow(),{...meta,businessScope:bad}));
+});

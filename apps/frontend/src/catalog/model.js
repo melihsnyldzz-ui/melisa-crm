@@ -2,7 +2,12 @@
 export const CATALOG_KEY_PREFIX = 'melisa-live-catalog-v1:';
 export const languages = [{ id: 'tr', label: 'Türkçe' }, { id: 'en', label: 'English' }, { id: 'fr', label: 'Français' }];
 export const currencies = ['EUR', 'USD', 'TRY'];
-export function availableCurrencies(products=[]){const provided=new Set(products.flatMap(p=>Object.keys(p.prices||{})));return provided.size?[...currencies.filter(c=>provided.has(c)),...[...provided].filter(c=>!currencies.includes(c)).sort()]:currencies;}
+export function verifiedBusinessCurrencies(scope){
+ if(scope===undefined)return null;
+ if(!scope||Object.keys(scope).sort().join()!=='database,scopeKind,supportedCurrencies'||scope.scopeKind!=='VERIFIED_BUSINESS_TEST'||scope.database!=='MELISA_ERP_CRM_SHARED_TEST_20261009_02'||JSON.stringify(scope.supportedCurrencies)!==JSON.stringify(['TRY','USD','EUR']))throw Error('Katalog işletme kapsamı doğrulanamadı.');
+ return scope.supportedCurrencies;
+}
+export function availableCurrencies(products=[],businessScope){const provided=new Set(products.flatMap(p=>Object.keys(p.prices||{})));const page=provided.size?[...currencies.filter(c=>provided.has(c)),...[...provided].filter(c=>!currencies.includes(c)).sort()]:currencies;const supported=verifiedBusinessCurrencies(businessScope);return supported?[...new Set([...page,...supported])]:page;}
 export const ageGroups = [{ id: 'all', label: 'Tüm yaşlar' }, { id: '0-12', label: '0–12 ay' }, { id: '6-24', label: '6–24 ay' }, { id: '24-60', label: '2–5 yaş' }];
 export const copy = {
  tr:{title:'Ürün kataloğu',notice:'Ürün bilgileri bağlı ürün kaynağından alınmıştır.',series:'Seri içeriği',pieces:'adet',unit:'adet fiyatı',pack:'seri toplamı',stock:'Stok',noStock:'Stok yok',stockUnknown:'Stok bilgisi yok',available:'adet stok',priceMissing:'Bu para biriminde satış fiyatı yok',seriesUnknown:'Seri bilgisi yok',noSplit:'Seri ve fiyat bilgilerini sipariş öncesi doğrulayın.',sample:'Ürün bilgileri kaynaktaki dilinde korunur.',page:'Sayfa',photoMissing:'Ürün fotoğrafı yok',stockUnverified:'Stok doğrulanamadı',priceUnverified:'Fiyat doğrulanamadı',snapshotStockIn:'Kaynak kaydında stokta',snapshotStockOut:'Kaynak kaydında stok dışı',snapshot:'tarihli ERP ürün kaydı · Canlı stok bilgisi değildir'},

@@ -1,3 +1,4 @@
+import {verifiedBusinessCurrencies} from './model.js';
 import {normalizeLiveProductRows} from './liveFields.js';
 import {contractError} from './existingStock.js';
 export const canonicalId=id=>typeof id==='string'&&/^erp-[1-9]\d*$/.test(id)&&Number.isSafeInteger(Number(id.slice(4)));
@@ -6,7 +7,7 @@ export function canonicalQuery(input={}) {
  if(!Number.isSafeInteger(page)||page<1||!Number.isSafeInteger(limit)||limit<1||limit>50||hasImage!==true||Object.keys(input).some(k=>!['page','limit','hasImage','search','brand','category','barcode'].includes(k)))throw contractError();
  const q={page,limit,hasImage};for(const key of ['search','brand','category','barcode']){if(typeof(input[key]??'')!=='string'||(input[key]??'').trim().length>120)throw contractError();q[key]=(input[key]??'').trim();}return q;
 }
-export function assertCanonicalMeta(m){if(m?.source!=='melisa-erp-catalog'||m.catalogVersion!=='melisa-catalog.v1'||m.environment!=='CANONICAL_TEST'||m.cached!==false||m.sourceDatabaseVerified!==true||m.stockFreshness!=='native-test'||m.freshLive!==false||!Number.isFinite(Date.parse(m.fetchedAt)))throw contractError();return m;}
+export function assertCanonicalMeta(m){if(m?.source!=='melisa-erp-catalog'||m.catalogVersion!=='melisa-catalog.v1'||m.environment!=='CANONICAL_TEST'||m.cached!==false||m.sourceDatabaseVerified!==true||m.stockFreshness!=='native-test'||m.freshLive!==false||!Number.isFinite(Date.parse(m.fetchedAt)))throw contractError();verifiedBusinessCurrencies(m.businessScope);return m;}
 export function canonicalProduct(row,meta){
  assertCanonicalMeta(meta);
  if(!canonicalId(row?.id)||row.erpProductId!==Number(row.id.slice(4))||!Array.isArray(row.salePrices)||!['active','quarantined'].includes(row.status)||typeof row.hold?.blocked!=='boolean'||!/^([a-f0-9]{64})$/.test(row.revision||''))throw contractError();

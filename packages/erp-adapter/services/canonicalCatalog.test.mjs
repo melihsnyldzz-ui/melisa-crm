@@ -28,3 +28,15 @@ test('A05 real model input retains explicit staff language/composer/draft and wi
  assert.equal(input.context.staffContext.customerLanguage,'en');assert.equal(input.context.staffContext.currentComposer,context.currentComposer);assert.equal(input.context.recordedProducts[0].erpProductId,17);assert.equal(Object.hasOwn(input.context.recordedProducts[0],'priceExact'),false);assert.equal(result.autoSend,false);assert.equal(result.erpWrite,false);
  assert.equal(containsUnsupportedStockPromise('This product is definitely in stock.'),true);assert.equal(containsUnsupportedStockPromise('This product is in stock.'),true);assert.equal(containsUnsupportedStockPromise('Kesinlikle stokta'),true);
 });
+
+test('business currency marker comes only from exact DB02 adapter identity and never from upstream body metadata',async()=>{
+ for(const [erpOrigin,expectedDatabase,crmOrigin,business]of [['http://127.0.0.1:4144','MELISA_ERP_SIRKET_TEST_20260929_01','http://127.0.0.1:62401',false],['http://127.0.0.1:4174','MELISA_ERP_CRM_SHARED_TEST_20261009_01','http://127.0.0.1:62601',false],['http://127.0.0.1:4184','MELISA_ERP_CRM_SHARED_TEST_20261009_02','http://127.0.0.1:62701',true]]){
+  const shared=expectedDatabase.includes('SHARED'),h={...health,ok:true,databaseName:expectedDatabase,port:Number(new URL(erpOrigin).port),...(shared?{environment:'ISOLATED_TEST_COPY',originalDatabaseAccess:0,actualT1:false,automaticJobs:false}:{})};
+  const transport=async url=>new URL(url).pathname==='/auth/me'?Response.json({data:actor}):new URL(url).pathname==='/test-health'?Response.json(h):Response.json({success:true,data:[row()],meta:{...rawMeta(),businessScope:{scopeKind:'FORGED',database:'LIVE',supportedCurrencies:['GBP']}}});
+  const reader=createCanonicalCatalogReader({transport,erpOrigin,expectedDatabase,crmOrigin,getErpAuthorization:async()=> 'Bearer synthetic-native'}),response=await reader(new Request('http://localhost/api/crm-catalog/products',{headers:{authorization:'Bearer synthetic-crm'}}));
+  assert.equal(response.status,200);const m=(await response.json()).meta;assert.deepEqual(m.businessScope,business?{scopeKind:'VERIFIED_BUSINESS_TEST',database:expectedDatabase,supportedCurrencies:['TRY','USD','EUR']}:undefined);
+ }
+ const transport=async url=>new URL(url).pathname==='/auth/me'?Response.json({data:actor}):Response.json({...health,environment:'ISOLATED_TEST_COPY',port:4184});
+ const reader=createCanonicalCatalogReader({transport,erpOrigin:'http://127.0.0.1:4184',expectedDatabase:'MELISA_ERP_CRM_SHARED_TEST_20261009_02',crmOrigin:'http://127.0.0.1:62701',getErpAuthorization:async()=> 'Bearer synthetic-native'});
+ assert.equal((await reader(new Request('http://localhost/api/crm-catalog/products',{headers:{authorization:'Bearer synthetic-crm'}}))).status,503);
+});
