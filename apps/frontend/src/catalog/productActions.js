@@ -1,5 +1,22 @@
 export const exactPriceText=value=>typeof value==='string'&&/^\d+\.\d{8}$/.test(value)?value.replace(/0+$/,'').replace(/\.$/,''):null;
-export const priceLabelText=(value,language='tr')=>exactPriceText(value)===null?null:new Intl.NumberFormat({tr:'tr-TR',en:'en-GB',fr:'fr-FR'}[language]||'tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2}).format(Number(value));
+export const priceLabelText=(value,language='tr')=>{
+ if(exactPriceText(value)===null)return null;
+ const cents=(BigInt(value.replace('.',''))+500000n)/1000000n;
+ const locale={tr:'tr-TR',en:'en-GB',fr:'fr-FR'}[language]||'tr-TR';
+ const integer=new Intl.NumberFormat(locale,{maximumFractionDigits:0}).format(cents/100n);
+ const separator=new Intl.NumberFormat(locale).formatToParts(1.1).find(p=>p.type==='decimal').value;
+ return integer+separator+String(cents%100n).padStart(2,'0');
+};
+export function catalogProductsForCurrency(products,currency,{requirePrice=true}={}){
+ if(!Array.isArray(products)||!['TRY','USD','EUR'].includes(currency))throw Error('Katalog para birimini seçin.');
+ return products.map(product=>{
+  if(!product.erpProductId)return product;
+  const candidates=(product.salePrices||[]).filter(p=>p.tier===1&&p.isMainUnit&&p.currency===currency&&p.priceExact!==null&&Number(p.priceExact)>0);
+  if(!requirePrice&&candidates.length!==1&&product.status==='active'&&!product.hold?.blocked)return product;
+  if(candidates.length!==1||product.status!=='active'||product.hold?.blocked||product.unit?.verified!==true)throw Error(`${product.code||product.name}: seçilen para birimindeki satış fiyatı doğrulanamadı.`);
+  const tuple=candidates[0];return {...product,currency,priceExact:tuple.priceExact,priceSourceKey:tuple.sourceKey};
+ });
+}
 export function selectedSaleLines(products){
  if(!Array.isArray(products)||!products.length)throw Error('Önce ürün seçin.');
  return products.map(product=>{
@@ -11,6 +28,6 @@ export function selectedSaleLines(products){
  });
 }
 export function selectionMessage(products,priced=false){
- if(priced)return [products.some(p=>String(p.id).startsWith('erp-'))?'Kayıtlı satış fiyatları':'Kayıtlı satış fiyatları · adet fiyatı',...selectedSaleLines(products).map(line=>`${line.stockCode} · ${line.name} · ${line.currency} ${String(line.id).startsWith('erp-')?(exactPriceText(line.priceExact)||'fiyat bilinmiyor'):line.unitPrice.toFixed(4).replace(/0+$/,'').replace(/\.$/,'')}${String(line.id).startsWith('erp-')?` / ${line.unitLabel||'birim bilinmiyor'}`:''}`)].join('\n');
+ if(priced)return [products.some(p=>String(p.id).startsWith('erp-'))?'Kayıtlı satış fiyatları':'Kayıtlı satış fiyatları · adet fiyatı',...selectedSaleLines(products).map(line=>`${line.stockCode} · ${line.name} · ${line.currency} ${String(line.id).startsWith('erp-')?(priceLabelText(line.priceExact)||'fiyat bilinmiyor'):line.unitPrice.toFixed(2)}${String(line.id).startsWith('erp-')?` / ${line.unitLabel||'birim bilinmiyor'}`:''}`)].join('\n');
  return products.map(product=>`${product.code} · ${product.name}`).join('\n');
 }

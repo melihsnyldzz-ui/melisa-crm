@@ -13,7 +13,7 @@ export async function getErpAuthorization({refresh=false,fetchFn=fetch,readFileF
  const privateAccess=JSON.parse(await readFileFn(environment.CRM_ERP_CATALOG_ACCESS_PATH,'utf8'));
  const account=privateAccess.ilker;
  if(typeof account?.username!=='string'||typeof account?.password!=='string')throw Error('ERP_AUTH_REQUIRED');
- const response=await fetchFn(testEndpoints.erpOrigin+'/api/auth/login',{method:'POST',headers:{'content-type':'application/json',...(testEndpoints.isolated?{origin:'http://127.0.0.1:5224'}:{})},body:JSON.stringify({username:account.username,password:account.password}),redirect:'error',signal:AbortSignal.timeout(15000)});
+ const response=await fetchFn(testEndpoints.erpOrigin+'/api/auth/login',{method:'POST',headers:{'content-type':'application/json',...(testEndpoints.isolated?{origin:testEndpoints.erpUiOrigin}:{})},body:JSON.stringify({username:account.username,password:account.password}),redirect:'error',signal:AbortSignal.timeout(15000)});
  const payload=await response.json(),data=payload.data??payload;
  if(!response.ok||typeof data.accessToken!=='string'||!data.user?.permissions?.includes('product.view')||!data.user.permissions.includes('sales.view'))throw Error('ERP_AUTH_REQUIRED');
  token=data.accessToken;expiresAt=Date.now()+300000;return `Bearer ${token}`;

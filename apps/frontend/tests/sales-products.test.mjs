@@ -39,13 +39,13 @@ test('unknown/zero/unsupported/overprecision prices stay unpriced while product 
 });
 test('price and product helpers use the existing per-item text contract without a quote or conversion',()=>{
   assert.equal(salesProductDraft(product(),'product','Staff text'),'Staff text\n\n0007 · Gerçek kaynak ürünü');
-  assert.equal(salesProductDraft(product(),'price'),'Kayıtlı satış fiyatları · adet fiyatı\n0007 · Gerçek kaynak ürünü · TRY 196');
-  const usd={...product(),salePrice:1.2345,currency:'USD'};assert.match(salesProductDraft(usd,'price'),/USD 1\.2345$/);
+  assert.equal(salesProductDraft(product(),'price'),'Kayıtlı satış fiyatları · adet fiyatı\n0007 · Gerçek kaynak ürünü · TRY 196.00');
+  const usd={...product(),salePrice:1.2345,currency:'USD'};assert.match(salesProductDraft(usd,'price'),/USD 1\.23$/);
   assert.throws(()=>salesProductDraft(product(),'order'));assert.throws(()=>salesProductDraft(product(),'price','x'.repeat(2000)));
 });
 test('product copy re-reads the selected real ID before returning a human draft and never overwrites it',async()=>{
   const calls=[];const h=setup({readProduct:async(token,id,options)=>{calls.push({token,id,options});return envelope();}});await h.flow.start();
-  assert.equal(await h.flow.takeProductDraft('vega-7','price'),'Mevcut personel mesajı\n\nKayıtlı satış fiyatları · adet fiyatı\n0007 · Gerçek kaynak ürünü · TRY 196');
+  assert.equal(await h.flow.takeProductDraft('vega-7','price'),'Mevcut personel mesajı\n\nKayıtlı satış fiyatları · adet fiyatı\n0007 · Gerçek kaynak ürünü · TRY 196.00');
   assert.equal(calls.length,1);assert.equal(calls[0].id,'vega-7');assert.equal(calls[0].token,'synthetic-session');assert.ok(calls[0].options.signal instanceof AbortSignal);assert.equal(h.draft,'Mevcut personel mesajı');assert.equal(h.state.preview,null);assert.equal(h.timers.size,0);
   assert.equal(await h.flow.takeProductDraft('vega-7','price'),null);assert.equal(calls.length,1);
 });

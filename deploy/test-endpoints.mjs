@@ -1,17 +1,18 @@
 export function resolveTestEndpoints(env = process.env) {
   const base = Number(env.CRM_TEST_PORT_BASE || 62400);
-  if (![62400,62600].includes(base)) throw Error('TEST_PORT_BASE_INVALID');
+  if (![62400,62600,62700].includes(base)) throw Error('TEST_PORT_BASE_INVALID');
   const isolated = env.CRM_ISOLATED_PREPARATION === 'true';
-  if ((base === 62600) !== isolated) throw Error('TEST_ISOLATION_PORT_REQUIRED');
+  if ((base !== 62400) !== isolated) throw Error('TEST_ISOLATION_PORT_REQUIRED');
+  const businessScope = base === 62700;
+  const expectedPort = businessScope ? 4184 : isolated ? 4174 : 4144;
+  const expectedDatabase = businessScope ? 'MELISA_ERP_CRM_SHARED_TEST_20261009_02' : isolated ? 'MELISA_ERP_CRM_SHARED_TEST_20261009_01' : 'MELISA_ERP_SIRKET_TEST_20260929_01';
   const erpOrigin = env.CRM_TEST_ERP_ORIGIN || 'http://127.0.0.1:4144';
   const origin = new URL(erpOrigin);
   if (origin.origin !== erpOrigin || origin.hostname !== '127.0.0.1' || origin.protocol !== 'http:'
-      || origin.username || origin.password || ![4144,4174].includes(Number(origin.port))
-      || (isolated ? Number(origin.port) !== 4174 : Number(origin.port) !== 4144)) throw Error('ERP_TEST_ORIGIN_REQUIRED');
+      || origin.username || origin.password || Number(origin.port) !== expectedPort) throw Error('ERP_TEST_ORIGIN_REQUIRED');
   const database = env.CRM_TEST_EXPECTED_DATABASE || 'MELISA_ERP_SIRKET_TEST_20260929_01';
-  if (isolated ? database !== 'MELISA_ERP_CRM_SHARED_TEST_20261009_01'
-      : database !== 'MELISA_ERP_SIRKET_TEST_20260929_01') throw Error('ERP_TEST_DATABASE_REQUIRED');
-  return {isolated,database,erpOrigin,erpPort:Number(origin.port),ui:base,gateway:base+1,catalog:base+2,orders:base+3,native:base+4,
+  if (database !== expectedDatabase) throw Error('ERP_TEST_DATABASE_REQUIRED');
+  return {isolated,businessScope,database,erpUiOrigin:`http://127.0.0.1:${businessScope?5234:isolated?5224:5194}`,erpOrigin,erpPort:Number(origin.port),ui:base,gateway:base+1,catalog:base+2,orders:base+3,native:base+4,
     uiOrigin:`http://127.0.0.1:${base}`,gatewayOrigin:`http://127.0.0.1:${base+1}`,catalogOrigin:`http://127.0.0.1:${base+2}`,nativeOrigin:`http://127.0.0.1:${base+4}`};
 }
 

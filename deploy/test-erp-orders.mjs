@@ -37,6 +37,11 @@ export function createTestOrderHandler({ fetchFn = (...args) => fetch(...args),t
       if(!/^[a-f0-9]{40}$/.test(nativeSourceCommit||'')||typeof nativePackageId!=='string'||!nativePackageId||health.sourceCommit!==nativeSourceCommit||health.packageId!==nativePackageId||health.port!==testEndpoints.native||health.stockEffect!==false||health.ledgerEffect!==false)fail('ERP_TEST_IDENTITY_MISMATCH',503);
     }
   }
+  async function conversationAccess(authorization,conversationId,peer) {
+    if(!/^[1-9]\d*$/.test(String(conversationId))||!Number.isSafeInteger(Number(conversationId))||!/^\d{8,15}$/.test(peer||''))fail('CRM_V2_CUSTOMER_MAPPING_REQUIRED');
+    const detail=await call(crmOrigin,'/crm/conversations/'+conversationId,{headers:{authorization}});
+    if(String(detail.id)!==String(conversationId)||typeof detail.phone!=='string'||detail.phone.replace(/\D/g,'')!==peer)fail('CRM_V2_CONVERSATION_IDENTITY_MISMATCH',403);
+  }
   return async (req, res) => {
     res.setHeader('content-type', 'application/json; charset=utf-8');
     res.setHeader('cache-control', 'no-store');
@@ -60,7 +65,7 @@ export function createTestOrderHandler({ fetchFn = (...args) => fetch(...args),t
           input = { username: credentials.username, password: credentials.password };
           nativePath = '/api/auth/login';
         } else if(req.method==='GET'&&url.pathname==='/crm/erp/v2/customers'){
-          if([...url.searchParams.keys()].some(key=>!['phone','conversationId','search'].includes(key))||[...url.searchParams.keys()].some(key=>url.searchParams.getAll(key).length!==1)||!/^\d{7,15}$/.test(url.searchParams.get('phone')||'')||url.searchParams.get('conversationId')!=='55'||(url.searchParams.get('search')||'').length>120)fail('CRM_V2_CUSTOMER_MAPPING_REQUIRED');
+          if([...url.searchParams.keys()].some(key=>!['phone','conversationId','search'].includes(key))||[...url.searchParams.keys()].some(key=>url.searchParams.getAll(key).length!==1)||!/^\d{7,15}$/.test(url.searchParams.get('phone')||'')||(testEndpoints.businessScope?!/^[1-9]\d*$/.test(url.searchParams.get('conversationId')||'')||!Number.isSafeInteger(Number(url.searchParams.get('conversationId'))):url.searchParams.get('conversationId')!=='55')||(url.searchParams.get('search')||'').length>120)fail('CRM_V2_CUSTOMER_MAPPING_REQUIRED');
           nativePath='/api/test/crm/orders/v2/customers?'+url.searchParams;
         } else if(req.method==='POST'&&url.pathname==='/crm/erp/v2/drafts'){
           input=await readBody(req);nativePath='/api/test/crm/orders/v2/drafts';
@@ -76,14 +81,21 @@ export function createTestOrderHandler({ fetchFn = (...args) => fetch(...args),t
         } else fail('ERP_ROUTE_NOT_FOUND', 404);
         const nativeToken = req.headers['x-erp-token'];
         if (nativePath !== '/api/auth/login' && (typeof nativeToken !== 'string' || !nativeToken || /\s/.test(nativeToken))) fail('ERP_LOGIN_REQUIRED', 401);
+        const scopedCustomerRead=testEndpoints.businessScope&&url.pathname==='/crm/erp/v2/customers';
+        const scopedCreate=testEndpoints.businessScope&&req.method==='POST'&&url.pathname==='/crm/erp/v2/drafts';
+        if(scopedCustomerRead)await conversationAccess(authorization,url.searchParams.get('conversationId'),url.searchParams.get('phone'));
+        if(scopedCreate)await conversationAccess(authorization,input?.conversationId,input?.peer);
         await identity();
         const sharedLogin=testEndpoints.isolated&&nativePath==='/api/auth/login';
         if(sharedLogin){const health=await call(testEndpoints.erpOrigin,'/test-health');if(!health.ok||!sharedTestHealthSafe(health)||health.databaseName!==testEndpoints.database||health.port!==testEndpoints.erpPort||health.mode!=='erp'||health.writes!==true)fail('ERP_TEST_IDENTITY_MISMATCH',503);}
         data = await call(sharedLogin?testEndpoints.erpOrigin:nativeOrigin, nativePath, {
           method: req.method,
-          headers: { ...(sharedLogin?{origin:'http://127.0.0.1:5224'}:{}),'X-CRM-Authorization': authorization, ...(nativeToken ? { Authorization: `Bearer ${nativeToken}` } : {}), ...(input ? { 'Content-Type': 'application/json' } : {}) },
+          headers: { ...(sharedLogin?{origin:testEndpoints.erpUiOrigin}:{}),'X-CRM-Authorization': authorization, ...(nativeToken ? { Authorization: `Bearer ${nativeToken}` } : {}), ...(input ? { 'Content-Type': 'application/json' } : {}) },
           ...(input ? { body: JSON.stringify(input) } : {}),
         });
+        if(testEndpoints.businessScope&&/^\/crm\/erp\/v2\/drafts\//.test(url.pathname))await conversationAccess(authorization,data?.request?.conversationId,data?.request?.peer);
+        if(scopedCustomerRead)await conversationAccess(authorization,url.searchParams.get('conversationId'),url.searchParams.get('phone'));
+        if(scopedCreate)await conversationAccess(authorization,input?.conversationId,input?.peer);
         if (nativePath === '/api/auth/login') {
           if (!data.user?.permissions?.includes('sales.create') || !data.accessToken) fail('ERP_PERMISSION_REQUIRED', 403);
           if(sharedLogin){const current=await call(testEndpoints.erpOrigin,'/api/auth/me',{headers:{authorization:`Bearer ${data.accessToken}`}});const user=current.user??current;if(String(user.id)!==String(data.user.id)||!user.permissions?.includes('sales.create'))fail('ERP_PERMISSION_REQUIRED',403);}

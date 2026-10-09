@@ -50,7 +50,7 @@ export function testTerminalFrameAllowed(req,host) {
   if(!req.url.startsWith('/?terminal=1')||req.headers.origin)return false;
   try {
     const parent=new URL(req.headers.referer||'');
-    const expected = host.endsWith(':62600') ? host.replace(':62600',':5224') : host.replace(':62400',':5194');
+    const expected = host.endsWith(':62700') ? host.replace(':62700',':5234') : host.endsWith(':62600') ? host.replace(':62600',':5224') : host.replace(':62400',':5194');
     return parent.origin==='http://'+expected&&parent.pathname==='/terminal.html';
   } catch { return false; }
 }
@@ -97,7 +97,7 @@ Object.assign(env, {
   WHATSAPP_ALLOWED_TEST_NUMBERS: '905387217733', WAAPI_TEST_RECIPIENT: '905387217733',
   WAAPI_OUTBOUND_MEDIA_ENABLED: 'true', WAAPI_CHATWOOT_BRIDGE_ENABLED: 'true', WAAPI_INCOMING_TEST_ONLY: 'false', WHATSAPP_AUTO_REPLY_ENABLED: 'false',
   WHATSAPP_SEND_ENABLED: 'true', WHATSAPP_LIVE_SEND_APPROVED: 'true',
-  CRM_OUTBOUND_NAMESPACE: endpoints.isolated?'melisa-crm:shared-preparation-20261009':'melisa-crm:test-completion',
+  CRM_OUTBOUND_NAMESPACE: endpoints.businessScope?'melisa-crm:shared-business-test-20261009':endpoints.isolated?'melisa-crm:shared-preparation-20261009':'melisa-crm:test-completion',
   CRM_ERP_CATALOG_ORIGIN: endpoints.catalogOrigin,
   CRM_ERP_CATALOG_PHOTO_CRM_AUTH: 'true',
   CRM_TEST_RUNTIME_DIR:runtime, CRM_TEST_LOG_DIR:logs,

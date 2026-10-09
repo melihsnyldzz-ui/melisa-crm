@@ -1,5 +1,7 @@
 # CRM kullanıcı kabulü
 
+**CRM-UA07 / ERP-CRM-EXPAND01 — bekliyor:** CRM-DEC-008 teknik genişletme sonucu insan TEST'i başlatmaz. Tek yönetici raporundaki kapsamda atanmış konuşma, seçilen TRY/USD/EUR fiyatı ve aynı dövizli doğrulanmış ERP hesabı, gerekçeli eşleme, native taslak ve ayrı geri okuma birlikte değerlendirilecektir. Telefonu/kimliği bilinmeyen konuşmalar ve iki LL hesap dışarıda kalır; gerçek WhatsApp/AI çağrısı yoktur. Kişi/deneme tarihi/insan sonucu bildirilmedi; mevcut CRM-UA01–06 korunur.
+
 **9 Ekim ortak TEST hazırlığı / CRM-DEC-007:** Teknik ortam ve bağlantı doğrulaması insan kabulü yerine geçmez. Eski CRM-UA01–06 ve atanmış personel/cihaz sonuçları kendi kapsamlarıyla korunur. Yeni ortak ortamda gerçek WhatsApp veya ücretli model çağrısı yapılmaz; geniş işletme TEST'i ayrıca kullanıcı onayı bekler.
 
 Güncel teknik prova: CRM62600/source81754aa, ERP5224/source6c47c37 ve native62604/source7b083a6. Gerçek CRM ekranında fiyat/döviz/müşteri seçimi, aynı taslağın yenileme sonrası geri okunması, mevcut personelin atanmış sohbetleri ve AI kapalı görünümü doğrulandı. **İnsan kişi/tarih/sonuç bekliyor; yeni PASS yok.** Ürün/müşteri/miktar, gerçek atama/rol ve fiziksel terminal kullanımı kullanıcı/İlker tarafından ayrıca kontrol edilecek. Taslak gerçek satış ve bu prova geniş işletme TEST'i değildir.
