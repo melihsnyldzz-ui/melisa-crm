@@ -1,5 +1,13 @@
 # MELISA CRM — Güncel Durum
 
+## Müşteriye özel mobil katalog — 10 Ekim 2026
+
+Kullanıcının yeni talebiyle, ayrı `codex/customer-mobile-catalog-20261010` dalında mevcut CRM'ye mobil katalog bağlantısı ve seri sepeti eklendi. Bu talep aşağıdaki tarihsel DUR kayıtlarından sonra verilen yeni çalışma yetkisidir. “Mobil katalog” işlemi doğrulanmış TEST profili, yetkili aktör ve sahibi olan 7733 konuşması için kişisel bağlantı üretir. Ürün fotoğrafı, adet fiyatı, açık seri dağılımı, seri toplamı, filtreler ve kalıcı sepet gösterilir; sipariş sonucu ayrı native GET ile doğrulanır.
+
+Kullanıcı onaylı TEST seri örneği açıkça etiketlenir: A altı parça (3/9/12 ay ikişer), B dört parça (3/9 ay birer, 12 ay iki). Sentetik önizlemedeki 100/120 TL ve görseller ERP kaydı sayılmaz; iki A ve bir B, 16 parça / 1.680 TL yalnız sentetik beklentidir. Gerçek TEST profili güncel ERP fiyatını ve native readback'i zorunlu tutar.
+
+**Kabul henüz tamamlanmadı:** Semih'teki 62600–62604 süreçleri ve native TEST etkisiz kimliği salt okunur doğrulandı. Yeni kaynak henüz kurulmuş, telefonda açılmış, WhatsApp'tan gönderilmiş veya gerçek AI sohbeti çalıştırılmış sayılmaz. Tarayıcı önizlemesi client engeli nedeniyle render edilmedi; [tasarım QA](design-qa.md) blocked. Ortak hazırlık ortamının gönderim/AI kapıları bu kodla açılmaz. Eski624xx, diğer runtime'lar, LIVE/main ve insan kabul sayımları korunur. [İşletim notu](docs/customer-mobile-catalog.md).
+
 ## ERP-CRM-PREP01 / CRM-DEC-007 — 9 Ekim 2026
 
 CRM bağlantı hazırlığı teknik teslim edildi: CRM62600–62604, ERP5224/4174/4176 ve yalnız yeni ortak SQL kopyası. Çalışan uygulama source81754aaefb4eff85420ed491c8656ce3defa5c05; native sipariş source7b083a628628c59f7930a1571992fadaccb0ac7a. Normal ekranda güncel kaynak fiyat/döviz/birim ile tek native taslak, ayrı GET, paket yenilemesi sonrası aynı kayıt ve iki ondalık gösterim doğrulandı. AynıUUID/body200, değişmişbody409; ikinci ticari etki0. Kesin telefon eşleşmesi olmadığında otomatik cari eşlemesi yapılmadı; gerekçeli TEST seçimi gerçek telefon bağı sayılmaz.

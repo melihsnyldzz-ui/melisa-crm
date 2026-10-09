@@ -8,6 +8,7 @@ import {resolveTestDirectories} from './test-supervisor.mjs';
 import {installTestAdminSession} from '../apps/gateway/src/services/testAdminSession.mjs';
 import {installTestPersonnelSession} from '../apps/gateway/src/services/testPersonnelSession.mjs';
 import {resolveTestEndpoints} from './test-endpoints.mjs';
+import {readCustomerCatalogTestProfile,createCustomerCatalogTestRuntime,respondCustomerCatalog,customerCatalogLinkOrigin} from './customer-catalog-test-runtime.mjs';
 const mime = { '.html':'text/html; charset=utf-8', '.js':'text/javascript', '.css':'text/css', '.png':'image/png', '.svg':'image/svg+xml', '.woff2':'font/woff2' };
 
 export function validateTestLanAddress(value='') {
@@ -18,6 +19,14 @@ export function validateTestLanAddress(value='') {
   return value;
 }
 const ipv4Number=value=>value.split('.').reduce((number,part)=>(number*256+Number(part))>>>0,0);
+export function resolveTestTailscaleNetwork(address='',peerAddresses='',interfaces=os.networkInterfaces(),endpoints=resolveTestEndpoints()) {
+  if(!address&&!peerAddresses)return null;
+  const valid=value=>typeof value==='string'&&/^100\.(?:6[4-9]|[7-9]\d|1[01]\d|12[0-7])\.(?:0|[1-9]\d{0,2})\.(?:0|[1-9]\d{0,2})$/.test(value)&&value.split('.').every(part=>Number(part)<=255);
+  const peers=peerAddresses.split(',');
+  if(!endpoints.isolated||!valid(address)||peers.length<1||peers.length>10||peers.some(peer=>!valid(peer)||peer===address)||new Set(peers).size!==peers.length)throw Error('TEST_TAILSCALE_IDENTITY_REQUIRED');
+  if(!Object.values(interfaces).flat().some(entry=>!entry.internal&&entry.family==='IPv4'&&entry.address===address))throw Error('TEST_TAILSCALE_INTERFACE_REQUIRED');
+  return {address,peers:new Set(peers),origin:`http://${address}:${endpoints.ui}`};
+}
 export function resolveTestLanNetwork(value,interfaces=os.networkInterfaces(),endpoints=resolveTestEndpoints()) {
   const address=validateTestLanAddress(value);if(!address)return null;
   for(const entries of Object.values(interfaces))for(const entry of entries||[]){
@@ -30,7 +39,7 @@ export function resolveTestLanNetwork(value,interfaces=os.networkInterfaces(),en
   }
   throw Error('TEST_LAN_INTERFACE_REQUIRED');
 }
-export function testUiRequestAllowed(req,lanNetwork=null,endpoints=resolveTestEndpoints()) {
+export function testUiRequestAllowed(req,lanNetwork=null,endpoints=resolveTestEndpoints(),tailscaleNetwork=null) {
   const local=req.socket?.localAddress,remote=req.socket?.remoteAddress;
   let host;
   if(local==='127.0.0.1'&&remote==='127.0.0.1')host=`127.0.0.1:${endpoints.ui}`;
@@ -39,6 +48,9 @@ export function testUiRequestAllowed(req,lanNetwork=null,endpoints=resolveTestEn
     if(((ipv4Number(remote)&lanNetwork.mask)>>>0)!==lanNetwork.network)return false;
     if(!['GET','HEAD'].includes(req.method)&&req.headers.origin!==lanNetwork.origin)return false;
     host=lanNetwork.address+':'+endpoints.ui;
+  }else if(tailscaleNetwork&&local===tailscaleNetwork.address&&tailscaleNetwork.peers.has(remote)){
+    if(!['GET','HEAD'].includes(req.method)&&req.headers.origin!==tailscaleNetwork.origin)return false;
+    host=tailscaleNetwork.address+':'+endpoints.ui;
   }else return false;
   return req.headers.host===host&&(!req.headers.origin||req.headers.origin==='http://'+host)
     &&!req.headers['x-forwarded-host']&&!req.headers['x-forwarded-for']
@@ -78,9 +90,13 @@ const endpoints=resolveTestEndpoints(env);
 const paidAi=env.CRM_PAID_AI_ENABLED==='true'&&!endpoints.isolated;
 const lanAddress=validateTestLanAddress(env.CRM_TEST_LAN_ADDRESS||'');
 if(endpoints.isolated&&lanAddress&&lanAddress!=='192.168.1.46')throw Error('SHARED_TEST_LAN_ADDRESS_REQUIRED');
-const uiOrigins=[endpoints.uiOrigin,...(lanAddress?[`http://${lanAddress}:${endpoints.ui}`]:[])];
+const tailscaleAddress=env.CRM_TEST_TAILSCALE_ADDRESS||'',tailscalePeers=env.CRM_TEST_TAILSCALE_PEERS||'';
+if((tailscaleAddress||tailscalePeers)&&!endpoints.isolated)throw Error('TEST_TAILSCALE_IDENTITY_REQUIRED');
+const uiOrigins=[endpoints.uiOrigin,...(lanAddress?[`http://${lanAddress}:${endpoints.ui}`]:[]),...(tailscaleAddress?[`http://${tailscaleAddress}:${endpoints.ui}`]:[])];
 // AI activation is explicit for this TEST session, never inherited from baseline dotenv.
 const salesMode=env.CRM_AI_SALES_MODE==='copilot'?'copilot':'off';
+const customerProfilePath=env.CRM_CUSTOMER_CATALOG_PROFILE_PATH||'';
+if(customerProfilePath&&!endpoints.isolated)throw Error('CUSTOMER_CATALOG_ISOLATED_TEST_REQUIRED');
 const terminalPersonnel=env.CRM_TEST_TERMINAL_PERSONNEL_USERNAME||(endpoints.isolated?'crm-ahmet':'');
 if(terminalPersonnel!==''&&terminalPersonnel!=='crm-ahmet')throw Error('TEST_PERSONNEL_IDENTITY_REQUIRED');
 // Sales rules belong to this validated TEST runtime, never a baseline/LIVE policy file.
@@ -108,6 +124,8 @@ Object.assign(env, {
   CRM_TEST_TERMINAL_PERSONNEL_USERNAME:terminalPersonnel,
   CRM_TEST_PORT_BASE:String(endpoints.ui),CRM_TEST_ERP_ORIGIN:endpoints.erpOrigin,CRM_TEST_EXPECTED_DATABASE:endpoints.database,
   CRM_ISOLATED_PREPARATION:String(endpoints.isolated),CRM_PAID_AI_ENABLED:String(paidAi),
+  CRM_CUSTOMER_CATALOG_PROFILE_PATH:customerProfilePath,
+  CRM_TEST_TAILSCALE_ADDRESS:tailscaleAddress,CRM_TEST_TAILSCALE_PEERS:tailscalePeers,
 });
 if(endpoints.isolated)Object.assign(env,{WHATSAPP_SEND_ENABLED:'false',WHATSAPP_LIVE_SEND_APPROVED:'false',WAAPI_CHATWOOT_BRIDGE_ENABLED:'false',WAAPI_INCOMING_READER_ENABLED:'false',CRM_AI_SALES_MODE:'off'});
 }
@@ -115,6 +133,7 @@ async function startTestServer(){
 configureTestServerEnvironment(root);
 const endpoints=resolveTestEndpoints();
 const lanNetwork=resolveTestLanNetwork(process.env.CRM_TEST_LAN_ADDRESS);
+const tailscaleNetwork=resolveTestTailscaleNetwork(process.env.CRM_TEST_TAILSCALE_ADDRESS,process.env.CRM_TEST_TAILSCALE_PEERS);
 const createTestSession=installTestAdminSession({uiOrigin:process.env.CRM_UI_ORIGIN,gatewayOrigin:endpoints.gatewayOrigin});
 const {findCrmUserByUsername}=await import('../apps/gateway/src/services/crmAuthService.js');
 const createPersonnelSession=process.env.CRM_TEST_TERMINAL_PERSONNEL_USERNAME?installTestPersonnelSession({uiOrigin:process.env.CRM_UI_ORIGIN,gatewayOrigin:endpoints.gatewayOrigin,username:process.env.CRM_TEST_TERMINAL_PERSONNEL_USERNAME,resolveUser:findCrmUserByUsername}):null;
@@ -126,15 +145,28 @@ const stopIncoming = endpoints.isolated?()=>{}:startTestIncomingReader();
 const stopWorker = endpoints.isolated?()=>{}:startWaapiWorker();
 const gateway = createApp().listen(endpoints.gateway, '127.0.0.1');
 const assets = path.join(root, 'apps/frontend/dist/client');
-const handler=createTestUiHandler({assets,createTestSession,createPersonnelSession,lanNetwork});
+const {runtime}=resolveTestDirectories(root);
+const profile=readCustomerCatalogTestProfile(process.env.CRM_CUSTOMER_CATALOG_PROFILE_PATH,root,runtime);
+const {verifyCrmAccessToken}=await import('../apps/gateway/src/services/crmAuthService.js');
+const {getChatwootConversationDetail}=await import('../apps/gateway/src/services/chatwootInboxService.js');
+const {getErpAuthorization}=await import('./test-erp-catalog.mjs');
+const customerCatalogHandler=createCustomerCatalogTestRuntime({profile,runtimeDirectory:runtime,endpoints,
+  linkOrigin:profile?customerCatalogLinkOrigin({endpoints,lanNetwork,tailscaleNetwork}):undefined,
+  verifyToken:verifyCrmAccessToken,getErpAuthorization:()=>getErpAuthorization({accountName:'seller'}),
+  allowedTestPeer:process.env.WAAPI_TEST_RECIPIENT,
+  readConversation:(scope,user)=>getChatwootConversationDetail({conversationId:scope.conversationId,user}),
+});
+const handler=createTestUiHandler({assets,createTestSession,createPersonnelSession,lanNetwork,customerCatalogHandler,tailscaleNetwork});
 const ui=http.createServer(handler).listen(endpoints.ui,'127.0.0.1',()=>console.log('Melisa CRM TEST hazır: '+endpoints.uiOrigin));
 const lanUi=lanNetwork?http.createServer(handler).listen(endpoints.ui,lanNetwork.address,()=>console.log('Melisa CRM LAN UI hazır.')):null;
-for (const server of [ui,lanUi,gateway].filter(Boolean)) server.on('error', error => { console.error(error.code || 'TEST_START_FAILED'); process.exit(1); });
-for (const signal of ['SIGINT','SIGTERM']) process.on(signal, () => { stopIncoming(); stopWorker(); ui.close(); lanUi?.close(); gateway.close(); setTimeout(() => process.exit(0), 500).unref(); });
+const tailscaleUi=tailscaleNetwork?http.createServer(handler).listen(endpoints.ui,tailscaleNetwork.address,()=>console.log('Melisa CRM Tailscale TEST UI hazır.')):null;
+for (const server of [ui,lanUi,tailscaleUi,gateway].filter(Boolean)) server.on('error', error => { console.error(error.code || 'TEST_START_FAILED'); process.exit(1); });
+for (const signal of ['SIGINT','SIGTERM']) process.on(signal, () => { stopIncoming(); stopWorker(); ui.close(); lanUi?.close(); tailscaleUi?.close(); gateway.close(); setTimeout(() => process.exit(0), 500).unref(); });
 }
-export function createTestUiHandler({assets,createTestSession,createPersonnelSession=null,lanNetwork=null,endpoints=resolveTestEndpoints()}) {
-return (req,res)=>{
-  if(!testUiRequestAllowed(req,lanNetwork,endpoints)){res.writeHead(403,{'cache-control':'no-store'});res.end('TEST_UI_ORIGIN_REQUIRED');return;}
+export function createTestUiHandler({assets,createTestSession,createPersonnelSession=null,lanNetwork=null,endpoints=resolveTestEndpoints(),customerCatalogHandler=null,tailscaleNetwork=null}) {
+return async (req,res)=>{
+  if(!testUiRequestAllowed(req,lanNetwork,endpoints,tailscaleNetwork)){res.writeHead(403,{'cache-control':'no-store'});res.end('TEST_UI_ORIGIN_REQUIRED');return;}
+  if(customerCatalogHandler&&await respondCustomerCatalog(req,res,customerCatalogHandler))return;
   if(req.url.startsWith('/api/test-personnel/')) {
     res.setHeader('cache-control','no-store');res.setHeader('content-type','application/json');
     if(!createPersonnelSession||!testPersonnelBootstrapAllowed(req,endpoints)){res.writeHead(403);res.end(JSON.stringify({error:'TEST_PERSONNEL_ORIGIN_REQUIRED'}));return;}
