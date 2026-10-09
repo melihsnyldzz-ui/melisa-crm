@@ -1,11 +1,15 @@
 # Mobile catalog design QA — 10 October 2026
 
+**Current evidence boundary**
+
+The real Semih TEST pilot now passed authenticated source-product/photo reads, a technical 16-piece native draft with independent GET, and one owner55 catalog send through the existing CRM (`CONFIRMED`, provider/Chatwoot identifiers present). Home Tailscale independently returned the real catalog HTML/assets200, remote bootstrap403 and unauthenticated catalog401. [Pilot evidence](docs/evidence/crm/2026-10-10-customer-mobile-catalog/README.md). These are API/network/send checks, not rendered visual or phone acceptance. The user will open the sent link and report feedback; remote Galaxy access is not a delivery gate.
+
 **Findings**
 
 - [P1] Browser-rendered verification is blocked.
   Location: the synthetic catalog fixture on EvdekiPC.
   Evidence: the in-app browser surface was unavailable. Chrome returned `ERR_BLOCKED_BY_CLIENT` after opening both the loopback fixture and the provided LAN fixture. The Codex browser-open request was queued for the task; it did not create a controllable in-app browser surface during this check.
-  Impact: visual fidelity, mobile layout, filters, cart persistence, summary, and fixture draft readback cannot be accepted from this browser run.
+  Impact: visual fidelity, mobile layout, filters, cart persistence, summary, and fixture draft readback cannot be accepted from this historical browser run. The later real API/native pilot is recorded separately above.
   Fix: open the queued preview in the task's available browser surface, then repeat the complete rendered comparison and interactions. Do not weaken browser or extension security settings to obtain a pass.
 
 **Comparison target and evidence**
@@ -16,7 +20,7 @@
 - Implementation screenshot path: unavailable; the fixture did not render in the controlled browser.
 - Full-view comparison: not performed because browser-rendered evidence is missing.
 - Focused-region comparison: not performed for the same reason. Product images, per-item prices, series quantities, and totals require focused comparison when rendering becomes available.
-- State: synthetic fixture only, labeled as synthetic and isolated from real ERP/provider calls. This check is not a Semih runtime deployment, WhatsApp test, live AI conversation, or phone acceptance.
+- State of this historical browser attempt: synthetic fixture only, labeled as synthetic and isolated from real ERP/provider calls. Later Semih runtime/native/send evidence is separate; no rendered phone or AI conversation acceptance is claimed.
 
 **Required fidelity surfaces**
 
@@ -56,4 +60,4 @@
 
 None assessed while rendering is blocked.
 
-final result: blocked
+final rendered design result: blocked; real technical TEST pilot verified separately
