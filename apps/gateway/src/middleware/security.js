@@ -1,6 +1,7 @@
 import { verifyCrmAccessToken } from '../services/crmAuthService.js';
 import { catalogAccess } from '../services/crmCatalogAccess.mjs';
 import { createReadBudgetMiddleware, budgetKey, PROPOSED_READ_BUDGET } from './catalogReadBudget.mjs';
+import {getBusinessTestReadBudget} from '../services/businessTestReadBudget.mjs';
 import cors from 'cors';
 import rateLimit, { ipKeyGenerator } from 'express-rate-limit';
 import helmet from 'helmet';
@@ -53,6 +54,7 @@ export function crmCors() {
 }
 
 export function apiRateLimit() {
+  const businessRead=getBusinessTestReadBudget();
   const globalLimiter = rateLimit({
     windowMs: env.rateLimit.windowMs, max: env.rateLimit.max,
     standardHeaders: true, legacyHeaders: false,
@@ -70,7 +72,7 @@ export function apiRateLimit() {
     globalLimiter,
     catalogLimiter: readLimiter(PROPOSED_READ_BUDGET.catalogMax, 'catalog'),
     verificationLimiter: readLimiter(PROPOSED_READ_BUDGET.verificationMax, 'verification'),
-    crmReadLimiter: readLimiter(env.rateLimit.max, 'crm-read', env.rateLimit.windowMs),
+    crmReadLimiter: readLimiter(businessRead?.max??env.rateLimit.max, 'crm-read', businessRead?.windowMs??env.rateLimit.windowMs),
     crmSendLimiter: readLimiter(env.rateLimit.max, 'crm-send', env.rateLimit.windowMs),
   });
 }

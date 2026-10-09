@@ -114,6 +114,7 @@ if(endpoints.isolated)Object.assign(env,{WHATSAPP_SEND_ENABLED:'false',WHATSAPP_
 async function startTestServer(){
 configureTestServerEnvironment(root);
 const endpoints=resolveTestEndpoints();
+if(endpoints.businessScope){const {installBusinessTestReadBudget}=await import('../apps/gateway/src/services/businessTestReadBudget.mjs');await installBusinessTestReadBudget({executionRoot:root});}
 const lanNetwork=resolveTestLanNetwork(process.env.CRM_TEST_LAN_ADDRESS);
 const createTestSession=installTestAdminSession({uiOrigin:process.env.CRM_UI_ORIGIN,gatewayOrigin:endpoints.gatewayOrigin});
 const {findCrmUserByUsername}=await import('../apps/gateway/src/services/crmAuthService.js');
