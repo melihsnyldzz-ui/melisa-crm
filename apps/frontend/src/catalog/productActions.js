@@ -1,4 +1,5 @@
 export const exactPriceText=value=>typeof value==='string'&&/^\d+\.\d{8}$/.test(value)?value.replace(/0+$/,'').replace(/\.$/,''):null;
+export const priceLabelText=(value,language='tr')=>exactPriceText(value)===null?null:new Intl.NumberFormat({tr:'tr-TR',en:'en-GB',fr:'fr-FR'}[language]||'tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2}).format(Number(value));
 export function selectedSaleLines(products){
  if(!Array.isArray(products)||!products.length)throw Error('Önce ürün seçin.');
  return products.map(product=>{

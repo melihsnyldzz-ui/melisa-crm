@@ -15,13 +15,13 @@ const row=(id='55')=>({id,phone:'+905387217733',channel:'whatsapp',assignedUserI
 const storage=()=>{const values=new Map();return {getItem:key=>values.get(key)??null,setItem:(key,value)=>values.set(key,value),removeItem:key=>values.delete(key)};};
 const fakeWindow=sessionStorage=>({location:{pathname:'/',search:''},crypto:{randomUUID},sessionStorage,localStorage:{getItem:()=>null,setItem(){}},matchMedia:()=>({matches:false}),dispatchEvent(){},setTimeout:()=>0,clearTimeout(){},setInterval:()=>0,clearInterval(){},addEventListener(){},removeEventListener(){}});
 const settle=async()=>{await Promise.resolve();await Promise.resolve();};
-async function bundle(file,instrument=false){
- await build({absWorkingDir:frontend,tsconfigRaw:{},entryPoints:[frontend+'src/App.jsx'],outfile:file,bundle:true,platform:'node',format:'esm',jsx:'automatic',define:{'import.meta.env.DEV':'false','import.meta.env.VITE_CRM_TEST':'"1"'},external:['react','@phosphor-icons/react'],loader:{'.css':'empty'},plugins:instrument?[{name:'isolated-app-handler-harness',setup(build){
-  build.onLoad({filter:/App\.jsx$/},args=>({loader:'jsx',contents:readFileSync(args.path,'utf8').replace(/^import \{ useCallback, useEffect, useMemo, useRef, useState \} from "react";/,'const {useCallback,useEffect,useMemo,useRef,useState}=globalThis.__draftHooks;').replace('  if (liveMode && !liveSession) return <LoginGate','  globalThis.__draftHarness.actions={commitLiveSession,setDraft,sendMessage,closeLiveSession,refreshLivePermissions,selectConversation,setQuery,setFilter,loadRemainingConversations,activateTerminal,checkSendStatus};\n  if (liveMode && !liveSession) return <LoginGate')}));
+async function bundle(file,instrument=false,isolated=false){
+ await build({absWorkingDir:frontend,tsconfigRaw:{},entryPoints:[frontend+'src/App.jsx'],outfile:file,bundle:true,platform:'node',format:'esm',jsx:'automatic',define:{'import.meta.env.DEV':'false','import.meta.env.VITE_CRM_TEST':'"1"','import.meta.env.VITE_CRM_ISOLATED_PREPARATION':JSON.stringify(isolated?'1':'0')},external:['react','@phosphor-icons/react'],loader:{'.css':'empty'},plugins:instrument?[{name:'isolated-app-handler-harness',setup(build){
+  build.onLoad({filter:/App\.jsx$/},args=>({loader:'jsx',contents:readFileSync(args.path,'utf8').replace(/^import \{ useCallback, useEffect, useMemo, useRef, useState \} from "react";/,'const {useCallback,useEffect,useMemo,useRef,useState}=globalThis.__draftHooks;').replace('  if (liveMode && !liveSession) return <LoginGate','  globalThis.__draftHarness.actions={commitLiveSession,setDraft,sendMessage,closeLiveSession,refreshLivePermissions,selectConversation,setQuery,setFilter,loadRemainingConversations,activateTerminal,checkSendStatus,translateDraft};\n  if (liveMode && !liveSession) return <LoginGate')}));
   build.onLoad({filter:/liveApi\.js$/},args=>({loader:'js',contents:readFileSync(args.path,'utf8')+'\nfor(const name of Object.keys(globalThis.__draftHarness.api))liveApi[name]=(...args)=>globalThis.__draftHarness.api[name](...args);'}));
  }}]:[]});
 }
-async function fixture(run,{compact=false,terminal=false,offline=false}={}){
+async function fixture(run,{compact=false,terminal=false,offline=false,isolated=false}={}){
  mkdirSync(temporary,{recursive:true});const file=temporary+'text-draft-handlers-'+randomUUID()+'.mjs', previous={window:globalThis.window,document:globalThis.document,hooks:globalThis.__draftHooks,harness:globalThis.__draftHarness};
  const local=storage(),values=[],effects=[];let cursor=0;
  globalThis.window=fakeWindow(local);
@@ -30,7 +30,7 @@ async function fixture(run,{compact=false,terminal=false,offline=false}={}){
  globalThis.document={visibilityState:'visible',addEventListener(){},removeEventListener(){}};
  globalThis.__draftHooks={useState(initial){const i=cursor++;if(!(i in values))values[i]=typeof initial==='function'?initial():initial;return [values[i],update=>{values[i]=typeof update==='function'?update(values[i]):update;}];},useRef(initial){const i=cursor++;if(!(i in values))values[i]={current:initial};return values[i];},useMemo:fn=>fn(),useCallback:fn=>fn,useEffect:fn=>effects.push(fn)};
  const harness=globalThis.__draftHarness={api:{sendStatus:async()=>({}),canonicalCatalogProduct:async()=>({}),erpDrafts:async()=>({orders:[]}),catalogSignOut:async()=>({}),session:async()=>actor(),inbox:async()=>({conversations:[row()],summary:{total:1}}),conversation:async()=>({conversation:row()}),send:async()=>({message:{id:'synthetic-accepted',direction:'outgoing',text:'sent'}})},actions:null};
- try{await bundle(file,true);const {App}=await import(pathToFileURL(file).href);const render=()=>{cursor=0;effects.length=0;return App();};const connect=(session=actor(),rows=[row(),row('56')],inboxExtra={})=>{harness.actions.commitLiveSession({key:'synthetic-session',session,inbox:{conversations:rows,summary:{total:rows.length},...inboxExtra},agents:{agents:[]}});return render();};
+ try{await bundle(file,true,isolated);const {App}=await import(pathToFileURL(file).href);const render=()=>{cursor=0;effects.length=0;return App();};const connect=(session=actor(),rows=[row(),row('56')],inboxExtra={})=>{harness.actions.commitLiveSession({key:'synthetic-session',session,inbox:{conversations:rows,summary:{total:rows.length},...inboxExtra},agents:{agents:[]}});return render();};
   render();await run({local,harness,render,connect,pollAutomatic:()=>effects.filter(fn=>String(fn).includes("automaticTranslationBusy.current")).forEach(fn=>fn()),pollBackground:()=>effects.filter(fn=>String(fn).includes('const refreshInbox = async')||String(fn).includes('permissionPollRef.current')).forEach(fn=>fn()),pollDrafts:()=>effects.filter(fn=>String(fn).includes('textDraftStorageRef.current.synchronize')).forEach(fn=>fn()),pollConversation:()=>effects.filter(fn=>String(fn).includes('const refreshConversation = async')).forEach(fn=>fn())});
  }finally{globalThis.window=previous.window;globalThis.document=previous.document;globalThis.__draftHooks=previous.hooks;globalThis.__draftHarness=previous.harness;rmSync(file,{force:true});}
 }
@@ -197,3 +197,12 @@ test('actual App opens passively despite a stored automatic-translation preferen
  assert.equal(toggle.props.checked,false);h.pollAutomatic();await settle();assert.equal(calls,0);
  h.render();h.pollAutomatic();await settle();assert.equal(calls,0,'read render/poll never restores paid consent');
 }));
+
+for(const policy of [undefined,false,true])test(`composer translation refuses paid-disabled/default policy ${policy}`,async()=>fixture(async h=>{
+ let calls=0;h.harness.api.translate=async()=>{calls++;throw Error('Must not reach transport');};
+ h.connect({...actor(),paidAiEnabled:policy});h.harness.actions.setDraft('Synthetic private draft');
+ const tree=h.render(),button=find(tree,node=>node.type==='button'&&node.props['aria-label']==='Mesajı çevir');
+ assert.equal(button.props.disabled,true);
+ await h.harness.actions.translateDraft();
+ assert.equal(calls,0);assert.equal(composer(h.render()).props.value,'Synthetic private draft');
+},{isolated:policy===true}));
