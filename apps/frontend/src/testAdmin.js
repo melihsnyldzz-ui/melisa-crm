@@ -1,6 +1,6 @@
 const ROLE_LOGIN_KEY='melisa-crm-test-role-login';
 export function testAdminAvailable(location=globalThis.location,buildEnabled=import.meta.env?.VITE_CRM_TEST==='1') {
-  return buildEnabled && ['http://127.0.0.1:62400','http://127.0.0.1:62600'].includes(location?.origin);
+  return buildEnabled && ['http://127.0.0.1:62400','http://127.0.0.1:62600','http://127.0.0.1:62700'].includes(location?.origin);
 }
 export function testRoleLogin(storage) {
   try{return (storage??globalThis.sessionStorage)?.getItem(ROLE_LOGIN_KEY)==='1';}catch{return false;}

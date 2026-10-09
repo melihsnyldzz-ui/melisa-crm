@@ -26,3 +26,5 @@ test('bootstrap uses a cancellable same-origin POST and fails closed on rejectio
   assert.equal(token,'synthetic-token');
   await assert.rejects(bootstrapTestAdmin({fetchFn:async()=>new Response(null,{status:403})}),/açılamadı/);
 });
+
+test('business loopback shows process-local TEST entry but LAN and disabled builds retain normal role login',()=>{assert.equal(testAdminAvailable({origin:'http://127.0.0.1:62700'},true),true);assert.equal(testAdminAvailable({origin:'http://192.168.1.46:62700'},true),false);assert.equal(testAdminAvailable({origin:'http://127.0.0.1:62700'},false),false);});

@@ -32,3 +32,8 @@ test('shared terminal permits only the exact same-host ERP5224 on shared CRM6260
   assert.equal(terminalEntry({hostname:host,origin:'http://'+host+':62400',search:'?terminal=1&erpOrigin='+encodeURIComponent(target)}).erpOrigin,null);
  }
 });
+
+test('business terminal binds only same-host DB02 ERP5234 and never previous copies',()=>{
+ for(const hostname of ['127.0.0.1','192.168.1.46'])for(const port of [5234,5224,5194]){const location={origin:'http://'+hostname+':62700',hostname,search:'?terminal=1&erpOrigin='+encodeURIComponent('http://'+hostname+':'+port)};assert.equal(terminalEntry(location).erpOrigin,port===5234?'http://'+hostname+':5234':null);}
+ assert.equal(terminalEntry({origin:'http://127.0.0.1:62600',hostname:'127.0.0.1',search:'?terminal=1&erpOrigin=http%3A%2F%2F127.0.0.1%3A5234'}).erpOrigin,null);
+});
