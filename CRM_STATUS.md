@@ -2,7 +2,11 @@
 
 ## ERP-CRM-PREP01 / CRM-DEC-007 — 9 Ekim 2026
 
-Ortak izole TEST hazırlığı sürüyor: CRM62600–62604, ERP4174 ve ayrı ortak veritabanı; güncel katalog/fiyat kaynak sürümüyle sipariş taslağı, mevcut bağımsız ERP/CRM oturumları ve normal ekran kontrolleri. Ücretli AI varsayılan kapalı; ortak ortamda sunucu model/provider/dış gönderimi ayrıca reddeder. Eski624xx ortamı korunur. Hazırlık teslimi tam işletme testini başlatmaz, insan kabulünü PASS yapmaz; final sonuç ve paket/GitHub kanıtı bu kayda eklenecektir.
+CRM bağlantı hazırlığı teknik teslim edildi: CRM62600–62604, ERP5224/4174/4176 ve yalnız yeni ortak SQL kopyası. Çalışan uygulama source81754aaefb4eff85420ed491c8656ce3defa5c05; native sipariş source7b083a628628c59f7930a1571992fadaccb0ac7a. Normal ekranda güncel kaynak fiyat/döviz/birim ile tek native taslak, ayrı GET, paket yenilemesi sonrası aynı kayıt ve iki ondalık gösterim doğrulandı. AynıUUID/body200, değişmişbody409; ikinci ticari etki0. Kesin telefon eşleşmesi olmadığında otomatik cari eşlemesi yapılmadı; gerekçeli TEST seçimi gerçek telefon bağı sayılmaz.
+
+Mevcut crm-ahmet/Personel güncel pakette22 atanmış sohbeti görüyor; başkasının sohbeti kapsam dışında. Ücretli AI, provider/dış gönderim ve mesaj/atama yazmaları ortak ortamda kapalı. Chatwoot geçmişi mevcut servisten salt okunur; bütün CRM DB'si klonlandı iddiası yok. Eski624xx, TEST125 ve eğitim PR27 korunur. [Teknik kanıt](docs/evidence/crm/new2026-10-09-shared-preparation/README.md). Dal codex/crm-agents-on-completion-20261003 / PR3; teslim HEAD çalışan source değildir. Yerel hedefli test/secret scan geçti; GitHub Actions ödeme/harcama engeliyle başlamadı, yeşil sayılmaz. Son exact HEAD/CI PR makbuzunda doğrulanır.
+
+İşlem profili iki ürün/seçili hesaplar/TRY ile sınırlı; tüm mağaza ve dövizler hazır ilan edilmez. İnsan CRM-UA01–06 sonuçları değişmedi. Tam işletme TEST'i ayrıca kullanıcı onayı bekler; bu teslimde DUR.
 
 **6 Ekim Goal6 / CRM-DEC-006:** O02 mevcut startup zinciri teknik tamamlandı. Source77a2fa34/immutable paket, Limited logon/IgnoreNew/max3 task retry, sınırlı child recovery, authenticated Chatwoot bağımlılığı ve ERP exactTEST/native bağlantısı kanıtlı. Gerçek server child kapanışı ve ikinci launcher;76/77 ERP ile bağımsız sağlık görünümü doğrulandı. Gerçek reboot/logon/işyeri kabulü CRM-UA06 bekler. **25 toplam /12🟢 /13🟡 /0🔴** değişmez; M01/önceki kullanıcı kabulleri değişmez. Goal6 sonunda durulur; Goal7/LIVE/main/provider/gerçek mesaj/rol değişikliği yok. [Goal6 kanıtı](docs/evidence/crm/2026-10-06-goal6/README.md).
 

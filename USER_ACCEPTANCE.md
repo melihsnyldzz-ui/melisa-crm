@@ -2,6 +2,8 @@
 
 **9 Ekim ortak TEST hazırlığı / CRM-DEC-007:** Teknik ortam ve bağlantı doğrulaması insan kabulü yerine geçmez. Eski CRM-UA01–06 ve atanmış personel/cihaz sonuçları kendi kapsamlarıyla korunur. Yeni ortak ortamda gerçek WhatsApp veya ücretli model çağrısı yapılmaz; geniş işletme TEST'i ayrıca kullanıcı onayı bekler.
 
+Güncel teknik prova: CRM62600/source81754aa, ERP5224/source41a8e6c ve native62604/source7b083a6. Gerçek CRM ekranında fiyat/döviz/müşteri seçimi, aynı taslağın yenileme sonrası geri okunması, mevcut personelin atanmış sohbetleri ve AI kapalı görünümü doğrulandı. **İnsan kişi/tarih/sonuç bekliyor; yeni PASS yok.** Ürün/müşteri/miktar, gerçek atama/rol ve fiziksel terminal kullanımı kullanıcı/İlker tarafından ayrıca kontrol edilecek. Taslak gerçek satış ve bu prova geniş işletme TEST'i değildir.
+
 Kullanıcının **normal ekranda gözle denemesi** ve kendi sonucu burada tutulur. Teknik test, ajan tarayıcı provası veya CI PASS kullanıcı kabulü değildir; teknik kanıt [CRM_STATUS.md](CRM_STATUS.md) içindedir. Ayrıntılı kapsam [CRM_FINISH_PLAN.md](CRM_FINISH_PLAN.md), sıra [DELIVERY_BOARD.md](DELIVERY_BOARD.md). Sonuçlar yalnız `bekliyor / PASS / FAIL`; kullanıcı veya kullanıcı kabulünü açıkça doğrulayan kaynak olmadan PASS yazılmaz.
 
 Her sonuçta kişi, tarih, TEST adresi/ortamı, denenen paket/commit ve kanıt bağlantısı eklenir. Bilinmeyen değer `Durum doğrulanmadı` kalır; mevcut URL/PID geçmiş kayıttan güncel sayılmaz. Kabul edilen kapsam değişirse aynı satırdaki geçmişi silmeden yeni deneme kaydı eklenir. Henüz hazır olmayan deneme kullanıcıya hazır diye sunulmaz.
