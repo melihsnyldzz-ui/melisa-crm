@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken';
 // Real users and the LIVE signing secret remain independent.
 let testSession = null;
 export function installTestAdminSession({uiOrigin, gatewayOrigin}) {
-  if (![['http://127.0.0.1:62400','http://127.0.0.1:62401'],['http://127.0.0.1:62600','http://127.0.0.1:62601']].some(([ui,gateway])=>uiOrigin===ui&&gatewayOrigin===gateway)) throw Error('TEST_ADMIN_ORIGIN_REQUIRED');
+  if (![['http://127.0.0.1:62400','http://127.0.0.1:62401'],['http://127.0.0.1:62600','http://127.0.0.1:62601'],['http://127.0.0.1:62700','http://127.0.0.1:62701']].some(([ui,gateway])=>uiOrigin===ui&&gatewayOrigin===gateway)) throw Error('TEST_ADMIN_ORIGIN_REQUIRED');
   const secret = crypto.randomBytes(48).toString('hex');
   const user = Object.freeze({id:'crm-test-admin', username:'test-admin', displayName:'TEST ADMIN', role:'patron',
     active:true, testAdmin:true, chatwootAgentId:null,
