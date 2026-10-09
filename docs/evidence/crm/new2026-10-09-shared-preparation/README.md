@@ -9,7 +9,7 @@ CRM-DEC-007 kapsamındaki teknik hazırlık kanıtıdır. Tam işletme TEST'i ba
 | CRM kaynak / immutable paket | `81754aaefb4eff85420ed491c8656ce3defa5c05`; koordinatör final çalışan paketi ve normal UI readback'i doğruladı. |
 | CRM UI / gateway / katalog / adapter | `http://127.0.0.1:62600/`,62601,62602,62603. |
 | Ayrı native draft API | 62604, kaynak `7b083a628628c59f7930a1571992fadaccb0ac7a`, paket `CRM-ORDER-DRAFT-TEST-SHARED-7b083a6`. |
-| ERP ortak UI / API / ayrı read API | 5224 /4174 /4176. CRM ve ERP hesapları ayrı doğrulanır; SSO veya numeric aktör eşleme varsayılmaz. |
+| ERP ortak UI / API / ayrı read API | 5224 /4174 /4176; son çalışan source6c47c37dc3100da494e44831a7e55fa541f2e1a1. CRM ve ERP hesapları ayrı doğrulanır; SSO veya numeric aktör eşleme varsayılmaz. |
 | SQL hedefi | Yalnız `MELISA_ERP_CRM_SHARED_TEST_20261009_01`, `ISOLATED_TEST_COPY`; eski624xx ve normal veritabanları korunur. |
 | Mühürlü ürün/fiyat bağlamı | `PRODUCT-4161d6d9-0716-469e-8c67-c165a20fa674`, `sourceAsOf=2026-10-08`, native health ürün16743 / fiyat64333, `actualT1=false`. Güncel source/plan/bindings/snapshot pinleri sunucuya aittir. |
 
