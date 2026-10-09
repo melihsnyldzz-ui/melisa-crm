@@ -63,3 +63,30 @@ test('DB02 business marker permits EUR exact tuple while malformed scope and mis
  assert.equal(canonicalQuery().hasImage,true);assert.deepEqual(availableCurrencies([canonicalProduct(photoRow(),m)],scope),['TRY','USD','EUR']);
  for(const bad of [{...scope,database:'LIVE'},{...scope,supportedCurrencies:['EUR']},{...scope,extra:true},null])assert.throws(()=>canonicalProduct(photoRow(),{...meta,businessScope:bad}));
 });
+
+test('unpictured DB02 page requires exact trusted marker in request and response; defaults and reset remain photo-only',()=>{
+ const scope={scopeKind:'VERIFIED_BUSINESS_TEST',database:'MELISA_ERP_CRM_SHARED_TEST_20261009_02',supportedCurrencies:['TRY','USD','EUR']};
+ assert.equal(canonicalQuery().hasImage,true);assert.equal(canonicalQuery({hasImage:false},scope).hasImage,false);
+ for(const bad of [undefined,{...scope,database:'MELISA_ERP_CRM_SHARED_TEST_20261009_01'},{...scope,database:'LIVE'},{...scope,extra:true}])assert.throws(()=>canonicalQuery({hasImage:false},bad));
+ const envelope={success:true,data:[row()],meta:{...meta,businessScope:scope,filters:{...meta.filters,hasImage:false}}};
+ const result=normalizeCanonicalEnvelope(envelope,{hasImage:false});assert.equal(result.products[0].hasSourceImage,false);assert.equal(result.products[0].photoPath,null);assert.equal(result.products[0].prices.TRY,196);
+ for(const bad of [undefined,{...scope,database:'LIVE'}])assert.throws(()=>normalizeCanonicalEnvelope({...envelope,meta:{...envelope.meta,businessScope:bad}},{hasImage:false}));
+ assert.throws(()=>normalizeCanonicalEnvelope({...envelope,meta:{...envelope.meta,filters:{...meta.filters,hasImage:true}}},{hasImage:false}));
+ assert.equal(canonicalQuery({search:'',page:1,limit:50,hasImage:true},scope).hasImage,true);
+});
+test('actual DB02 catalog session first verifies photo page then permits explicit all-products EUR and resets without photo requests',async()=>{
+ const scope={scopeKind:'VERIFIED_BUSINESS_TEST',database:'MELISA_ERP_CRM_SHARED_TEST_20261009_02',supportedCurrencies:['TRY','USD','EUR']},requests=[];let state,photoReads=0;
+ const api={canonicalCatalogProducts:async(token,q,options)=>{requests.push({q,scope:options.businessScope});const r=q.hasImage?photoRow():row();if(!q.hasImage){r.salePrices=r.salePrices.map(p=>({...p,currency:'EUR'}));r.currency='EUR';}
+  return{success:true,data:[r],meta:{...meta,businessScope:scope,page:q.page,limit:q.limit,filters:{search:q.search,brand:q.brand||null,category:q.category||null,barcode:q.barcode,hasImage:q.hasImage}}};},canonicalCatalogPhoto:async()=>{photoReads++;throw Error('unexpected photo');}};
+ const session=createCanonicalSession({api,token:'synthetic',conversationId:'88',isCurrent:()=>true,onState:s=>state=s,schedule:()=>0,unschedule:()=>{}});
+ await assert.rejects(()=>session.read({hasImage:false}));assert.equal(requests.length,0);
+ await session.read();assert.equal(requests[0].q.hasImage,true);assert.equal(requests[0].scope,undefined);
+ await session.read({hasImage:false});assert.equal(requests[1].q.hasImage,false);assert.deepEqual(requests[1].scope,scope);assert.equal(state.viewProducts[0].prices.EUR,196);assert.equal(state.viewProducts[0].hasSourceImage,false);assert.equal(await session.photo(state.viewProducts[0]),'');assert.equal(photoReads,0);
+ await session.read();assert.equal(requests[2].q.hasImage,true);session.close();
+});
+
+test('live HTTP all-products filter is sent only with a verified DB02 scope option, never a query override',async()=>{
+ const {liveApi}=await import('../src/liveApi.js'),original=globalThis.fetch,calls=[];const scope={scopeKind:'VERIFIED_BUSINESS_TEST',database:'MELISA_ERP_CRM_SHARED_TEST_20261009_02',supportedCurrencies:['TRY','USD','EUR']};
+ globalThis.fetch=async(url,options)=>{calls.push({url,options});return Response.json({success:true,meta:{...meta,businessScope:scope},data:[row()]});};
+ try{assert.throws(()=>liveApi.canonicalCatalogProducts('synthetic',{hasImage:false}));assert.throws(()=>liveApi.canonicalCatalogProducts('synthetic',{hasImage:false},{businessScope:{...scope,database:'LIVE'}}));await liveApi.canonicalCatalogProducts('synthetic',{hasImage:false},{businessScope:scope});assert.equal(calls.length,1);assert.equal(new URL(calls[0].url,'http://local.test').searchParams.get('hasImage'),'false');assert.equal(new URL(calls[0].url,'http://local.test').searchParams.has('businessScope'),false);}finally{globalThis.fetch=original;}
+});

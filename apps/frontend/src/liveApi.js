@@ -547,7 +547,7 @@ async function catalogPhoto(accessToken, id, { signal: callerSignal, variant='pr
 }
 
 export const liveApi = {
- canonicalCatalogProducts(token,input={}, {signal,conversationId}={}) {const q=canonicalQuery(input);return request('/crm/catalog/products?'+new URLSearchParams({...q,page:String(q.page),limit:String(q.limit),hasImage:String(q.hasImage)}),token,{signal,headers:catalogConversationHeaders(conversationId),preserveEnvelope:true,preserveAuthDenial:true,redirect:'error'});},
+ canonicalCatalogProducts(token,input={}, {signal,conversationId,businessScope}={}) {const q=canonicalQuery(input,businessScope);return request('/crm/catalog/products?'+new URLSearchParams({...q,page:String(q.page),limit:String(q.limit),hasImage:String(q.hasImage)}),token,{signal,headers:catalogConversationHeaders(conversationId),preserveEnvelope:true,preserveAuthDenial:true,redirect:'error'});},
  canonicalCatalogProduct(token,id,{signal,conversationId}={}) {if(!canonicalId(id))throw Error('ERP ürün kimliği doğrulanamadı.');return request('/crm/catalog/products/'+id,token,{signal,headers:catalogConversationHeaders(conversationId),preserveEnvelope:true,preserveAuthDenial:true,redirect:'error'});},
  canonicalCatalogPhoto(token,id,options={}) {if(!canonicalId(id))throw Error('ERP ürün kimliği doğrulanamadı.');return catalogPhoto(token,id,options);},
  erpV2Customers:(token,erpToken,conversationId,phone,search='')=>request('/crm/erp/v2/customers?'+new URLSearchParams({conversationId:String(conversationId),phone,search}),token,{headers:{'x-erp-token':erpToken}}),

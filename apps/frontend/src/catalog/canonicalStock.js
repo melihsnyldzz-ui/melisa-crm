@@ -2,9 +2,9 @@ import {verifiedBusinessCurrencies} from './model.js';
 import {normalizeLiveProductRows} from './liveFields.js';
 import {contractError} from './existingStock.js';
 export const canonicalId=id=>typeof id==='string'&&/^erp-[1-9]\d*$/.test(id)&&Number.isSafeInteger(Number(id.slice(4)));
-export function canonicalQuery(input={}) {
+export function canonicalQuery(input={},businessScope) {
  const {page=1,limit=50,hasImage=true}=input;
- if(!Number.isSafeInteger(page)||page<1||!Number.isSafeInteger(limit)||limit<1||limit>50||hasImage!==true||Object.keys(input).some(k=>!['page','limit','hasImage','search','brand','category','barcode'].includes(k)))throw contractError();
+ if(!Number.isSafeInteger(page)||page<1||!Number.isSafeInteger(limit)||limit<1||limit>50||(hasImage!==true&&(hasImage!==false||!verifiedBusinessCurrencies(businessScope)))||Object.keys(input).some(k=>!['page','limit','hasImage','search','brand','category','barcode'].includes(k)))throw contractError();
  const q={page,limit,hasImage};for(const key of ['search','brand','category','barcode']){if(typeof(input[key]??'')!=='string'||(input[key]??'').trim().length>120)throw contractError();q[key]=(input[key]??'').trim();}return q;
 }
 export function assertCanonicalMeta(m){if(m?.source!=='melisa-erp-catalog'||m.catalogVersion!=='melisa-catalog.v1'||m.environment!=='CANONICAL_TEST'||m.cached!==false||m.sourceDatabaseVerified!==true||m.stockFreshness!=='native-test'||m.freshLive!==false||!Number.isFinite(Date.parse(m.fetchedAt)))throw contractError();verifiedBusinessCurrencies(m.businessScope);return m;}
@@ -19,8 +19,8 @@ export function canonicalProduct(row,meta){
  return {...product,code:row.stockCode,prices,sourceProductName:row.productName,erpProductId:row.erpProductId,safeCode:row.safeCode,barcode:row.barcode,barcodes:row.barcodes,unit:row.unit,salePrices:row.salePrices,priceExact:row.priceExact,priceSourceKey:row.priceSourceKey,revision:row.revision,status:row.status,hold:row.hold,hasSourceImage:safePhoto,photoStatus:row.photoStatus,photoPath:row.photoPath,thumbnailPath:row.thumbnailPath,catalogVersion:meta.catalogVersion,fetchedAt:meta.fetchedAt,sourceAsOf:meta.sourceAsOf,priceVerified:false,stockVerified:false};
 }
 export function normalizeCanonicalEnvelope(payload,input={}){
- const q=canonicalQuery(input),m=assertCanonicalMeta(payload?.meta);if(payload.success!==true||!Array.isArray(payload.data)||m.page!==q.page||m.limit!==q.limit||!Number.isSafeInteger(m.total)||m.total<0||m.filters?.search!==q.search||m.filters?.brand!==(q.brand||null)||m.filters?.category!==(q.category||null)||m.filters?.hasImage!==q.hasImage||(m.filters?.barcode??'')!==q.barcode)throw contractError();
+ const m=assertCanonicalMeta(payload?.meta),q=canonicalQuery(input,m.businessScope);if(payload.success!==true||!Array.isArray(payload.data)||m.page!==q.page||m.limit!==q.limit||!Number.isSafeInteger(m.total)||m.total<0||m.filters?.search!==q.search||m.filters?.brand!==(q.brand||null)||m.filters?.category!==(q.category||null)||m.filters?.hasImage!==q.hasImage||(m.filters?.barcode??'')!==q.barcode)throw contractError();
  const facets={};for(const key of ['brands','categories']){if(!Array.isArray(m.facets?.[key]))throw contractError();facets[key]=m.facets[key].map(f=>{if(typeof f.value!=='string'||!f.value||f.count!==null)throw contractError();return f;});}
- const products=payload.data.map(row=>canonicalProduct(row,m));if(products.some(product=>!product.hasSourceImage))throw contractError();
+ const products=payload.data.map(row=>canonicalProduct(row,m));if(q.hasImage&&products.some(product=>!product.hasSourceImage))throw contractError();
  return {products,query:q,meta:{...m,facets}};
 }
