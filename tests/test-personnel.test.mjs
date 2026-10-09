@@ -6,6 +6,7 @@ import {installTestPersonnelSession,verifyTestPersonnelSession} from '../apps/ga
 import {verifyCrmAccessToken,publicCrmUser} from '../apps/gateway/src/services/crmAuthService.js';
 import {createTestUiHandler,testPersonnelBootstrapAllowed,testUiRequestAllowed,configureTestServerEnvironment} from '../deploy/test-server.mjs';
 import path from 'node:path';
+import {resolveTestEndpoints} from '../deploy/test-endpoints.mjs';
 const origins={uiOrigin:'http://127.0.0.1:62400',gatewayOrigin:'http://127.0.0.1:62401'};
 const fixture=()=>({id:'fixture-staff',username:'crm-ahmet',displayName:'Ahmet',active:true,role:'personel',chatwootAgentId:3,permissions:['crm.view']});
 test('owner-installed rehearsal keeps real identity and normal permissions; caps are view/send only and expire in 15m',()=>{
@@ -44,4 +45,23 @@ test('terminal iframe navigation allows only the same-host ERP terminal and neve
 test('personnel rehearsal cannot be enabled by baseline dotenv',()=>{
  const env={CRM_BASELINE_ENV:'fixture'};configureTestServerEnvironment(path.resolve('fixture-crm','melisa-crm'),{env,loadBaseline:()=>{env.CRM_TEST_TERMINAL_PERSONNEL_USERNAME='crm-ahmet';return {parsed:{}};}});assert.equal(env.CRM_TEST_TERMINAL_PERSONNEL_USERNAME,'');
  const opted={CRM_BASELINE_ENV:'fixture',CRM_TEST_TERMINAL_PERSONNEL_USERNAME:'crm-ahmet'};configureTestServerEnvironment(path.resolve('fixture-crm','melisa-crm'),{env:opted,loadBaseline:()=>({parsed:{}})});assert.equal(opted.CRM_TEST_TERMINAL_PERSONNEL_USERNAME,'crm-ahmet');
+});
+
+const sharedEnv=()=>({CRM_BASELINE_ENV:'fixture',CRM_TEST_PORT_BASE:'62600',CRM_ISOLATED_PREPARATION:'true',CRM_TEST_ERP_ORIGIN:'http://127.0.0.1:4174',CRM_TEST_EXPECTED_DATABASE:'MELISA_ERP_CRM_SHARED_TEST_20261009_01'});
+test('finite shared preparation installs only existing crm-ahmet rehearsal and keeps side effects off',()=>{
+ const env=sharedEnv();configureTestServerEnvironment(path.resolve('fixture-crm','melisa-crm'),{env,loadBaseline:()=>({parsed:{}})});
+ assert.equal(env.CRM_TEST_TERMINAL_PERSONNEL_USERNAME,'crm-ahmet');
+ for(const key of ['WHATSAPP_SEND_ENABLED','WHATSAPP_LIVE_SEND_APPROVED','WAAPI_CHATWOOT_BRIDGE_ENABLED','CRM_PAID_AI_ENABLED'])assert.equal(env[key],'false');
+ assert.throws(()=>configureTestServerEnvironment(path.resolve('fixture-crm','melisa-crm'),{env:{...sharedEnv(),CRM_TEST_TERMINAL_PERSONNEL_USERNAME:'patron'},loadBaseline:()=>({parsed:{}})}),/TEST_PERSONNEL_IDENTITY_REQUIRED/);
+});
+test('shared personnel bootstrap retains exact identity, assigned access and rejects foreign request contexts',async t=>{
+ const endpoints=resolveTestEndpoints(sharedEnv()),user=fixture(),before=structuredClone(user);
+ const issue=installTestPersonnelSession({uiOrigin:endpoints.uiOrigin,gatewayOrigin:endpoints.gatewayOrigin,username:'crm-ahmet',resolveUser:()=>user});
+ const server=http.createServer(createTestUiHandler({assets:path.resolve('fixture-assets'),endpoints,createTestSession:()=>{throw Error('No admin fallback');},createPersonnelSession:issue}));
+ await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));t.after(()=>{server.closeAllConnections();server.close();});
+ async function call(body='{}',extra={}){return new Promise((resolve,reject)=>{const request=http.request({hostname:'127.0.0.1',port:server.address().port,path:'/api/test-personnel/session',method:'POST',headers:{host:'127.0.0.1:62600',origin:endpoints.uiOrigin,'content-type':'application/json',...extra}},response=>{let body='';response.setEncoding('utf8');response.on('data',chunk=>{body+=chunk;});response.on('end',()=>resolve({status:response.statusCode,body}));});request.on('error',reject);request.end(body);});}
+ const accepted=await call();assert.equal(accepted.status,200);
+ const actor=verifyCrmAccessToken(JSON.parse(accepted.body).accessToken);assert.equal(actor.id,user.id);assert.equal(actor.role,'personel');assert.equal(actor.chatwootAgentId,3);assert.equal(actor.testAdmin,undefined);assert.deepEqual(user,before);
+ for(const headers of [{origin:'http://127.0.0.1:5224'},{host:'127.0.0.1:62400'},{'sec-fetch-site':'cross-site'},{'x-forwarded-for':'127.0.0.1'},{host:'192.168.1.46:62600',origin:'http://192.168.1.46:62600'}])assert.equal((await call('{}',headers)).status,403);
+ assert.equal((await call('{"username":"patron"}')).status,400);
 });

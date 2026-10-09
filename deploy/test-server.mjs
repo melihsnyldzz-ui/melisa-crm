@@ -81,7 +81,7 @@ if(endpoints.isolated&&lanAddress&&lanAddress!=='192.168.1.46')throw Error('SHAR
 const uiOrigins=[endpoints.uiOrigin,...(lanAddress?[`http://${lanAddress}:${endpoints.ui}`]:[])];
 // AI activation is explicit for this TEST session, never inherited from baseline dotenv.
 const salesMode=env.CRM_AI_SALES_MODE==='copilot'?'copilot':'off';
-const terminalPersonnel=env.CRM_TEST_TERMINAL_PERSONNEL_USERNAME||'';
+const terminalPersonnel=env.CRM_TEST_TERMINAL_PERSONNEL_USERNAME||(endpoints.isolated?'crm-ahmet':'');
 if(terminalPersonnel!==''&&terminalPersonnel!=='crm-ahmet')throw Error('TEST_PERSONNEL_IDENTITY_REQUIRED');
 // Sales rules belong to this validated TEST runtime, never a baseline/LIVE policy file.
 const salesRules=path.join(runtime,'ai-sales-rules.json');

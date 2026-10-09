@@ -25,7 +25,7 @@ async function fixture(run,{compact=false,terminal=false,offline=false,isolated=
  mkdirSync(temporary,{recursive:true});const file=temporary+'text-draft-handlers-'+randomUUID()+'.mjs', previous={window:globalThis.window,document:globalThis.document,hooks:globalThis.__draftHooks,harness:globalThis.__draftHarness};
  const local=storage(),values=[],effects=[];let cursor=0;
  globalThis.window=fakeWindow(local);
- if(terminal){globalThis.window.location={pathname:"/",search:"?terminal=1",origin:"http://127.0.0.1:62400",hostname:"127.0.0.1"};globalThis.window.navigator={onLine:!offline};local.setItem("melisa-crm-access-token","desktop-synthetic-session");}
+ if(terminal){globalThis.window.location={pathname:"/",search:"?terminal=1",origin:`http://127.0.0.1:${isolated?62600:62400}`,hostname:"127.0.0.1"};globalThis.window.navigator={onLine:!offline};local.setItem("melisa-crm-access-token","desktop-synthetic-session");}
  if(compact)globalThis.window.localStorage.getItem=()=> 'terminal';
  globalThis.document={visibilityState:'visible',addEventListener(){},removeEventListener(){}};
  globalThis.__draftHooks={useState(initial){const i=cursor++;if(!(i in values))values[i]=typeof initial==='function'?initial():initial;return [values[i],update=>{values[i]=typeof update==='function'?update(values[i]):update;}];},useRef(initial){const i=cursor++;if(!(i in values))values[i]={current:initial};return values[i];},useMemo:fn=>fn(),useCallback:fn=>fn,useEffect:fn=>effects.push(fn)};
@@ -206,3 +206,16 @@ for(const policy of [undefined,false,true])test(`composer translation refuses pa
  await h.harness.actions.translateDraft();
  assert.equal(calls,0);assert.equal(composer(h.render()).props.value,'Synthetic private draft');
 },{isolated:policy===true}));
+
+test('shared terminal existing personnel action uses only empty stateless bootstrap and isolated terminal storage',async()=>fixture(async h=>{
+ const originalFetch=globalThis.fetch,requests=[];
+ try{
+  globalThis.fetch=async(url,options)=>{requests.push({url,options});return {ok:true,json:async()=>({accessToken:'existing-personnel-rehearsal'})};};
+  h.harness.api.session=async()=>({...actor(),id:'crm-personel-3',username:'crm-ahmet',role:'personel',chatwootAgentId:3,testPersonnel:true,paidAiEnabled:false,liveSendEnabled:false});
+  const action=h.render().props.extraAction;assert.equal(action.props.children,'Personel oturumunu aç');
+  await action.props.onClick();
+  assert.equal(requests.length,1);assert.equal(requests[0].url,'/api/test-personnel/session');assert.equal(requests[0].options.method,'POST');assert.equal(requests[0].options.body,'{}');
+  assert.equal(h.local.getItem('melisa-crm-terminal-access-token'),'existing-personnel-rehearsal');assert.equal(h.local.getItem('melisa-crm-access-token'),'desktop-synthetic-session');
+  assert.doesNotMatch(renderToStaticMarkup(h.render()),/TEST ADMIN/);
+ }finally{globalThis.fetch=originalFetch;}
+},{terminal:true,isolated:true}));
