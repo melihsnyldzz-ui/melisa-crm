@@ -50,7 +50,7 @@ export function testTerminalFrameAllowed(req,host) {
   if(!req.url.startsWith('/?terminal=1')||req.headers.origin)return false;
   try {
     const parent=new URL(req.headers.referer||'');
-    const expected = host.endsWith(':62500') ? host.replace(':62500',':5224') : host.replace(':62400',':5194');
+    const expected = host.endsWith(':62600') ? host.replace(':62600',':5224') : host.replace(':62400',':5194');
     return parent.origin==='http://'+expected&&parent.pathname==='/terminal.html';
   } catch { return false; }
 }

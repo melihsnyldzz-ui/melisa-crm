@@ -1,8 +1,8 @@
 export function resolveTestEndpoints(env = process.env) {
   const base = Number(env.CRM_TEST_PORT_BASE || 62400);
-  if (![62400,62500].includes(base)) throw Error('TEST_PORT_BASE_INVALID');
+  if (![62400,62600].includes(base)) throw Error('TEST_PORT_BASE_INVALID');
   const isolated = env.CRM_ISOLATED_PREPARATION === 'true';
-  if ((base === 62500) !== isolated) throw Error('TEST_ISOLATION_PORT_REQUIRED');
+  if ((base === 62600) !== isolated) throw Error('TEST_ISOLATION_PORT_REQUIRED');
   const erpOrigin = env.CRM_TEST_ERP_ORIGIN || 'http://127.0.0.1:4144';
   const origin = new URL(erpOrigin);
   if (origin.origin !== erpOrigin || origin.hostname !== '127.0.0.1' || origin.protocol !== 'http:'

@@ -14,7 +14,7 @@ function current(state) {
   return {...user,permissions:['crm.view','crm.send'],testPersonnel:true,testPersonnelScope:'assigned-conversations; outbound-only-905387217733'};
 }
 export function installTestPersonnelSession({uiOrigin,gatewayOrigin,username,resolveUser}) {
-  if(![[origins.ui,origins.gateway],['http://127.0.0.1:62500','http://127.0.0.1:62501']].some(([ui,gateway])=>uiOrigin===ui&&gatewayOrigin===gateway)||username!=='crm-ahmet'||typeof resolveUser!=='function')throw Error('TEST_PERSONNEL_ORIGIN_REQUIRED');
+  if(![[origins.ui,origins.gateway],['http://127.0.0.1:62600','http://127.0.0.1:62601']].some(([ui,gateway])=>uiOrigin===ui&&gatewayOrigin===gateway)||username!=='crm-ahmet'||typeof resolveUser!=='function')throw Error('TEST_PERSONNEL_ORIGIN_REQUIRED');
   const user=resolveUser(username);
   if(!user||!Array.isArray(user.permissions))throw Error('TEST_PERSONNEL_IDENTITY_REQUIRED');
   const state={username,resolveUser,fingerprint:fingerprint(user),secret:crypto.randomBytes(48).toString('hex'),options:{issuer:'melisa-crm-loopback-personnel-rehearsal',audience:gatewayOrigin}};

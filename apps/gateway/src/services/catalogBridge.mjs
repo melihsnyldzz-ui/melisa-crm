@@ -47,7 +47,7 @@ function sanitize(row) {
     sourceUpdatedAt: null, pricedDocumentEligible: false, pricedDocumentBlockReason: 'SOURCE_FRESHNESS_UNVERIFIED' };
 }
 export function isTestCatalogPhotoOrigin(value){
-  try{const url=new URL(value);return url.protocol==='http:'&&['127.0.0.1','localhost','[::1]'].includes(url.hostname)&&(url.port==='62402'||process.env.CRM_ISOLATED_PREPARATION==='true'&&url.hostname==='127.0.0.1'&&url.port==='62502')&&!url.username&&!url.password&&url.pathname==='/'&&!url.search&&!url.hash}catch{return false}
+  try{const url=new URL(value);return url.protocol==='http:'&&['127.0.0.1','localhost','[::1]'].includes(url.hostname)&&(url.port==='62402'||process.env.CRM_ISOLATED_PREPARATION==='true'&&url.hostname==='127.0.0.1'&&url.port==='62602')&&!url.username&&!url.password&&url.pathname==='/'&&!url.search&&!url.hash}catch{return false}
 }
 export function createCatalogBridge({ deploymentApproved = false, transport, authorizeCrm, resolveCrmReadSession, now = Date.now, maxReadAgeMs = 15000, photoCrmAuthorization = false } = {}) {
   if(photoCrmAuthorization&&!isTestCatalogPhotoOrigin(ERP_ORIGIN))throw Error('TEST_PHOTO_AUTH_ORIGIN_REQUIRED');

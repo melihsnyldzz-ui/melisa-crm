@@ -6,7 +6,7 @@ export function terminalEntry(location = globalThis.location) {
   if (enabled && params.getAll('erpOrigin').length === 1) {
     try {
       const raw = params.get('erpOrigin'), url = new URL(raw);
-      if (url.protocol === 'http:' && ERP_HOSTS.has(url.hostname) && (url.port === '5194' || ['http://127.0.0.1:62500','http://192.168.1.46:62500'].includes(location.origin) && url.port === '5224')
+      if (url.protocol === 'http:' && ERP_HOSTS.has(url.hostname) && (url.port === '5194' || ['http://127.0.0.1:62600','http://192.168.1.46:62600'].includes(location.origin) && url.port === '5224')
         && url.origin === raw && url.hostname === location.hostname && !url.username && !url.password) erpOrigin = raw;
     } catch {}
   }

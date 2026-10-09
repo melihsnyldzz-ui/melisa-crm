@@ -21,7 +21,7 @@ test('HTTP translation/copilot reject disabled policy or missing explicit action
   const prior=Object.fromEntries(['CRM_PAID_AI_ENABLED','CRM_AI_SALES_MODE','CRM_ISOLATED_PREPARATION'].map(k=>[k,process.env[k]]));
   const nativeFetch=globalThis.fetch;let externalCalls=0;
   globalThis.fetch=async(input,options)=>{const url=new URL(input);if(url.hostname==='127.0.0.1')return nativeFetch(input,options);externalCalls++;throw Error('EXTERNAL_CALL_FORBIDDEN');};
-  const session=installTestAdminSession({uiOrigin:'http://127.0.0.1:62500',gatewayOrigin:'http://127.0.0.1:62501'});
+  const session=installTestAdminSession({uiOrigin:'http://127.0.0.1:62600',gatewayOrigin:'http://127.0.0.1:62601'});
   const token=session().accessToken;
   process.env.CRM_AI_SALES_MODE='copilot';delete process.env.CRM_ISOLATED_PREPARATION;
   const server=createApp().listen(0,'127.0.0.1');await new Promise(r=>server.once('listening',r));

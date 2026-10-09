@@ -2,7 +2,7 @@
 
 ## ERP-CRM-PREP01 / CRM-DEC-007 — 9 Ekim 2026
 
-Ortak izole TEST hazırlığı sürüyor: CRM62500–62504, ERP4174 ve ayrı ortak veritabanı; güncel katalog/fiyat kaynak sürümüyle sipariş taslağı, mevcut bağımsız ERP/CRM oturumları ve normal ekran kontrolleri. Ücretli AI varsayılan kapalı; ortak ortamda sunucu model/provider/dış gönderimi ayrıca reddeder. Eski624xx ortamı korunur. Hazırlık teslimi tam işletme testini başlatmaz, insan kabulünü PASS yapmaz; final sonuç ve paket/GitHub kanıtı bu kayda eklenecektir.
+Ortak izole TEST hazırlığı sürüyor: CRM62600–62604, ERP4174 ve ayrı ortak veritabanı; güncel katalog/fiyat kaynak sürümüyle sipariş taslağı, mevcut bağımsız ERP/CRM oturumları ve normal ekran kontrolleri. Ücretli AI varsayılan kapalı; ortak ortamda sunucu model/provider/dış gönderimi ayrıca reddeder. Eski624xx ortamı korunur. Hazırlık teslimi tam işletme testini başlatmaz, insan kabulünü PASS yapmaz; final sonuç ve paket/GitHub kanıtı bu kayda eklenecektir.
 
 **6 Ekim Goal6 / CRM-DEC-006:** O02 mevcut startup zinciri teknik tamamlandı. Source77a2fa34/immutable paket, Limited logon/IgnoreNew/max3 task retry, sınırlı child recovery, authenticated Chatwoot bağımlılığı ve ERP exactTEST/native bağlantısı kanıtlı. Gerçek server child kapanışı ve ikinci launcher;76/77 ERP ile bağımsız sağlık görünümü doğrulandı. Gerçek reboot/logon/işyeri kabulü CRM-UA06 bekler. **25 toplam /12🟢 /13🟡 /0🔴** değişmez; M01/önceki kullanıcı kabulleri değişmez. Goal6 sonunda durulur; Goal7/LIVE/main/provider/gerçek mesaj/rol değişikliği yok. [Goal6 kanıtı](docs/evidence/crm/2026-10-06-goal6/README.md).
 
