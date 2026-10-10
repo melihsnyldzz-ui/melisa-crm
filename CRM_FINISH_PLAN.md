@@ -1,3 +1,7 @@
+## CRM-DEC-008 / ERP-CRM-EXPAND01 — 10 Ekim 2026
+
+Doğrulanmış geniş ürün/cari/döviz kapsamı DB02'de API/SQL/replay ve normal GUI ile teknik hazır. [Anonim kapsam ve kanıt](docs/evidence/crm/2026-10-10-business-expansion/README.md). ERP-UA29 / CRM-UA07 insan kabulü bekliyor; **25 / 12 yeşil / 13 sarı / 0 kırmızı** değişmedi. Geniş insan TEST'i başlatılmadı. Çalışan ERP API/salt okunur native source 36c1f5b44953dd00787ba2e37d526c1ea0f246d4, web source f3ff98e399fc18b69ea5b9234c3781191577130c, sipariş native source 60e424b61febd062668be0ccf3595c546da263a0; CRM source 38a168c7720de5f1b73bd523a3dff5125fc12097. LIVE/main/T1/PR27 sınırları korunur.
+
 # MELISA CRM — Ana Bitiş Planı
 
 **9 Ekim CRM-DEC-007 / ERP-CRM-PREP01:** Ortak izole TEST'in CRM katalog/native taslak/rol/AI sınırı teknik hazır; normal ekran ve replay kanıtı STATUS'tadır. **25 toplam /12🟢 /13🟡 /0🔴** insan kabulü değişmeden korunur. İki ürün/TRY prova profili tüm mağaza kapsamı değildir; tam işletme TEST'i ve LIVE kabulü yok. Teslimde DUR.
