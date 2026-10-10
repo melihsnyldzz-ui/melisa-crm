@@ -2,6 +2,8 @@
 
 ## Semih yerel devir ve kaynak düzeltmesi
 
+Kaynak teslim commit'i `12f2c5d98799cbf16e3064891ae6341e1ff0bfb4` için remote dal/PR10 head eşleşti;299 syntax ve exact HEAD secret scan yeni bulgu0. [Exact kaynak Actions](https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38011497003) üç job'u ödeme/harcama engeliyle başlatmadı (annotation doğrulandı). CI PASS değildir. Sonraki belge HEAD'i kaynak/paket kabulü sayılmaz ve PR Checks'te ayrı doğrulanır.
+
 10 Ekim doğrudan kullanıcı talimatı sonrası yerel host SEMIH, başlangıç cwd=operationsRoot `C:\Sirket\CRM\worktrees\customer-mobile-catalog-20261010`, exact kanonik origin fetch/push, feature dalı ve temiz source5bac doğrulandı. Devir metni tam okundu ve SHA256 `bf4633fae003675f70ccf00807b4384fcc5d4e66303234b18a25d8758fddd564` eşleşti. Yalnız aynı feature dalındaki0aba5dc/14f25b2 belge commit'leri fast-forward alındı. Canonical checkout/ERP sohbeti ve başka süreçler değiştirilmedi.
 
 Kaynak kusuru: genel `salesAgent/catalogAdapter` bütün ERP kataloğunu okurken kişisel katalog yalnız profile prices/ürün/fiyat satırı/seri kapsamını kullanıyordu. Düzeltme açık staff session locator üzerinden salt okunur snapshot üretir; kişisel modda arama/genel fotoğraf fallback'i yoktur. Aynı customer/conversation/actor/session, exact seçili fiyat/seri/cart fingerprint model öncesi/sonrası ve taslağa alma öncesi doğrulanır. Teknik taslak bekleyen oturum AI bağlamı olarak reddedilir; gerçek kullanıcıya giden boş oturum teknik sepetle doldurulmaz. İstemci ürün/fiyat gerçeği kabul edilmez; model context'i session/token/aktör/müşteri kimliği ve sayısal fiyat içermez.
