@@ -1,3 +1,7 @@
+## CRM-UA09 — kısa eğitim insan incelemesi bekliyor
+
+İlker/personel kişi, tarih ve kullanım sonucu bildirilmedi. Ders/ekran/quiz teknik sonucu insan PASS değildir. CRM-UA01–08 korunur.
+
 ## CRM-UA08 / CRM-FINAL01 / CRM-DEC-009 — bekliyor
 
 10 Ekim 2026 son ortak hazırlık teknik çalışması insan kabulü değildir. Önceki CRM-UA01–07 ve gerçek kabuller korunur. Çalışan CRM source5f8cb237 / ERP sourcea51b1170 / DB02 ortak hedef taze sağlık/manifest ve V6 mevcut taslak GET/refresh kontrolüyle doğrulandı; katalog/medya kanıtı V2 sourcec5081be üzerinden hash referansıyla korunur, bu pakette yeni ölçüm değildir; günlük ERP native 25 kontrolü koordinatörde tamamlandı; normal ekranların ortak sonucu koordinatör raporundadır. İnsan denemesi kişi/tarih/sonuç: **Durum doğrulanmadı**. Kullanıcı/İlker, normal CRM'de atanmış konuşmayı, kaynak ürün-fiyat-döviz ve aynı dövizli müşteri hesabını, mevcut native taslağı/ayrı GET/yenilemeyi, manuel ERP belge bağını ve AI/gerçek gönderim kapalı durumunu tek mağaza günü turunda inceleyecek. Fiziksel Zebra/personel ve bilinmeyen kişi/cari eşleme ayrı bekler. Genel ERP veya LIVE kabulü yoktur. [Hazırlık kaydı](docs/evidence/crm/2026-10-10-final-preparation/README.md).
