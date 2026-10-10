@@ -1,5 +1,9 @@
 # CRM karar merkezi
 
+### CRM-DEC-009 — 10 Ekim 2026 — Onaylı
+
+Kullanıcının **SON TAMAMLAMA PLANI** doğrudan talimatı ERP-CRM-FINAL01 kapsamında günlük ERP/CRM bağlantı eksiklerinin tamamlanmasını, kaynak/kimlik karşılaştırmasını, tek mağaza günü TEST hazırlığını ve LIVE öncesi kurtarma/final T1 planını yetkilendirir. CRM-DEC-008 teslim sonunda DUR sınırı yalnız bu kapsam için superseded; doğrulanmış DB02 katalog/taslak/döviz kanıtları yeniden oluşturulmaz. Mevcut TEST125/DB02 geçmişi ve insan kabulleri korunur. Bilinmeyen kişi/cari eşlemesi tahmin edilmez; finansal açılış tutarı, gerçek WhatsApp, ücretli AI veya LIVE yazması ayrıca açık onay ister. Eğitim PR27/main/Vega/gerçek T1 değişmez. Teknik TEST, insan PASS veya LIVE geçişi değildir. Veritabanı işlemlerini tek koordinatör yönetir.
+
 Karar sahibi: kullanıcı; ChatGPT planlama ortağı, Codex uygulayıcıdır. Kayıt tarihi: **2026-10-05**. Kaynak: kullanıcının bu tarihli açık proje-yönetim talimatı ve [CRM ERP sohbeti](https://chatgpt.com/c/6ac01ba3-0444-83eb-9ea8-1bb9d7ae5012). Aşağıdaki kararlar **onaylıdır**; uygulanmış veya kullanıcı tarafından denenmiş anlamına gelmez.
 
 ## Tek kaynak düzeni
