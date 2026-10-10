@@ -1,6 +1,14 @@
-## CRM-UA09 — kısa eğitim insan incelemesi bekliyor
+## CRM-UA09 / ERP-CRM-LEARN01 / CRM-DEC-010 — bekliyor
 
-İlker/personel kişi, tarih ve kullanım sonucu bildirilmedi. Ders/ekran/quiz teknik sonucu insan PASS değildir. CRM-UA01–08 korunur.
+Kullanıcı/İlker/personel kişi, deneme tarihi ve kullanım sonucu henüz bildirilmedi. Teknik ekran, ders veya quiz sonucu insan PASS değildir; **CRM-UA01–08 değişmez**. Önceki CRM source94453500/izole DB02, koordinatörün normal katalog3.830 kapsam/50 ürün ve sade CTA/seri görüntüsü kanıtına sahiptir. Bu arayüz hazırlığı için hedefli offline53 kontrol ve build PASS; güncel daha yeni222a95f runtime korunur, yeni fotoğraf değişikliğinin kanıtı ayrıca tutulur; fiziksel TC21 şirket Wi-Fi ile LAN5234 mal kabul ekranını ve rehberi açtı. 8 gerçek ekran kesiti/1422 taşmasız görünüm ve40 saniyelik cihaz videosu teknik kanıttır; personelin kendi kullanım ve gerçek barkod sonucu verilmedi, insan kabulü bekler. [Teknik hazırlık](docs/evidence/crm/2026-10-10-training-preparation/README.md).
+
+| Kullanıcının gözle deneyeceği şey | Sonuç | Ortam / sınır |
+| --- | --- | --- |
+| Normal CRM'de mevcut konuşmadan kataloğu aç; tam kod, fotoğraf, fiyatın dövizi/birimi, bilinmeyen-seri/stok ve karantina dilini değerlendir. | bekliyor | http://127.0.0.1:62700/; güncel source222a95f / önceki arayüz kanıtı94453500. Gerçek ekran teknik olarak doğrulandı; insan sonucu yok. |
+| Ürün/fiyat düğmelerinin mesaj taslağına eklediğini ve henüz gönderim olmadığını anlayıp mevcut taslağı koruyarak incele. | bekliyor | Ortak ortamda gönderim ve ücretli AI kapalı; yeni mesaj oluşturulup gönderilmeyecek. |
+| Ürün → müşteri/döviz kontrolü → ERP taslağı sırasını rehberden öğren; taslağın satış/ödeme/stok/cari etkisi oluşturmadığını ayırt et. | bekliyor | http://127.0.0.1:5234/kullanim-egitimi.html#crm-order; eğitim sadece anlatım/okumadır. Yeni sipariş veya ticari işlem yok. |
+
+Fiziksel cihazda rehber açılması geniş mağaza günü, personelin iş akışı/barkod veya LIVE kabulü vermez. Son GitHub teslim/CI durumu koordinatör makbuzundadır; teknik CI sonucu insan kabulü değildir.
 
 ## CRM-UA08 / CRM-FINAL01 / CRM-DEC-009 — bekliyor
 
