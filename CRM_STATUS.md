@@ -523,3 +523,5 @@ Güncelleme: **4 Ekim 2026 — geniş ana hedef ve açık PR uzlaştırması**. 
 - Explorer, release ve AI uzmanı bağımsız salt okunur PR/kod keşfi yaptı. Çalışan uygulama kodu, provider, DB, runtime veya credential bu plan/CI hazırlığıyla değiştirilmedi. Mevcut CI araçlarının exact uygulamahead sonuçları aşağıdaki güncel teslim kaydına eklenecek.
 
 Sıradaki tek geliştirme: **O02 Windows TEST supervisor ve ayrı native ERP otomatik açılış zinciri**. Kullanıcının ilk somut kabulü: atanmış7733'ü kendi personel hesabında açmak; patron oturumu kabulü bu adımı kapatmaz.
+
+CI makbuzu (10 Ekim 2026): PR3 head1d5d823d6a7db1f3157216350befc99669d4ccbb uzak doğrulandı. Actions38085034894,38085031055 ve offline38085034959 hesap ödeme/harcama engeliyle FAILURE; ilgiliCI quality-build-test, windows-startup-test ve secret-scan işlerinin steps=[] olduğu görüldü. Yerel PASS CI yerine geçmez. İzleyen doküman commit'inin exact CI sonucu PR teslim yorumunda ayrıca kaydedilir.
