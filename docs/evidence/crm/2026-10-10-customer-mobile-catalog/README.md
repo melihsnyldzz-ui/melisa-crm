@@ -1,5 +1,13 @@
 # Müşteriye özel mobil katalog — 10 Ekim 2026 TEST pilotu
 
+## SEMIH kurulum ve telefon link geri bildirimi — 10 Ekim 2026
+
+Tail katalog source6ef5df1 /PID60468 /manifest66198490b9f670c2b1175ba245d67e717b0f25b352a960bc65bf13b404eeef97 kuruldu. Eski53468 yalnız katalog edge olarak kontrollü değiştirildi; diğer CRM/ERP/ortak TEST listener/PID aynı. Aynı owner capability43/store-v1/boş sepet/süre korundu; ilk restart sonrası store byte hash aynı. Eski immutable5bac paketinin gerçek manifest pini6f8fc9baba7c49f1f8ab4ddb8b9d83cd6377f2290770c1ff067c8c86ac178c3f doğrulandı; rollback mümkün, fiilen uygulanmadı.
+
+Owner eski mesajın telefona geldiğini, URL'nin tıklanmadığını bildirdi. CRM gövdesi/provider-accepted journal SHA eşleşti; doğru http/ayrı satır/fragment, süre geçerli; Markdown/escape/gizli karakter yok. [WhatsApp resmî açıklaması](https://www.whatsapp.com/familysafety) bilinmeyen göndericide etkileşime kadar linklerin kapalı olabileceğini doğrular; telefon sebebi/açma henüz kesinleşmedi. Aynı URL ile TEST yanıtı/Tailscale/tam URL kopyalama adımını anlatan tek düzeltici mesaj gönderildi. UUID87483029-26a1-44fa-b25f-ba13e81f95fc /SHA61320e750141f1e5aa53689b11e3f51b0ccb8882ead9388258548b54c4d7ba22; aynı-body ayrı status CONFIRMED, provider/Chatwoot id-present. Yeniden gönderim yok.
+
+Güncel A erp-31091 (devirde31901 ters yazılmış),109.25TRY/TEST6; B erp-32431,97.75TRY/TEST4. Fotoğraflar ve selectable/stok sınırları doğrulandı. Ayrı teknik sepet3seri/16adet/1702TRY readback; değişen sepet eski AI bağlamını reddetti. Owner cartempty/session row aynı; yeni native taslak/finans/stok etkisi yok. Yeni copilot helper gerçek, yeni, özel olmayan ve outgoing yankısı olmayan owner reply olmadan AI çağırmaz. Şu an OWNER_REPLY_REQUIRED; bu tur AI çağrısı/send yok.13 hedefli test PASS. Render/telefon/karşılıklı AI kabulü açık, CI billing engeli sürüyor. Private kanıt dosyaları runtime'da, Git'e alınmadı. Güncel ayrıntı CRM_STATUS.md başındadır.
+
 ## Semih yerel devir ve kaynak düzeltmesi
 
 Kaynak teslim commit'i `12f2c5d98799cbf16e3064891ae6341e1ff0bfb4` için remote dal/PR10 head eşleşti;299 syntax ve exact HEAD secret scan yeni bulgu0. [Exact kaynak Actions](https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38011497003) üç job'u ödeme/harcama engeliyle başlatmadı (annotation doğrulandı). CI PASS değildir. Sonraki belge HEAD'i kaynak/paket kabulü sayılmaz ve PR Checks'te ayrı doğrulanır.

@@ -1,5 +1,7 @@
 # Mobile catalog design QA — 10 October 2026
 
+2026-10-10 SEMIH installation: existing owner session/cart preserved on source6ef5df1 edge. Actual product photos, prices, full-series cart readback and stale-context rejection passed API checks. Owner reported receipt of the previous WhatsApp message and a non-clickable URL; no catalog-open evidence. One corrective message was confirmed in provider/CRM records. Browser/mobile render, filters and phone interaction remain unverified; HTTP success is not visual acceptance.
+
 **Current evidence boundary**
 
 The real Semih TEST pilot now passed authenticated source-product/photo reads, a technical 16-piece native draft with independent GET, and one owner55 catalog send through the existing CRM (`CONFIRMED`, provider/Chatwoot identifiers present). Home Tailscale independently returned the real catalog HTML/assets200, remote bootstrap403 and unauthenticated catalog401. [Pilot evidence](docs/evidence/crm/2026-10-10-customer-mobile-catalog/README.md). These are API/network/send checks, not rendered visual or phone acceptance. The user will open the sent link and report feedback; remote Galaxy access is not a delivery gate.
