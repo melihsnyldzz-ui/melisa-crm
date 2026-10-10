@@ -79,7 +79,7 @@ export function createCatalogBridge({ deploymentApproved = false, transport, aut
     const isPhoto = tail.endsWith('/photo'); const id = tail ? tail.split('/')[1] : null;
     const query = new URLSearchParams();
     for (const [key, value] of url.searchParams) {
-      if(isPhoto&&key==='variant'&&url.searchParams.getAll(key).length===1&&['thumbnail','preview'].includes(value)){query.set(key,value);continue;}
+      if(isPhoto&&key==='variant'&&url.searchParams.getAll(key).length===1&&['thumbnail','preview','original'].includes(value)){query.set(key,value);continue;}
       if (tail || !['search', 'barcode', 'brand', 'category', 'hasImage', 'page', 'limit'].includes(key) || url.searchParams.getAll(key).length !== 1) return fail(400, 'INVALID_QUERY');
       if (key === 'hasImage' ? !['true','false'].includes(value) : ['search', 'barcode', 'brand', 'category'].includes(key) ? value.length > 120 : !/^[1-9][0-9]*$/.test(value) || !Number.isSafeInteger(+value) || (key === 'limit' && +value > 100)) return fail(400, 'INVALID_QUERY');
       query.set(key, value);

@@ -524,7 +524,8 @@ function catalogEnvelope(payload, list) {
 }
 async function catalogPhoto(accessToken, id, { signal: callerSignal, variant='preview', conversationId } = {}) {
   if (!accessToken) throw Object.assign(new Error("CRM oturumu gerekli."), { status: 401 });
-  const path = `/crm/catalog/products/${catalogId(id)}/photo${variant==='thumbnail'?'?variant=thumbnail':''}`,controller = new AbortController();
+  if (!['thumbnail','preview','original'].includes(variant)) throw Object.assign(new Error("Ürün fotoğrafının boyutu doğrulanamadı."), { status: 400 });
+  const path = `/crm/catalog/products/${catalogId(id)}/photo${variant==='preview'?'':`?variant=${variant}`}`,controller = new AbortController();
   const cancel = () => controller.abort();
   callerSignal?.addEventListener("abort", cancel, {once:true});
   if (callerSignal?.aborted) controller.abort();
