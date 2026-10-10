@@ -1,3 +1,7 @@
+## K01 özgün katalog fotoğrafı — 10 Ekim 2026
+
+Kullanıcının8023 CONCEPT bulanıklık bildirimi dar kapsamda düzeltildi: normal TEST62700 aramasında1206×1500 özgün dosya gösterilir; önceki103×128 küçük görsel büyütülmez. ERP dosyasıyla byte/hash eşleşmesi, mevcut görünürlük yüklemesi ve güvenlik/boyut sınırları kanıtlı. Source222a95f teknik hazır; yeni netlik insan kabulü bekler. K01'in önceki katalog kabulü korunur; ikinci finish tree veya yeni PASS oluşturulmaz: **25 toplam /12🟢 /13🟡 /0🔴** aynı. [Anonim kanıt ve exact CI ayrımı](docs/evidence/crm/2026-10-10-catalog-original/README.md). Sıradaki tek kontrol, kullanıcının açık8023 kartındaki orijinal fotoğrafı görmesidir; ek geliştirme yok.
+
 ## ERP-CRM-LEARN01 / CRM-DEC-010 — kısa eğitim hazırlığı
 
 Normal yeşil katalog, mesaj taslağı ve ERP sipariş devri sadeleştiriliyor. Ortak izole DB02, önceki günlük TEST ve Eğitim PR27 korunur; yeni ticari/mesaj/AI işlemi yok. CRM-UA09 insan eğitim kabulü **bekliyor**. Teknik kanıt/paket ayrı, genel işletme ve LIVE kabulü değildir.
