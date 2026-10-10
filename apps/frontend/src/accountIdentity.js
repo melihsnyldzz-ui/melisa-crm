@@ -6,7 +6,7 @@ export function normalizeAccountIdentity(value = {}) {
   return { id, username: scalar(value.username), role: scalar(value.role) };
 }
 export function isMobilePreviewPath(pathname = '') {
-  return pathname === '/mobile-preview' || pathname === '/mobile-preview/';
+  return ['/mobile-preview','/mobile-preview/','/crm/mobile-preview','/crm/mobile-preview/'].includes(pathname);
 }
 
 export function accountIdentityKey(identity) {

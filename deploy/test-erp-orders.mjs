@@ -1,6 +1,7 @@
 import http from 'node:http';
-import { pathToFileURL } from 'node:url';
+import { pathToFileURL,fileURLToPath } from 'node:url';
 import {resolveTestEndpoints,sharedTestHealthSafe} from './test-endpoints.mjs';
+import {createStableServiceHealthHandler} from './stable-transport.mjs';
 const endpoints=resolveTestEndpoints();
 export const ERP_TEST_IDENTITY = Object.freeze({ database:endpoints.database, environment: 'CANONICAL_TEST', purpose: 'crm-order-draft-only' });
 const crmOrigin = endpoints.gatewayOrigin;
@@ -13,7 +14,7 @@ async function readBody(req) {
 }
 function bearer(value) { return typeof value === 'string' && /^Bearer [^\s]+$/.test(value); }
 // Only HTTP contracts cross this boundary; no SQL, imported ERP modules or fallback writer.
-export function createTestOrderHandler({ fetchFn = (...args) => fetch(...args),testEndpoints=resolveTestEndpoints(),nativeSourceCommit=process.env.CRM_TEST_NATIVE_SOURCE_COMMIT,nativePackageId=process.env.CRM_TEST_NATIVE_PACKAGE_ID } = {}) {
+export function createTestOrderHandler({ fetchFn = (...args) => fetch(...args),testEndpoints=resolveTestEndpoints(),nativeSourceCommit=process.env.CRM_TEST_NATIVE_SOURCE_COMMIT,nativePackageId=process.env.CRM_TEST_NATIVE_PACKAGE_ID,serviceHealth=()=>false } = {}) {
   const crmOrigin=testEndpoints.gatewayOrigin,nativeOrigin=testEndpoints.nativeOrigin;
   const expectedIdentity={...ERP_TEST_IDENTITY,database:testEndpoints.database,environment:testEndpoints.isolated?'ISOLATED_TEST_COPY':'CANONICAL_TEST'};
   const loginAttempts = new Map();
@@ -43,6 +44,7 @@ export function createTestOrderHandler({ fetchFn = (...args) => fetch(...args),t
     if(String(detail.id)!==String(conversationId)||typeof detail.phone!=='string'||detail.phone.replace(/\D/g,'')!==peer)fail('CRM_V2_CONVERSATION_IDENTITY_MISMATCH',403);
   }
   return async (req, res) => {
+    if(serviceHealth(req,res))return;
     res.setHeader('content-type', 'application/json; charset=utf-8');
     res.setHeader('cache-control', 'no-store');
     try {
@@ -116,7 +118,8 @@ export function createTestOrderHandler({ fetchFn = (...args) => fetch(...args),t
   };
 }
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
-  const server = http.createServer(createTestOrderHandler()).listen(endpoints.orders, '127.0.0.1', () => console.log('Kanonik ERP TEST sözleşme adapteri hazır.'));
+  const serviceHealth=createStableServiceHealthHandler({service:'orders',executionRoot:fileURLToPath(new URL('../',import.meta.url)),testEndpoints:endpoints});
+  const server = http.createServer(createTestOrderHandler({serviceHealth})).listen(endpoints.orders, '127.0.0.1', () => console.log('Kanonik ERP TEST sözleşme adapteri hazır.'));
   server.on('error', error => { console.error(error.code); process.exit(1); });
   process.on('SIGTERM', () => server.close(() => process.exit(0)));
 }

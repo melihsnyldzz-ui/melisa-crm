@@ -2,6 +2,17 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {liveApi,MAX_CATALOG_PHOTO_BYTES} from '../src/liveApi.js';
 const envelope={success:true,data:[{id:91,stockCode:'REAL-CODE',productName:'Original name'}],meta:{fetchedAt:'2026-09-30T19:00:00Z',sourceUpdatedAt:null,priceBasis:'per-item'}};
+
+test('ordinary session and authenticated photo transport omit ambient cookies while preserving bearer identity',async()=>{
+ const original=globalThis.fetch,calls=[];
+ try{
+  globalThis.fetch=async(url,options)=>{calls.push({url,options});return url.endsWith('/photo')?new Response(Uint8Array.from([137,80,78,71,13,10,26,10]),{headers:{'Content-Type':'image/png'}}):Response.json({success:true,data:{id:'fixture-personnel',username:'fixture',role:'personel',permissions:['crm.view']}});};
+  await liveApi.session('credentials-isolation-fixture',{credentials:'include'});
+  await liveApi.catalogPhoto('credentials-isolation-fixture',91);
+  assert.equal(calls.length,2);
+  for(const call of calls){assert.equal(call.options.credentials,'omit');assert.equal(call.options.headers.Authorization,'Bearer credentials-isolation-fixture');}
+ }finally{globalThis.fetch=original;}
+});
 test('catalog read uses exact same-origin contract, existing bearer and preserves uninterpreted meta',async()=>{const original=globalThis.fetch,calls=[];try{globalThis.fetch=async(url,options)=>{calls.push({url,options});return Response.json(envelope);};const result=await liveApi.catalogProducts('mock-catalog-token',{search:'çocuk & takım',page:2,limit:100});assert.deepEqual(result,envelope);assert.equal(calls.length,1);assert.equal(calls[0].url,'/api/live/crm/catalog/products?search=%C3%A7ocuk+%26+tak%C4%B1m&page=2&limit=100');assert.equal(calls[0].options.headers.Authorization,'Bearer mock-catalog-token');assert.equal(calls[0].options.redirect,'error');assert(!Object.hasOwn(calls[0].options,'preserveEnvelope'));assert(!calls[0].url.includes('token'));}finally{globalThis.fetch=original;}});
 test('catalog detail preserves object envelope, rejects path traversal and missing sessions before transport',async()=>{const original=globalThis.fetch;let calls=0;try{globalThis.fetch=async(url)=>{calls++;assert.equal(url,'/api/live/crm/catalog/products/91');return Response.json({...envelope,data:envelope.data[0]});};assert.equal((await liveApi.catalogProduct('mock-detail-token',91)).data.id,91);await assert.rejects(()=>liveApi.catalogProduct('mock-detail-token','../auth/me'));await assert.rejects(()=>liveApi.catalogProducts(''));await assert.rejects(()=>liveApi.catalogProducts('token',{page:0}));assert.equal(calls,1);}finally{globalThis.fetch=original;}});
 test('incomplete catalog envelope fails closed rather than silently discarding meta',async()=>{const original=globalThis.fetch;try{globalThis.fetch=async()=>Response.json({success:true,data:[]});await assert.rejects(()=>liveApi.catalogProducts('mock-schema-token'),{code:'CATALOG_CONTRACT_INVALID'});}finally{globalThis.fetch=original;}});
