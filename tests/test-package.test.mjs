@@ -47,6 +47,54 @@ test('stock pool is sealed for new adapters while older rollback packages still 
   f.manifest.sourceFiles.push({path:pool,gitBlob:blob(fs.readFileSync(path.join(f.root,pool)))});sort(f.manifest.sourceFiles);f.seal();
   assert.equal(f.verify().environment,'TEST');
 });
+
+test('stable transport import requires its sealed source without invalidating older rollback packages',t=>{
+  assert.equal(fixture(t).verify().environment,'TEST');
+  for(const quote of ["'",'"']){
+    const f=fixture(t),server='deploy/test-server.mjs',helper='deploy/stable-transport.mjs';
+    f.write(server,`import {resolveStableTransport} from ${quote}./stable-transport.mjs${quote};\n`);
+    const refresh=()=>{f.manifest.files=inventoryPackage(f.root).files.filter(row=>row.path!==TEST_PACKAGE_MANIFEST);f.manifest.sourceFiles.find(row=>row.path===server).gitBlob=blob(fs.readFileSync(path.join(f.root,server)));f.seal();};
+    refresh();assert.throws(()=>f.verify(),{code:'PACKAGE_REQUIRED_FILE_MISSING'});
+    assert.equal(allowedSourcePath(helper),true);f.write(helper,'export const resolveStableTransport=()=>false;\n');
+    f.manifest.sourceFiles.push({path:helper,gitBlob:blob(fs.readFileSync(path.join(f.root,helper)))});sort(f.manifest.sourceFiles);refresh();
+    assert.equal(f.verify().environment,'TEST');
+    f.write(helper,'export const resolveStableTransport=()=>true;\n');refresh();assert.throws(()=>f.verify(),{code:'PACKAGE_GIT_BLOB_MISMATCH'});
+  }
+});
+test('catalog, order and gateway health imports cannot omit their sealed transport helper',t=>{
+  for(const name of ['deploy/test-erp-catalog.mjs','deploy/test-erp-orders.mjs','apps/gateway/src/routes/healthRoutes.js']){
+    const f=fixture(t);f.write(name,"import {createStableServiceHealthHandler} from '../../../../deploy/stable-transport.mjs';\n");
+    const source={path:name,gitBlob:blob(fs.readFileSync(path.join(f.root,name)))};
+    const existing=f.manifest.sourceFiles.find(row=>row.path===name);if(existing)existing.gitBlob=source.gitBlob;else{f.manifest.sourceFiles.push(source);sort(f.manifest.sourceFiles);}
+    f.manifest.files=inventoryPackage(f.root).files.filter(row=>row.path!==TEST_PACKAGE_MANIFEST);f.seal();
+    assert.throws(()=>f.verify(),{code:'PACKAGE_REQUIRED_FILE_MISSING'});
+  }
+});
+test('stable immutable payload requires explicit isolated profile, both UIs and sealed helper',t=>{
+  const f=fixture(t),helper='deploy/stable-transport.mjs';
+  f.write(helper,'export const resolveStableTransport=()=>false;\n');f.manifest.sourceFiles.push({path:helper,gitBlob:blob(fs.readFileSync(path.join(f.root,helper)))});sort(f.manifest.sourceFiles);
+  f.write('apps/frontend/dist/stable-client/index.html','<script src="/crm/assets/test.js"></script>');f.write('apps/frontend/dist/stable-client/assets/test.js','console.log("stable synthetic");');
+  f.manifest.files=inventoryPackage(f.root).files.filter(row=>row.path!==TEST_PACKAGE_MANIFEST);f.seal();
+  assert.throws(()=>f.verify(),{code:'PACKAGE_BUILD_REJECTED'});
+  f.manifest.build.stableTransport=true;f.seal();assert.throws(()=>f.verify(),{code:'PACKAGE_BUILD_REJECTED'});
+  f.manifest.build.isolatedPreparation=true;f.seal();assert.equal(f.verify().environment,'TEST');
+  f.manifest.build.stableTransport=false;f.seal();assert.throws(()=>f.verify(),{code:'PACKAGE_BUILD_REJECTED'});f.manifest.build.stableTransport=true;
+  const stableIndex=f.manifest.files.find(row=>row.path==='apps/frontend/dist/stable-client/index.html');
+  f.manifest.files=f.manifest.files.filter(row=>row!==stableIndex);f.seal();assert.throws(()=>f.verify(),{code:'PACKAGE_REQUIRED_FILE_MISSING'});
+  f.manifest.files.push(stableIndex);sort(f.manifest.files);
+  f.manifest.files=f.manifest.files.filter(row=>row.path!=='apps/frontend/dist/client/index.html');f.seal();assert.throws(()=>f.verify(),{code:'PACKAGE_REQUIRED_FILE_MISSING'});
+});
+test('stable builds use explicit separate prefix flag and DB02; inherited VITE/config cannot select a profile',t=>{
+  const previous={};for(const key of ['VITE_CRM_STABLE_TRANSPORT','VITE_ERP_ORDER_TEST_DATABASE','CRM_STABLE_TRANSPORT']){previous[key]=process.env[key];process.env[key]='untrusted';}
+  t.after(()=>{for(const[key,value]of Object.entries(previous))value===undefined?delete process.env[key]:process.env[key]=value;});
+  const ordinary=offlineBuildEnvironment(path.resolve('fixture-stage'));assert.equal(ordinary.VITE_CRM_STABLE_TRANSPORT,'0');assert.equal(ordinary.VITE_ERP_ORDER_TEST_DATABASE,undefined);assert.equal(ordinary.CRM_STABLE_TRANSPORT,undefined);
+  const isolated=offlineBuildEnvironment(path.resolve('fixture-stage'),{isolatedPreparation:true});assert.equal(isolated.VITE_ERP_ORDER_TEST_DATABASE,'MELISA_ERP_CRM_SHARED_TEST_20261009_01');assert.equal(isolated.VITE_CRM_STABLE_TRANSPORT,'0');
+  const legacy=offlineBuildEnvironment(path.resolve('fixture-stage'),{isolatedPreparation:true,stableTransport:true});
+  const mounted=offlineBuildEnvironment(path.resolve('fixture-stage'),{isolatedPreparation:true,stableTransport:true,stableFrontend:true});
+  assert.equal(legacy.VITE_CRM_STABLE_TRANSPORT,'0');assert.equal(mounted.VITE_CRM_STABLE_TRANSPORT,'1');
+  for(const env of [legacy,mounted]){assert.equal(env.VITE_ERP_ORDER_TEST_DATABASE,'MELISA_ERP_CRM_SHARED_TEST_20261009_02');assert.equal(env.VITE_CRM_ISOLATED_PREPARATION,'1');assert.equal(env.npm_config_offline,'true');assert.equal(env.npm_config_ignore_scripts,'true');}
+  for(const invalid of [{stableTransport:true},{stableFrontend:true},{isolatedPreparation:true,stableTransport:'true'}])assert.throws(()=>offlineBuildEnvironment(path.resolve('fixture-stage'),invalid),{code:'PACKAGE_BUILD_PROFILE_REJECTED'});
+});
 test('changed backend, frontend or dependency byte, same-size edit, missing file and unlisted file all fail verification',t=>{
   for(const change of ['apps/gateway/package.json','apps/frontend/dist/client/assets/test.js','apps/gateway/node_modules/dotenv/lib/main.js']){
     const f=fixture(t),file=path.join(f.root,change),bytes=fs.readFileSync(file);bytes[0]=bytes[0]===65?66:65;fs.writeFileSync(file,bytes);assert.throws(()=>f.verify(),{code:'PACKAGE_PAYLOAD_MISMATCH'});

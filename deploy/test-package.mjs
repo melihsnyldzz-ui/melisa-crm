@@ -16,6 +16,7 @@ const runtimeFiles = ['package.json','apps/gateway/package.json','apps/gateway/p
 // Older verified packages remain valid rollback targets. The pool is mandatory
 // only for an adapter that imports it, and is always sealed as a Git source blob.
 const stockPoolPath='packages/erp-adapter/services/crmStockWorkerPool.mjs';
+const stableTransportPath='deploy/stable-transport.mjs';
 const canonicalCatalogPaths=['packages/erp-adapter/services/canonicalCatalog.mjs','packages/erp-adapter/services/canonicalCatalogReader.mjs'];
 const buildFiles = ['apps/frontend/index.html','apps/frontend/vite.config.mjs','apps/frontend/scripts/prepare-sites-build.mjs','apps/frontend/worker/index.js','apps/frontend/.openai/hosting.json'];
 
@@ -30,14 +31,14 @@ function privatePath(value) {
 }
 export function allowedSourcePath(value) {
   if(!safePackagePath(value)||privatePath(value)||/(?:^|\/)(?:tests?|__tests__)(?:\/|$)|\.test\.[^.]+$/i.test(value))return false;
-  if(runtimeFiles.includes(value)||buildFiles.includes(value)||value==='deploy/test-package.mjs'||value==='deploy/test-endpoints.mjs'||value===stockPoolPath||canonicalCatalogPaths.includes(value))return true;
+  if(runtimeFiles.includes(value)||buildFiles.includes(value)||value==='deploy/test-package.mjs'||value==='deploy/test-endpoints.mjs'||value===stableTransportPath||value===stockPoolPath||canonicalCatalogPaths.includes(value))return true;
   return /^apps\/gateway\/src\/.+\.(?:js|mjs|json)$/.test(value)
     || /^apps\/frontend\/src\/.+\.(?:js|jsx|mjs|css|svg|png|webp|jpg|jpeg)$/.test(value)
     || /^apps\/frontend\/public\/.+\.(?:svg|png|webp|jpg|jpeg|ico|woff2?)$/.test(value);
 }
 function allowedPayloadPath(value) {
   return allowedSourcePath(value)||safePackagePath(value)&&!privatePath(value)&&(
-    /^apps\/gateway\/node_modules\/.+/.test(value)||/^apps\/frontend\/dist\/client\/.+\.(?:html|js|css|svg|png|webp|jpg|jpeg|ico|woff2?|ttf)$/.test(value));
+    /^apps\/gateway\/node_modules\/.+/.test(value)||/^apps\/frontend\/dist\/(?:client|stable-client)\/.+\.(?:html|js|css|svg|png|webp|jpg|jpeg|ico|woff2?|ttf)$/.test(value));
 }
 function assertPublicBytes(name,bytes) {
   if(privatePath(name))failure('PACKAGE_PRIVATE_FILE_REJECTED');
@@ -124,8 +125,9 @@ export function validateLockedDependencies(lock,manifest) {
 function validateManifest(manifest) {
   if(!keysOnly(manifest,['schemaVersion','kind','environment','source','build','locks','entrypoints','externalDependencies','files','sourceFiles'])||manifest.schemaVersion!==1||manifest.kind!=='melisa-crm-test-package'||manifest.environment!=='TEST')failure('PACKAGE_MANIFEST_REJECTED');
   if(!keysOnly(manifest.source,['repository','commit','tree'])||manifest.source.repository!==CRM_SOURCE_ORIGIN||!hex(manifest.source.commit,40)||!hex(manifest.source.tree,40))failure('PACKAGE_SOURCE_REJECTED');
-  const buildKeys=['viteCrmTest','nodeVersion','platform','arch','dependencyInstall',...(Object.hasOwn(manifest.build||{},'isolatedPreparation')?['isolatedPreparation']:[])];
+  const buildKeys=['viteCrmTest','nodeVersion','platform','arch','dependencyInstall',...(Object.hasOwn(manifest.build||{},'isolatedPreparation')?['isolatedPreparation']:[]),...(Object.hasOwn(manifest.build||{},'stableTransport')?['stableTransport']:[])];
   if(!keysOnly(manifest.build,buildKeys)||Object.hasOwn(manifest.build,'isolatedPreparation')&&manifest.build.isolatedPreparation!==true||manifest.build.viteCrmTest!==true||!/^v\d+\.\d+\.\d+$/.test(manifest.build.nodeVersion)||!['win32','linux','darwin'].includes(manifest.build.platform)||!['x64','arm64'].includes(manifest.build.arch)||manifest.build.dependencyInstall!=='npm-ci-offline-ignore-scripts')failure('PACKAGE_BUILD_REJECTED');
+  if(Object.hasOwn(manifest.build,'stableTransport')&&(manifest.build.stableTransport!==true||manifest.build.isolatedPreparation!==true))failure('PACKAGE_BUILD_REJECTED');
   if(manifest.build.nodeVersion!==process.version||manifest.build.platform!==process.platform||manifest.build.arch!==process.arch)failure('PACKAGE_TOOLCHAIN_MISMATCH');
   if(!keysOnly(manifest.entrypoints,['supervisor','server'])||manifest.entrypoints.supervisor!=='deploy/test-supervisor.mjs'||manifest.entrypoints.server!=='deploy/test-server.mjs')failure('PACKAGE_ENTRYPOINT_REJECTED');
   if(JSON.stringify(manifest.externalDependencies)!==JSON.stringify(['private-test-configuration','canonical-erp-test-api-root','canonical-erp-test-order-service']))failure('PACKAGE_EXTERNAL_DEPENDENCIES_REJECTED');
@@ -135,9 +137,11 @@ function validateManifest(manifest) {
   const names=new Set();let previous='';
   for(const row of manifest.files){
     if(!keysOnly(row,['path','size','sha256'])||!allowedPayloadPath(row.path)||row.path<=previous||names.has(row.path.toLowerCase())||!Number.isSafeInteger(row.size)||row.size<0||!hex(row.sha256))failure('PACKAGE_FILES_REJECTED');
+    if(row.path.startsWith('apps/frontend/dist/stable-client/')&&manifest.build.stableTransport!==true)failure('PACKAGE_BUILD_REJECTED');
     previous=row.path;names.add(row.path.toLowerCase());
   }
   for(const name of [...runtimeFiles,'apps/frontend/dist/client/index.html','apps/gateway/node_modules/dotenv/lib/main.js'])if(!names.has(name.toLowerCase()))failure('PACKAGE_REQUIRED_FILE_MISSING');
+  if(manifest.build.stableTransport===true&&!names.has('apps/frontend/dist/stable-client/index.html'))failure('PACKAGE_REQUIRED_FILE_MISSING');
   const sources=new Set();previous='';
   for(const row of manifest.sourceFiles){
     if(!keysOnly(row,['path','gitBlob'])||!allowedSourcePath(row.path)||!hex(row.gitBlob,40)||!names.has(row.path.toLowerCase())||row.path<=previous)failure('PACKAGE_SOURCE_FILES_REJECTED');
@@ -168,6 +172,8 @@ export function verifyTestPackage({packageRoot,manifestSha256}) {
   if(fs.readFileSync(path.join(packageRoot,'deploy/test-erp-catalog.mjs'),'utf8').includes('crmStockWorkerPool.mjs')&&!manifest.sourceFiles.some(row=>row.path===stockPoolPath))failure('PACKAGE_REQUIRED_FILE_MISSING');
   if(fs.readFileSync(path.join(packageRoot,'deploy/test-erp-catalog.mjs'),'utf8').includes('canonicalCatalogReader.mjs')&&canonicalCatalogPaths.some(name=>!manifest.sourceFiles.some(row=>row.path===name)))failure('PACKAGE_REQUIRED_FILE_MISSING');
   if(fs.readFileSync(path.join(packageRoot,'deploy/test-server.mjs'),'utf8').includes("'./test-endpoints.mjs'")&&!manifest.sourceFiles.some(row=>row.path==='deploy/test-endpoints.mjs'))failure('PACKAGE_REQUIRED_FILE_MISSING');
+  const stableImported=['deploy/test-server.mjs','deploy/test-erp-catalog.mjs','deploy/test-erp-orders.mjs','apps/gateway/src/routes/healthRoutes.js'].some(name=>fs.existsSync(path.join(packageRoot,name))&&/(?:from\s*|import\s*\(\s*)['"][^'"\r\n]*stable-transport\.mjs['"]/.test(fs.readFileSync(path.join(packageRoot,name),'utf8')));
+  if((manifest.build.stableTransport===true||stableImported)&&!manifest.sourceFiles.some(row=>row.path===stableTransportPath))failure('PACKAGE_REQUIRED_FILE_MISSING');
   return {packageRoot:path.resolve(packageRoot),manifestSha256,sourceCommit:manifest.source.commit,sourceTree:manifest.source.tree,supervisor:manifest.entrypoints.supervisor,environment:'TEST'};
 }
 function git(repo,args,options={}){return execFileSync('git',['-C',repo,...args],{stdio:['ignore','pipe','pipe'],windowsHide:true,maxBuffer:32*1024*1024,...options});}
@@ -195,11 +201,11 @@ export function selectPackageSource(treeOutput){
   for(const name of [...runtimeFiles,...buildFiles])if(!rows.some(row=>row.path===name))failure('PACKAGE_SOURCE_REQUIRED_FILE_MISSING');
   return rows;
 }
-export function offlineBuildEnvironment(staging,{isolatedPreparation=false}={}){
-  if(typeof isolatedPreparation!=='boolean')failure('PACKAGE_BUILD_PROFILE_REJECTED');
+export function offlineBuildEnvironment(staging,{isolatedPreparation=false,stableTransport=false,stableFrontend=false}={}){
+  if(typeof isolatedPreparation!=='boolean'||typeof stableTransport!=='boolean'||typeof stableFrontend!=='boolean'||stableTransport&&!isolatedPreparation||stableFrontend&&!stableTransport)failure('PACKAGE_BUILD_PROFILE_REJECTED');
   // Build inputs must not inherit a credential, private dotenv reference or VITE_*.
   const env={};for(const [key,value]of Object.entries(process.env))if(/^(PATH|PATHEXT|SYSTEMROOT|WINDIR|COMSPEC|TEMP|TMP|LOCALAPPDATA|APPDATA|USERPROFILE|HOME|HOMEDRIVE|HOMEPATH|PROCESSOR_ARCHITECTURE|NUMBER_OF_PROCESSORS)$/i.test(key))env[key]=value;
-  return {...env,VITE_CRM_TEST:'1',...(isolatedPreparation?{VITE_CRM_ISOLATED_PREPARATION:'1',VITE_ERP_ORDER_TEST_DATABASE:'MELISA_ERP_CRM_SHARED_TEST_20261009_01'}:{}),NODE_ENV:'production',npm_config_offline:'true',npm_config_ignore_scripts:'true',npm_config_audit:'false',npm_config_fund:'false',npm_config_userconfig:path.join(staging,'.npm-user-config'),npm_config_globalconfig:path.join(staging,'.npm-global-config')};
+  return {...env,VITE_CRM_TEST:'1',VITE_CRM_STABLE_TRANSPORT:stableFrontend?'1':'0',...(isolatedPreparation?{VITE_CRM_ISOLATED_PREPARATION:'1',VITE_ERP_ORDER_TEST_DATABASE:stableTransport?'MELISA_ERP_CRM_SHARED_TEST_20261009_02':'MELISA_ERP_CRM_SHARED_TEST_20261009_01'}:{}),NODE_ENV:'production',npm_config_offline:'true',npm_config_ignore_scripts:'true',npm_config_audit:'false',npm_config_fund:'false',npm_config_userconfig:path.join(staging,'.npm-user-config'),npm_config_globalconfig:path.join(staging,'.npm-global-config')};
 }
 export function pinnedNpmCliCandidates(nodeExecutable=process.execPath){
   if(!path.isAbsolute(nodeExecutable))failure('PACKAGE_PINNED_NODE_PATH_REQUIRED');
@@ -223,12 +229,12 @@ function npmCi(directory,{production=false,env}){
   try{execFileSync(process.execPath,[npmPath,'ci','--offline','--ignore-scripts','--no-audit','--no-fund','--bin-links=false',...(production?['--omit=dev']:['--include=dev'])],{cwd:directory,env,stdio:['ignore','pipe','pipe'],windowsHide:true,maxBuffer:16*1024*1024});}
   catch{failure('PACKAGE_OFFLINE_DEPENDENCY_INSTALL_FAILED');}
 }
-export function createTestPackage({repoRoot=canonicalRoot,commit,releasesRoot=path.join(path.dirname(path.resolve(repoRoot)),'releases'),isolatedPreparation=false}){
-  if(typeof isolatedPreparation!=='boolean')failure('PACKAGE_BUILD_PROFILE_REJECTED');
+export function createTestPackage({repoRoot=canonicalRoot,commit,releasesRoot=path.join(path.dirname(path.resolve(repoRoot)),'releases'),isolatedPreparation=false,stableTransport=false}){
+  if(typeof isolatedPreparation!=='boolean'||typeof stableTransport!=='boolean'||stableTransport&&!isolatedPreparation)failure('PACKAGE_BUILD_PROFILE_REJECTED');
   const tree=verifyGitPackageSource(repoRoot,commit);
   if(!path.isAbsolute(releasesRoot)||!samePath(releasesRoot,path.join(path.dirname(path.resolve(repoRoot)),'releases'))||within(repoRoot,releasesRoot))failure('PACKAGE_RELEASE_ROOT_REJECTED');
   assertPathAncestors(path.dirname(releasesRoot));fs.mkdirSync(releasesRoot,{recursive:true});assertPathAncestors(releasesRoot);
-  const packageName=`crm-${isolatedPreparation?'shared-':''}test-${commit}`;
+  const packageName=`crm-${isolatedPreparation?'shared-':''}${stableTransport?'stable-':''}test-${commit}`;
   const destination=path.join(releasesRoot,packageName),staging=path.join(releasesRoot,`.${packageName}-${crypto.randomUUID()}.tmp`);
   if(fs.existsSync(destination))failure('PACKAGE_ALREADY_EXISTS');
   fs.mkdirSync(staging);
@@ -236,9 +242,12 @@ export function createTestPackage({repoRoot=canonicalRoot,commit,releasesRoot=pa
     const sourceFiles=selectPackageSource(git(repoRoot,['ls-tree','-r','-z',commit]));
     for(const row of sourceFiles){const bytes=git(repoRoot,['cat-file','blob',row.gitBlob]);assertPublicBytes(row.path,bytes);const absolute=path.join(staging,row.path);fs.mkdirSync(path.dirname(absolute),{recursive:true});fs.writeFileSync(absolute,bytes,{flag:'wx'});}
     const locks={};for(const target of ['gateway','frontend']){const name=`apps/${target}/package-lock.json`;validateLockedDependencies(JSON.parse(fs.readFileSync(path.join(staging,name),'utf8')),JSON.parse(fs.readFileSync(path.join(staging,`apps/${target}/package.json`),'utf8')));locks[target]={path:name,sha256:hash(fs.readFileSync(path.join(staging,name)))};}
-    const env=offlineBuildEnvironment(staging,{isolatedPreparation});for(const file of [env.npm_config_userconfig,env.npm_config_globalconfig])fs.writeFileSync(file,'',{flag:'wx'});
+    const env=offlineBuildEnvironment(staging,{isolatedPreparation,stableTransport});for(const file of [env.npm_config_userconfig,env.npm_config_globalconfig])fs.writeFileSync(file,'',{flag:'wx'});
     npmCi(path.join(staging,'apps/gateway'),{production:true,env});npmCi(path.join(staging,'apps/frontend'),{env});
-    try{execFileSync(process.execPath,[path.join(staging,'apps/frontend/node_modules/vite/bin/vite.js'),'build','--configLoader','native'],{cwd:path.join(staging,'apps/frontend'),env,stdio:['ignore','pipe','pipe'],windowsHide:true,maxBuffer:16*1024*1024});}
+    try{
+      const buildEnvironments=[env,...(stableTransport?[offlineBuildEnvironment(staging,{isolatedPreparation,stableTransport,stableFrontend:true})]:[])];
+      for(const buildEnv of buildEnvironments)execFileSync(process.execPath,[path.join(staging,'apps/frontend/node_modules/vite/bin/vite.js'),'build','--configLoader','native'],{cwd:path.join(staging,'apps/frontend'),env:buildEnv,stdio:['ignore','pipe','pipe'],windowsHide:true,maxBuffer:16*1024*1024});
+    }
     catch{failure('PACKAGE_FRONTEND_BUILD_FAILED');}
     // Verified newly-created staging child only; never delete a checkout/runtime.
     const buildDeps=path.join(staging,'apps/frontend/node_modules');assertPathAncestors(buildDeps);assertWindowsReparse(buildDeps);
@@ -248,7 +257,7 @@ export function createTestPackage({repoRoot=canonicalRoot,commit,releasesRoot=pa
     projectLockedRuntimeDocumentation(staging);
     const files=inventoryPackage(staging).files;
     for(const row of files)if(!allowedPayloadPath(row.path))failure('PACKAGE_UNEXPECTED_PAYLOAD');
-    const manifest={schemaVersion:1,kind:'melisa-crm-test-package',environment:'TEST',source:{repository:CRM_SOURCE_ORIGIN,commit,tree},build:{viteCrmTest:true,...(isolatedPreparation?{isolatedPreparation:true}:{}),nodeVersion:process.version,platform:process.platform,arch:process.arch,dependencyInstall:'npm-ci-offline-ignore-scripts'},locks,entrypoints:{supervisor:'deploy/test-supervisor.mjs',server:'deploy/test-server.mjs'},externalDependencies:['private-test-configuration','canonical-erp-test-api-root','canonical-erp-test-order-service'],files,sourceFiles};
+    const manifest={schemaVersion:1,kind:'melisa-crm-test-package',environment:'TEST',source:{repository:CRM_SOURCE_ORIGIN,commit,tree},build:{viteCrmTest:true,...(isolatedPreparation?{isolatedPreparation:true}:{}),...(stableTransport?{stableTransport:true}:{}),nodeVersion:process.version,platform:process.platform,arch:process.arch,dependencyInstall:'npm-ci-offline-ignore-scripts'},locks,entrypoints:{supervisor:'deploy/test-supervisor.mjs',server:'deploy/test-server.mjs'},externalDependencies:['private-test-configuration','canonical-erp-test-api-root','canonical-erp-test-order-service'],files,sourceFiles};
     const manifestBytes=Buffer.from(JSON.stringify(manifest,null,2)+'\n'),manifestSha256=hash(manifestBytes);fs.writeFileSync(path.join(staging,TEST_PACKAGE_MANIFEST),manifestBytes,{flag:'wx'});
     verifyGitPackageSource(repoRoot,commit);verifyTestPackage({packageRoot:staging,manifestSha256});
     if(fs.existsSync(destination))failure('PACKAGE_ALREADY_EXISTS');
@@ -267,6 +276,7 @@ function main(args){
   while(args.length){const name=args.shift(),value=args.shift();if(!name?.startsWith('--')||!value||options[name]!==undefined)failure('PACKAGE_CLI_ARGUMENTS_REJECTED');options[name]=value;}
   if(command==='verify'&&Object.keys(options).sort().join(',')==='--manifest-sha256,--package-root')return verifyTestPackage({packageRoot:options['--package-root'],manifestSha256:options['--manifest-sha256']});
   if(command==='create'&&Object.keys(options).sort().join(',')==='--commit')return createTestPackage({commit:options['--commit']});
+  if(command==='create'&&Object.keys(options).sort().join(',')==='--commit,--stable-transport'&&options['--stable-transport']==='true')return createTestPackage({commit:options['--commit'],isolatedPreparation:true,stableTransport:true});
   failure('PACKAGE_CLI_ARGUMENTS_REJECTED');
 }
 if(process.argv[1]&&samePath(process.argv[1],fileURLToPath(import.meta.url))){

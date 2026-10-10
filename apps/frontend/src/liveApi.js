@@ -5,9 +5,10 @@ import { normalizeAccountIdentity } from "./accountIdentity.js";
 import { resolveContactIdentity } from "./contactIdentity.js";
 import { validateSendPayload, validateFileSignature } from "./outboundMedia.js";
 import { createRequestControl, requestBudgetScope } from "./requestControl.js";
+import { resolveCrmApiRoot } from './sharedStableTopology.mjs';
 
 const STORAGE_KEY = "melisa-crm-access-token";
-const API_ROOT = "/api/live";
+const apiRoot = () => resolveCrmApiRoot(globalThis.location, import.meta.env?.VITE_CRM_STABLE_TRANSPORT === '1');
 const requestControl = createRequestControl();
 
 export const ERP_ORDER_TEST_DATABASE = import.meta.env?.VITE_ERP_ORDER_TEST_DATABASE || 'MELISA_ERP_SIRKET_TEST_20260929_01';
@@ -127,7 +128,7 @@ async function request(path, accessToken = "", options = {}) {
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   let response;
   try {
-  response = await requestControl.run(`${accessToken}:${path}:${options.headers?.["x-crm-conversation-id"] || ""}`, () => fetch(`${API_ROOT}${path}`, {
+  response = await requestControl.run(`${accessToken}:${path}:${options.headers?.["x-crm-conversation-id"] || ""}`, () => fetch(`${apiRoot()}${path}`, {
     cache: "no-store",
     signal: controller.signal,
     ...fetchOptions,
@@ -532,7 +533,7 @@ async function catalogPhoto(accessToken, id, { signal: callerSignal, variant='pr
   let timedOut=false,response;
   const timer = setTimeout(() => { timedOut=true;controller.abort(); }, 20000);
   try {
-    response = await requestControl.run(`${accessToken}:${path}:${conversationId || ""}`, () => fetch(`${API_ROOT}${path}`, { cache: "no-store", redirect: "error", signal: controller.signal, headers: { Accept: "image/jpeg,image/png,image/webp", Authorization: `Bearer ${accessToken}`, ...catalogConversationHeaders(conversationId) } }), false, { actor: accessToken, scope: requestBudgetScope(path) });
+    response = await requestControl.run(`${accessToken}:${path}:${conversationId || ""}`, () => fetch(`${apiRoot()}${path}`, { cache: "no-store", redirect: "error", signal: controller.signal, headers: { Accept: "image/jpeg,image/png,image/webp", Authorization: `Bearer ${accessToken}`, ...catalogConversationHeaders(conversationId) } }), false, { actor: accessToken, scope: requestBudgetScope(path) });
     if (!response.ok) { const payload=await response.json().catch(()=>({})); throw Object.assign(new Error(errorMessage(payload,response.status)),{status:response.status,code:payload?.error?.code||""}); }
     const type=(response.headers.get("content-type")||"").split(";")[0].trim().toLowerCase();
     if (!["image/jpeg","image/png","image/webp"].includes(type)) throw Object.assign(new Error("Ürün fotoğrafının dosya türü doğrulanamadı."), { status: 415 });

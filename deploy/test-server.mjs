@@ -8,6 +8,7 @@ import {resolveTestDirectories} from './test-supervisor.mjs';
 import {installTestAdminSession} from '../apps/gateway/src/services/testAdminSession.mjs';
 import {installTestPersonnelSession} from '../apps/gateway/src/services/testPersonnelSession.mjs';
 import {resolveTestEndpoints} from './test-endpoints.mjs';
+import {SHARED_STABLE_ORIGIN, resolveStableTransport, stableCrmRequestAllowed, crmUpstreamRoute} from './stable-transport.mjs';
 const mime = { '.html':'text/html; charset=utf-8', '.js':'text/javascript', '.css':'text/css', '.png':'image/png', '.svg':'image/svg+xml', '.woff2':'font/woff2' };
 
 export function validateTestLanAddress(value='') {
@@ -75,10 +76,11 @@ if (!env.CRM_BASELINE_ENV) throw Error('CRM_BASELINE_ENV_REQUIRED');
 // Capture the validated TEST locations before baseline dotenv can override them.
 const {runtime,logs}=resolveTestDirectories(repoRoot,env);
 const endpoints=resolveTestEndpoints(env);
+const stableTransport=resolveStableTransport(env,endpoints);
 const paidAi=env.CRM_PAID_AI_ENABLED==='true'&&!endpoints.isolated;
 const lanAddress=validateTestLanAddress(env.CRM_TEST_LAN_ADDRESS||'');
 if(endpoints.isolated&&lanAddress&&lanAddress!=='192.168.1.46')throw Error('SHARED_TEST_LAN_ADDRESS_REQUIRED');
-const uiOrigins=[endpoints.uiOrigin,...(lanAddress?[`http://${lanAddress}:${endpoints.ui}`]:[])];
+const uiOrigins=[endpoints.uiOrigin,...(lanAddress?[`http://${lanAddress}:${endpoints.ui}`]:[]),...(stableTransport?[SHARED_STABLE_ORIGIN]:[])];
 // AI activation is explicit for this TEST session, never inherited from baseline dotenv.
 const salesMode=env.CRM_AI_SALES_MODE==='copilot'?'copilot':'off';
 const terminalPersonnel=env.CRM_TEST_TERMINAL_PERSONNEL_USERNAME||(endpoints.isolated?'crm-ahmet':'');
@@ -108,6 +110,7 @@ Object.assign(env, {
   CRM_TEST_TERMINAL_PERSONNEL_USERNAME:terminalPersonnel,
   CRM_TEST_PORT_BASE:String(endpoints.ui),CRM_TEST_ERP_ORIGIN:endpoints.erpOrigin,CRM_TEST_EXPECTED_DATABASE:endpoints.database,
   CRM_ISOLATED_PREPARATION:String(endpoints.isolated),CRM_PAID_AI_ENABLED:String(paidAi),
+  CRM_STABLE_TRANSPORT:String(stableTransport),
 });
 if(endpoints.isolated)Object.assign(env,{WHATSAPP_SEND_ENABLED:'false',WHATSAPP_LIVE_SEND_APPROVED:'false',WAAPI_CHATWOOT_BRIDGE_ENABLED:'false',WAAPI_INCOMING_READER_ENABLED:'false',CRM_AI_SALES_MODE:'off'});
 }
@@ -127,16 +130,21 @@ const stopIncoming = endpoints.isolated?()=>{}:startTestIncomingReader();
 const stopWorker = endpoints.isolated?()=>{}:startWaapiWorker();
 const gateway = createApp().listen(endpoints.gateway, '127.0.0.1');
 const assets = path.join(root, 'apps/frontend/dist/client');
-const handler=createTestUiHandler({assets,createTestSession,createPersonnelSession,lanNetwork});
+const stableTransport=resolveStableTransport(process.env,endpoints);
+const stableAssets=stableTransport?path.join(root,'apps/frontend/dist/stable-client'):null;
+const handler=createTestUiHandler({assets,stableAssets,stableTransport,createTestSession,createPersonnelSession,lanNetwork,endpoints});
 const ui=http.createServer(handler).listen(endpoints.ui,'127.0.0.1',()=>console.log('Melisa CRM TEST hazır: '+endpoints.uiOrigin));
 const lanUi=lanNetwork?http.createServer(handler).listen(endpoints.ui,lanNetwork.address,()=>console.log('Melisa CRM LAN UI hazır.')):null;
 for (const server of [ui,lanUi,gateway].filter(Boolean)) server.on('error', error => { console.error(error.code || 'TEST_START_FAILED'); process.exit(1); });
 for (const signal of ['SIGINT','SIGTERM']) process.on(signal, () => { stopIncoming(); stopWorker(); ui.close(); lanUi?.close(); gateway.close(); setTimeout(() => process.exit(0), 500).unref(); });
 }
-export function createTestUiHandler({assets,createTestSession,createPersonnelSession=null,lanNetwork=null,endpoints=resolveTestEndpoints()}) {
+export function createTestUiHandler({assets,stableAssets=null,stableTransport=false,createTestSession,createPersonnelSession=null,lanNetwork=null,endpoints=resolveTestEndpoints()}) {
 return (req,res)=>{
-  if(!testUiRequestAllowed(req,lanNetwork,endpoints)){res.writeHead(403,{'cache-control':'no-store'});res.end('TEST_UI_ORIGIN_REQUIRED');return;}
-  if(req.url.startsWith('/api/test-personnel/')) {
+  const mounted=req.url.startsWith('/crm/');
+  if(mounted?!stableCrmRequestAllowed(req,stableTransport,endpoints):!testUiRequestAllowed(req,lanNetwork,endpoints)){res.writeHead(403,{'cache-control':'no-store'});res.end('TEST_UI_ORIGIN_REQUIRED');return;}
+  const requestUrl=mounted?req.url.slice('/crm'.length):req.url;
+  if(mounted&&requestUrl.startsWith('/api/test-')){res.writeHead(403,{'cache-control':'no-store'});res.end('TEST_BOOTSTRAP_ORIGIN_REQUIRED');return;}
+  if(requestUrl.startsWith('/api/test-personnel/')) {
     res.setHeader('cache-control','no-store');res.setHeader('content-type','application/json');
     if(!createPersonnelSession||!testPersonnelBootstrapAllowed(req,endpoints)){res.writeHead(403);res.end(JSON.stringify({error:'TEST_PERSONNEL_ORIGIN_REQUIRED'}));return;}
     let body='';req.setEncoding('utf8');
@@ -147,26 +155,29 @@ return (req,res)=>{
       catch {res.writeHead(403);res.end(JSON.stringify({error:'TEST_PERSONNEL_IDENTITY_REQUIRED'}));}
     });return;
   }
-  if (req.url.startsWith('/api/test-admin/')) {
+  if (requestUrl.startsWith('/api/test-admin/')) {
     res.setHeader('cache-control','no-store');res.setHeader('content-type','application/json');
     if(!testAdminBootstrapAllowed(req,endpoints)){res.writeHead(403);res.end(JSON.stringify({error:'TEST_ADMIN_ORIGIN_REQUIRED'}));return;}
     res.writeHead(200);res.end(JSON.stringify(createTestSession()));return;
   }
-  if (req.url.startsWith('/api/live/')) {
+  const route=crmUpstreamRoute(requestUrl,endpoints);
+  if (route) {
     const headers = { ...req.headers, host: `127.0.0.1:${endpoints.gateway}` };
-    const upstream = http.request({ hostname:'127.0.0.1', port:req.url.startsWith('/api/live/crm/erp/')?endpoints.orders:endpoints.gateway, path:req.url.slice('/api/live'.length), method:req.method, headers }, response => {
+    const upstream = http.request({ hostname:'127.0.0.1', port:route.port, path:route.path, method:req.method, headers }, response => {
       res.writeHead(response.statusCode, response.headers); response.pipe(res);
     });
     upstream.on('error', () => { res.writeHead(502); res.end('TEST servisine ulaşılamadı.'); });
     req.pipe(upstream); return;
   }
   if (!['GET','HEAD'].includes(req.method)) { res.writeHead(405); res.end(); return; }
+  const selectedAssets=mounted?stableAssets:assets;
+  if(!selectedAssets||!fs.existsSync(path.join(selectedAssets,'index.html'))){res.writeHead(503,{'cache-control':'no-store'});res.end('TEST_UI_BUILD_REQUIRED');return;}
   let name;
-  try { name = decodeURIComponent(new URL(req.url, 'http://localhost').pathname); } catch { res.writeHead(400); res.end(); return; }
-  const target = path.resolve(assets, '.' + name);
-  if (!target.startsWith(assets + path.sep) && target !== assets) { res.writeHead(403); res.end(); return; }
+  try { name = decodeURIComponent(new URL(requestUrl, 'http://localhost').pathname); } catch { res.writeHead(400); res.end(); return; }
+  const target = path.resolve(selectedAssets, '.' + name);
+  if (!target.startsWith(selectedAssets + path.sep) && target !== selectedAssets) { res.writeHead(403); res.end(); return; }
   if (name.startsWith('/assets/') && !fs.existsSync(target)) { res.writeHead(404); res.end(); return; }
-  const file = fs.existsSync(target) && fs.statSync(target).isFile() ? target : path.join(assets,'index.html');
+  const file = fs.existsSync(target) && fs.statSync(target).isFile() ? target : path.join(selectedAssets,'index.html');
   res.writeHead(200, { 'content-type':mime[path.extname(file)] || 'application/octet-stream', 'cache-control':'no-store', 'x-content-type-options':'nosniff' });
   if (req.method === 'HEAD') res.end(); else fs.createReadStream(file).pipe(res);
 };
