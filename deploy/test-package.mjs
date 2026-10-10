@@ -30,7 +30,7 @@ function privatePath(value) {
 }
 export function allowedSourcePath(value) {
   if(!safePackagePath(value)||privatePath(value)||/(?:^|\/)(?:tests?|__tests__)(?:\/|$)|\.test\.[^.]+$/i.test(value))return false;
-  if(runtimeFiles.includes(value)||buildFiles.includes(value)||value==='deploy/test-package.mjs'||value==='deploy/test-endpoints.mjs'||value===stockPoolPath||canonicalCatalogPaths.includes(value))return true;
+  if(runtimeFiles.includes(value)||buildFiles.includes(value)||value==='deploy/test-package.mjs'||value==='deploy/test-endpoints.mjs'||['deploy/customer-catalog-test-adapter.mjs','deploy/customer-catalog-test-runtime.mjs','deploy/customer-catalog-test-edge.mjs','deploy/customer-catalog-test-profile.mjs'].includes(value)||value===stockPoolPath||canonicalCatalogPaths.includes(value))return true;
   return /^apps\/gateway\/src\/.+\.(?:js|mjs|json)$/.test(value)
     || /^apps\/frontend\/src\/.+\.(?:js|jsx|mjs|css|svg|png|webp|jpg|jpeg)$/.test(value)
     || /^apps\/frontend\/public\/.+\.(?:svg|png|webp|jpg|jpeg|ico|woff2?)$/.test(value);
