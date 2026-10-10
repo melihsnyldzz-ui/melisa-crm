@@ -44,10 +44,32 @@ Son listener kontrolünde mevcut62400/01 PID79256,62402 PID67632,62403 PID68084,
 
 Katalog gönderim makbuzundan sonra normal624 CRM'nin mevcut `sales-draft` yoluna konuşma55 için bir kez açık manuel istek verildi; `draftContext:null`, katalog araması ve teknik prova sepeti aktarımı yoktur. Gerçek sonuç `AI_PROBE_READY`: owner doğrulaması, copilot modu, insan inceleme gereği, `autoSend=false`, `erpWrite=false` ve `readOnly=true` geçti. Öneri yalnız RAM'de doğrulanıp atıldı; bu probe WhatsApp mesajı veya native kayıt yazmadı. Mevcut aktör DTO'sunda `paidAiEnabled` alanı yoktu; bu durum AI kapalı kanıtı sayılmadı, gerçek AI çağrısı başarıyla sonuçlandı. Provider/key/model/otomatik bot/ortak626 kapıları değiştirilmedi.
 
-Bu kanıt modelin mevcut CRM yolunda öneri üretebildiğini gösterir. Kullanıcının gönderim sonrası yeni cevabı ve ona karşılık gerçek WhatsApp AI devam mesajı ayrı kabul olarak bekler; eski konuşma veya teknik prova sepeti yeni kullanıcı seçimi sayılmaz.
+Bu ilk probe modelin mevcut CRM yolunda öneri üretebildiğini gösterir. Aşağıdaki yeni öneri, operatör incelemesi ve gerçek karşı yanıt gönderimi ayrıca doğrulandı; eski konuşma veya teknik prova sepeti yeni kullanıcı seçimi sayılmaz.
+
+Gönderim sonrası incoming12610 (`2026-10-09T23:53:22.000Z`) salt okunur doğrulandı. RAM'de tam metin SHA256 karşılaştırması gönderilen katalog mesajıyla birebir aynı çıktı; bu kopya/echo kaydı “açıldı” yanıtı veya telefon kabulü değildir. Tam link/metin kanıta alınmadı. Bu bağlamdaki ilk copilot önerisi `AI_CATALOG_UNAVAILABLE` /502 ile durdu; mesaj gönderilmedi. Ardından onaylı iki ürünün normal624 gateway ve doğrudan62402 kart GET'leri200, current CANONICAL_TEST/noncached/actor doğrulamalı geldi; canonical4144 sağlık kimliği de geçti. Genel katalog kesintisi veya telefon açma başarısı bu sonuçlardan çıkarılmadı. Mevcut kaynak/roller/servisler değiştirilmedi.
+
+Belirsiz kopya bağlamı için açık operatör mesaj taslağıyla mevcut copilot'a bir kez yeni açıklama isteği verildi; planner/katalog kaynağı ve bütün konuşma/yetki/etkisizlik kontrolleri korundu. Sonuç `AI_OWNER_REVIEW_READY`, copilot/insan inceleme/otomatik gönderim kapalı/ERP yazımı kapalı/salt okunur/konuşma değişmedi kontrolleri geçti. Model normal624 kaynağından iki ürün önerdi (`erp-301982`, `erp-367241`); bunlar kişisel TEST kataloğunun iki ürün kapsamı değildir. Operatör bu ilgisiz önerileri metinden çıkardı, şirket adını Melisa Bebe olarak düzeltti ve yalnız TEST açıklaması, bağlantının açılması ve sonraki seçimi soran metni onayladı. Teknik prova sepeti kullanıcı seçimi diye verilmedi; farklı kaynak ürün/fiyatı kişisel katalog gerçeği sayılmadı. Bu pilot genel otomatik satış veya kişisel katalogla otomatik AI ürün eşlemesi kabulü değildir.
+
+- Orijinal model yanıt SHA256: `96e9b6f3d84de315b9e6f11662d0be2e386b62fcfba16932d1deb70ddb9b7f22`.
+- Operatör tarafından incelenen son metin SHA256: `5909dbeffd4fc46bb9fc70056d7579503a06db60b2b6f850fd46915fbcba1d9c`.
+- İncelenen konuşma revizyonu: `59d19e96d14636b29b57535d78fc4149589f17aea770cef42ce674eb7c79068b`; normal gönderim bu revizyonu ve son incoming12610'u yeniden doğruladı.
+
+Gerçek tek karşı yanıt mevcut normal624 CRM üzerinden gönderildi: `AI_OWNER_SEND_CONFIRMED`. Aynı UUID/tam gövdeyle ayrı salt okunur durum kontrolü provider ve Chatwoot kimliği varlığını doğruladı. Sender yeni AI çağrısı veya native yazma yapmadı; `autoBot=false`. Onaylanan metin, gönderim kabulü ve telefon kabulü ayrı kanıtlardır. Sender'ın sabit çıktısında `updatedAt` yoktur; kesin API gönderim zamanı iddiası eklenmedi.
+
+| AI karşı yanıt makbuzu | Doğrulanmış değer |
+| --- | --- |
+| Konuşma / son incoming | `55` / `12610` |
+| Send UUID | `2cf768f7-1478-4c73-a592-44595b5cc47c` |
+| Gönderilen yanıt SHA256 | `5909dbeffd4fc46bb9fc70056d7579503a06db60b2b6f850fd46915fbcba1d9c` |
+| Kontroller | `operatorApproved`, `catalogSendConfirmed`, `ownerVerified`, `conversationUnchanged` = true |
+| Gönderim / ayrı durum kontrolü | `messageSendAttempted`, `statusReadAttempted` = true |
+| Makbuz | `CONFIRMED`; `providerMessageIdPresent`, `chatwootMessageIdPresent` = true |
+| Sender etkisi | `aiRequestAttempted`, `nativeWriteAttempted`, `autoBot` = false |
+
+Güvenli sonuç görüntüsü checkout dışında `catalog-lab/evidence/ai-owner-send-confirmed.jpg` olarak tutuldu; capability/token/tam telefon/mesaj gövdesi Git'e taşınmadı. Tek onaylı karşı yanıtla bağımsız çalışma tamamlandı. Katalog PID53468 açık bırakıldı; yeni watcher/otomatik bot veya başka alıcı gönderimi yoktur.
 
 ## Doğrulama ve açık kabul
 
 Yerel geniş offline koşu1.063/1.063; sonraki core/adapter28/28, hesap/shared/runtime11/11, edge/profile/paket35/35 ve frontend15/15 geçti. Build/syntax ve redacted staged/exact source history secret scan yeni bulgu0. [Çalışan source Actions](https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38004507159) GitHub hesabının ödeme/harcama engeliyle başlamadı; CI yeşil veya test başarısızlığı diye sunulmaz.
 
-Kullanıcı telefon açma/filtre/sepet/özet geri bildirimi ve gerçek AI konuşması henüz kabul edilmedi. Önceki sentetik fixture render denemesi browser client tarafından engellendi; [tasarım QA](../../../../design-qa.md) render PASS değildir. Gerçek API/native/gönderim kanıtı bu görsel boşluğu kapatmaz. Mevcut ortak626 gönderim/AI kapıları açılmadı; LIVE/main ve önceki 25/12/13 insan kabul sayımı korunur.
+Kullanıcı telefon açma/filtre/sepet/özet geri bildirimi ve gerçek kullanıcı seçimi henüz kabul edilmedi. Incoming kopyası bu kabulü sağlamaz; incelenmiş AI karşı yanıtının gerçek gönderimi yukarıda ayrı kanıtlıdır. Önceki sentetik fixture render denemesi browser client tarafından engellendi; [tasarım QA](../../../../design-qa.md) render PASS değildir. Gerçek API/native/gönderim kanıtı bu görsel boşluğu kapatmaz. Mevcut ortak626 gönderim/AI kapıları açılmadı; LIVE/main ve önceki 25/12/13 insan kabul sayımı korunur.
