@@ -28,7 +28,8 @@ test('account info SSR cannot leak session fields or invent a Patron identity',a
  }finally{rmSync(file,{force:true});}
 });
 test('mobile-preview selects layout only and still uses the real application login gate',async()=>{
- assert(isMobilePreviewPath('/mobile-preview'));assert(isMobilePreviewPath('/mobile-preview/'));assert(!isMobilePreviewPath('/mobile-preview-other'));assert(!isMobilePreviewPath('/'));
+ for(const path of ['/mobile-preview','/mobile-preview/','/crm/mobile-preview','/crm/mobile-preview/'])assert(isMobilePreviewPath(path));
+ for(const path of ['/mobile-preview-other','/crm/mobile-preview-other','/crm-evil/mobile-preview','/crm/mobile-preview//','/'])assert(!isMobilePreviewPath(path));
  const source=readFileSync('src/App.jsx','utf8');assert.match(source,/import\.meta\.env\.DEV && new URLSearchParams/);assert.match(source,/if \(liveMode && !liveSession\) return <LoginGate/);
  const routes=[];const res=await worker.fetch(new Request('https://test.example/mobile-preview',{headers:{accept:'text/html'}}),{ASSETS:{fetch:async request=>{const path=new URL(request.url).pathname;routes.push(path);return new Response(path==='/'?'app':'missing',{status:path==='/'?200:404});}}});
  assert.equal(res.status,200);assert.deepEqual(routes,['/mobile-preview','/']);

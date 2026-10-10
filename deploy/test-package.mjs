@@ -5,6 +5,7 @@ import {execFileSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 
 export const TEST_PACKAGE_MANIFEST = 'release-manifest.json';
+export const STABLE_DEPENDENCY_LOCK = 'hub-dependency-lock.json';
 export const CRM_SOURCE_ORIGIN = 'https://github.com/melihsnyldzz-ui/melisa-crm.git';
 const canonicalRoot = fileURLToPath(new URL('../',import.meta.url));
 const hash = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
@@ -36,8 +37,8 @@ export function allowedSourcePath(value) {
     || /^apps\/frontend\/src\/.+\.(?:js|jsx|mjs|css|svg|png|webp|jpg|jpeg)$/.test(value)
     || /^apps\/frontend\/public\/.+\.(?:svg|png|webp|jpg|jpeg|ico|woff2?)$/.test(value);
 }
-function allowedPayloadPath(value) {
-  return allowedSourcePath(value)||safePackagePath(value)&&!privatePath(value)&&(
+function allowedPayloadPath(value,stableTransport=false) {
+  return stableTransport&&value===STABLE_DEPENDENCY_LOCK||allowedSourcePath(value)||safePackagePath(value)&&!privatePath(value)&&(
     /^apps\/gateway\/node_modules\/.+/.test(value)||/^apps\/frontend\/dist\/(?:client|stable-client)\/.+\.(?:html|js|css|svg|png|webp|jpg|jpeg|ico|woff2?|ttf)$/.test(value));
 }
 function assertPublicBytes(name,bytes) {
@@ -110,6 +111,23 @@ export function projectLockedRuntimeDocumentation(staging){
   return {dependency:'dotenv',version:locked.version,lockedIntegrity:locked.integrity,removed};
 }
 function keysOnly(value,keys){return value&&typeof value==='object'&&!Array.isArray(value)&&Object.keys(value).sort().join(',')===[...keys].sort().join(',');}
+/** Generated metadata pins the final destination, never the temporary build path. */
+export function writeStableDependencyLock({staging,packageRoot,sourceCommit}) {
+  if(!path.isAbsolute(staging||'')||!path.isAbsolute(packageRoot||'')||!hex(sourceCommit,40))failure('PACKAGE_DEPENDENCY_LOCK_REJECTED');
+  const files=inventoryPackage(staging).files.filter(row=>row.path.startsWith('apps/gateway/node_modules/')).map(({path,sha256})=>({path,sha256}));
+  if(!files.length)failure('PACKAGE_DEPENDENCY_LOCK_REJECTED');
+  const lock={schemaVersion:1,sourceCommit,packageRoot:path.resolve(packageRoot),files};
+  fs.writeFileSync(path.join(staging,STABLE_DEPENDENCY_LOCK),JSON.stringify(lock,null,2)+'\n',{flag:'wx'});
+  return lock;
+}
+function verifyStableDependencyLock(packageRoot,dependencyPackageRoot,manifest) {
+  if(manifest.build.stableTransport!==true)return;
+  let lock;try{lock=JSON.parse(fs.readFileSync(path.join(packageRoot,STABLE_DEPENDENCY_LOCK),'utf8'));}catch{failure('PACKAGE_DEPENDENCY_LOCK_REJECTED');}
+  if(!keysOnly(lock,['schemaVersion','sourceCommit','packageRoot','files'])||lock.schemaVersion!==1||lock.sourceCommit!==manifest.source.commit||!path.isAbsolute(lock.packageRoot||'')||!samePath(lock.packageRoot,dependencyPackageRoot)||!Array.isArray(lock.files)||!lock.files.length)failure('PACKAGE_DEPENDENCY_LOCK_REJECTED');
+  const expected=manifest.files.filter(row=>row.path.startsWith('apps/gateway/node_modules/')).map(({path,sha256})=>({path,sha256}));
+  for(const row of lock.files)if(!keysOnly(row,['path','sha256'])||!safePackagePath(row.path)||!row.path.startsWith('apps/gateway/node_modules/')||!hex(row.sha256))failure('PACKAGE_DEPENDENCY_LOCK_REJECTED');
+  if(JSON.stringify(lock.files)!==JSON.stringify(expected))failure('PACKAGE_DEPENDENCY_LOCK_REJECTED');
+}
 export function validateLockedDependencies(lock,manifest) {
   if(lock?.lockfileVersion!==3||!lock.packages||!lock.packages['']||lock.name!==manifest?.name)failure('PACKAGE_LOCK_REJECTED');
   for(const field of ['dependencies','devDependencies','optionalDependencies']){
@@ -136,12 +154,12 @@ function validateManifest(manifest) {
   if(!Array.isArray(manifest.files)||manifest.files.length<runtimeFiles.length||manifest.files.length>100000||!Array.isArray(manifest.sourceFiles))failure('PACKAGE_FILES_REJECTED');
   const names=new Set();let previous='';
   for(const row of manifest.files){
-    if(!keysOnly(row,['path','size','sha256'])||!allowedPayloadPath(row.path)||row.path<=previous||names.has(row.path.toLowerCase())||!Number.isSafeInteger(row.size)||row.size<0||!hex(row.sha256))failure('PACKAGE_FILES_REJECTED');
+    if(!keysOnly(row,['path','size','sha256'])||!allowedPayloadPath(row.path,manifest.build.stableTransport===true)||row.path<=previous||names.has(row.path.toLowerCase())||!Number.isSafeInteger(row.size)||row.size<0||!hex(row.sha256))failure('PACKAGE_FILES_REJECTED');
     if(row.path.startsWith('apps/frontend/dist/stable-client/')&&manifest.build.stableTransport!==true)failure('PACKAGE_BUILD_REJECTED');
     previous=row.path;names.add(row.path.toLowerCase());
   }
   for(const name of [...runtimeFiles,'apps/frontend/dist/client/index.html','apps/gateway/node_modules/dotenv/lib/main.js'])if(!names.has(name.toLowerCase()))failure('PACKAGE_REQUIRED_FILE_MISSING');
-  if(manifest.build.stableTransport===true&&!names.has('apps/frontend/dist/stable-client/index.html'))failure('PACKAGE_REQUIRED_FILE_MISSING');
+  if(manifest.build.stableTransport===true&&['apps/frontend/dist/stable-client/index.html',STABLE_DEPENDENCY_LOCK].some(name=>!names.has(name)))failure('PACKAGE_REQUIRED_FILE_MISSING');
   const sources=new Set();previous='';
   for(const row of manifest.sourceFiles){
     if(!keysOnly(row,['path','gitBlob'])||!allowedSourcePath(row.path)||!hex(row.gitBlob,40)||!names.has(row.path.toLowerCase())||row.path<=previous)failure('PACKAGE_SOURCE_FILES_REJECTED');
@@ -151,6 +169,10 @@ function validateManifest(manifest) {
   return manifest;
 }
 export function verifyTestPackage({packageRoot,manifestSha256}) {
+  return verifyPackageAtRoot({packageRoot,manifestSha256},packageRoot);
+}
+// Only the package builder supplies a different final destination during staging.
+function verifyPackageAtRoot({packageRoot,manifestSha256},dependencyPackageRoot) {
   if(!path.isAbsolute(packageRoot||'')||typeof manifestSha256!=='string'||!/^[a-fA-F0-9]{64}$/.test(manifestSha256))failure('PACKAGE_VERIFY_ARGUMENTS_REJECTED');
   manifestSha256=manifestSha256.toLowerCase();
   assertPathAncestors(packageRoot);
@@ -162,6 +184,7 @@ export function verifyTestPackage({packageRoot,manifestSha256}) {
   validateManifest(manifest);
   const inventory=readInventory(packageRoot,true),payload=inventory.files.filter(row=>row.path!==TEST_PACKAGE_MANIFEST);
   if(JSON.stringify(payload)!==JSON.stringify(manifest.files))failure('PACKAGE_PAYLOAD_MISMATCH');
+  verifyStableDependencyLock(packageRoot,dependencyPackageRoot,manifest);
   const expectedDirs=new Set();for(const row of manifest.files){const parts=row.path.split('/');while(parts.length>1){parts.pop();expectedDirs.add(parts.join('/'));}}
   if(inventory.directories.some(name=>!expectedDirs.has(name)))failure('PACKAGE_UNLISTED_DIRECTORY');
   for(const target of ['gateway','frontend']){
@@ -172,7 +195,7 @@ export function verifyTestPackage({packageRoot,manifestSha256}) {
   if(fs.readFileSync(path.join(packageRoot,'deploy/test-erp-catalog.mjs'),'utf8').includes('crmStockWorkerPool.mjs')&&!manifest.sourceFiles.some(row=>row.path===stockPoolPath))failure('PACKAGE_REQUIRED_FILE_MISSING');
   if(fs.readFileSync(path.join(packageRoot,'deploy/test-erp-catalog.mjs'),'utf8').includes('canonicalCatalogReader.mjs')&&canonicalCatalogPaths.some(name=>!manifest.sourceFiles.some(row=>row.path===name)))failure('PACKAGE_REQUIRED_FILE_MISSING');
   if(fs.readFileSync(path.join(packageRoot,'deploy/test-server.mjs'),'utf8').includes("'./test-endpoints.mjs'")&&!manifest.sourceFiles.some(row=>row.path==='deploy/test-endpoints.mjs'))failure('PACKAGE_REQUIRED_FILE_MISSING');
-  const stableImported=['deploy/test-server.mjs','deploy/test-erp-catalog.mjs','deploy/test-erp-orders.mjs','apps/gateway/src/routes/healthRoutes.js'].some(name=>fs.existsSync(path.join(packageRoot,name))&&/(?:from\s*|import\s*\(\s*)['"][^'"\r\n]*stable-transport\.mjs['"]/.test(fs.readFileSync(path.join(packageRoot,name),'utf8')));
+  const stableImported=['deploy/test-server.mjs','deploy/test-erp-catalog.mjs','deploy/test-erp-orders.mjs','apps/gateway/src/routes/healthRoutes.js','apps/gateway/src/app.js'].some(name=>fs.existsSync(path.join(packageRoot,name))&&/(?:from\s*|import\s*\(\s*)['"][^'"\r\n]*stable-transport\.mjs['"]/.test(fs.readFileSync(path.join(packageRoot,name),'utf8')));
   if((manifest.build.stableTransport===true||stableImported)&&!manifest.sourceFiles.some(row=>row.path===stableTransportPath))failure('PACKAGE_REQUIRED_FILE_MISSING');
   return {packageRoot:path.resolve(packageRoot),manifestSha256,sourceCommit:manifest.source.commit,sourceTree:manifest.source.tree,supervisor:manifest.entrypoints.supervisor,environment:'TEST'};
 }
@@ -255,11 +278,12 @@ export function createTestPackage({repoRoot=canonicalRoot,commit,releasesRoot=pa
     fs.rmSync(buildDeps,{recursive:true});
     for(const file of [env.npm_config_userconfig,env.npm_config_globalconfig]){if(!within(staging,file)||samePath(staging,file))failure('PACKAGE_STAGING_BOUNDARY_REJECTED');fs.unlinkSync(file);}
     projectLockedRuntimeDocumentation(staging);
+    if(stableTransport)writeStableDependencyLock({staging,packageRoot:destination,sourceCommit:commit});
     const files=inventoryPackage(staging).files;
-    for(const row of files)if(!allowedPayloadPath(row.path))failure('PACKAGE_UNEXPECTED_PAYLOAD');
+    for(const row of files)if(!allowedPayloadPath(row.path,stableTransport))failure('PACKAGE_UNEXPECTED_PAYLOAD');
     const manifest={schemaVersion:1,kind:'melisa-crm-test-package',environment:'TEST',source:{repository:CRM_SOURCE_ORIGIN,commit,tree},build:{viteCrmTest:true,...(isolatedPreparation?{isolatedPreparation:true}:{}),...(stableTransport?{stableTransport:true}:{}),nodeVersion:process.version,platform:process.platform,arch:process.arch,dependencyInstall:'npm-ci-offline-ignore-scripts'},locks,entrypoints:{supervisor:'deploy/test-supervisor.mjs',server:'deploy/test-server.mjs'},externalDependencies:['private-test-configuration','canonical-erp-test-api-root','canonical-erp-test-order-service'],files,sourceFiles};
     const manifestBytes=Buffer.from(JSON.stringify(manifest,null,2)+'\n'),manifestSha256=hash(manifestBytes);fs.writeFileSync(path.join(staging,TEST_PACKAGE_MANIFEST),manifestBytes,{flag:'wx'});
-    verifyGitPackageSource(repoRoot,commit);verifyTestPackage({packageRoot:staging,manifestSha256});
+    verifyGitPackageSource(repoRoot,commit);verifyPackageAtRoot({packageRoot:staging,manifestSha256},destination);
     if(fs.existsSync(destination))failure('PACKAGE_ALREADY_EXISTS');
     for(const row of [...files,{path:TEST_PACKAGE_MANIFEST}])fs.chmodSync(path.join(staging,row.path),0o444);
     fs.renameSync(staging,destination);

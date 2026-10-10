@@ -132,6 +132,7 @@ async function request(path, accessToken = "", options = {}) {
     cache: "no-store",
     signal: controller.signal,
     ...fetchOptions,
+    credentials: "omit",
     headers: {
       Accept: "application/json",
       ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
@@ -533,7 +534,7 @@ async function catalogPhoto(accessToken, id, { signal: callerSignal, variant='pr
   let timedOut=false,response;
   const timer = setTimeout(() => { timedOut=true;controller.abort(); }, 20000);
   try {
-    response = await requestControl.run(`${accessToken}:${path}:${conversationId || ""}`, () => fetch(`${apiRoot()}${path}`, { cache: "no-store", redirect: "error", signal: controller.signal, headers: { Accept: "image/jpeg,image/png,image/webp", Authorization: `Bearer ${accessToken}`, ...catalogConversationHeaders(conversationId) } }), false, { actor: accessToken, scope: requestBudgetScope(path) });
+    response = await requestControl.run(`${accessToken}:${path}:${conversationId || ""}`, () => fetch(`${apiRoot()}${path}`, { cache: "no-store", credentials: "omit", redirect: "error", signal: controller.signal, headers: { Accept: "image/jpeg,image/png,image/webp", Authorization: `Bearer ${accessToken}`, ...catalogConversationHeaders(conversationId) } }), false, { actor: accessToken, scope: requestBudgetScope(path) });
     if (!response.ok) { const payload=await response.json().catch(()=>({})); throw Object.assign(new Error(errorMessage(payload,response.status)),{status:response.status,code:payload?.error?.code||""}); }
     const type=(response.headers.get("content-type")||"").split(";")[0].trim().toLowerCase();
     if (!["image/jpeg","image/png","image/webp"].includes(type)) throw Object.assign(new Error("Ürün fotoğrafının dosya türü doğrulanamadı."), { status: 415 });

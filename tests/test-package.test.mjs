@@ -6,7 +6,7 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import {execFileSync,spawnSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
-import {allowedSourcePath,CRM_SOURCE_ORIGIN,inventoryPackage,offlineBuildEnvironment,pinnedNpmCliCandidates,projectLockedRuntimeDocumentation,resolvePinnedNpmCli,safePackagePath,selectPackageSource,TEST_PACKAGE_MANIFEST,validateLockedDependencies,verifyGitPackageSource,verifyTestPackage} from '../deploy/test-package.mjs';
+import {allowedSourcePath,CRM_SOURCE_ORIGIN,inventoryPackage,offlineBuildEnvironment,pinnedNpmCliCandidates,projectLockedRuntimeDocumentation,resolvePinnedNpmCli,safePackagePath,selectPackageSource,STABLE_DEPENDENCY_LOCK,TEST_PACKAGE_MANIFEST,validateLockedDependencies,verifyGitPackageSource,verifyTestPackage,writeStableDependencyLock} from '../deploy/test-package.mjs';
 
 const digest=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
 const blob=bytes=>crypto.createHash('sha1').update(`blob ${bytes.length}\0`).update(bytes).digest('hex');
@@ -62,7 +62,7 @@ test('stable transport import requires its sealed source without invalidating ol
   }
 });
 test('catalog, order and gateway health imports cannot omit their sealed transport helper',t=>{
-  for(const name of ['deploy/test-erp-catalog.mjs','deploy/test-erp-orders.mjs','apps/gateway/src/routes/healthRoutes.js']){
+  for(const name of ['deploy/test-erp-catalog.mjs','deploy/test-erp-orders.mjs','apps/gateway/src/routes/healthRoutes.js','apps/gateway/src/app.js']){
     const f=fixture(t);f.write(name,"import {createStableServiceHealthHandler} from '../../../../deploy/stable-transport.mjs';\n");
     const source={path:name,gitBlob:blob(fs.readFileSync(path.join(f.root,name)))};
     const existing=f.manifest.sourceFiles.find(row=>row.path===name);if(existing)existing.gitBlob=source.gitBlob;else{f.manifest.sourceFiles.push(source);sort(f.manifest.sourceFiles);}
@@ -77,12 +77,46 @@ test('stable immutable payload requires explicit isolated profile, both UIs and 
   f.manifest.files=inventoryPackage(f.root).files.filter(row=>row.path!==TEST_PACKAGE_MANIFEST);f.seal();
   assert.throws(()=>f.verify(),{code:'PACKAGE_BUILD_REJECTED'});
   f.manifest.build.stableTransport=true;f.seal();assert.throws(()=>f.verify(),{code:'PACKAGE_BUILD_REJECTED'});
-  f.manifest.build.isolatedPreparation=true;f.seal();assert.equal(f.verify().environment,'TEST');
+  f.manifest.build.isolatedPreparation=true;f.seal();assert.throws(()=>f.verify(),{code:'PACKAGE_REQUIRED_FILE_MISSING'});
+  writeStableDependencyLock({staging:f.root,packageRoot:f.root,sourceCommit:f.manifest.source.commit});f.manifest.files=inventoryPackage(f.root).files.filter(row=>row.path!==TEST_PACKAGE_MANIFEST);f.seal();assert.equal(f.verify().environment,'TEST');
   f.manifest.build.stableTransport=false;f.seal();assert.throws(()=>f.verify(),{code:'PACKAGE_BUILD_REJECTED'});f.manifest.build.stableTransport=true;
   const stableIndex=f.manifest.files.find(row=>row.path==='apps/frontend/dist/stable-client/index.html');
   f.manifest.files=f.manifest.files.filter(row=>row!==stableIndex);f.seal();assert.throws(()=>f.verify(),{code:'PACKAGE_REQUIRED_FILE_MISSING'});
   f.manifest.files.push(stableIndex);sort(f.manifest.files);
   f.manifest.files=f.manifest.files.filter(row=>row.path!=='apps/frontend/dist/client/index.html');f.seal();assert.throws(()=>f.verify(),{code:'PACKAGE_REQUIRED_FILE_MISSING'});
+});
+function stableFixture(t){
+  const f=fixture(t),helper='deploy/stable-transport.mjs';
+  f.write(helper,'export const resolveStableTransport=()=>false;\n');f.manifest.sourceFiles.push({path:helper,gitBlob:blob(fs.readFileSync(path.join(f.root,helper)))});sort(f.manifest.sourceFiles);
+  f.write('apps/frontend/dist/stable-client/index.html','<html>synthetic mounted TEST</html>');
+  f.manifest.build.isolatedPreparation=true;f.manifest.build.stableTransport=true;
+  const lock=writeStableDependencyLock({staging:f.root,packageRoot:f.root,sourceCommit:f.manifest.source.commit});
+  const reseal=()=>{f.manifest.files=inventoryPackage(f.root).files.filter(row=>row.path!==TEST_PACKAGE_MANIFEST);f.seal();};reseal();
+  return{...f,lock,reseal};
+}
+test('stable dependency inventory is sealed; missing, changed and legacy-root locks are rejected',t=>{
+  const f=stableFixture(t);assert.equal(f.verify().environment,'TEST');assert.equal(allowedSourcePath(STABLE_DEPENDENCY_LOCK),false);
+  assert.deepEqual(f.lock.files,f.manifest.files.filter(row=>row.path.startsWith('apps/gateway/node_modules/')).map(({path,sha256})=>({path,sha256})));
+  f.write(STABLE_DEPENDENCY_LOCK,JSON.stringify({...f.lock,sourceCommit:'c'.repeat(40)}));assert.throws(()=>f.verify(),{code:'PACKAGE_PAYLOAD_MISMATCH'});
+  fs.unlinkSync(path.join(f.root,STABLE_DEPENDENCY_LOCK));f.reseal();assert.throws(()=>f.verify(),{code:'PACKAGE_REQUIRED_FILE_MISSING'});
+  const legacy=fixture(t);writeStableDependencyLock({staging:legacy.root,packageRoot:legacy.root,sourceCommit:legacy.manifest.source.commit});legacy.manifest.files=inventoryPackage(legacy.root).files.filter(row=>row.path!==TEST_PACKAGE_MANIFEST);legacy.seal();assert.throws(()=>legacy.verify(),{code:'PACKAGE_FILES_REJECTED'});
+});
+test('repinned dependency lock cannot change identity, inventory, safe paths or hashes',t=>{
+  const f=stableFixture(t);
+  for(const mutate of [l=>l.schemaVersion=2,l=>l.sourceCommit='c'.repeat(40),l=>l.packageRoot=path.join(f.root,'wrong-root'),l=>l.packageRoot='relative',l=>l.extra=true,l=>l.files=[],l=>l.files.push({...l.files[0]}),l=>l.files[0].path='../outside',l=>l.files[0].path='apps/frontend/dist/client/index.html',l=>l.files[0].sha256='d'.repeat(64),l=>l.files[0].size=1]){
+    const value=structuredClone(f.lock);mutate(value);f.write(STABLE_DEPENDENCY_LOCK,JSON.stringify(value));f.reseal();assert.throws(()=>f.verify(),{code:'PACKAGE_DEPENDENCY_LOCK_REJECTED'});
+  }
+  f.write(STABLE_DEPENDENCY_LOCK,JSON.stringify(f.lock));f.reseal();assert.equal(f.verify().environment,'TEST');
+  f.write('apps/gateway/node_modules/dotenv/new-unlisted.js','// synthetic newly introduced dependency');assert.throws(()=>f.verify(),{code:'PACKAGE_PAYLOAD_MISMATCH'});
+  f.reseal();assert.throws(()=>f.verify(),{code:'PACKAGE_DEPENDENCY_LOCK_REJECTED'});
+});
+test('generated lock pins final destination rather than staging and cannot be silently overwritten',t=>{
+  const f=fixture(t),destination=path.join(path.dirname(f.root),'final-'+path.basename(f.root));
+  const generated=writeStableDependencyLock({staging:f.root,packageRoot:destination,sourceCommit:f.manifest.source.commit});
+  assert.equal(generated.packageRoot,path.resolve(destination));assert.notEqual(generated.packageRoot,f.root);
+  assert.deepEqual(generated,JSON.parse(fs.readFileSync(path.join(f.root,STABLE_DEPENDENCY_LOCK),'utf8')));
+  assert.throws(()=>writeStableDependencyLock({staging:f.root,packageRoot:destination,sourceCommit:f.manifest.source.commit}),{code:'EEXIST'});
+  for(const patch of [{packageRoot:'relative'},{sourceCommit:'short'},{staging:'relative'}])assert.throws(()=>writeStableDependencyLock({staging:f.root,packageRoot:destination,sourceCommit:f.manifest.source.commit,...patch}),{code:'PACKAGE_DEPENDENCY_LOCK_REJECTED'});
 });
 test('stable builds use explicit separate prefix flag and DB02; inherited VITE/config cannot select a profile',t=>{
   const previous={};for(const key of ['VITE_CRM_STABLE_TRANSPORT','VITE_ERP_ORDER_TEST_DATABASE','CRM_STABLE_TRANSPORT']){previous[key]=process.env[key];process.env[key]='untrusted';}
