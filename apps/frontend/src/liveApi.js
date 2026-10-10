@@ -644,9 +644,10 @@ export const liveApi = {
   assign: (token, id, agentId) => request(`/crm/conversations/${id}/assign`, token, { method: "POST", body: JSON.stringify({ agentId }) }),
   salesRules: (token, {signal}={}) => request('/crm/sales-rules', token, {signal,preserveAuthDenial:true,redirect:'error'}),
   saveSalesRules: (token, {policy,revision}, {signal}={}) => request('/crm/sales-rules', token, {method:'PUT',body:JSON.stringify({policy,revision}),signal,preserveAuthDenial:true,redirect:'error'}),
-  salesDraft: (token, id, {signal,catalogSearch='',customerLanguage,currentComposer,draftContext} = {}) => {
+  salesDraft: (token, id, {signal,catalogSearch='',customerLanguage,currentComposer,draftContext,customerCatalogSessionId} = {}) => {
     if(typeof catalogSearch!=='string'||catalogSearch.trim().length>120)throw new Error('Ürün araması en fazla 120 karakter olabilir.');
-    return request(`/crm/conversations/${encodeURIComponent(String(id))}/sales-draft`, token, { method: 'POST', body: JSON.stringify({aiIntent:{userInitiated:true,action:'manual'},...(catalogSearch.trim()?{catalogSearch:catalogSearch.trim()}:{}),...(customerLanguage!==undefined?{customerLanguage}:{}),...(currentComposer!==undefined?{currentComposer}:{}),...(draftContext!==undefined?{draftContext}:{})}), signal, timeoutMs: 90000, preserveAuthDenial: true, redirect: 'error' });
+    if(customerCatalogSessionId!==undefined&&!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(customerCatalogSessionId))throw new Error('Kişisel katalog oturumu doğrulanamadı.');
+    return request(`/crm/conversations/${encodeURIComponent(String(id))}/sales-draft`, token, { method: 'POST', body: JSON.stringify({aiIntent:{userInitiated:true,action:'manual'},...(catalogSearch.trim()?{catalogSearch:catalogSearch.trim()}:{}),...(customerLanguage!==undefined?{customerLanguage}:{}),...(currentComposer!==undefined?{currentComposer}:{}),...(customerCatalogSessionId!==undefined?{customerCatalogSessionId}:{}),...(customerCatalogSessionId===undefined&&draftContext!==undefined?{draftContext}:{})}), signal, timeoutMs: 90000, preserveAuthDenial: true, redirect: 'error' });
   },
   async sendStatus(token, id, text, clientRequestId, media = null) {
     const payload = {text,media,clientRequestId};

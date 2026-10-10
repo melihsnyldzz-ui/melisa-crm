@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { createHash } from 'node:crypto';
 import { mkdtemp, writeFile, rm } from 'node:fs/promises';
 import { writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -15,7 +16,7 @@ test('real sales-draft route uses auth, trusted Chatwoot DTO and suggestion-only
   const original = { auth: { ...env.auth }, chatwoot: { ...env.chatwoot },
     translation: { ...env.translation }, whatsapp: { ...env.whatsapp } };
   const environment = Object.fromEntries(['CRM_AI_SALES_MODE', 'CRM_AI_SALES_CONVERSATION_ID',
-    'CRM_AI_SALES_TEST_PEER', 'CRM_AI_SALES_RULES_FILE', 'CRM_PAID_AI_ENABLED'].map(key => [key, process.env[key]]));
+    'CRM_AI_SALES_TEST_PEER', 'CRM_AI_SALES_RULES_FILE', 'CRM_PAID_AI_ENABLED', 'CRM_AI_CUSTOMER_CATALOG_ORIGIN'].map(key => [key, process.env[key]]));
   const guardedFetch = globalThis.fetch;
   const password = 'Synthetic-sales-route-2026!';
   Object.assign(env.auth, { jwtSecret: 'synthetic-sales-route-secret-longer-than-thirty-two',
@@ -36,12 +37,17 @@ test('real sales-draft route uses auth, trusted Chatwoot DTO and suggestion-only
   let assignment = 3, modelCalls = 0, conversationReads = 0, modelBody, modelFailure = null,
     afterModel = () => {}, duringFirstRead = () => {}, duringSecondRead = () => {}, duringFirstPostModelRead = () => {}, postModelReads = 0, chatwootFailure = false, phone = '+905387217733',
     plannerQueries = [], catalogReads = 0, catalogFailure = false, price = 196, afterCatalog = () => {},
-    selectProducts = false, priceChangesOnReadback = false, newMessage = false, proposalSequence = [], proposalCalls = 0;
+    selectProducts = false, priceChangesOnReadback = false, newMessage = false, proposalSequence = [], proposalCalls = 0, personalSnapshot = null, personalReads = 0;
   const draft = () => ({ action: 'reply', reply: 'Which age range do you need?',
     summaryTr: 'Yaş aralığı soruluyor.', productIds: [], lines: [], handoffReason: '' });
   const json = data => new Response(JSON.stringify(data), { status: 200, headers: { 'content-type': 'application/json' } });
   globalThis.fetch = async (input, options = {}) => {
     const url = String(input);
+    if (url.startsWith('http://100.87.188.3:62600/api/live/crm/customer-catalog/sessions/')) {
+      personalReads++; assert.equal(options.method, 'GET'); assert.equal(options.redirect, 'error'); assert.equal(options.cache, 'no-store');
+      assert.equal(verifyCrmAccessToken(options.headers.authorization.slice(7)).id, 'sales-patron');
+      assert(personalSnapshot); return json({ success: true, data: personalSnapshot });
+    }
     if (url === 'https://api.openai.com/v1/responses') {
       modelCalls++;
       modelBody = JSON.parse(options.body);
@@ -51,7 +57,7 @@ test('real sales-draft route uses auth, trusted Chatwoot DTO and suggestion-only
       const planner = Boolean(modelBody.text.format.schema.properties.queries);
       afterModel();
       const generated = planner ? { queries: plannerQueries } : proposalSequence[proposalCalls++]
-        || (selectProducts ? { ...draft(), action: 'recommend', productIds: ['vega-101'] } : draft());
+        || (selectProducts ? { ...draft(), action: 'recommend', productIds: [personalSnapshot ? 'erp-101' : 'vega-101'] } : draft());
       return json({ status: 'completed', output: [{ type: 'message',
         content: [{ type: 'output_text', text: JSON.stringify(generated) }] }] });
     }
@@ -109,6 +115,8 @@ test('real sales-draft route uses auth, trusted Chatwoot DTO and suggestion-only
     return { status: response.status, body: await response.json() };
   };
   const reset = () => {
+    delete process.env.CRM_AI_CUSTOMER_CATALOG_ORIGIN;
+    personalSnapshot = null; personalReads = 0;
     // Independent HTTP cases must not consume each other's production-configured per-user budget.
     crmTranslationRateLimit.resetKey('crm-translation:sales-patron');
     crmTranslationRateLimit.resetKey('crm-translation:sales-personel');
@@ -126,6 +134,39 @@ test('real sales-draft route uses auth, trusted Chatwoot DTO and suggestion-only
     env.auth.users[1].chatwootAgentId = 3;
   };
   try {
+    await t.test('real personal route forwards only staff GET, skips global catalog and rejects source change during model', async () => {
+      const id = 'aaabbbcc-1234-4234-8234-123456789abc';
+      const make = (sourceFingerprint = 'b'.repeat(64)) => {
+        const current = { sessionId: id, conversationId: '55', customerId: 593, actorId: 'sales-patron', customerLabel: 'Synthetic',
+          revision: 0, configRevision: 'a'.repeat(64), sourceFingerprint, expiresAt: new Date(Date.now() + 600000).toISOString(),
+          products: [{ id: 'erp-101', stockCode: 'SYNTHETIC', productName: 'Synthetic', unitPrice: 100, unitPriceExact: '100.00000000',
+            currency: 'TRY', photoPath: null, series: { verified: true, isTestExample: true, totalPieces: 6, composition: [{ label: '3 ay', quantity: 6 }] } }],
+          cart: { valid: true, revision: 0, items: [] }, source: 'melisa-personal-test-catalog', sourceEnvironment: 'CANONICAL_TEST',
+          sourceDatabaseVerified: true, testOnly: true, readOnly: true, orderPending: false };
+        return { ...current, fingerprint: createHash('sha256').update(JSON.stringify(current)).digest('hex'), fetchedAt: new Date().toISOString() };
+      };
+      reset(); process.env.CRM_AI_CUSTOMER_CATALOG_ORIGIN = 'http://100.87.188.3:62600'; personalSnapshot = make(); selectProducts = true;
+      let result = await request({ body: { customerCatalogSessionId: id, catalogSearch: 'ignored locator' } });
+      assert.equal(result.status, 200); assert.equal(modelCalls, 1); assert.equal(catalogReads, 0); assert(personalReads >= 4);
+      assert.equal(result.body.data.personalCatalog.sessionId, id); assert.equal(result.body.data.recommendedProducts[0].unitPriceExact, '100.00000000');
+      const context = JSON.parse(modelBody.input[1].content); assert.equal(context.personalCatalog.products[0].series.totalPieces, 6);
+      assert(!JSON.stringify(context).includes('100.00000000')); assert(!JSON.stringify(context).includes(id));
+      reset(); process.env.CRM_AI_CUSTOMER_CATALOG_ORIGIN = 'http://100.87.188.3:62600'; personalSnapshot = make(); selectProducts = true;
+      afterModel = () => { personalSnapshot = make('c'.repeat(64)); };
+      result = await request({ body: { customerCatalogSessionId: id } });
+      assert.equal(result.status, 409); assert.equal(result.body.error.code, 'AI_PERSONAL_CATALOG_CHANGED'); assert.equal(modelCalls, 1); assert.equal(catalogReads, 0);
+    });
+    await t.test('personal catalog mode requires explicit session and exact configured origin before any model/global read', async () => {
+      for (const [origin, body, expected] of [
+        [undefined, { customerCatalogSessionId: 'aaabbbcc-1234-4234-8234-123456789abc' }, 'AI_PERSONAL_CATALOG_UNAVAILABLE'],
+        ['http://100.87.188.3:62600', {}, 'AI_PERSONAL_CATALOG_SESSION_REQUIRED'],
+        ['https://untrusted.invalid', { customerCatalogSessionId: 'aaabbbcc-1234-4234-8234-123456789abc' }, 'AI_PERSONAL_CATALOG_UNAVAILABLE'],
+      ]) {
+        reset(); if (origin) process.env.CRM_AI_CUSTOMER_CATALOG_ORIGIN = origin;
+        const result = await request({ body }); assert.equal(result.body.error.code, expected);
+        assert.equal(modelCalls, 0); assert.equal(catalogReads, 0); assert.equal(conversationReads, 0);
+      }
+    });
     await t.test('missing token and missing send permission stop before Chatwoot/model', async () => {
       reset();
       assert.equal((await request({ authorization: null })).status, 401);

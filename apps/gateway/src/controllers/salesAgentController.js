@@ -12,6 +12,7 @@ import { createSalesCatalogAdapter } from '../services/salesAgent/catalogAdapter
 import { salesPolicyStore } from '../services/salesAgent/policyStore.mjs';
 import {staffSalesContext} from '../services/salesAgent/staffContext.mjs';
 import { assertPaidAiAllowed } from '../services/paidAiPolicy.mjs';
+import { createPersonalCatalogAdapter, PERSONAL_CATALOG_ORIGIN, personalSessionId } from '../services/salesAgent/personalCatalog.mjs';
 
 const readCatalog = createCrmCatalogReader({ activationApproved: true,
   verifyCrmContext: token => verifyCrmAccessToken(token, { includeContext: true }),
@@ -83,8 +84,20 @@ export async function postConversationSalesDraft(req, res, next) {
       if (controller.signal.aborted) throw salesError('AI_SALES_CANCELLED', 499);
       return currentUser;
     };
-    const catalogAdapter = createSalesCatalogAdapter({ readCatalog, authorization, signal: controller.signal,
-      assertAccess: getCurrentUser });
+    const configuredOrigin = process.env.CRM_AI_CUSTOMER_CATALOG_ORIGIN;
+    const sessionId = req.body?.customerCatalogSessionId;
+    const personalRequired = Boolean(configuredOrigin) && String(req.params.conversationId) === '55';
+    if (configuredOrigin && configuredOrigin !== PERSONAL_CATALOG_ORIGIN || sessionId !== undefined && !personalRequired) throw salesError('AI_PERSONAL_CATALOG_UNAVAILABLE', 503);
+    if (personalRequired && !personalSessionId(sessionId)) throw salesError('AI_PERSONAL_CATALOG_SESSION_REQUIRED', 400);
+    const currentUser = getCurrentUser();
+    const catalogAdapter = personalRequired ? createPersonalCatalogAdapter({ sessionId, conversationId: req.params.conversationId,
+      actorId: String(currentUser.id), assertAccess: () => {
+        getCurrentUser();
+        if (process.env.CRM_AI_CUSTOMER_CATALOG_ORIGIN !== configuredOrigin) throw salesError('AI_PERSONAL_CATALOG_CHANGED', 409);
+      }, signal: controller.signal,
+      readSnapshot: request => fetch(request.url, { method: 'GET', headers: { authorization },
+        signal: AbortSignal.any([controller.signal, AbortSignal.timeout(10_000)]), redirect: 'error', cache: 'no-store' }),
+    }) : createSalesCatalogAdapter({ readCatalog, authorization, signal: controller.signal, assertAccess: getCurrentUser });
     const preview = createSalesPreview({
       getMode: () => process.env.CRM_AI_SALES_MODE,
       getAllowedConversationId: () => process.env.CRM_AI_SALES_CONVERSATION_ID,

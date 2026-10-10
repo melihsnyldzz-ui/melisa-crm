@@ -262,6 +262,36 @@ export function createCustomerCatalogService({ config: rawConfig, storeFile, rea
   }
   return {
     enabled: Boolean(config),
+    staffSessions: (actor, conversationId) => serial(async () => {
+      await load();
+      if (actor?.id !== config.actorId || !actor.permissions?.includes('crm.send') || String(conversationId) !== config.conversationId) fail('CUSTOMER_CATALOG_STAFF_SCOPE_REQUIRED', 403);
+      const sessions = [];
+      for (const session of state.sessions) {
+        if (session.revoked || session.expiresAt <= now() || session.configRevision !== config.revision) continue;
+        await checked(session, async () => sessions.push({ sessionId: session.id, expiresAt: new Date(session.expiresAt).toISOString(),
+          revision: session.revision, itemCount: session.items.length, orderPending: Boolean(session.pending) }));
+      }
+      return { sessions, conversationId: config.conversationId, testOnly: true };
+    }),
+    staffSalesContext: (actor, id) => serial(async () => {
+      await load();
+      if (actor?.id !== config.actorId || !actor.permissions?.includes('crm.send')) fail('CUSTOMER_CATALOG_STAFF_SCOPE_REQUIRED', 403);
+      const session = state.sessions.find(entry => entry.id === id);
+      if (!session) fail('CUSTOMER_CATALOG_NOT_FOUND', 404);
+      return checked(session, async () => {
+        const current = await cards(session);
+        // AI reads never reprice, persist, create an order or reuse a historical order selection.
+        if (session.pending) fail('CUSTOMER_CATALOG_ORDER_LOCKED', 409);
+        if (session.items.length && session.pricedFingerprint !== pricedFingerprint(session.items, current)) fail('CUSTOMER_CATALOG_PRICE_CHANGED', 409);
+        const cart = buildCart(session.items, current, config.currency, session.revision);
+        const sourceFingerprint = digest(JSON.stringify(current.map(card => [card.public, card.revision, card.sourcePriceExact, card.priceId, card.unitSourceId, card.priceSourceKey])));
+        const snapshot = { ...publicScope(session), revision: session.revision, configRevision: config.revision,
+          expiresAt: new Date(session.expiresAt).toISOString(), sourceFingerprint, products: current.map(card => copy(card.public)), cart,
+          source: 'melisa-personal-test-catalog', sourceEnvironment: config.sourceEnvironment, sourceDatabaseVerified: true,
+          readOnly: true, testOnly: true, orderPending: false };
+        return { ...snapshot, fingerprint: digest(JSON.stringify(snapshot)), fetchedAt: new Date(now()).toISOString() };
+      });
+    }),
     issue: (actor, input) => serial(async () => {
       await load();
       if (actor?.id !== config.actorId || !actor.permissions?.includes('crm.send')

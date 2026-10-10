@@ -1,5 +1,15 @@
 # Müşteriye özel mobil katalog — TEST işletim notu
 
+## Semih devir sonrası kişisel AI bağı — kaynak hazırlığı
+
+10 Ekim doğrudan devirde, AI genel katalog havuzunun kişisel profilin dışından ürün önerebildiği doğrulandı. Yeni kaynak `GET /crm/customer-catalog/sessions?conversationId=55` ile yalnız yetkili mevcut oturumları listeler; `GET /crm/customer-catalog/sessions/:id/sales-context` aynı aktörün açık seçtiği oturumun güncel ürün/seri/fiyat/sepet snapshot'ını döndürür. Dış edge HTTP mount'u `/api/live` öneki taşır. Capability, telefon, özel profil ve kimlik bilgileri dönmez. Okuma sepet/store/native kaydını değiştirmez; bekleyen teknik taslağı satış seçimi olarak kullanmaz.
+
+Normal CRM'de Mobil katalog → mevcut oturum → Satış önerisinde kullan kaynak akışı eklendi. En yeni oturum veya yeni bağlantı otomatik seçilmez. AI isteği yalnız oturum ID'sini konum belirteci olarak taşır; istemci ürün/fiyat/seri/sepet gerçeği gönderemez. Öneri ve taslağa alma, aynı snapshot kapsamını yeniden doğrular; fiyat/seri/sepet/konuşma/aktör/süre/iptal değişiminde kapanır. Kişisel fiyat kartı sunucu hesabıdır; model sayısal fiyat hesaplamaz. TEST seri etiketi ve boş sepetin seçim sayılmaması korunur.
+
+Gateway'deki `CRM_AI_CUSTOMER_CATALOG_ORIGIN` yalnız exact mevcut Tail62600 originine bağlanabilir; tanımlı olduğunda konuşma55 açık kişisel oturum gerektirir. Tanımsızken kişisel oturum isteği reddedilir; yanlış origin/genel katalog fallback'i yoktur. Bu kaynak hazırlığı hiçbir gerçek runtime config'ini değiştirmedi. Eski PID53468/source5bac paketinde yeni snapshot endpoint'i yoktur; kurulmuş/kullanılabilir çözüm diye sunulmaz. Aynı gerçek oturum/sepet ve mevcut yetkiyle dağıtım uyumu, normal ekran, mevcut gerçek model ve telefon kabulü ayrıca tamamlanmalıdır. Edge'i veya normal624 süreçlerini bu devirde restart etmek kullanıcı sınırına aykırı olur.
+
+Arama502 yanıtları yeni kodda yalnız güvenli allowlist hata sınıfını korur. Tarihsel502'nin tam isteği/yanıtı bulunmadığı için kesin kök neden iddiası yoktur; tek kart GET200 liste/arama sözleşmesinin kanıtı değildir. OS minimum sipariş kuralı ve CRM unconfigured politika farkı bu kodla değiştirilmedi; bilinmeyen ticari değer uydurulmaz.
+
 Mevcut CRM'nin normal mesaj alanındaki “Mobil katalog”, onaylı TEST konuşmasına `/katalog#<capability>` bağlantısı üretir. Müşteri parçası ilk açılışta adres çubuğundan silinir ve aynı sekmenin oturum alanında tutulur. API kimliği Authorization başlığındadır; query/path/log içinde token taşınmaz. Sunucu yalnız SHA256 özetini, kapsamı, sepeti ve yeniden deneme kimliğini runtime altında saklar. Link en çok bir gün geçerlidir, iptal edilebilir ve başka müşteri/konuşma/ürüne genişletilemez.
 
 ## Ticari hesap ve taslak

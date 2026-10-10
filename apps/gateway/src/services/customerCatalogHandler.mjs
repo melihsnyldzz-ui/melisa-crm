@@ -29,11 +29,19 @@ export function createCustomerCatalogHandler({ service, authorizeStaff, linkOrig
     try {
       const url = new URL(request.url), method = request.method;
       if (request.headers.get('origin') && request.headers.get('origin') !== url.origin) fail('CUSTOMER_CATALOG_ORIGIN_REQUIRED', 403);
+      const contextPath = /^\/crm\/customer-catalog\/sessions\/([0-9a-f-]{36})\/sales-context$/.exec(url.pathname);
+      if (contextPath) {
+        if (method !== 'GET' || url.search) fail('CUSTOMER_CATALOG_REQUEST_INVALID', 400);
+        if (typeof authorizeStaff !== 'function') fail('CUSTOMER_CATALOG_STAFF_SCOPE_REQUIRED', 403);
+        return json(await service.staffSalesContext(await authorizeStaff(request), contextPath[1]));
+      }
       const staffPath = /^\/crm\/customer-catalog\/sessions(?:\/([0-9a-f-]{36}))?$/.exec(url.pathname);
       if (staffPath) {
-        if (url.search) fail('CUSTOMER_CATALOG_REQUEST_INVALID', 400);
+        const listing = method === 'GET' && !staffPath[1];
+        if (listing ? [...url.searchParams.keys()].join(',') !== 'conversationId' || url.searchParams.getAll('conversationId').length !== 1 : url.search) fail('CUSTOMER_CATALOG_REQUEST_INVALID', 400);
         if (typeof authorizeStaff !== 'function') fail('CUSTOMER_CATALOG_STAFF_SCOPE_REQUIRED', 403);
         const actor = await authorizeStaff(request);
+        if (listing) return json(await service.staffSessions(actor, url.searchParams.get('conversationId')));
         if (method === 'POST' && !staffPath[1]) {
           const issued = await service.issue(actor, await body(request));
           return json({ ...issued, ...(linkOrigin ? { linkOrigin } : {}) }, 201);

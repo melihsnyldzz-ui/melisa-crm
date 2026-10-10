@@ -77,3 +77,26 @@ export async function createCustomerCatalogLink(crmToken,conversationId,{signal}
   if(result.success!==true||row?.testOnly!==true||!/^\/katalog#[A-Za-z0-9_-]{43}$/.test(row.url||'')||row.linkOrigin!==undefined&&!approvedLinkOrigin(row.linkOrigin))throw failure('Mobil katalog bağlantısı doğrulanamadı.');
   return row;
 }
+
+export const validCustomerCatalogSessionId = value => typeof value==='string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(value);
+async function staffCatalogRead(token,path,{signal}={}) {
+  if(!token)throw failure('CRM oturumunu yeniden açın.');
+  const response=await fetch('/api/live/crm/customer-catalog/'+path,{signal,cache:'no-store',redirect:'error',credentials:'omit',headers:{Accept:'application/json',Authorization:`Bearer ${token}`}});
+  const result=await response.json();
+  if(!response.ok||result.success!==true)throw failure('Kişisel katalog oturumu doğrulanamadı.',{status:response.status,code:result.error?.code});
+  return result.data;
+}
+export async function listCustomerCatalogSessions(token,conversationId,options) {
+  if(!/^\d+$/.test(String(conversationId)))throw failure('Doğrulanmış bir görüşme seçin.');
+  const data=await staffCatalogRead(token,'sessions?conversationId='+encodeURIComponent(conversationId),options);
+  if(data?.testOnly!==true||String(data.conversationId)!==String(conversationId)||!Array.isArray(data.sessions))throw failure('Katalog oturumları doğrulanamadı.');
+  const seen=new Set();
+  return data.sessions.map(row=>{
+    if(!validCustomerCatalogSessionId(row?.sessionId)||seen.has(row.sessionId)||!Number.isFinite(Date.parse(row.expiresAt))||!Number.isSafeInteger(row.revision)||row.revision<0||!Number.isSafeInteger(row.itemCount)||row.itemCount<0||typeof row.orderPending!=='boolean')throw failure('Katalog oturumları doğrulanamadı.');
+    seen.add(row.sessionId);return {sessionId:row.sessionId,expiresAt:row.expiresAt,revision:row.revision,itemCount:row.itemCount,orderPending:row.orderPending};
+  });
+}
+export async function readCustomerCatalogSalesContext(token,sessionId,options) {
+  if(!validCustomerCatalogSessionId(sessionId))throw failure('Kişisel katalog oturumu seçin.');
+  return staffCatalogRead(token,'sessions/'+sessionId+'/sales-context',options);
+}

@@ -17,7 +17,12 @@ export function createSalesCatalogAdapter({ readCatalog, authorization, signal, 
       method: 'GET', headers: { authorization }, ...(signal ? { signal } : {}),
     }));
     assertCurrent();
-    if (!response.ok) throw salesError('AI_CATALOG_UNAVAILABLE', [401, 403, 429].includes(response.status) ? response.status : 502);
+    if (!response.ok) {
+      const payload = await response.json().catch(() => null);
+      const allowed = new Set(['AUTH_TOKEN_EXPIRED', 'AUTH_TOKEN_INVALID', 'WHATSAPP_CRM_AUTH_TOKEN_REQUIRED', 'WHATSAPP_CRM_RATE_LIMITED', 'CRM_CATALOG_SCOPE_REQUIRED', 'CATALOG_SESSION_REVOKED', 'CRM_VERIFICATION_UNAVAILABLE', 'ERP_SOURCE_IDENTITY_REQUIRED', 'ERP_CATALOG_SQL_UNAVAILABLE', 'ERP_CATALOG_REQUEST_CANCELLED', 'ERP_CATALOG_PRODUCT_CONTRACT', 'ERP_CATALOG_LIST_CONTRACT', 'ERP_CATALOG_UNAVAILABLE', 'PRODUCT_NOT_FOUND', 'INVALID_QUERY', 'INVALID_PRODUCT_ID']);
+      const upstream = payload?.error?.code;
+      throw salesError(allowed.has(upstream) ? `AI_${upstream}` : 'AI_CATALOG_UNAVAILABLE', [401, 403, 429].includes(response.status) ? response.status : 502);
+    }
     const guard = response[CATALOG_RESPONSE_GUARD];
     if (typeof guard !== 'function') throw salesError('AI_CATALOG_LEASE_REQUIRED', 502);
     guard();

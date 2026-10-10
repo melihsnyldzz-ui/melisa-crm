@@ -1,4 +1,4 @@
-import {normalizeSalesProducts, assertSalesProductCurrent, salesProductDraft} from './salesProducts.js';
+import {normalizeSalesProducts,normalizePersonalSalesProducts,normalizePersonalCatalogSnapshot,assertPersonalCatalogCurrent, assertSalesProductCurrent, salesProductDraft} from './salesProducts.js';
 import {normalizeSalesPolicyFacts,normalizeSalesRules} from './salesRules.js';
 const TEST_PHONE = '905387217733';
 
@@ -7,14 +7,14 @@ export function salesDraftContextKey(context) {
   if (!context?.token || !context.identity || !context.canSend || !conversation?.id || context.blocked) return '';
   if (context.testOnly && (String(conversation.phone || '').replace(/\D/g, '') !== TEST_PHONE)) return '';
   return JSON.stringify([context.token, context.identity, context.epoch, context.uiEpoch, String(conversation.id),
-    conversation.language, conversation.languageCode, context.currentComposer, context.draftContext, conversation.phone, conversation.owner, conversation.ownerId, conversation.assigneeId, conversation.assignedUserId,
+    context.customerCatalogSessionId, conversation.language, conversation.languageCode, context.currentComposer, context.draftContext, conversation.phone, conversation.owner, conversation.ownerId, conversation.assigneeId, conversation.assignedUserId,
     conversation.assignedPersonnelId, conversation.assignedUserName, conversation.chatwootAgentId,
     conversation.status, conversation.lastMessageAt, conversation.preview,
     (conversation.messages || []).map(message => [message.id, message.direction, message.text, message.createdAt,
       Boolean(message.private || message.isPrivate), (message.attachments || []).map(file => [file.id, file.type, file.url, file.fileName])])]);
 }
 
-export function validateSalesDraft(result, conversationId, now=Date.now()) {
+export function validateSalesDraft(result, conversationId, now=Date.now(),personalSnapshot=null) {
   if (!result || result.mode !== 'copilot' || result.autoSend !== false || result.erpWrite !== false || result.requiresHumanReview !== true
       || String(result.conversationId) !== String(conversationId) || !/^[a-f0-9]{64}$/.test(result.conversationRevision || '')
       || !['reply', 'recommend', 'quote', 'handoff'].includes(result.action)
@@ -22,7 +22,8 @@ export function validateSalesDraft(result, conversationId, now=Date.now()) {
       || typeof result.summaryTr !== 'string' || !result.summaryTr.trim() || result.summaryTr.length > 1500
       || !Number.isFinite(Date.parse(result.generatedAt))) throw Object.assign(new Error('Öneri yanıtı doğrulanamadı.'), {code: 'AI_RESPONSE_INVALID'});
   // Only text meant for staff review enters UI state. No arbitrary server metadata.
-  return { reply: result.reply, summaryTr: result.summaryTr, action: result.action, ...normalizeSalesProducts(result,now), ...(result.policyFacts===undefined?{}:{policyFacts:normalizeSalesPolicyFacts(result.policyFacts)}) };
+  if(result.personalCatalog&&!personalSnapshot)throw Object.assign(new Error(),{code:'AI_RESPONSE_INVALID'});
+  return { reply: result.reply, summaryTr: result.summaryTr, action: result.action, ...(personalSnapshot?normalizePersonalSalesProducts(result,personalSnapshot,now):normalizeSalesProducts(result,now)), ...(result.policyFacts===undefined?{}:{policyFacts:normalizeSalesPolicyFacts(result.policyFacts)}) };
 }
 
 export function salesDraftFailureMessage(error) {
@@ -43,12 +44,12 @@ export function salesDraftFailureMessage(error) {
 }
 
 /** Review-only lifecycle. No message-send or ERP capability is accepted here. */
-export function createSalesDraftFlow({ getContext, generate, onChange, readProduct, readPolicy, getDraft=()=>'', now=Date.now, schedule=setTimeout, unschedule=clearTimeout }) {
+export function createSalesDraftFlow({ getContext, generate, onChange, readProduct, readPersonalCatalog, readPolicy, getDraft=()=>'', now=Date.now, schedule=setTimeout, unschedule=clearTimeout }) {
   let active = null, preview = null, expiryTimer=null;
   const emit = state => onChange(state);
   const current = key => Boolean(key && key === salesDraftContextKey(getContext()));
-  const publicPreview = () => preview ? {reply:preview.reply,summaryTr:preview.summaryTr,action:preview.action,recommendedProducts:preview.recommendedProducts,catalogFacts:preview.catalogFacts,policyFacts:preview.policyFacts} : null;
-  const fresh = () => !preview?.catalogFacts || Date.parse(preview.catalogFacts.expiresAt)>now();
+  const publicPreview = () => preview ? {reply:preview.reply,summaryTr:preview.summaryTr,action:preview.action,recommendedProducts:preview.recommendedProducts,catalogFacts:preview.catalogFacts,policyFacts:preview.policyFacts,personalCatalog:preview.personalCatalog,personalCart:preview.personalCart} : null;
+  const fresh = () => (!preview?.catalogFacts || Date.parse(preview.catalogFacts.expiresAt)>now())&&(!preview?.personalCatalog||preview.personalExpiresAt>now());
   function clear(error = '') {
     unschedule(expiryTimer);expiryTimer=null;
     active?.controller.abort(); active = null; preview = null;
@@ -62,11 +63,20 @@ export function createSalesDraftFlow({ getContext, generate, onChange, readProdu
     if(record.revision!==ownPreview.policyFacts.revision)throw Object.assign(new Error(),{code:'AI_POLICY_CHANGED'});
     return true;
   }
+  async function verifyPersonal(run,ownPreview,existingText) {
+    if(!ownPreview.personalCatalog)return true;
+    if(typeof readPersonalCatalog!=='function')throw Object.assign(new Error(),{code:'AI_RESPONSE_INVALID'});
+    const context=getContext(),snapshot=await readPersonalCatalog(context.token,ownPreview.personalCatalog.sessionId,{signal:run.controller.signal});
+    if(active!==run||run.controller.signal.aborted||preview!==ownPreview||!current(run.key)||!fresh())return false;
+    if(getDraft()!==existingText)throw Object.assign(new Error(),{code:'AI_DRAFT_CHANGED'});
+    assertPersonalCatalogCurrent(snapshot,ownPreview.personalCatalog,String(context.conversation.id),now());
+    return true;
+  }
   async function takeReviewedText(existingText) {
     const ownPreview=preview,run={key:preview.key,controller:new AbortController()};active=run;
     emit({busy:true,preview:publicPreview(),error:'',policyChecking:true});
     try {
-      if(!await verifyPolicy(run,ownPreview,existingText))return null;
+      if(ownPreview.policyFacts&&!await verifyPolicy(run,ownPreview,existingText)||!await verifyPersonal(run,ownPreview,existingText))return null;
       const draft=existingText.trim()?`${existingText}\n\n${preview.reply}`:preview.reply;
       if(draft.length>2000){active=null;emit({busy:false,preview:publicPreview(),error:'Mevcut mesaj ve öneri 2000 karakteri aşıyor. Önce mesajı kısaltın.'});return null;}
       clear();return draft;
@@ -88,13 +98,21 @@ export function createSalesDraftFlow({ getContext, generate, onChange, readProdu
       const run = { key, controller: new AbortController() };
       unschedule(expiryTimer);expiryTimer=null;active = run; preview = null; emit({ busy: true, preview: null, error: '' });
       try {
-        const result = await generate(context.token, String(context.conversation.id), { signal: run.controller.signal,customerLanguage:context.conversation.languageCode||({Türkçe:"tr",İngilizce:"en",Arapça:"ar",İtalyanca:"it",Fransızca:"fr",Rusça:"ru"}[context.conversation.language]||"auto"),currentComposer:context.currentComposer||getDraft(),draftContext:context.draftContext||null,...(catalogSearch.trim()?{catalogSearch:catalogSearch.trim()}:{}) });
+        let personalSnapshot=null;
+        if(context.customerCatalogSessionId){
+          if(typeof readPersonalCatalog!=='function')throw Object.assign(new Error(),{code:'AI_RESPONSE_INVALID'});
+          personalSnapshot=normalizePersonalCatalogSnapshot(await readPersonalCatalog(context.token,context.customerCatalogSessionId,{signal:run.controller.signal}),String(context.conversation.id),context.customerCatalogSessionId,now());
+          if(active!==run||run.controller.signal.aborted||!current(key))return false;
+        }
+        const result = await generate(context.token, String(context.conversation.id), { signal: run.controller.signal,customerLanguage:context.conversation.languageCode||({Türkçe:"tr",İngilizce:"en",Arapça:"ar",İtalyanca:"it",Fransızca:"fr",Rusça:"ru"}[context.conversation.language]||"auto"),currentComposer:context.currentComposer||getDraft(),...(context.customerCatalogSessionId?{customerCatalogSessionId:context.customerCatalogSessionId}:{draftContext:context.draftContext||null}),...(catalogSearch.trim()?{catalogSearch:catalogSearch.trim()}:{}) });
         if (active !== run || run.controller.signal.aborted || !current(key)) return false;
         // Production supplies readPolicy and must receive server-owned rules. Legacy
         // text-only offline fixtures without that dependency retain their old path.
         if(typeof readPolicy==='function'&&result.policyFacts===undefined)throw Object.assign(new Error(),{code:'AI_RESPONSE_INVALID'});
-        preview = { key, ...validateSalesDraft(result, context.conversation.id,now()) };
+        preview = { key, ...validateSalesDraft(result, context.conversation.id,now(),personalSnapshot) };
+        if(personalSnapshot)preview.personalExpiresAt=Math.min(Date.parse(personalSnapshot.fetchedAt)+300000,Date.parse(personalSnapshot.expiresAt));
         if(preview.catalogFacts) expiryTimer=schedule(()=>clear('Ürün okuma süresi doldu. Güncel bir öneri alın.'),Date.parse(preview.catalogFacts.expiresAt)-now());
+        if(preview.personalCatalog)expiryTimer=schedule(()=>clear('Kişisel katalog okuma süresi doldu. Güncel bir öneri alın.'),preview.personalExpiresAt-now());
         emit({ busy: false, preview: publicPreview(), error: '' });
         return true;
       } catch (error) {
@@ -110,7 +128,7 @@ export function createSalesDraftFlow({ getContext, generate, onChange, readProdu
     takeDraft(existingText = '') {
       if(active)return null;
       if (!preview || !current(preview.key) || !fresh()) { clear('Öneri artık güncel değil. Yeni bir öneri alın.'); return null; }
-      if(preview.policyFacts)return takeReviewedText(existingText);
+      if(preview.policyFacts||preview.personalCatalog)return takeReviewedText(existingText);
       const draft = existingText.trim() ? `${existingText}\n\n${preview.reply}` : preview.reply;
       if (draft.length > 2000) { emit({ busy: false, preview: publicPreview(), error: 'Mevcut mesaj ve öneri 2000 karakteri aşıyor. Önce mesajı kısaltın.' }); return null; }
       clear();
@@ -119,16 +137,17 @@ export function createSalesDraftFlow({ getContext, generate, onChange, readProdu
     async takeProductDraft(id,action) {
       if(active)return null;
       const product=preview?.recommendedProducts.find(row=>row.id===id), context=getContext();
-      if(!product||!current(preview.key)||!fresh()||typeof readProduct!=='function'){clear('Öneri artık güncel değil. Yeni bir öneri alın.');return null;}
+      if(!product||!current(preview.key)||!fresh()||(!preview.personalCatalog&&typeof readProduct!=='function')){clear('Öneri artık güncel değil. Yeni bir öneri alın.');return null;}
       const existingText=getDraft(), ownPreview=preview;
       const run={key:preview.key,controller:new AbortController()};active=run;
       emit({busy:true,preview:publicPreview(),error:'',productChecking:true});
       try {
-        const envelope=await readProduct(context.token,id,{signal:run.controller.signal});
+        const envelope=ownPreview.personalCatalog?null:await readProduct(context.token,id,{signal:run.controller.signal});
         if(active!==run||run.controller.signal.aborted||preview!==ownPreview||!current(run.key)||!fresh())return null;
         if(getDraft()!==existingText)throw Object.assign(new Error(),{code:'AI_DRAFT_CHANGED'});
-        assertSalesProductCurrent(envelope,product,now());
+        if(!ownPreview.personalCatalog)assertSalesProductCurrent(envelope,product,now());
         if(ownPreview.policyFacts&&!await verifyPolicy(run,ownPreview,existingText))return null;
+        if(!await verifyPersonal(run,ownPreview,existingText))return null;
         const draft=salesProductDraft(product,action,existingText);
         clear();return draft;
       } catch(error) {

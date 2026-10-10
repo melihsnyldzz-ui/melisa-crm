@@ -1,5 +1,25 @@
 # Müşteriye özel mobil katalog — 10 Ekim 2026 TEST pilotu
 
+## Semih yerel devir ve kaynak düzeltmesi
+
+10 Ekim doğrudan kullanıcı talimatı sonrası yerel host SEMIH, başlangıç cwd=operationsRoot `C:\Sirket\CRM\worktrees\customer-mobile-catalog-20261010`, exact kanonik origin fetch/push, feature dalı ve temiz source5bac doğrulandı. Devir metni tam okundu ve SHA256 `bf4633fae003675f70ccf00807b4384fcc5d4e66303234b18a25d8758fddd564` eşleşti. Yalnız aynı feature dalındaki0aba5dc/14f25b2 belge commit'leri fast-forward alındı. Canonical checkout/ERP sohbeti ve başka süreçler değiştirilmedi.
+
+Kaynak kusuru: genel `salesAgent/catalogAdapter` bütün ERP kataloğunu okurken kişisel katalog yalnız profile prices/ürün/fiyat satırı/seri kapsamını kullanıyordu. Düzeltme açık staff session locator üzerinden salt okunur snapshot üretir; kişisel modda arama/genel fotoğraf fallback'i yoktur. Aynı customer/conversation/actor/session, exact seçili fiyat/seri/cart fingerprint model öncesi/sonrası ve taslağa alma öncesi doğrulanır. Teknik taslak bekleyen oturum AI bağlamı olarak reddedilir; gerçek kullanıcıya giden boş oturum teknik sepetle doldurulmaz. İstemci ürün/fiyat gerçeği kabul edilmez; model context'i session/token/aktör/müşteri kimliği ve sayısal fiyat içermez.
+
+| Yeni kaynak kanıtı | Sonuç / sınır |
+| --- | --- |
+| Birleşik11 hedefli test dosyası, offline-test-guard |220/220 PASS; ephemeral loopback/sentetik veriler, gerçek provider/SQL yok |
+| Lockfile dependencies | Gateway139/frontend91, offline ignore-scripts; runtime packages değiştirilmedi |
+| Frontend build | PASS; JSX source derlendi, ekran kabulü değildir |
+| Syntax | PASS; yeni modüller ayrıca kontrol edildi |
+| Bağımsız reviewer | Kaynakta açık P0/P1/P2 bulgusu yok; geciken politika sırasında sepet değişimi regresyon testi mevcut |
+| UI kontrolü | BLOCKED; computer-use Windows browser URL'sini güvenilir belirleyemedi ve oturumu sonlandırdı; engel aşılmadı |
+| Gerçek AI / yeni gönderim / native create | Bu devamda0; önceki makbuzlar salt okunur metadata olarak doğrulandı |
+| Kişisel kullanıcı oturumu | Journal'daki gönderilmiş exact oturum bulundu; süre dolmamış/iptal edilmemiş/boş/teknik pending yok |
+| Çalışan edge | PID53468,100.87.188.3:62600/source5bac korundu; manifest hash önceki kanıtla aynı |
+
+**PARTIAL — kaynak teslimi ile runtime ayrı:** Eski edge yeni `sales-context` endpoint'ini içermez. PID53468/normal624 süreçleri korunurken düzeltme kurulmuş sayılamaz; same-session/cart dağıtım uyumu, normal ekran, mevcut gerçek AI ve telefon kabulü açık. Runtime'da origin/provider/key/model/rol ayarı değiştirilmedi; link ve mesaj yeniden üretilmedi/gönderilmedi. Secret scan ve exact remote HEAD/CI sonucu Git tesliminde ayrıca kaydedilir. Önceki502'nin kesin nedeni bilinmiyor; yeni güvenli hata sınıflandırması teşhis kabiliyetidir, geçmiş kusurun kapanışı değildir. OS DEC-005 ile CRM unconfigured MOQ farkı korunur ve yeni ticari değer etkinleşmez. Finish-tree25/12/13 aynı kalır.
+
 Kullanıcının yeni talimatı mevcut CRM'den yalnız doğrulanmış owner7733 / konuşma55'e katalog göndermek, kullanıcı onaylı 6/4 parça TEST seri örneğini kullanmak ve native izole TEST taslağını ayrı geri okumaktır. Telefon denemesini kullanıcı yapacaktır; uzak Galaxy erişimi veya telefonun önceden online görünmesi gönderim kapısı değildir.
 
 ## Çalışan kaynak ve sınır

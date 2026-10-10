@@ -61,3 +61,6 @@ The real Semih TEST pilot now passed authenticated source-product/photo reads, a
 None assessed while rendering is blocked.
 
 final rendered design result: blocked; real technical TEST pilot verified separately
+# Semih kişisel AI devamı — 10 Ekim 2026
+
+Yeni CRM oturum seçimi ve kişisel AI kartı kaynakta eklendi; target viewport390×844. Sentetik React QA hazırlığı dış provider/SQL/mesaj/native kayıt kullanmadı. Windows computer-use browser URL'sini güvenilir belirleyemediği için kontrolü sonlandırdı; başka UI girdisi veya engel aşma yapılmadı. Yardımcı QA süreci kapatıldı; kullanıcı tarayıcı/ERP süreçleri ve PID53468 korundu. Yeni ekran **render BLOCKED**, görsel/etkileşim PASS değil. Hedefli normalizer/akış testleri ve build, gerçek normal ekran veya telefon kabulünün yerine geçmez. Mevcut source5bac çalışan paket bu yeni ekranı içermiyor; aynı session/cart ile dağıtım uyumu ve normal TEST ekranında açık oturum seçimi → öneri → değişen sepetin taslağa aktarımının engellenmesi ayrıca kanıtlanmalıdır.
