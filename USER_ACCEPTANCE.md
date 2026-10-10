@@ -1,3 +1,11 @@
+## CRM-UA08 / CRM-FINAL01 / CRM-DEC-009 — bekliyor
+
+10 Ekim 2026 son ortak hazırlık teknik çalışması insan kabulü değildir. Önceki CRM-UA01–07 ve gerçek kabuller korunur. Çalışan CRM source5f8cb237 / ERP sourcea51b1170 / DB02 ortak hedef taze sağlık/manifest ve V6 mevcut taslak GET/refresh kontrolüyle doğrulandı; katalog/medya kanıtı V2 sourcec5081be üzerinden hash referansıyla korunur, bu pakette yeni ölçüm değildir; günlük ERP native 25 kontrolü koordinatörde tamamlandı; normal ekranların ortak sonucu koordinatör raporundadır. İnsan denemesi kişi/tarih/sonuç: **Durum doğrulanmadı**. Kullanıcı/İlker, normal CRM'de atanmış konuşmayı, kaynak ürün-fiyat-döviz ve aynı dövizli müşteri hesabını, mevcut native taslağı/ayrı GET/yenilemeyi, manuel ERP belge bağını ve AI/gerçek gönderim kapalı durumunu tek mağaza günü turunda inceleyecek. Fiziksel Zebra/personel ve bilinmeyen kişi/cari eşleme ayrı bekler. Genel ERP veya LIVE kabulü yoktur. [Hazırlık kaydı](docs/evidence/crm/2026-10-10-final-preparation/README.md).
+
+Tam mağaza TEST'i henüz hazır değildir: gerçek kasa/banka açılışı için hazır doğrulanmış kapsam 0; 8 kişi/cari kimlik eşlemesi, 18 kökeni bilinmeyen işlem/belge ve fiziksel Zebra/personel kabulü bekler. GitHub CI hesap/harcama engeli ayrıca sürer; yerel testle yeşil sayılmaz. Bu sayılar koordinatörün son hazırlık sınıflandırmasıdır; yeni kaynak aktarımı veya işletme onayı değildir.
+
+Normal 62700 CRM kataloğu mevcut TESTADMIN oturumu yenilendikten sonra 50 fotoğraflı ürün/3.830 kapsamıyla gerçek tarayıcıda açıldı; mevcut taslak korundu. Private GUI kanıtı crm-catalog-current-a51.png. Yoğun eşzamanlı okumada önce 15s köprü zaman aşımı gözlendi; son dar native/gateway kontrolü 200/~2,1s, CRM kodu/rol/timeout değişmedi. V6 19 yeni kontrol ve V2 30 kontrol kanıtından yeniden kullanılan katalog/fotoğraf örnekleri ayrı tutulur. Seçili TRY native günlük prova koordinatörde 25 kontrolle tamamlandı; bütün mağaza/personel/insan PASS değildir.
+
 # CRM kullanıcı kabulü
 
 **CRM-UA07 / ERP-CRM-EXPAND01 — bekliyor:** CRM-DEC-008 teknik genişletme sonucu insan TEST'i başlatmaz. Tek yönetici raporundaki kapsamda atanmış konuşma, seçilen TRY/USD/EUR fiyatı ve aynı dövizli doğrulanmış ERP hesabı, gerekçeli eşleme, native taslak ve ayrı geri okuma birlikte değerlendirilecektir. Telefonu/kimliği bilinmeyen konuşmalar ve iki LL hesap dışarıda kalır; gerçek WhatsApp/AI çağrısı yoktur. Kişi/deneme tarihi/insan sonucu bildirilmedi; mevcut CRM-UA01–06 korunur.
@@ -9,6 +17,7 @@ Güncel teknik prova: CRM62600/source81754aa, ERP5224/source6c47c37 ve native626
 Kullanıcının **normal ekranda gözle denemesi** ve kendi sonucu burada tutulur. Teknik test, ajan tarayıcı provası veya CI PASS kullanıcı kabulü değildir; teknik kanıt [CRM_STATUS.md](CRM_STATUS.md) içindedir. Ayrıntılı kapsam [CRM_FINISH_PLAN.md](CRM_FINISH_PLAN.md), sıra [DELIVERY_BOARD.md](DELIVERY_BOARD.md). Sonuçlar yalnız `bekliyor / PASS / FAIL`; kullanıcı veya kullanıcı kabulünü açıkça doğrulayan kaynak olmadan PASS yazılmaz.
 
 Her sonuçta kişi, tarih, TEST adresi/ortamı, denenen paket/commit ve kanıt bağlantısı eklenir. Bilinmeyen değer `Durum doğrulanmadı` kalır; mevcut URL/PID geçmiş kayıttan güncel sayılmaz. Kabul edilen kapsam değişirse aynı satırdaki geçmişi silmeden yeni deneme kaydı eklenir. Henüz hazır olmayan deneme kullanıcıya hazır diye sunulmaz.
+
 
 ## Yeni/değişen kapsam
 
