@@ -1,4 +1,10 @@
-## ŞİMDİ — SEMIH-TEST / CRM-DEC-012 — 12 Ekim 2026
+## ŞİMDİ — CRM-CUSTOMER-REQUEST / CRM-DEC-013 — 12 Ekim 2026
+
+Dar ilk ürün talebi kaynakta hazır: normal doğrulanmış müşteri konuşması → ERP gerçek fotoğraflı katalog → seç/adet → CRM-only kalıcı talep → atanmış personel. Cari eşlemesi/nativeERP taslak zorunluluğu yok. Ayrı62800 proof normal Semih/inbox/7733link/session doğrulandı; gerçek ERP liste25.304ms'de yanıt vermedi, source2d native503. **Tam ürün akışı/insan kabulü yok.** [Gerçek kanıt ve tek bağımlılık](docs/evidence/crm/2026-10-12-customer-product-request/README.md).
+
+**Sıradaki tek iş:** ERP sahibinin mevcut R3 fotoğraflı katalog liste okumasını düzeltmesi, ardından aynı hazır CRM akışında gerçek seç/adet/reopen/tek-kayıt/normal-personel turunun tamamlanması. K01🔴; tek tree25/11🟢/13🟡/1🔴. Ortak62700/source09ca ve owner pinleri korunur. Auth/rol/atama/fiyat/hold guard'ları kaldırılmaz; demo ürün/provider/AI/native ticari yazma/LIVE/main yok. Dar işten sonra önceki beş ana aşama devam eder.
+
+## Önceki checkpoint — SEMIH-TEST / CRM-DEC-012 — 12 Ekim 2026
 
 Öncelik normal **Semih olarak devam et** TEST girişidir: ayrı exact patron ve korumalı oturum → fresh kimlik → gerçek konuşma listesi. Kayıtsız cihaz anonim yönetici olamaz. CRM kaynak/oturum sözleşmesi burada; ERP/terminal sahibi ortak supervisor/package/env pinini bağlar. [Handoff ve LIVE kapatma ölçütü](docs/development/SEMIH_TEST_SESSION.md). Private inactive kayıt hazır; mevcut7 kullanıcı/personel/DB02/TEST125/karantina/LL/katalog orijinali korunur. CRM-UA10 normal ekran/cihaz kabulü bekler; main/LIVE/mesaj/ücretliAI/ticari yazma yok.
 

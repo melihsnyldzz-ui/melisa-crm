@@ -1,4 +1,10 @@
-## SEMIH-TEST / CRM-DEC-012 — 12 Ekim 2026
+## CRM-CUSTOMER-REQUEST / CRM-DEC-013 — 12 Ekim 2026 — güncel
+
+**25 toplam /11🟢 tamam /13🟡 kısmi /1🔴 açık.** Genel ilerleme bu durum sayımıdır; insan/LIVE hazırlık yüzdesi değildir. K01'in önceki gerçek kabulleri korunur; taze ERP2d371c4 fotoğraflı liste okuması503/süre aşımı olduğundan güncel teknik bağımlılık🔴'dır. Dar müşteri talebi mevcut K01/C01/C02/M01 alt kapsamıdır; ikinci tree/modül eklenmez.
+
+Kaynakfb34c29 normal capability/revision/seçim/idempotent CRM journal/personel panelini hazırlar; normal Semih7733 link/session ekranı doğrulandı. **Gerçek ürün seçimi/adet/gönderim/personel readback yapılmadı**; ürün listesi25.304ms'de yanıt vermedi. [Kanıt](docs/evidence/crm/2026-10-12-customer-product-request/README.md). Kalan tek teknik bağımlılık ERP mevcut R3 fotoğraflı katalog listesinin düzelmesi; sonra aynı akış, reopen ve yanlış rol/müşteri kontrolleri tamamlanır. CRM-UA11 bekler. Ortak62700, eski personel/Semih/owner, TEST125/DB02/karantina/LL korunur; nativeERP/provider/AI/main/LIVE yok. Dar iş kapanınca mevcut beş ana aşama sırası sürer.
+
+## Önceki checkpoint — SEMIH-TEST / CRM-DEC-012 — 12 Ekim 2026
 
 Dar giriş işi mevcut U01/M01/rol kabulünün alt kapsamıdır: normal Semih TEST patron, korumalı dönen oturum, fresh kimlik, çıkış/hesap değişimi/revoke ve LIVE'da helper kapalı. [Exact sözleşme](docs/development/SEMIH_TEST_SESSION.md). Private inactive kayıt hazır; eski personel/paylaşılan hesap değişmedi. Ortak ERP supervisor yeni CRM paket/env pinini destekleyene kadar normal ekran/cihaz CRM-UA10 bekler. İkinci tree veya genel PASS yok: **25 toplam /12 tamam /13 kısmi /0 açık** korunur. Taze source09ca normal TEST'te8023 orijinal1206×1500 yüklendi; yeni fotoğraf kodu yok, netlik insan kabulü bekler.
 
@@ -52,7 +58,7 @@ Güncel ana hedef: **5 Ekim 2026 — günlük CRM + mobil + ERP + insan denetiml
 | C01 | Atanmamışlar, müşteri bilgisi, atama ve doğru personel ekranı | 🟡 kısmi / kullanıcı kabulü bekliyor | Test konuşması Ahmet'e atanıp Semih'e geri alındı; atanmamış filtresi doğru. Personelin kendi hesabında konuşma/müşteri/geçmiş görmesi kabul edilmedi. |
 | C02 | Patron/müdür/personel yetkileri | 🟡 kısmi / kullanıcı kabulü bekliyor | Kod/korumalı testler hazır, patron kullanımı var; üç gerçek rol hesabında görünüm/gönderim/atama kabulü gerekir. |
 | T01 | Otomatik çeviri, dil ve manuel kontrol | 🟢 tamam | Gelen Haloo→Merhaba ve önceki gerçek giden çeviri kabulü korunur; bütün dil kalitesi garantisi yok. AI müşteri dili ayrı A05'tedir. |
-| K01 | Gerçek katalog, arama/filtre, görsel/bilgi | 🟢 tamam | Önceki1085 ERP read/12 fotoğraf ve PDF/telefon kabulü korunur.6Ekim kullanıcı isteğiyle güncel ortak ERP kataloğunda yalnız fotoğraflı ürünler:3830 sonuç/77 sayfa; ilk/ikinci sayfa50 ürün ve gerçek fotoğraf decode, fotoğrafsız3344 araması0. Arama/barkod/reset/sayfalamada sunucu fotoğraf filtresi korunur; eski seçimler tek tek çıkarılabilir. [Kanıt](docs/evidence/crm/2026-10-06-catalog-photos-only/README.md). Yeni insan kabulü uydurulmaz. |
+| K01 | Gerçek katalog, arama/filtre, görsel/bilgi | 🔴 açık / güncel ERP okuması bloke | 12Ekim tazeERP2d371c4 fotoğraflı liste API'si25.304ms TimeoutError, native log503CATALOG_UNAVAILABLE; normal auth291ms/küçük DB identity okuması sağlıklı. ERP mevcut R3 okuması düzelmeden müşteri ürün talebi tam ekran kabulü yok. [Güncel kanıt](docs/evidence/crm/2026-10-12-customer-product-request/README.md). Önceki1085read/12foto/PDF/telefon,6Ekim3830foto/77sayfa/50ürün ve12Ekim09ca8023orijinal1206×1500 kabulleri tarihsel korunur; fotoğraflı filtre/orijinal kodu değiştirilmedi. Yeni genel/insanPASS uydurulmaz. |
 | K02 | Ürün gönderme | 🟢 tamam | 41140 doğru görsel/bilgi ile fiyatlı ürün PDF'si telefonda kabul edildi. |
 | K03 | Fiyat ve doğru para birimi | 🟢 tamam | Kayıtlı196 TRY/adet normal mesaj ve PDF'de kullanıcı kabulü. Stok/teslim taahhüdü değildir. |
 | E01 | CRM→ERP taslak: mevcut doğrulanmış müşteri/ürün kapsamı | 🟢 tamam | Müşteri593, ürün41140/native301982, 2×196=392 TRY; draft id4 ayrı GET readback ile kullanıcı kabulü. Aynı UUID tek sipariş/audit; stok/cari etkisi0. |

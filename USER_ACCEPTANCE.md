@@ -1,3 +1,7 @@
+## CRM-UA11 / müşteri ürün talebi / CRM-DEC-013 — 12 Ekim 2026 — gerçek katalog bağımlılığı bekliyor
+
+Kaynak hazır; ayrı62800 normal Semih girişi/gerçek7733 konuşması/müşteri linki/session readback teknik doğrulandı. ERP gerçek ürün listesi25.304ms timeout/native503 olduğundan seç/adet/çıkar/reopen/gönder/atanmış personel görünümü gerçek ekran provası **tamamlanmadı**. [Kanıt](docs/evidence/crm/2026-10-12-customer-product-request/README.md), DesignQA blocked. Offline1165/build/reviewer gerçek insanPASS değildir. ERP liste düzeldiğinde gerçek fotoğraflı ürünleri arama, iki ürün seç/çıkar/adet, yeniden açılan aynı seçim, çift gönderimde tek talep ve normal atanmış personelde doğru aynı konuşma birlikte denenecek. Yanlış rol/müşteri reddi, eski oturumlar ve ticari/provider etkisizliği korunacak. İnsan kişi/tarih/sonuç yok; önceki CRM-UA01–10 değişmez.
+
 ## CRM-UA10 / SEMIH-TEST / CRM-DEC-012 — 12 Ekim 2026 — bekliyor
 
 Desteklenen ortak TEST aktivasyonundan sonra doğrulanmış normal Semih hesabıyla devam → gerçek konuşma listesi → katalog/yetkili modüller; reopen/ERP↔CRM↔terminal; açık çıkış/erişim iptalinde yetki ve önceki veri kapansın. Aynı runtime'da mevcut personelin korunmuş oturumu da açılsın; Semih çıkışı personelin grant ailesini iptal etmesin. Kayıtsız cihaz anonim yönetici olmasın. Private config/DPAPI hazırlığı ve offline kontrol insan PASS değildir. Eski personel/7733/CRM-UA01–09 kabulleri korunur. LIVE helper kapalı ve ayrılmış TEST aktörü reddedilir; bu ayrıca teknik kriterdir.

@@ -1,0 +1,26 @@
+{
+  "date": "2026-10-12",
+  "result": "PARTIAL-ERP-CATALOG-BLOCKED",
+  "crmSource": "fb34c293fa58154e00b132d13b8246939ce8cbbb",
+  "manifestSha256": "f3818f6cb1925ca652f36bdcc5334a75fb8ce1b4f09a9250011dce30c7498d9f",
+  "erpSource": "2d371c41442e4e92630f9191f4bae801fd1baebd",
+  "testUrl": "http://127.0.0.1:62800/",
+  "customerSessions": 1,
+  "submittedRequests": 0,
+  "erpLoginMs": 291,
+  "erpCatalogTimeoutMs": 25304,
+  "offline": {
+    "frontend": 433,
+    "gateway": 574,
+    "contracts": 158,
+    "total": 1165
+  },
+  "humanAccepted": false,
+  "whatsappSend": false,
+  "paidAi": false,
+  "nativeOrderWrite": false,
+  "sharedRuntimeChanged": false,
+  "evidence": [
+    "customer-catalog-source-blocked-390.png"
+  ]
+}

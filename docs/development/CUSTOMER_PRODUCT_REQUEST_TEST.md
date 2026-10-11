@@ -1,0 +1,19 @@
+# Müşteri kataloğu → CRM ürün talebi TEST sözleşmesi
+
+12 Ekim 2026, CRM-DEC-013. ERP cari kaydı bulunmayan yeni mağaza müşterisi de doğrulanmış normal CRM konuşması üzerinden ürün ilgisini bildirebilir. Bu akış satış, rezervasyon, ödeme veya ERP taslak sipariş değildir.
+
+Normal korumalı patron/müdür oturumu konuşmadan bağımsız rastgele müşteri oluşturmaz: sunucu gerçek Chatwoot account/inbox/contact/conversation/assignee ve izin verilen 7733 numarasını doğrular. Linkte 32 rastgele byte'tan üretilen bağımsız opaque capability bulunur; staff JWT veya parola bulunmaz. Tarayıcı adres parçasını temizler, yalnız ayrı müşteri sessionStorage anahtarını kullanır. Grant en fazla bir saat ve issuer access expiry kadar yaşar; korumalı normal SID, rol/parola/izin/atama değişimi ve revoke her işlem öncesi/sonrası kontrol edilir. İlk TEST yalnız7733 içindir; genel müşteri erişimi kanıtlanmış değildir.
+
+ERP DB02'nin mevcut `melisa-catalog.v1` salt okunur adaptörü kullanılır. Gerçek aktif/hold dışı, kaynak fotoğrafı CONFIRMED ürün; orijinal JPG/PNG/WebP signature ve 3MiB sınırı korunur. Arama/kategori/sayfa/total kaynaktan gelir; kategori sayısı bilinmiyorsa null kalır, yaş filtresi mevcut kaynak desteklemediği için sunulmaz. Ürün talebi stok, fiyat, MOQ veya teslimat taahhüdü üretmez.
+
+Seçim `{productId,quantity}` ve revision ile ayrı özel TEST journal'ına atomik yazılır. Sunucu ürün/adet snapshot'ını yeniden okur. UUID operation ve tek session submission kalıcıdır; aynı oturumun yeniden gönderimi tek kayıt/readback döndürür. Corruption, storage lock, yanlış müşteri/rol ve belirsiz sonuç başarı değildir. Eski owner cart/session ve `/customer-catalog/order` native ERP taslak yolu kullanılmaz. Dış Chatwoot conversation ID, yerel PG ID'si sayılmaz; bu journal explicit Chatwoot namespace taşır, PG'ye yazmaz.
+
+Atanmış normal personel `crm.view` ile aynı konuşmada Ürün talepleri panelinden kayıtları okur. Issuance yalnız korumalı normal yönetici içindir; panel otomatik WhatsApp gönderimi yapmaz. Mevcut conversation/send/assignment politikaları değiştirilmez.
+
+## Prova ve ortak runtime sınırı
+
+`deploy/customer-product-request-test.mjs` yalnız ayrı, owner'a özel config/paket/hash ile `127.0.0.1:62800/62801/62802` açar. ERP4184/DB02/source/package/copy ve private file pinleri başlangıçta doğrulanır. Eski ortak62700 servis ve Windows supervisor ayarları değiştirilmez. Proof cookie ve normal-personel/Semih/customer journal'ları ayrıdır. Provider/AI/PG/Redis/native ERP yazıları kapalıdır; normal parola doğrulaması ve scrypt korunur. Ortak süreçte default mount kapalıdır. Bu prova autostart veya ortak paketin kurulması değildir.
+
+## Güncel gerçek sonuç
+
+[12 Ekim kanıtı](../evidence/crm/2026-10-12-customer-product-request/README.md): normal Semih girişi, gerçek7733 konuşması ve müşteri capability/session readback çalıştı. ERP normal girişi291ms; gerçek fotoğraflı ürün listesi25.304ms'de süre aşımına düştü, ERP kendi logunda503 `CATALOG_UNAVAILABLE` var. Bu nedenle ürün seçimi → talep → personel kayıt akışı gerçek ekranda tamamlanmış değildir. Kaynak teknik kontrolü ve tasarım hata görünümü gerçek kabul yerine geçmez.
