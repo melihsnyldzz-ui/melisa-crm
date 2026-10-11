@@ -14,7 +14,7 @@ export function createSessionLoader({api,onCommit,onError,onBusy,onAgents=()=>{}
       finally{operation.agentsPending=null;if(current(operation))onAgentsState({busy:false});}
     })();return operation.agentsPending;
   }
-  function start({token='',credentials=null}={}) {
+  function start({token='',credentials=null,resume=false,requireResume=false}={}) {
     if(active?.pending) return active.promise;
     invalidate();
     const operation={generation,controller:new AbortController(),pending:true,promise:null};active=operation;
@@ -22,16 +22,18 @@ export function createSessionLoader({api,onCommit,onError,onBusy,onAgents=()=>{}
     operation.promise=(async()=>{
       try {
         const signal=operation.controller.signal;
-        let key=token;
-        if(credentials){const result=await api.login(credentials.username,credentials.password,{signal});if(!current(operation))return null;key=result.accessToken;}
+        let key=token,normalResult=null;
+        if(credentials){normalResult=await api.login(credentials.username,credentials.password,{signal});if(!current(operation))return null;key=normalResult.accessToken;}
+        else if(resume){normalResult=await api.resumeNormalSession({signal});if(!current(operation))return null;if(!normalResult){if(requireResume)throw Object.assign(new Error('Oturum sona erdi. Yeniden giriş yapın.'),{status:401});return null;}key=normalResult.accessToken;}
         if(!key)throw new Error('CRM oturumu gerekli.');
         const session=await api.session(key,{signal});if(!current(operation))return null;
+        if(normalResult&&api.rememberNormalSession){await api.rememberNormalSession(normalResult,session);if(!current(operation))return null;}
         const permissionReadAt=now();
         const inbox=await api.inbox(key,0,{view:'bootstrap',signal});const inboxReadAt=now();
         if(!current(operation))return null;
         const result={key,session,inbox,agents:{agents:[]},permissionReadAt,inboxReadAt};onCommit(result);
         operation.key=key;operation.session=session;void readAgents(operation);return result;
-      }catch(error){if(current(operation))onError(error);return null;}
+      }catch(error){if(current(operation))onError(error,{resume});return null;}
       finally {if(current(operation)){operation.pending=false;onBusy(false);}}
     })();
     return operation.promise;

@@ -316,7 +316,7 @@ export function App() {
     else setDrafts((current) => { const next = { ...current }; delete next[id]; return next; });
   };
   const setDraft = (value) => {
-    if (!liveMode || !liveSessionRef.current?.canSend) { setDrafts((current) => ({ ...current, [selectedId]: value })); return; }
+    if (!liveMode || !textDraftStorageRef.current.isActive()) { setDrafts((current) => ({ ...current, [selectedId]: value })); return; }
     applyStoredDrafts(textDraftStorageRef.current.set(selectedConversation(conversationsRef.current, selectedId), value));
   };
   const [compactMode, setCompactMode] = useState(() => { if (isMobilePreviewPath(window.location.pathname)) return true; try { return window.localStorage.getItem("melisa-crm-layout") === "terminal"; } catch { return false; } });
@@ -349,6 +349,7 @@ export function App() {
   const testBootstrapRef=useRef(null);
   const liveSessionRef = useRef(liveSession); liveSessionRef.current = liveSession;
   const [liveKey, setLiveKey] = useState(() => savedAccessKey());
+  const [normalResumeAvailable,setNormalResumeAvailable] = useState(false);
   const [permissionCheck, setPermissionCheck] = useState({ busy: false, error: "" });
   const [loginCredentials, setLoginCredentials] = useState({ username: "", password: "" });
   const [liveBusy, setLiveBusy] = useState(false);
@@ -617,7 +618,7 @@ export function App() {
     nearBottomRef.current = true;
   }, []);
 
-  const closeLiveSession = (message = "", clearReceipts = false) => {
+  const closeLiveSession = (message = "", clearReceipts = false, {preserveNormal=false} = {}) => {
     remainingReadRef.current?.controller.abort();remainingReadRef.current=null;
     bootstrapReconcileRef.current=null;
     setAgentLoadState({busy:false,error:''});setDetailLoadState({id:'',busy:false,error:''});
@@ -630,11 +631,13 @@ export function App() {
     else textDraftStorageRef.current.suspend();
     salesDraftFlowRef.current?.close();
     const closingKey = liveKeyRef.current;
+    const normalSessionClose=preserveNormal?Promise.resolve():liveApi.clearNormalSession();
+    if(!preserveNormal)setNormalResumeAvailable(false);
     sessionLoaderRef.current?.invalidate(); permissionRefreshRef.current?.invalidate();
     uiOperationEpochRef.current++;
     setIncomingTranslations({}); setTranslationBusy(false); setTranslationReady(false); setTranslationResult(null); setTranslationError(""); setAssignmentBusy(false); setAssignmentError(""); setToast("");
     liveSessionRef.current = null;
-    return closeCatalogSession({
+    const catalogClose=closeCatalogSession({
       explicitLogout: CATALOG_ENABLED && clearReceipts && Boolean(closingKey),
       disconnect: () => liveApi.catalogSignOut(closingKey),
       clearPhotos: () => { catalogSessionRef.current?.close(); window.dispatchEvent(new Event("melisa-crm-session-cleared")); },
@@ -649,6 +652,13 @@ export function App() {
     if (message) setLiveError(message);
       },
     });
+    const closed=Promise.all([normalSessionClose,catalogClose]);
+    closed.catch(error=>setLiveError(error.message));
+    return closed;
+  };
+
+  const renewExpiredNormalSession = () => {
+    return sessionLoaderRef.current.start({resume:true,requireResume:true});
   };
 
   const commitLiveSession = ({ key, session: sessionResult, inbox: inboxResult, agents: agentsResult={agents:[]}, permissionReadAt = Date.now(), inboxReadAt = Date.now() }) => {
@@ -668,6 +678,7 @@ export function App() {
     inboxPollRef.current.at = inboxReadAt;
     conversationPollRef.current.at=0;conversationPollRef.current.id='';
     saveAccessKey(key); setLiveKey(key); setLiveSession(sessionResult); setRole(sessionResult.displayName);
+    setNormalResumeAvailable(false);
     setAgents(agentsResult.agents || []); setSummary(effectiveInboxSummary(inboxResult.summary || {}, visibleConversations)); setConversations(visibleConversations);
     setNextInboxOffset(inboxResult.summary?.complete===false?0:inboxResult.conversations?.length || 0); setRemainingConversationsError("");
     setSelectedId((current) => inboxResult.conversations?.some((item) => item.id === current) ? current : inboxResult.conversations?.[0]?.id || ""); setTranslationReady(false);
@@ -677,7 +688,11 @@ export function App() {
   };
   sessionCallbacksRef.current = {
     onCommit: commitLiveSession,
-    onError: error => { if (error.status === 401 || error.status === 403) closeLiveSession(error.message || "CRM oturumu doğrulanamadı.", error.status === 403); else setLiveError(error.message || "CRM bağlantısı kurulamadı."); },
+    onError: (error,{resume=false}={}) => {
+      if (error.status === 401 || error.status === 403) closeLiveSession(error.message || "CRM oturumu doğrulanamadı.", error.status === 403);
+      else if(resume){setNormalResumeAvailable(true);void closeLiveSession("Bağlantı kurulamadı. Kaydedilen oturumunuzu yeniden deneyebilirsiniz.",false,{preserveNormal:true});}
+      else setLiveError(error.message || "CRM bağlantısı kurulamadı.");
+    },
     onBusy: setLiveBusy,
     onAgents: result=>setAgents(result.agents||[]),
     onAgentsState: update=>setAgentLoadState(state=>({...state,...update})),
@@ -685,7 +700,7 @@ export function App() {
   if (!sessionLoaderRef.current) sessionLoaderRef.current = createSessionLoader({
     api: liveApi,
     onCommit: value => sessionCallbacksRef.current.onCommit(value),
-    onError: error => sessionCallbacksRef.current.onError(error),
+    onError: (error,context) => sessionCallbacksRef.current.onError(error,context),
     onBusy: value => sessionCallbacksRef.current.onBusy(value),
     onAgents: value=>sessionCallbacksRef.current.onAgents(value),
     onAgentsState: value=>sessionCallbacksRef.current.onAgentsState(value),
@@ -709,7 +724,7 @@ export function App() {
       }
       liveSessionRef.current = next; setLiveSession(next);
     },
-    onExpired: () => closeLiveSession("Oturumunuz sona erdi. Mesaj taslağınız korunuyor; yeniden giriş yapın."),
+    onExpired: () => {void renewExpiredNormalSession();},
     onState: (update) => setPermissionCheck((state) => ({ ...state, ...update })),
   });
   const refreshLivePermissions = permissionRefreshRef.current;
@@ -730,9 +745,9 @@ export function App() {
   }, [liveKey, hasLiveSession, refreshLivePermissions]);
 
   const resumeLiveSession = () => {
-    if (!liveMode || !liveKeyRef.current || sessionLoaderRef.current.isPending()) return;
+    if (!liveMode || sessionLoaderRef.current.isPending()) return;
     setLiveError("");
-    return sessionLoaderRef.current.start({ token: liveKeyRef.current });
+    return sessionLoaderRef.current.start(liveKeyRef.current?{token:liveKeyRef.current}:{resume:true,requireResume:normalResumeAvailable});
   };
   const openTestAdmin = async () => {
     testBootstrapRef.current?.abort();
@@ -803,7 +818,7 @@ export function App() {
         setLastSyncAt(new Date()); setSyncError("");
       } catch (error) {
         if (!currentRead()) return;
-        if (error.status === 401) closeLiveSession("Oturumunuz sona erdi. Lütfen yeniden giriş yapın.");
+        if (error.status === 401) void renewExpiredNormalSession();
         else setSyncError(error.status === 429 ? error.message : "Canlı yenileme gecikti");
       } finally { finishForegroundRead(poll); }
     };
@@ -854,7 +869,7 @@ export function App() {
       }
     } catch (error) {
       if (!isCurrent()) return;
-      if (error.status === 401) closeLiveSession("Oturumunuz sona erdi. Lütfen yeniden giriş yapın.");
+      if (error.status === 401) void renewExpiredNormalSession();
       else setRemainingConversationsError(error.status === 429 ? error.message : "Diğer konuşmalar alınamadı. Tekrar deneyin.");
     } finally { if(remainingReadRef.current===operation)remainingReadRef.current=null;if (isCurrent()) setLoadingMoreConversations(false); }
   };
@@ -891,7 +906,7 @@ export function App() {
         });
       } catch (error) {
         if (!currentRead()) return;
-        if (error.status === 401) closeLiveSession("Oturumunuz sona erdi. Mesaj taslağınız korunuyor; yeniden giriş yapın.");
+        if (error.status === 401) void renewExpiredNormalSession();
         else if (error.status === 403 || error.status === 404) {
           forgetDraft(selectedId);
           setConversations((items) => items.filter((item) => item.id !== selectedId));
@@ -1237,7 +1252,7 @@ export function App() {
         } else {
           clearThisLock();
           setSendStates((items) => ({ ...items, [conversationId]: { state: "failed", text: `${error.message || "Gönderim yapılamadı."} Taslağınız korunuyor.` } }));
-          if (error.status === 401) closeLiveSession("Oturumunuz sona erdi. Mesaj ve dosya taslağınız korunuyor; yeniden giriş yapın.");
+          if (error.status === 401) void renewExpiredNormalSession();
         }
       } finally { if (sendScopeRef.current.isCurrent(sendingScope)) { sendInFlightRef.current = false; setLiveBusy(false); } }
       return;
@@ -1250,7 +1265,7 @@ export function App() {
   };
 
   if(liveMode&&!liveSession&&testAdminEnabled&&!manualTestLogin)return <div className="login-gate"><section className="login-card"><h1>TEST ADMIN</h1><p>{liveBusy?'CRM TEST açılıyor…':liveError||'CRM TEST oturumu hazırlanıyor…'}</p>{!liveBusy?<button className="primary-button" onClick={openTestAdmin}>Yeniden dene</button>:null}<button className="secondary-button" onClick={switchTestRole}>Gerçek rollerle giriş</button></section></div>;
-  if (liveMode && !liveSession) return <LoginGate terminal={entry.enabled} credentials={loginCredentials} onChange={setLoginCredentials} onConnect={connectLive} busy={liveBusy} error={liveError} retryAvailable={Boolean(liveKey)} onRetry={resumeLiveSession} onChangeAccount={() => closeLiveSession("", true)} extraAction={entry.enabled && ["http://127.0.0.1:62400","http://127.0.0.1:62600","http://127.0.0.1:62700"].includes(window.location.origin) ? <button className="secondary-button" onClick={openTestPersonnel} disabled={liveBusy}>Personel oturumunu aç</button> : testAdminEnabled?<button className="secondary-button" onClick={returnToTestAdmin}>TEST ADMIN ile aç</button>:null} />;
+  if (liveMode && !liveSession) return <LoginGate terminal={entry.enabled} credentials={loginCredentials} onChange={setLoginCredentials} onConnect={connectLive} busy={liveBusy} error={liveError} retryAvailable={Boolean(liveKey)||normalResumeAvailable} onRetry={resumeLiveSession} onChangeAccount={() => closeLiveSession("", true)} extraAction={entry.enabled && ["http://127.0.0.1:62400","http://127.0.0.1:62600","http://127.0.0.1:62700"].includes(window.location.origin) ? <button className="secondary-button" onClick={openTestPersonnel} disabled={liveBusy}>Personel oturumunu aç</button> : testAdminEnabled?<button className="secondary-button" onClick={returnToTestAdmin}>TEST ADMIN ile aç</button>:null} />;
 
   return (
     <div className={`app-shell redesigned whatsapp-ui${entry.enabled ? " terminal-entry" : ""}${inboxView ? " inbox-view" : ""}${terminalMode ? " compact-mode" : ""}${mobileChatOpen && inboxView ? " chat-open" : ""}${tabletInspectorOpen || desktopInspectorOpen ? " inspector-open" : ""}`}>
@@ -1353,7 +1368,7 @@ export function App() {
       </main>
 
       {modal === "erp-order" && erpOrderContext?.current() && String(selected.id) === erpOrderContext.recipientId ? <ERPOrderDialog token={liveKey} actorKey={entry.enabled ? `terminal:${sessionIdentityRef.current}` : sessionIdentityRef.current} conversation={selected} items={erpOrderContext.items} isCurrent={erpOrderContext.current} onClose={()=>{setModal(null);setErpOrderContext(null);}} onSaved={order=>{if(order.request)setErpDraftContexts(values=>({...values,[String(selected.id)]:{requestId:order.request.requestId,customerId:order.request.customerId,items:order.request.items.map(line=>({erpProductId:line.productId,stockCode:line.stockCode,quantity:line.quantity}))}}));setDraftOrders(items=>[{...order,id:order.id||order.orderId,customer:order.customerName||selected.name,owner:userName,total:`${order.documentCurrency||""} ${Number(order.grandTotal||order.total||0).toFixed(2)}`,lines:order.items.length,status:"ERP taslağı",updated:"Şimdi"},...items.filter(item=>String(item.id)!==String(order.id||order.orderId))]);flash(`ERP taslağı yeniden okundu: ${order.documentNo||order.orderNo||order.id}`);}}/> : null}
-      {CATALOG_ENABLED && modal === "catalog-builder" && selected.id && liveSession && catalogContextCurrent() ? <CatalogWorkspace conversationId={entry.enabled ? selected.id : undefined} existingStock={CATALOG_EXISTING_STOCK_ENABLED} authMode={CATALOG_CRM_ONLY_ENABLED?"crm":"erp"} key={`${sessionIdentityRef.current}:${roleLabel}:${selected.id}`} token={liveKey} isCurrent={catalogContextCurrent} onSession={session=>{catalogSessionRef.current=session;}} onSource={setCatalogSource} onCrmExpired={()=>closeLiveSession("CRM oturumu sona erdi. Yeniden giriş yapın.")} customer={selected} identity={sessionIdentityRef.current} role={roleLabel} canAttach={Boolean(liveSession.liveSendEnabled && !selectedSendUncertain)} onClose={closeCatalog} onAttach={attachCatalogOutput} onProductAction={catalogProductAction} attachmentExists={Boolean(pendingAttachment)} /> : null}
+      {CATALOG_ENABLED && modal === "catalog-builder" && selected.id && liveSession && catalogContextCurrent() ? <CatalogWorkspace conversationId={entry.enabled ? selected.id : undefined} existingStock={CATALOG_EXISTING_STOCK_ENABLED} authMode={CATALOG_CRM_ONLY_ENABLED?"crm":"erp"} key={`${sessionIdentityRef.current}:${roleLabel}:${selected.id}`} token={liveKey} isCurrent={catalogContextCurrent} onSession={session=>{catalogSessionRef.current=session;}} onSource={setCatalogSource} onCrmExpired={()=>{void renewExpiredNormalSession();}} customer={selected} identity={sessionIdentityRef.current} role={roleLabel} canAttach={Boolean(liveSession.liveSendEnabled && !selectedSendUncertain)} onClose={closeCatalog} onAttach={attachCatalogOutput} onProductAction={catalogProductAction} attachmentExists={Boolean(pendingAttachment)} /> : null}
       {toast ? <div className="toast" role="status"><CheckCircle size={20} weight="fill" />{toast}</div> : null}
       {modal === "assign" ? <Modal title="Temsilci ata" onClose={() => !assignmentBusy && setModal(null)}><div className="modal-body"><div className="selected-customer"><Avatar initials={(conversations.find((item) => String(item.id) === String(assignmentTargetId)) || selected).initials} /><div><strong>{(conversations.find((item) => String(item.id) === String(assignmentTargetId)) || selected).name}</strong><span>Bu konuşmadan kim sorumlu olacak?</span></div></div>{liveSession && (agentLoadState.busy || agentLoadState.error) ? <p role={agentLoadState.error ? "alert" : "status"}>{agentLoadState.busy ? "Temsilciler yükleniyor…" : agentLoadState.error}{agentLoadState.error ? <button onClick={()=>sessionLoaderRef.current?.refreshAgents()}>Yeniden dene</button> : null}</p> : null}<div className="assignee-list" role="radiogroup" aria-label="Sorumlu temsilci">{(liveSession ? agents.map((agent) => ({ id: String(agent.id), name: agent.name })) : teamOptions.slice(1).map((name) => ({ id: name, name }))).map((agent) => <button key={agent.id} role="radio" aria-checked={selectedAssigneeId === agent.id} className={selectedAssigneeId === agent.id ? "assignee-option selected" : "assignee-option"} onClick={() => { setSelectedAssigneeId(agent.id); setAssignmentError(""); }}><Avatar initials={agent.name.split(" ").map((part) => part[0]).join("").slice(0, 2)} compact /><span className="assignee-person"><strong>{agent.name}</strong><small>{conversations.filter((item) => item.owner === agent.name).length} {inboxPartial ? "görünür " : ""}konuşma</small></span><span className="assignee-check">{selectedAssigneeId === agent.id ? <Check size={16} weight="bold" /> : null}</span></button>)}</div>{assignmentError ? <p className="assignment-error" role="alert">{assignmentError}</p> : null}<div className="modal-actions"><button className="secondary-button" onClick={() => setModal(null)} disabled={assignmentBusy}>Vazgeç</button><button className="primary-button" onClick={confirmAssignment} disabled={!selectedAssigneeId || assignmentBusy || (liveSession && (agentLoadState.busy || Boolean(agentLoadState.error)))}><UserPlus size={18} />{assignmentBusy ? "Atanıyor…" : "Atamayı onayla"}</button></div></div></Modal> : null}
       {!liveSession && modal === "draft" ? <Modal title="ERP Taslak Sipariş" onClose={() => setModal(null)}><div className="modal-body"><div className="safety-banner"><CheckCircle size={21} weight="fill" /><div><strong>Güvenli taslak modu</strong><span>Bu önizleme stok düşürmez, siparişi kesinleştirmez ve henüz ERP’ye veri göndermez.</span></div></div><div className="draft-summary"><span>Müşteri<strong>{selected.name}</strong></span><span>Miktar birimi<strong>Adet</strong></span><span>Ürün satırı<strong>{pendingProducts.length || "Ürün bekleniyor"}</strong></span></div>{pendingProducts.length ? <div className="draft-lines">{pendingProducts.map((product, index) => <div key={`${product.id}-${index}`}><span><Package size={18} /></span><p><strong>{product.name}</strong><small>{product.id} · {product.quantity} adet · {product.price}</small></p></div>)}</div> : <button className="add-draft-product" onClick={() => setModal("Ürün Gönder")}><Plus size={17} />Siparişe ürün seç</button>}<div className="modal-actions"><button className="secondary-button" onClick={() => setModal(null)}>Vazgeç</button><button className="primary-button" onClick={createDraftOrder}><ClipboardText size={18} />Taslak Önizleme Oluştur</button></div></div></Modal> : null}

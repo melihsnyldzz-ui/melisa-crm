@@ -4,8 +4,17 @@ export const TEXT_DRAFT_STORAGE_KEY = 'melisa-crm-text-drafts-v1';
 const MAX_DRAFTS = 100, MAX_TEXT = 2000, MAX_JSON = 300000;
 const validId = value => typeof value === 'string' && /^[\w-]{1,100}$/.test(value) && value !== 'prototype' && !Object.hasOwn(Object.prototype, value);
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+export function normalTestDraftOnly(session) {
+  const scope=session?.normalTestScope;
+  return session?.accountIdentity?.id==='crm-agent-test-20261011'&&session.accountIdentity.username==='crm-agent-test'
+    &&session.role==='personel'&&session.chatwootAgentId===3&&session.canSend===false&&session.liveSendEnabled===false
+    &&Array.isArray(session.permissions)&&session.permissions.length===1&&session.permissions[0]==='crm.view'
+    &&!session.testAdmin&&!session.testPersonnel&&scope?.database==='MELISA_ERP_CRM_SHARED_TEST_20261009_02'
+    &&scope.isolatedPreparation===true&&scope.draftOnly===true&&scope.chatwootAgentId===3;
+}
 export function textDraftActorScope(session) {
   const identity = accountIdentityKey(session?.accountIdentity);
+  if(identity&&normalTestDraftOnly(session))return JSON.stringify([identity,'personel','local-unsent-draft:DB02','3']);
   return identity && typeof session?.role === 'string' && session.role && session.canSend === true
     ? JSON.stringify([identity, session.role, 'crm.send', String(session.chatwootAgentId ?? '')]) : '';
 }
@@ -19,7 +28,8 @@ export function textDraftConversationScope(conversation) {
 // Access is activated only after /auth/me and inbox have been verified. No token,
 // media, customer name, ERP data or message history is stored here.
 export function createTextDraftStorage({ getStorage = () => window.sessionStorage } = {}) {
-  let actor = '', active = false, records = {}, visible = new Set(), available = true, ignoreStored = false;
+  let actor = '', active = false, records = {}, visible = new Set(), available = true, ignoreStored = false, draftOnly = false;
+  const allowed = conversation => !draftOnly || conversation?.chatwootAgentId===3;
   const storage = () => { try { return getStorage(); } catch { return null; } };
   const snapshot = () => Object.fromEntries(active ? Object.entries(records).filter(([id]) => visible.has(id)).map(([id, row]) => [id, row.text]) : []);
   const result = () => ({ drafts: snapshot(), persisted: available });
@@ -62,6 +72,7 @@ export function createTextDraftStorage({ getStorage = () => window.sessionStorag
     visible = new Set(); let changed = false;
     for (const conversation of conversations || []) {
       const id = String(conversation.id || ''), scope = textDraftConversationScope(conversation);
+      if(!allowed(conversation)){if(records[id]){delete records[id];changed=true;}continue;}
       if (!scope) continue;
       visible.add(id);
       if (records[id] && records[id].scope !== scope) { delete records[id]; changed = true; }
@@ -77,18 +88,18 @@ export function createTextDraftStorage({ getStorage = () => window.sessionStorag
       const next = textDraftActorScope(session);
       if (!next) { this.clear(); return result(); }
       if (actor !== next) { if (actor) { available = removeStored(); ignoreStored = !available; } records = {}; actor = next; load(); }
-      active = true; return synchronize(conversations);
+      draftOnly=normalTestDraftOnly(session);active = true; return synchronize(conversations);
     },
     synchronize,
     visibleDrafts(conversations) {
       return Object.fromEntries(active ? (conversations || []).flatMap(conversation => {
         const id = String(conversation?.id || ''), row = records[id];
-        return row && visible.has(id) && row.scope === textDraftConversationScope(conversation) ? [[id, row.text]] : [];
+        return row && allowed(conversation) && visible.has(id) && row.scope === textDraftConversationScope(conversation) ? [[id, row.text]] : [];
       }) : []);
     },
     set(conversation, text) {
       const id = String(conversation?.id || ''), scope = textDraftConversationScope(conversation);
-      if (!active || !scope || !visible.has(id) || typeof text !== 'string') return result();
+      if (!active || !allowed(conversation) || !scope || !visible.has(id) || typeof text !== 'string') return result();
       if (text.length) records[id] = { scope, text }; else delete records[id];
       persist(); return result();
     },
@@ -99,6 +110,6 @@ export function createTextDraftStorage({ getStorage = () => window.sessionStorag
     },
     forget(id) { if (active && records[String(id)]) { delete records[String(id)]; persist(); } return result(); },
     suspend() { active = false; visible.clear(); },
-    clear() { available = removeStored(); ignoreStored = !available; actor = ''; records = {}; active = false; visible.clear(); return result(); },
+    clear() { available = removeStored(); ignoreStored = !available; actor = ''; records = {}; active = false; draftOnly = false; visible.clear(); return result(); },
   };
 }

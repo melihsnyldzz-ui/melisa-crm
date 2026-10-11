@@ -23,7 +23,7 @@ export function createApp() {
   // Native ERP drafts use the separate isolated order proxy, never this gateway.
   app.use((req,res,next)=>{
     if(process.env.CRM_ISOLATED_PREPARATION==='true'&&!['GET','HEAD','OPTIONS'].includes(req.method)
-      &&!(req.method==='POST'&&req.path==='/auth/login')){
+      &&!(req.method==='POST'&&(req.path==='/auth/login'||(process.env.CRM_NORMAL_REFRESH_ENABLED==='true'&&['/auth/refresh','/auth/logout'].includes(req.path))))){
       return res.status(403).json({success:false,error:{code:'CRM_PREPARATION_READ_ONLY',message:'Ortak hazırlık ortamında mevcut CRM kayıtları değiştirilemez.'}});
     }
     next();

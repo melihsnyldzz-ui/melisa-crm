@@ -6,6 +6,18 @@ const actor = (id='a', extras={}) => ({accountIdentity:{id},role:'mudur',canSend
 const conversation = (id='55', extras={}) => ({id,phone:'+90 538 721 77 33',channel:'whatsapp',assignedUserId:7,owner:'Personel',...extras});
 function memoryStorage() { const values=new Map(); return {getItem:key=>values.get(key)??null,setItem:(key,value)=>values.set(key,value),removeItem:key=>values.delete(key)}; }
 const store = storage => createTextDraftStorage({getStorage:()=>storage});
+const dedicated = extras=>({accountIdentity:{id:'crm-agent-test-20261011',username:'crm-agent-test'},role:'personel',chatwootAgentId:3,canSend:false,liveSendEnabled:false,permissions:['crm.view'],normalTestScope:{database:'MELISA_ERP_CRM_SHARED_TEST_20261009_02',isolatedPreparation:true,draftOnly:true,chatwootAgentId:3},...extras});
+test('only verified dedicated DB02 view-only personel persists unsent drafts for currently assigned Agent3',()=>{
+ const storage=memoryStorage(),s=store(storage),a=dedicated(),c=conversation('55',{chatwootAgentId:3});s.activate(a,[c]);s.set(c,'Henüz gönderilmemiş TEST taslağı');
+ assert.equal(store(storage).activate(a,[c]).drafts['55'],'Henüz gönderilmemiş TEST taslağı');assert.equal(a.canSend,false);assert.deepEqual(a.permissions,['crm.view']);
+ const moved=conversation('55',{chatwootAgentId:4});assert.deepEqual(s.visibleDrafts([moved]),{});s.synchronize([moved]);s.set(moved,'must not store');assert.deepEqual(store(storage).activate(a,[c]).drafts,{});
+});
+test('missing scope, another actor, another database, changed assignment and bootstrap cannot open dedicated draft scope',()=>{
+ const c=conversation('55',{chatwootAgentId:3});
+ for(const a of [dedicated({normalTestScope:undefined}),dedicated({accountIdentity:{id:'crm-personel-3',username:'crm-ahmet'}}),dedicated({normalTestScope:{database:'OTHER',isolatedPreparation:true,draftOnly:true,chatwootAgentId:3}}),dedicated({chatwootAgentId:4}),dedicated({testPersonnel:true}),dedicated({role:'mudur'}),dedicated({permissions:['crm.view','crm.send']})]){
+  const storage=memoryStorage(),s=store(storage);s.activate(dedicated(),[c]);s.set(c,'private');assert.equal(textDraftActorScope(a),'');assert.deepEqual(s.activate(a,[c]).drafts,{});
+ }
+});
 test('realistic unsent multiline text survives repeated same-tab reloads only after verified actor/inbox',()=>{
   const storage=memoryStorage(), a=actor(), c=conversation(), text='  Merhaba\nÜrün ve fiyat için hazırladığım, henüz gönderilmemiş mesaj. 👶\n  ';
   const first=store(storage);first.activate(a,[c]);assert.equal(first.set(c,text).persisted,true);

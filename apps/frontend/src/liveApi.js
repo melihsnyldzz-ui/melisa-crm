@@ -5,6 +5,7 @@ import { normalizeAccountIdentity } from "./accountIdentity.js";
 import { resolveContactIdentity } from "./contactIdentity.js";
 import { validateSendPayload, validateFileSignature } from "./outboundMedia.js";
 import { createRequestControl, requestBudgetScope } from "./requestControl.js";
+import { createNativeSessionBridge, createRememberedNormalSession } from './nativeSessionBridge.js';
 
 const STORAGE_KEY = "melisa-crm-access-token";
 const API_ROOT = "/api/live";
@@ -109,8 +110,17 @@ export function validateErpDraftReceipt(receipt, submitted) {
 }
 
 function authStorageKey() { return terminalEntry(window.location).enabled ? 'melisa-crm-terminal-access-token' : STORAGE_KEY; }
-export function savedAccessKey() { try { return window.sessionStorage.getItem(authStorageKey()) || ""; } catch { return ""; } }
-export function saveAccessKey(value) { try { value ? window.sessionStorage.setItem(authStorageKey(), value) : window.sessionStorage.removeItem(authStorageKey()); } catch { /* The active session still works in memory when storage is unavailable. */ } }
+export function savedAccessKey() { try { if(terminalEntry(window.location).enabled){window.sessionStorage.removeItem(authStorageKey());return '';}return window.sessionStorage.getItem(authStorageKey()) || ""; } catch { return ""; } }
+export function saveAccessKey(value) { try { if(terminalEntry(window.location).enabled){window.sessionStorage.removeItem(authStorageKey());return;}value ? window.sessionStorage.setItem(authStorageKey(), value) : window.sessionStorage.removeItem(authStorageKey()); } catch { /* The active session still works in memory when storage is unavailable. */ } }
+
+let rememberedNormal=null;
+const normalEpochs=new WeakMap();
+function normalRemember(){
+  if(!rememberedNormal)rememberedNormal=createRememberedNormalSession({bridge:createNativeSessionBridge(),
+    refresh:(refreshToken,options)=>request('/auth/refresh','',{method:'POST',body:JSON.stringify({refreshToken}),...options}),
+    logout:refreshToken=>request('/auth/logout','',{method:'POST',body:JSON.stringify({refreshToken}),timeoutMs:3000})});
+  return rememberedNormal;
+}
 
 function dataOf(payload) { return payload?.data ?? payload ?? {}; }
 
@@ -615,11 +625,15 @@ export const liveApi = {
     };
   },
   async login(username, password, { signal } = {}) {
+    const epoch=await normalRemember().begin();
     const result = await request("/auth/login", "", { method: "POST", body: JSON.stringify({ username, password }), signal });
     const accessToken = result.accessToken || result.access_token || result.token;
     if (!accessToken) throw new Error("CRM giriş yanıtında erişim tokeni bulunamadı.");
-    return { accessToken, expiresIn: result.expiresIn, user: result.user || null };
+    const normal={...result,accessToken,user:result.user||null};normalEpochs.set(normal,epoch);return normal;
   },
+  async resumeNormalSession(options={}){const resumed=await normalRemember().resume(options);if(!resumed)return null;normalEpochs.set(resumed.result,resumed.epoch);return resumed.result;},
+  rememberNormalSession(result,user){return normalRemember().remember(result,user,normalEpochs.get(result));},
+  clearNormalSession(){return normalRemember().clear();},
   async session(token, options = {}) { return normalizePermissions(await request("/auth/me", token, options)); },
   // Chatwoot-backed inbox pages can take over 20 seconds; retain a bounded read
   // budget without extending sends or preventing session cancellation.

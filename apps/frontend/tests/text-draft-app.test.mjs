@@ -17,7 +17,7 @@ const fakeWindow=sessionStorage=>({location:{pathname:'/',search:''},crypto:{ran
 const settle=async()=>{await Promise.resolve();await Promise.resolve();};
 async function bundle(file,instrument=false,isolated=false){
  await build({absWorkingDir:frontend,tsconfigRaw:{},entryPoints:[frontend+'src/App.jsx'],outfile:file,bundle:true,platform:'node',format:'esm',jsx:'automatic',define:{'import.meta.env.DEV':'false','import.meta.env.VITE_CRM_TEST':'"1"','import.meta.env.VITE_CRM_ISOLATED_PREPARATION':JSON.stringify(isolated?'1':'0')},external:['react','@phosphor-icons/react'],loader:{'.css':'empty'},plugins:instrument?[{name:'isolated-app-handler-harness',setup(build){
-  build.onLoad({filter:/App\.jsx$/},args=>({loader:'jsx',contents:readFileSync(args.path,'utf8').replace(/^import \{ useCallback, useEffect, useMemo, useRef, useState \} from "react";/,'const {useCallback,useEffect,useMemo,useRef,useState}=globalThis.__draftHooks;').replace('  if (liveMode && !liveSession) return <LoginGate','  globalThis.__draftHarness.actions={commitLiveSession,setDraft,sendMessage,closeLiveSession,refreshLivePermissions,selectConversation,setQuery,setFilter,loadRemainingConversations,activateTerminal,checkSendStatus,translateDraft};\n  if (liveMode && !liveSession) return <LoginGate')}));
+  build.onLoad({filter:/App\.jsx$/},args=>({loader:'jsx',contents:readFileSync(args.path,'utf8').replace(/^import \{ useCallback, useEffect, useMemo, useRef, useState \} from "react";/,'const {useCallback,useEffect,useMemo,useRef,useState}=globalThis.__draftHooks;').replace('  if (liveMode && !liveSession) return <LoginGate','  globalThis.__draftHarness.actions={commitLiveSession,setDraft,sendMessage,closeLiveSession,refreshLivePermissions,selectConversation,setQuery,setFilter,loadRemainingConversations,activateTerminal,checkSendStatus,translateDraft,renewExpiredNormalSession};\n  if (liveMode && !liveSession) return <LoginGate')}));
   build.onLoad({filter:/liveApi\.js$/},args=>({loader:'js',contents:readFileSync(args.path,'utf8')+'\nfor(const name of Object.keys(globalThis.__draftHarness.api))liveApi[name]=(...args)=>globalThis.__draftHarness.api[name](...args);'}));
  }}]:[]});
 }
@@ -29,13 +29,27 @@ async function fixture(run,{compact=false,terminal=false,offline=false,isolated=
  if(compact)globalThis.window.localStorage.getItem=()=> 'terminal';
  globalThis.document={visibilityState:'visible',addEventListener(){},removeEventListener(){}};
  globalThis.__draftHooks={useState(initial){const i=cursor++;if(!(i in values))values[i]=typeof initial==='function'?initial():initial;return [values[i],update=>{values[i]=typeof update==='function'?update(values[i]):update;}];},useRef(initial){const i=cursor++;if(!(i in values))values[i]={current:initial};return values[i];},useMemo:fn=>fn(),useCallback:fn=>fn,useEffect:fn=>effects.push(fn)};
- const harness=globalThis.__draftHarness={api:{sendStatus:async()=>({}),canonicalCatalogProduct:async()=>({}),erpDrafts:async()=>({orders:[]}),catalogSignOut:async()=>({}),session:async()=>actor(),inbox:async()=>({conversations:[row()],summary:{total:1}}),conversation:async()=>({conversation:row()}),send:async()=>({message:{id:'synthetic-accepted',direction:'outgoing',text:'sent'}})},actions:null};
+ const harness=globalThis.__draftHarness={api:{clearNormalSession:async()=>{},resumeNormalSession:async()=>null,sendStatus:async()=>({}),canonicalCatalogProduct:async()=>({}),erpDrafts:async()=>({orders:[]}),catalogSignOut:async()=>({}),session:async()=>actor(),inbox:async()=>({conversations:[row()],summary:{total:1}}),conversation:async()=>({conversation:row()}),send:async()=>({message:{id:'synthetic-accepted',direction:'outgoing',text:'sent'}})},actions:null};
  try{await bundle(file,true,isolated);const {App}=await import(pathToFileURL(file).href);const render=()=>{cursor=0;effects.length=0;return App();};const connect=(session=actor(),rows=[row(),row('56')],inboxExtra={})=>{harness.actions.commitLiveSession({key:'synthetic-session',session,inbox:{conversations:rows,summary:{total:rows.length},...inboxExtra},agents:{agents:[]}});return render();};
   render();await run({local,harness,render,connect,pollAutomatic:()=>effects.filter(fn=>String(fn).includes("automaticTranslationBusy.current")).forEach(fn=>fn()),pollBackground:()=>effects.filter(fn=>String(fn).includes('const refreshInbox = async')||String(fn).includes('permissionPollRef.current')).forEach(fn=>fn()),pollDrafts:()=>effects.filter(fn=>String(fn).includes('textDraftStorageRef.current.synchronize')).forEach(fn=>fn()),pollConversation:()=>effects.filter(fn=>String(fn).includes('const refreshConversation = async')).forEach(fn=>fn())});
  }finally{globalThis.window=previous.window;globalThis.document=previous.document;globalThis.__draftHooks=previous.hooks;globalThis.__draftHarness=previous.harness;rmSync(file,{force:true});}
 }
 function find(tree,predicate){if(!tree||typeof tree!=='object')return null;if(predicate(tree))return tree;for(const child of React.Children.toArray(tree.props?.children)){const found=find(child,predicate);if(found)return found;}return null;}
 const composer=tree=>find(tree,node=>node.type==='textarea'&&node.props['aria-label']==='Mesajınız');
+const dedicatedSession=()=>({accountIdentity:{id:'crm-agent-test-20261011',username:'crm-agent-test'},id:'crm-agent-test-20261011',username:'crm-agent-test',role:'personel',chatwootAgentId:3,permissions:['crm.view'],canSend:false,liveSendEnabled:false,displayName:'TEST personeli',normalTestScope:{database:'MELISA_ERP_CRM_SHARED_TEST_20261009_02',isolatedPreparation:true,draftOnly:true,chatwootAgentId:3}});
+test('actual dedicated normal personel composer stores an unsent assigned draft while Send stays forbidden',async()=>fixture(async h=>{
+ const session=dedicatedSession(),assigned={...row(),chatwootAgentId:3};let sends=0;h.harness.api.send=async()=>sends++;h.harness.api.session=async()=>session;
+ h.connect(session,[assigned]);h.harness.actions.selectConversation(assigned);h.render();h.harness.actions.setDraft('Gönderilmemiş kısa TEST taslağı');h.render();
+ const reloaded=createTextDraftStorage({getStorage:()=>h.local}).activate(session,[assigned]);assert.equal(reloaded.drafts['55'],'Gönderilmemiş kısa TEST taslağı');
+ await h.harness.actions.sendMessage();assert.equal(sends,0);assert.equal(composer(h.render()).props.value,'Gönderilmemiş kısa TEST taslağı');
+ const send=find(h.render(),node=>node.type==='button'&&node.props.className?.includes('send-button'));assert.equal(send?.props.disabled,true);
+},{terminal:true,isolated:true}));
+test('actual expired-session renewal retains protected grant on503 but clears it on401 and closes authenticated UI',async()=>{
+ for(const status of [503,401])await fixture(async h=>{
+  let clears=0;h.harness.api.clearNormalSession=async()=>clears++;h.harness.api.resumeNormalSession=async()=>{throw Object.assign(Error('offline fixture'),{status});};
+  h.connect();await h.harness.actions.renewExpiredNormalSession();await settle();const gate=h.render();assert.equal(clears,status===401?1:0);assert.equal(gate.props.retryAvailable,status===503);assert.equal(gate.props.error,status===503?'Bağlantı kurulamadı. Kaydedilen oturumunuzu yeniden deneyebilirsiniz.':'offline fixture');
+ },{terminal:true,isolated:true});
+});
 
 test('actual terminal entry has an isolated auth session and offline keyboard send cannot reach transport',async()=>fixture(async h=>{
  let sends=0;h.harness.api.send=async()=>{sends++;};
@@ -45,7 +59,7 @@ test('actual terminal entry has an isolated auth session and offline keyboard se
  assert.equal(h.local.getItem('melisa-crm-access-token'),'desktop-synthetic-session');
  const tree=h.connect();assert.match(tree.props.className,/terminal-entry/);
  const html=renderToStaticMarkup(tree);assert.match(html,/MELISA TERMINAL|Müşterilerim/);assert.match(html,/Bağlantı yok/);
- assert.equal(h.local.getItem('melisa-crm-terminal-access-token'),'synthetic-session');
+ assert.equal(h.local.getItem('melisa-crm-terminal-access-token'),null);
  h.harness.actions.setDraft('Human text');h.render();await h.harness.actions.sendMessage();assert.equal(sends,0);
  await h.harness.actions.closeLiveSession('',true);
  assert.equal(h.local.getItem('melisa-crm-terminal-access-token'),null);assert.equal(h.local.getItem('melisa-crm-access-token'),'desktop-synthetic-session');
@@ -138,6 +152,7 @@ test('actual App uses committed startup reads for polling while manual permissio
   globalThis.document.visibilityState='visible';h.pollBackground();await settle();assert.equal(inboxCalls,2);assert.equal(permissionCalls,2);
   h.harness.api.session=async()=>{throw Object.assign(new Error('Synthetic revoked'),{status:401});};
   await assert.rejects(h.harness.actions.refreshLivePermissions(),{status:401});
+  for(let i=0;i<8;i++)await Promise.resolve();
   const html=renderToStaticMarkup(h.render());assert.match(html,/Melisa CRM güvenli giriş/);
  }finally{Date.now=originalNow;}
 }));
@@ -215,7 +230,7 @@ test('shared terminal existing personnel action uses only empty stateless bootst
   const action=h.render().props.extraAction;assert.equal(action.props.children,'Personel oturumunu aç');
   await action.props.onClick();
   assert.equal(requests.length,1);assert.equal(requests[0].url,'/api/test-personnel/session');assert.equal(requests[0].options.method,'POST');assert.equal(requests[0].options.body,'{}');
-  assert.equal(h.local.getItem('melisa-crm-terminal-access-token'),'existing-personnel-rehearsal');assert.equal(h.local.getItem('melisa-crm-access-token'),'desktop-synthetic-session');
+  assert.equal(h.local.getItem('melisa-crm-terminal-access-token'),null);assert.equal(h.local.getItem('melisa-crm-access-token'),'desktop-synthetic-session');
   assert.doesNotMatch(renderToStaticMarkup(h.render()),/TEST ADMIN/);
  }finally{globalThis.fetch=originalFetch;}
 },{terminal:true,isolated:true}));
