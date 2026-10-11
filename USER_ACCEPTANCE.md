@@ -1,3 +1,7 @@
+## CRM-UA10 / SEMIH-TEST / CRM-DEC-012 — 12 Ekim 2026 — bekliyor
+
+Desteklenen ortak TEST aktivasyonundan sonra doğrulanmış normal Semih hesabıyla devam → gerçek konuşma listesi → katalog/yetkili modüller; reopen/ERP↔CRM↔terminal; açık çıkış/erişim iptalinde yetki ve önceki veri kapansın. Aynı runtime'da mevcut personelin korunmuş oturumu da açılsın; Semih çıkışı personelin grant ailesini iptal etmesin. Kayıtsız cihaz anonim yönetici olmasın. Private config/DPAPI hazırlığı ve offline kontrol insan PASS değildir. Eski personel/7733/CRM-UA01–09 kabulleri korunur. LIVE helper kapalı ve ayrılmış TEST aktörü reddedilir; bu ayrıca teknik kriterdir.
+
 ## CRM-UA09 / ERP-COMPLETE01 / CRM-DEC-011 — ek teknik hazırlık, insan bekliyor
 
 11 Ekim normal TC21v22/source09ca, atanmış liste/geçmiş/gönderilmemiş taslak ve korumalı reopen/görev geçişi/çıkış/yeniden giriş teknik doğrulandı. CRM42sn gerçek Türkçe eğitim hazır; mevcut rol read/draft, send kapalı. İlk hızlı taslak kaybı gözlemi korunur, kontrollü tekrarda üretilemedi; production fix/yeni mesaj iddiası yok. Kullanıcı/personel kişi-tarih-sonuç vermedi: **CRM-UA09 ve önceki kabuller bekliyor**. [Kanıt/sınırlar](docs/evidence/crm/2026-10-11-terminal-normal-session/README.md). Genel ERP/CRM/LIVE kabulü değildir.

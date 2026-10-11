@@ -1,3 +1,7 @@
+## SEMIH-TEST / CRM-DEC-012 — 12 Ekim 2026
+
+Dar giriş işi mevcut U01/M01/rol kabulünün alt kapsamıdır: normal Semih TEST patron, korumalı dönen oturum, fresh kimlik, çıkış/hesap değişimi/revoke ve LIVE'da helper kapalı. [Exact sözleşme](docs/development/SEMIH_TEST_SESSION.md). Private inactive kayıt hazır; eski personel/paylaşılan hesap değişmedi. Ortak ERP supervisor yeni CRM paket/env pinini destekleyene kadar normal ekran/cihaz CRM-UA10 bekler. İkinci tree veya genel PASS yok: **25 toplam /12 tamam /13 kısmi /0 açık** korunur. Taze source09ca normal TEST'te8023 orijinal1206×1500 yüklendi; yeni fotoğraf kodu yok, netlik insan kabulü bekler.
+
 ## ERP-COMPLETE01 / CRM-DEC-011 — 11 Ekim 2026
 
 TC21v22/source09ca/ERP9cc, atanmış liste/geçmiş/gönderilmemiş taslak ve korumalı reopen/görev geçişi/çıkış teknik kanıtlı. İki mevcut gerçek adapter/storage/App regression testine kimlik/assignment turu eklendi; production fix/send yetkisi yok. İlk hızlı taslak kaybı gözlemi kontrollü tekrarda üretilemedi, kayıtlı kalır. Beş klip/dört görev özel eğitiminde CRM42sn ders hazır, insan sonucu bekler. Normal TEST send izni yok; gerçek Windows reboot/IP rezervasyonu ayrı. **25 toplam /12 tamam /13 kısmi /0 açık**, CRM-UA09/önceki kabuller değişmedi. [Kanıt](docs/evidence/crm/2026-10-11-terminal-normal-session/README.md). Bu kapsam sonrası otomatik ticari prova yok.

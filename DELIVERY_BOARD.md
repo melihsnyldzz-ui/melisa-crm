@@ -1,4 +1,10 @@
-## ŞİMDİ — ERP-COMPLETE01 / CRM-DEC-011 — 11 Ekim 2026
+## ŞİMDİ — SEMIH-TEST / CRM-DEC-012 — 12 Ekim 2026
+
+Öncelik normal **Semih olarak devam et** TEST girişidir: ayrı exact patron ve korumalı oturum → fresh kimlik → gerçek konuşma listesi. Kayıtsız cihaz anonim yönetici olamaz. CRM kaynak/oturum sözleşmesi burada; ERP/terminal sahibi ortak supervisor/package/env pinini bağlar. [Handoff ve LIVE kapatma ölçütü](docs/development/SEMIH_TEST_SESSION.md). Private inactive kayıt hazır; mevcut7 kullanıcı/personel/DB02/TEST125/karantina/LL/katalog orijinali korunur. CRM-UA10 normal ekran/cihaz kabulü bekler; main/LIVE/mesaj/ücretliAI/ticari yazma yok.
+
+**Sonraki somut bağımlılık:** ortak ERP supervisorun mevcut personel CRM refresh pinlerini koruyarak ek Semih paket/config girdilerini bağlaması. Personel profili Semih profiliyle değiştirilmez; kontrol aşılmaz, kullanıcıdan parola/Git komutu istenmez. Dar girişten sonra mevcut beş aşamalı ana iş sırası sürer; yeni approval döngüsü kurulmaz.
+
+## Önceki checkpoint — ERP-COMPLETE01 / CRM-DEC-011 — 11 Ekim 2026
 
 TC21v22/source09ca mevcut atanmış liste/geçmiş/gönderilmemiş taslak ve korumalı reopen/görev geçişi/çıkışla Wi-Fi üzerinde çalışıyor. Kaynak testine kimlik/assignment turu eklendi; production draft fix/yeni send yetkisi yok. İlk hızlı kayıp gözlemi korunur; kontrollü tekrarda taslak kaldı. [Teknik kanıt](docs/evidence/crm/2026-10-11-terminal-normal-session/README.md). Tek ortak ERP-COMPLETE01 işi sürer, ikinci ana görev yok.
 

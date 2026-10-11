@@ -5,10 +5,27 @@ import path from 'node:path';
 const hash = value => crypto.createHash('sha256').update(value).digest('hex');
 const reject = () => Object.assign(new Error('Oturum sona erdi. Yeniden giriş yapın.'), {code:'AUTH_TOKEN_INVALID',statusCode:401});
 export const DEDICATED_NORMAL_TEST_USER_ID='crm-agent-test-20261011';
+export const DEDICATED_SEMIH_TEST_USER_ID='crm-semih-test-20261012';
+const SEMIH_TEST_PERMISSIONS=Object.freeze(['crm.view','crm.send','crm.assign','crm.agents','crm.manage']);
 export function isDedicatedNormalTestUser(user) {
   return user?.id===DEDICATED_NORMAL_TEST_USER_ID&&user.username==='crm-agent-test'&&user.role==='personel'
     &&user.active===true&&user.chatwootAgentId===3&&Array.isArray(user.permissions)
     &&user.permissions.length===1&&user.permissions[0]==='crm.view'&&!user.testAdmin&&!user.testPersonnel;
+}
+export function isDedicatedSemihTestUser(user,agentId) {
+  return user?.id===DEDICATED_SEMIH_TEST_USER_ID&&user.username==='crm-semih-test'&&user.displayName==='Semih TEST'
+    &&user.role==='patron'&&user.active===true&&Number.isSafeInteger(agentId)&&agentId>0&&user.chatwootAgentId===agentId
+    &&Array.isArray(user.permissions)&&user.permissions.length===SEMIH_TEST_PERMISSIONS.length
+    &&SEMIH_TEST_PERMISSIONS.every(permission=>user.permissions.includes(permission))&&!user.testAdmin&&!user.testPersonnel;
+}
+export function normalRefreshUserPolicy(config=process.env) {
+  if(config.CRM_NORMAL_REFRESH_USER_ID===DEDICATED_NORMAL_TEST_USER_ID)return isDedicatedNormalTestUser;
+  throw Error('Isolated normal-session identity is invalid.');
+}
+export function semihRefreshUserPolicy(config=process.env){
+  const agentId=Number(config.CRM_SEMIH_TEST_AGENT_ID);
+  if(config.CRM_SEMIH_TEST_CONTINUE_ENABLED==='true'&&Number.isSafeInteger(agentId)&&agentId>0)return user=>isDedicatedSemihTestUser(user,agentId);
+  throw Error('Isolated Semih-session identity is invalid.');
 }
 export function normalSessionFingerprint(user) {
   return hash(JSON.stringify([user.id,user.username,user.role,user.active,user.chatwootAgentId,[...user.permissions].sort(),user.passwordHash]));
@@ -55,6 +72,8 @@ export function createNormalRefreshStore({file,resolveUser,authorizeUser=()=>tru
       grant.retiredHashes??=[];if(grant.retiredHashes.length>=2048)throw reject();grant.retiredHashes.push(grant.tokenHash);
       grant.tokenHash=tokenHash(refreshToken);return {sid:grant.sid,user,refreshToken,refreshExpiresAt:grant.expiresAt};
     });},
+    inspect(token){return current(read().grants.find(g=>g.tokenHash===tokenHash(token)));},
+    ownsToken(token,{includeRetired=false}={}){const digest=tokenHash(token);return read().grants.some(g=>g.tokenHash===digest||(includeRetired&&g.retiredHashes?.includes(digest)));},
     verify(sid,user){const grant=read().grants.find(g=>g.sid===sid);const actual=current(grant);if(actual.id!==user.id||!authorizeUser(user))throw reject();return actual;},
     // A simultaneous logout can hold the token retired by an in-flight refresh.
     // Retired hashes may revoke their own family but never rotate it again.
@@ -62,14 +81,38 @@ export function createNormalRefreshStore({file,resolveUser,authorizeUser=()=>tru
   };
 }
 
-export function configuredNormalRefreshStore({config=process.env,resolveUser,repoRoot=process.cwd()}={}) {
-  if(config.CRM_NORMAL_REFRESH_ENABLED!=='true')return null;
-  const file=config.CRM_NORMAL_REFRESH_JOURNAL_PATH;
+function assertPrivateRefreshJournal(file,config,repoRoot){
   const privateRoot=path.resolve('C:/Sirket/CRM/runtime');
   const relative=file&&path.relative(privateRoot,path.resolve(file));
   const repoRelative=file&&path.relative(path.resolve(repoRoot),path.resolve(file));
   if(config.CRM_ISOLATED_PREPARATION!=='true'||config.CRM_TEST_EXPECTED_DATABASE!=='MELISA_ERP_CRM_SHARED_TEST_20261009_02'
     ||!file||!path.isAbsolute(file)||!relative||relative.startsWith('..')||path.isAbsolute(relative)
-    ||!repoRelative.startsWith('..')||config.CRM_NORMAL_REFRESH_USER_ID!==DEDICATED_NORMAL_TEST_USER_ID)throw Error('Isolated normal-session configuration is invalid.');
-  return createNormalRefreshStore({file,resolveUser,authorizeUser:isDedicatedNormalTestUser});
+    ||!repoRelative.startsWith('..'))throw Error('Isolated normal-session configuration is invalid.');
+}
+export function configuredNormalRefreshStore({config=process.env,resolveUser,repoRoot=process.cwd()}={}) {
+  if(config.CRM_NORMAL_REFRESH_ENABLED!=='true')return null;
+  const file=config.CRM_NORMAL_REFRESH_JOURNAL_PATH;
+  assertPrivateRefreshJournal(file,config,repoRoot);
+  const authorizeUser=normalRefreshUserPolicy(config);
+  return createNormalRefreshStore({file,resolveUser,authorizeUser:user=>{
+    // Configuration changes, as well as identity/password changes, revoke access.
+    try{return config.CRM_NORMAL_REFRESH_ENABLED==='true'&&config.CRM_ISOLATED_PREPARATION==='true'
+      &&config.CRM_TEST_EXPECTED_DATABASE==='MELISA_ERP_CRM_SHARED_TEST_20261009_02'
+      &&normalRefreshUserPolicy(config)(user)&&authorizeUser(user);}catch{return false;}
+  }});
+}
+export function configuredSemihTestRefreshStore({config=process.env,resolveUser,repoRoot=process.cwd()}={}){
+  if(config.CRM_SEMIH_TEST_CONTINUE_ENABLED!=='true')return null;
+  const file=config.CRM_SEMIH_TEST_REFRESH_JOURNAL_PATH;
+  assertPrivateRefreshJournal(file,config,repoRoot);
+  if(config.CRM_NORMAL_REFRESH_ENABLED!=='true'||config.CRM_NORMAL_REFRESH_USER_ID!==DEDICATED_NORMAL_TEST_USER_ID
+    ||!config.CRM_NORMAL_REFRESH_JOURNAL_PATH||path.resolve(file).toLowerCase()===path.resolve(config.CRM_NORMAL_REFRESH_JOURNAL_PATH).toLowerCase())throw Error('Separate Semih-session journal is required.');
+  assertPrivateRefreshJournal(config.CRM_NORMAL_REFRESH_JOURNAL_PATH,config,repoRoot);
+  const authorizeUser=semihRefreshUserPolicy(config);
+  return createNormalRefreshStore({file,resolveUser,authorizeUser:user=>{
+    try{return config.CRM_SEMIH_TEST_CONTINUE_ENABLED==='true'&&config.CRM_NORMAL_REFRESH_ENABLED==='true'
+      &&config.CRM_NORMAL_REFRESH_USER_ID===DEDICATED_NORMAL_TEST_USER_ID&&config.CRM_ISOLATED_PREPARATION==='true'
+      &&config.CRM_TEST_EXPECTED_DATABASE==='MELISA_ERP_CRM_SHARED_TEST_20261009_02'
+      &&semihRefreshUserPolicy(config)(user)&&authorizeUser(user);}catch{return false;}
+  }});
 }

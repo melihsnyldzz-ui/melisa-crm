@@ -40,7 +40,8 @@ test('catalog workspace owns navigation/session cleanup and output checks remain
  for(const event of ['popstate','pagehide','melisa-crm-session-cleared']) {assert(workspace.includes(`addEventListener('${event}',close)`));assert(workspace.includes(`removeEventListener('${event}',close)`));}
  assert.match(workspace,/event\.currentTarget\.reset\(\)/);assert.match(workspace,/type="password" autoComplete="off"/);assert.match(workspace,/beforeOutput=\{verifyOutput\}/);assert.match(workspace,/isContextCurrent=\{usable\}/);
  assert.equal((builder.match(/await beforeOutput\(\)/g)||[]).length,2);assert.match(builder,/await onAttach\(file,customer\.id,isCurrent,\{products:selectedProducts\.map\(p=>\(\{id:p\.id,revision:p\.revision\}\)\)\}\)/);assert.doesNotMatch(workspace+builder,/liveApi\.send|\.sendMessage\(/);
- assert.match(app,/CATALOG_ENABLED && modal === "catalog-builder" && selected.id && liveSession && catalogContextCurrent\(\)/);assert.match(app,/onCrmExpired=\{\(\)=>closeLiveSession/);
+ assert.match(app,/CATALOG_ENABLED && modal === "catalog-builder" && selected.id && liveSession && catalogContextCurrent\(\)/);assert.match(app,/onCrmExpired=\{\(\)=>\{void renewExpiredNormalSession\(\);\}\}/);
+ assert.match(app,/const renewExpiredNormalSession = \(\) => \{\s*return sessionLoaderRef\.current\.start\(\{resume:true,requireResume:true\}\)/);
 });
 
 test('catalog resets and default filter submission preserve server-side photo-only scope',()=>{

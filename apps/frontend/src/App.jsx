@@ -38,6 +38,7 @@ import { rememberTerminalShare, verifyTerminalShare, clearTerminalShare } from '
 import { terminalEntry, bindTerminalNavigation } from './terminalNavigation.js';
 import './terminal.css';
 import {testAdminAvailable,testRoleLogin,chooseTestRoleLogin,bootstrapTestAdmin} from './testAdmin.js';
+import {initialSessionAction,isSemihTestUser} from './browserNormalSession.js';
 
 const team = ["Atanmamış", "Ahmet Yılmaz", "Zeynep Kaya", "Murat Demir", "Merve Demir"];
 
@@ -176,7 +177,7 @@ function Modal({ title, children, onClose }) {
   );
 }
 
-function LoginGate({ credentials, onChange, onConnect, busy, error, retryAvailable, onRetry, onChangeAccount, extraAction, terminal = false }) {
+function LoginGate({ credentials, onChange, onConnect, busy, error, retryAvailable, onRetry, onChangeAccount, extraAction, continueUser, onContinue, terminal = false }) {
   return (
     <div className={`login-gate${terminal ? " terminal-login" : ""}`}>
       <section className="login-card" aria-label="Melisa CRM güvenli giriş">
@@ -184,12 +185,13 @@ function LoginGate({ credentials, onChange, onConnect, busy, error, retryAvailab
         {extraAction}
         <span className="eyebrow">{terminal ? "MELİSA · PERSONEL" : import.meta.env?.VITE_CRM_TEST === "1" ? "MELİSA BABY · TEST CRM" : "MELİSA BABY · CANLI CRM"}</span>
         <h1>{terminal ? "Müşterilerim" : "CRM Yönetim Merkezi"}</h1>
-        <p>Gerçek WhatsApp konuşmalarınıza erişmek için CRM hesabınızla giriş yapın.</p>
-        {!retryAvailable ? <><label>Kullanıcı adı<input value={credentials.username} onChange={(event) => onChange({ ...credentials, username: event.target.value })} autoComplete="username" placeholder="Kullanıcı adı" autoFocus /></label>
-        <label>Parola<input type="password" value={credentials.password} onChange={(event) => onChange({ ...credentials, password: event.target.value })} onKeyDown={(event) => { if (event.key === "Enter" && !busy) onConnect(); }} autoComplete="current-password" placeholder="Parola" /></label></> : <p>Kaydedilen CRM oturumunuzla bağlantı kuruluyor.</p>}
+        <p>{continueUser ? 'Bu cihazda doğrulanmış Semih TEST hesabınızla devam edebilirsiniz.' : 'Gerçek WhatsApp konuşmalarınıza erişmek için CRM hesabınızla giriş yapın.'}</p>
+        {continueUser ? <><button className="primary-button login-button" onClick={onContinue} disabled={busy}>{busy ? 'Bağlantı kuruluyor…' : 'Semih olarak devam et'}</button><button className="secondary-button" onClick={onChangeAccount} disabled={busy}>Farklı hesapla giriş yap</button></> : null}
+        {!retryAvailable && !continueUser ? <><label>Kullanıcı adı<input value={credentials.username} onChange={(event) => onChange({ ...credentials, username: event.target.value })} autoComplete="username" placeholder="Kullanıcı adı" autoFocus /></label>
+        <label>Parola<input type="password" value={credentials.password} onChange={(event) => onChange({ ...credentials, password: event.target.value })} onKeyDown={(event) => { if (event.key === "Enter" && !busy) onConnect(); }} autoComplete="current-password" placeholder="Parola" /></label></> : continueUser ? null : <p>Kaydedilen CRM oturumunuzla bağlantı kuruluyor.</p>}
         {error ? <div className="login-error">{error}</div> : null}
-        {retryAvailable ? <><button className="primary-button login-button" onClick={onRetry} disabled={busy}>{busy ? "Bağlantı kuruluyor…" : "Bağlantıyı yeniden dene"}</button><button className="secondary-button" onClick={onChangeAccount} disabled={busy}>Farklı hesapla giriş yap</button></> : <button className="primary-button login-button" onClick={onConnect} disabled={busy || !credentials.username.trim() || !credentials.password}>{busy ? "Giriş yapılıyor…" : "CRM’e Giriş Yap"}</button>}
-        <small>Parolanız saklanmaz. Kısa süreli oturum bu sekmenin oturumunda tutulur.</small>
+        {continueUser ? null : retryAvailable ? <><button className="primary-button login-button" onClick={onRetry} disabled={busy}>{busy ? "Bağlantı kuruluyor…" : "Bağlantıyı yeniden dene"}</button><button className="secondary-button" onClick={onChangeAccount} disabled={busy}>Farklı hesapla giriş yap</button></> : <button className="primary-button login-button" onClick={onConnect} disabled={busy || !credentials.username.trim() || !credentials.password}>{busy ? "Giriş yapılıyor…" : "CRM’e Giriş Yap"}</button>}
+        <small>{continueUser ? 'Yalnız TEST hesabı. Oturumu kapattığınızda bu cihazın devam erişimi iptal edilir.' : 'Parolanız saklanmaz. Oturum sunucuda doğrulanır.'}</small>
       </section>
     </div>
   );
@@ -345,7 +347,9 @@ export function App() {
   const [role, setRole] = useState("Müdür");
   const [liveSession, setLiveSession] = useState(null);
   const [manualTestLogin,setManualTestLogin]=useState(testRoleLogin);
-  const testAdminEnabled=!entry.enabled&&testAdminAvailable();
+  const [semihEntry,setSemihEntry]=useState({checked:false,enabled:false,user:null,error:''});
+  const testAdminAvailableHere=!entry.enabled&&testAdminAvailable();
+  const testAdminEnabled=testAdminAvailableHere&&semihEntry.checked&&!semihEntry.enabled&&!semihEntry.error;
   const testBootstrapRef=useRef(null);
   const liveSessionRef = useRef(liveSession); liveSessionRef.current = liveSession;
   const [liveKey, setLiveKey] = useState(() => savedAccessKey());
@@ -632,7 +636,7 @@ export function App() {
     salesDraftFlowRef.current?.close();
     const closingKey = liveKeyRef.current;
     const normalSessionClose=preserveNormal?Promise.resolve():liveApi.clearNormalSession();
-    if(!preserveNormal)setNormalResumeAvailable(false);
+    if(!preserveNormal){setNormalResumeAvailable(false);setSemihEntry(current=>({...current,user:null}));}
     sessionLoaderRef.current?.invalidate(); permissionRefreshRef.current?.invalidate();
     uiOperationEpochRef.current++;
     setIncomingTranslations({}); setTranslationBusy(false); setTranslationReady(false); setTranslationResult(null); setTranslationError(""); setAssignmentBusy(false); setAssignmentError(""); setToast("");
@@ -678,6 +682,7 @@ export function App() {
     inboxPollRef.current.at = inboxReadAt;
     conversationPollRef.current.at=0;conversationPollRef.current.id='';
     saveAccessKey(key); setLiveKey(key); setLiveSession(sessionResult); setRole(sessionResult.displayName);
+    if(isSemihTestUser(sessionResult))setSemihEntry(current=>({...current,checked:true,enabled:true,user:sessionResult,error:''}));
     setNormalResumeAvailable(false);
     setAgents(agentsResult.agents || []); setSummary(effectiveInboxSummary(inboxResult.summary || {}, visibleConversations)); setConversations(visibleConversations);
     setNextInboxOffset(inboxResult.summary?.complete===false?0:inboxResult.conversations?.length || 0); setRemainingConversationsError("");
@@ -749,6 +754,10 @@ export function App() {
     setLiveError("");
     return sessionLoaderRef.current.start(liveKeyRef.current?{token:liveKeyRef.current}:{resume:true,requireResume:normalResumeAvailable});
   };
+  const continueSemihSession = () => {
+    if(!semihEntry.enabled||!isSemihTestUser(semihEntry.user)||sessionLoaderRef.current.isPending())return;
+    setLiveError('');return sessionLoaderRef.current.start({resume:true,requireResume:true});
+  };
   const openTestAdmin = async () => {
     testBootstrapRef.current?.abort();
     const controller=new AbortController();testBootstrapRef.current=controller;
@@ -781,8 +790,21 @@ export function App() {
     void openTestAdmin();
   };
   useEffect(() => {
-    if(testAdminEnabled&&!manualTestLogin)void openTestAdmin();else resumeLiveSession();
-    return () => {testBootstrapRef.current?.abort();remainingReadRef.current?.controller.abort(); sessionLoaderRef.current?.invalidate(); permissionRefreshRef.current?.invalidate(); sendScopeRef.current.invalidate(); uiOperationEpochRef.current++;};
+    const controller=new AbortController();
+    if(liveMode)void (async()=>{
+      try{
+        const remembered=await liveApi.rememberedNormalSession({signal:controller.signal});if(controller.signal.aborted)return;
+        setSemihEntry({...remembered,checked:true,error:''});
+        if(remembered.enabled){
+          // An old loopback TEST bootstrap must never become the Semih identity.
+          liveKeyRef.current='';saveAccessKey('');setLiveKey('');
+          setNormalResumeAvailable(Boolean(remembered.user));
+        }
+        const action=initialSessionAction({remembered,testAdminEnabled:testAdminAvailableHere,manualTestLogin,native:liveApi.hasNativeNormalSession()});
+        if(action==='test-admin')void openTestAdmin();else if(action==='resume')resumeLiveSession();
+      }catch(error){if(!controller.signal.aborted){setSemihEntry({checked:true,enabled:false,user:null,error:'Oturum bağlantısı doğrulanamadı.'});setLiveError('Oturum bağlantısı doğrulanamadı. CRM’yi yeniden açın.');}}
+    })();
+    return () => {controller.abort();testBootstrapRef.current?.abort();remainingReadRef.current?.controller.abort(); sessionLoaderRef.current?.invalidate(); permissionRefreshRef.current?.invalidate(); sendScopeRef.current.invalidate(); uiOperationEpochRef.current++;};
   }, []);
 
   useEffect(() => {
@@ -1264,8 +1286,9 @@ export function App() {
     setSendStates((items) => ({ ...items, [conversationId]: { state: "sent", text: "Önizlemeye eklendi · gerçek gönderim yapılmadı" } }));
   };
 
+  if(liveMode&&!liveSession&&!semihEntry.checked)return <div className="login-gate"><section className="login-card" aria-label="Melisa CRM güvenli giriş"><h1>Melisa CRM</h1><p>Oturum kontrol ediliyor…</p></section></div>;
   if(liveMode&&!liveSession&&testAdminEnabled&&!manualTestLogin)return <div className="login-gate"><section className="login-card"><h1>TEST ADMIN</h1><p>{liveBusy?'CRM TEST açılıyor…':liveError||'CRM TEST oturumu hazırlanıyor…'}</p>{!liveBusy?<button className="primary-button" onClick={openTestAdmin}>Yeniden dene</button>:null}<button className="secondary-button" onClick={switchTestRole}>Gerçek rollerle giriş</button></section></div>;
-  if (liveMode && !liveSession) return <LoginGate terminal={entry.enabled} credentials={loginCredentials} onChange={setLoginCredentials} onConnect={connectLive} busy={liveBusy} error={liveError} retryAvailable={Boolean(liveKey)||normalResumeAvailable} onRetry={resumeLiveSession} onChangeAccount={() => closeLiveSession("", true)} extraAction={entry.enabled && ["http://127.0.0.1:62400","http://127.0.0.1:62600","http://127.0.0.1:62700"].includes(window.location.origin) ? <button className="secondary-button" onClick={openTestPersonnel} disabled={liveBusy}>Personel oturumunu aç</button> : testAdminEnabled?<button className="secondary-button" onClick={returnToTestAdmin}>TEST ADMIN ile aç</button>:null} />;
+  if (liveMode && !liveSession) return <LoginGate terminal={entry.enabled} credentials={loginCredentials} onChange={setLoginCredentials} onConnect={connectLive} busy={liveBusy} error={liveError} retryAvailable={Boolean(liveKey)||normalResumeAvailable} onRetry={resumeLiveSession} onChangeAccount={() => closeLiveSession("", true)} continueUser={semihEntry.user} onContinue={continueSemihSession} extraAction={semihEntry.enabled?null:entry.enabled && ["http://127.0.0.1:62400","http://127.0.0.1:62600","http://127.0.0.1:62700"].includes(window.location.origin) ? <button className="secondary-button" onClick={openTestPersonnel} disabled={liveBusy}>Personel oturumunu aç</button> : testAdminEnabled?<button className="secondary-button" onClick={returnToTestAdmin}>TEST ADMIN ile aç</button>:null} />;
 
   return (
     <div className={`app-shell redesigned whatsapp-ui${entry.enabled ? " terminal-entry" : ""}${inboxView ? " inbox-view" : ""}${terminalMode ? " compact-mode" : ""}${mobileChatOpen && inboxView ? " chat-open" : ""}${tabletInspectorOpen || desktopInspectorOpen ? " inspector-open" : ""}`}>

@@ -6,6 +6,7 @@ import { resolveContactIdentity } from "./contactIdentity.js";
 import { validateSendPayload, validateFileSignature } from "./outboundMedia.js";
 import { createRequestControl, requestBudgetScope } from "./requestControl.js";
 import { createNativeSessionBridge, createRememberedNormalSession } from './nativeSessionBridge.js';
+import {createBrowserNormalSession,isSemihTestUser,rememberedSessionMetadata} from './browserNormalSession.js';
 
 const STORAGE_KEY = "melisa-crm-access-token";
 const API_ROOT = "/api/live";
@@ -114,11 +115,22 @@ export function savedAccessKey() { try { if(terminalEntry(window.location).enabl
 export function saveAccessKey(value) { try { if(terminalEntry(window.location).enabled){window.sessionStorage.removeItem(authStorageKey());return;}value ? window.sessionStorage.setItem(authStorageKey(), value) : window.sessionStorage.removeItem(authStorageKey()); } catch { /* The active session still works in memory when storage is unavailable. */ } }
 
 let rememberedNormal=null;
+let normalBridge=null;
 const normalEpochs=new WeakMap();
+async function inspectRememberedNormal(options={}) {
+  try{return rememberedSessionMetadata(await request('/auth/remembered','',options));}
+  catch(error){if(error.status===404)return {enabled:false,user:null};throw error;}
+}
 function normalRemember(){
-  if(!rememberedNormal)rememberedNormal=createRememberedNormalSession({bridge:createNativeSessionBridge(),
-    refresh:(refreshToken,options)=>request('/auth/refresh','',{method:'POST',body:JSON.stringify({refreshToken}),...options}),
-    logout:refreshToken=>request('/auth/logout','',{method:'POST',body:JSON.stringify({refreshToken}),timeoutMs:3000})});
+  if(!rememberedNormal){
+    normalBridge=createNativeSessionBridge();
+    const refresh=(refreshToken,options)=>request('/auth/refresh','',{method:'POST',body:JSON.stringify({refreshToken}),...options});
+    const logout=refreshToken=>request('/auth/logout','',{method:'POST',body:JSON.stringify({refreshToken}),timeoutMs:3000});
+    rememberedNormal=normalBridge?createRememberedNormalSession({bridge:normalBridge,refresh,logout})
+      :createBrowserNormalSession({inspect:inspectRememberedNormal,nativeRefresh:refresh,nativeLogout:logout,
+        refresh:options=>request('/auth/refresh','',{method:'POST',body:'{}',...options}),
+        logout:()=>request('/auth/logout','',{method:'POST',body:'{}',timeoutMs:3000})});
+  }
   return rememberedNormal;
 }
 
@@ -625,8 +637,9 @@ export const liveApi = {
     };
   },
   async login(username, password, { signal } = {}) {
-    const epoch=await normalRemember().begin();
-    const result = await request("/auth/login", "", { method: "POST", body: JSON.stringify({ username, password }), signal });
+    const manager=normalRemember(),epoch=await manager.begin();
+    const authenticate=()=>request("/auth/login", "", { method: "POST", body: JSON.stringify({ username, password,...(normalBridge?{transport:'native'}:{}) }), signal });
+    const result=manager.authenticate?await manager.authenticate(authenticate,epoch):await authenticate();
     const accessToken = result.accessToken || result.access_token || result.token;
     if (!accessToken) throw new Error("CRM giriş yanıtında erişim tokeni bulunamadı.");
     const normal={...result,accessToken,user:result.user||null};normalEpochs.set(normal,epoch);return normal;
@@ -634,6 +647,17 @@ export const liveApi = {
   async resumeNormalSession(options={}){const resumed=await normalRemember().resume(options);if(!resumed)return null;normalEpochs.set(resumed.result,resumed.epoch);return resumed.result;},
   rememberNormalSession(result,user){return normalRemember().remember(result,user,normalEpochs.get(result));},
   clearNormalSession(){return normalRemember().clear();},
+  async rememberedNormalSession(options={}) {
+    const manager=normalRemember();
+    const remembered=manager.probe?await manager.probe(options):await inspectRememberedNormal(options);
+    if(!normalBridge||!remembered.enabled||remembered.user)return remembered;
+    const saved=await normalBridge.get();if(!saved?.accessToken||options.signal?.aborted)return remembered;
+    let user;
+    try{user=await liveApi.session(saved.accessToken,options);}
+    catch(error){if(error.status!==401)throw error;const resumed=await liveApi.resumeNormalSession(options);if(!resumed)return remembered;user=await liveApi.session(resumed.accessToken,options);}
+    return {enabled:true,user:isSemihTestUser(user)?user:null};
+  },
+  hasNativeNormalSession(){normalRemember();return Boolean(normalBridge);},
   async session(token, options = {}) { return normalizePermissions(await request("/auth/me", token, options)); },
   // Chatwoot-backed inbox pages can take over 20 seconds; retain a bounded read
   // budget without extending sends or preventing session cancellation.

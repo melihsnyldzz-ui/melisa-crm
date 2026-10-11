@@ -4,7 +4,7 @@ import { env } from '../config/env.js';
 import { waapiSendReady } from './waapiReadiness.js';
 import { verifyTestAdminSession } from './testAdminSession.mjs';
 import { verifyTestPersonnelSession } from './testPersonnelSession.mjs';
-import { configuredNormalRefreshStore, isDedicatedNormalTestUser } from './normalRefreshSession.mjs';
+import { configuredNormalRefreshStore, configuredSemihTestRefreshStore, isDedicatedNormalTestUser, isDedicatedSemihTestUser, normalRefreshUserPolicy, semihRefreshUserPolicy, DEDICATED_NORMAL_TEST_USER_ID, DEDICATED_SEMIH_TEST_USER_ID } from './normalRefreshSession.mjs';
 
 const ROLE_PERMISSIONS = Object.freeze({
   patron: ['crm.view', 'crm.send', 'crm.assign', 'crm.agents', 'crm.manage'],
@@ -53,7 +53,7 @@ function normalizeUser(entry = {}) {
   const role = String(entry.role || '').trim().toLocaleLowerCase('tr-TR');
   const id = String(entry.id || '').trim();
   const username = normalizeUsername(entry.username);
-  if (!id || !username || !ROLE_PERMISSIONS[role] || !parsePasswordHash(entry.passwordHash)) return null;
+  if (!id || !username || !ROLE_PERMISSIONS[role] || !parsePasswordHash(entry.passwordHash)||entry.testAdmin===true||entry.testPersonnel===true) return null;
 
   const chatwootAgentId = Number(entry.chatwootAgentId);
   return {
@@ -82,10 +82,10 @@ export function publicCrmUser(user) {
     permissions: [...user.permissions],
     ...(process.env.CRM_NORMAL_REFRESH_ENABLED==='true'&&process.env.CRM_ISOLATED_PREPARATION==='true'
       &&process.env.CRM_TEST_EXPECTED_DATABASE==='MELISA_ERP_CRM_SHARED_TEST_20261009_02'
-      &&user.id==='crm-agent-test-20261011'&&user.id===process.env.CRM_NORMAL_REFRESH_USER_ID
-      &&user.username==='crm-agent-test'&&user.role==='personel'&&user.chatwootAgentId===3
-      &&user.permissions.length===1&&user.permissions[0]==='crm.view'&&!user.testAdmin&&!user.testPersonnel
+      &&user.id===process.env.CRM_NORMAL_REFRESH_USER_ID&&isDedicatedNormalTestUser(user)
       ? {normalTestScope:{database:'MELISA_ERP_CRM_SHARED_TEST_20261009_02',isolatedPreparation:true,draftOnly:true,chatwootAgentId:3}} : {}),
+    ...(semihTestContinueEnabled()&&isDedicatedSemihTestUser(user,Number(process.env.CRM_SEMIH_TEST_AGENT_ID))
+      ? {normalTestScope:{database:'MELISA_ERP_CRM_SHARED_TEST_20261009_02',isolatedPreparation:true,draftOnly:true,semihTestContinue:true,chatwootAgentId:user.chatwootAgentId}} : {}),
     paidAiEnabled: process.env.CRM_PAID_AI_ENABLED === 'true' && process.env.CRM_ISOLATED_PREPARATION !== 'true',
     ...(user.testAdmin === true ? {testAdmin:true} : {}),
     ...(user.testPersonnel === true ? {testPersonnel:true,testPersonnelScope:user.testPersonnelScope} : {}),
@@ -108,6 +108,30 @@ export function findCrmUserByUsername(username) {
 }
 
 const normalRefreshStore = configuredNormalRefreshStore({resolveUser:findCrmUserById});
+const semihRefreshStore = configuredSemihTestRefreshStore({resolveUser:findCrmUserById});
+
+export function semihTestContinueEnabled(){
+  return Boolean(semihRefreshStore&&normalRefreshStore&&process.env.CRM_NORMAL_REFRESH_ENABLED==='true'
+    &&process.env.CRM_SEMIH_TEST_CONTINUE_ENABLED==='true'&&process.env.CRM_ISOLATED_PREPARATION==='true'
+    &&process.env.CRM_TEST_EXPECTED_DATABASE==='MELISA_ERP_CRM_SHARED_TEST_20261009_02'
+    &&process.env.CRM_NORMAL_REFRESH_USER_ID===DEDICATED_NORMAL_TEST_USER_ID);
+}
+function normalRefreshUserAllowed(user){
+  try{return user.id===process.env.CRM_NORMAL_REFRESH_USER_ID&&normalRefreshUserPolicy()(user);}catch{return false;}
+}
+function semihRefreshUserAllowed(user){
+  try{return semihTestContinueEnabled()&&semihRefreshUserPolicy()(user);}catch{return false;}
+}
+function refreshStoreForUser(user){
+  return user?.id===DEDICATED_SEMIH_TEST_USER_ID?(semihRefreshUserAllowed(user)?semihRefreshStore:null)
+    :(normalRefreshUserAllowed(user)?normalRefreshStore:null);
+}
+export function rememberedSemihCrmUser(refreshToken){
+  if(!semihTestContinueEnabled()||!refreshToken)return null;
+  const user=semihRefreshStore.inspect(refreshToken);
+  if(!isDedicatedSemihTestUser(user,Number(process.env.CRM_SEMIH_TEST_AGENT_ID)))throw authError('AUTH_TOKEN_INVALID','Yeniden giriş yapın.');
+  return publicCrmUser(user);
+}
 
 function normalLoginResult(user, grant = null) {
   const accessToken = jwt.sign(
@@ -126,24 +150,41 @@ export function authenticateCrmUser({ username, password }) {
   if (!user || !user.active || !valid) {
     throw authError('WHATSAPP_CRM_LOGIN_FAILED', 'Kullanici adi veya parola hatali.', 401);
   }
+  if(user.id===DEDICATED_SEMIH_TEST_USER_ID&&!semihRefreshUserAllowed(user)) {
+    throw authError('AUTH_TOKEN_INVALID','Semih TEST oturumu bu ortamda kullanılamıyor.');
+  }
   if (!env.auth.jwtSecret || env.auth.jwtSecret.length < 32) {
     throw authError('WHATSAPP_CRM_AUTH_SECRET_MISSING', 'CRM kimlik dogrulama anahtari yapilandirilmamis.', 503);
   }
 
-  const grant=normalRefreshStore&&user.id===process.env.CRM_NORMAL_REFRESH_USER_ID?normalRefreshStore.issue(user):null;
+  // A selected dedicated profile must pass its store policy; never fall back
+  // to a grantless ordinary JWT when its role/assignment policy has changed.
+  const store=user.id===DEDICATED_SEMIH_TEST_USER_ID?semihRefreshStore
+    :normalRefreshStore&&user.id===process.env.CRM_NORMAL_REFRESH_USER_ID?normalRefreshStore:null;
+  const grant=store?store.issue(user):null;
   return normalLoginResult(user,grant);
 }
 
-export function refreshNormalCrmSession(refreshToken) {
-  if(!normalRefreshStore)throw authError('AUTH_TOKEN_INVALID','Yeniden giriş yapın.');
-  const grant=normalRefreshStore.rotate(refreshToken);
-  if(!isDedicatedNormalTestUser(grant.user)||grant.user.id!==process.env.CRM_NORMAL_REFRESH_USER_ID)throw authError('AUTH_TOKEN_INVALID','Yeniden giriş yapın.');
+function refreshStoreForToken(token,{includeRetired=false}={}){
+  if(!normalRefreshStore&&!semihRefreshStore)throw authError('AUTH_TOKEN_INVALID','Yeniden giriş yapın.');
+  for(const store of [normalRefreshStore,semihRefreshStore])if(store?.ownsToken(token,{includeRetired}))return store;
+  return null;
+}
+function refreshFromStore(store,token){
+  if(!store)throw authError('AUTH_TOKEN_INVALID','Yeniden giriş yapın.');
+  const grant=store.rotate(token);
+  if(refreshStoreForUser(grant.user)!==store)throw authError('AUTH_TOKEN_INVALID','Yeniden giriş yapın.');
   return normalLoginResult(grant.user,grant);
 }
+export function refreshNormalCrmSession(refreshToken){return refreshFromStore(refreshStoreForToken(refreshToken),refreshToken);}
+export function refreshSemihCrmSession(refreshToken){return refreshFromStore(semihTestContinueEnabled()?semihRefreshStore:null,refreshToken);}
 
 export function logoutNormalCrmSession(refreshToken) {
-  if(!normalRefreshStore)throw authError('AUTH_TOKEN_INVALID','Yeniden giriş yapın.');
-  return normalRefreshStore.revoke(refreshToken);
+  return refreshStoreForToken(refreshToken,{includeRetired:true})?.revoke(refreshToken)||{loggedOut:true};
+}
+export function logoutSemihCrmSession(refreshToken){
+  if(!semihTestContinueEnabled())throw authError('AUTH_TOKEN_INVALID','Yeniden giriş yapın.');
+  return semihRefreshStore.revoke(refreshToken);
 }
 
 export function verifyCrmAccessToken(token, { includeContext = false } = {}) {
@@ -170,9 +211,11 @@ export function verifyCrmAccessToken(token, { includeContext = false } = {}) {
   if (!user || !user.active || user.username !== payload.username || user.role !== payload.role) {
     throw authError('AUTH_TOKEN_INVALID', 'CRM kullanicisi aktif degil veya yetkileri degisti.', 401);
   }
+  if(user.id===DEDICATED_SEMIH_TEST_USER_ID&&(!semihRefreshUserAllowed(user)||!payload.normalSessionId))throw authError('AUTH_TOKEN_INVALID','Yeniden giriş yapın.');
   if(payload.normalSessionId){
-    if(!normalRefreshStore||!isDedicatedNormalTestUser(user)||user.id!==process.env.CRM_NORMAL_REFRESH_USER_ID)throw authError('AUTH_TOKEN_INVALID','Yeniden giriş yapın.');
-    normalRefreshStore.verify(payload.normalSessionId,user);
+    const store=refreshStoreForUser(user);
+    if(!store)throw authError('AUTH_TOKEN_INVALID','Yeniden giriş yapın.');
+    store.verify(payload.normalSessionId,user);
   }
   return includeContext ? { user, expiresAt: Number.isFinite(payload.exp) ? payload.exp * 1000 : NaN } : user;
 }

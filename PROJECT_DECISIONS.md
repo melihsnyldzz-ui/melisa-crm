@@ -1,5 +1,11 @@
 # CRM karar merkezi
 
+### CRM-DEC-012 — 12 Ekim 2026 — Onaylı
+
+Kullanıcının önceliği geçici güvenli **Semih olarak devam et** TEST girişini şimdi tamamlamak, ardından mevcut ana teslim işine dönmektir. CRM yalnız kendi kaynak/normal oturum sözleşmesini sahiplenir; ERP/terminal sahibi ayrı çalışır. Ayrılmış doğrulanmış TEST patron hesabı desteklenen normal kullanıcı/rol ve korumalı ilk giriş yoluyla hazırlanır; gerçek/paylaşılan hesap veya parola değiştirilmez, kullanıcıdan parola istenmez. Kayıtsız cihaz/LAN anonim yönetici erişimi alamaz. Refresh döner, fresh kimlik/izin doğrulanır; çıkış/hesap değişimi/revoke çalışır. [Exact sözleşme ve LIVE'da kaldırma ölçütü](docs/development/SEMIH_TEST_SESSION.md).
+
+Mevcut personel read/draft, DB02/TEST125, katalog özgün fotoğrafı ve önceki kabuller korunur. Ortak supervisor/package pinleri aşılmaz; kaynak/paket hazırlığı, runtime ve insan kabulü ayrıdır. Gerçek mesaj, ücretli AI, ticari ERP yazması, LIVE/Vega/main/T1 yok. Dar giriş işinden sonra işlevler → son Sites ERP/yeşil APK → taşıma/restore/rollback hazırlığı → son ekran eğitimi → başlangıç paketi sırası korunur; yeni onay döngüsü kurulmaz.
+
 ### CRM-DEC-011 — 11 Ekim 2026 — Onaylı
 
 Kullanıcının açık TEST erişim kararı ERP-DEC-047 ile aynı kapsamda uygulanır: kullanıcıdan parola/tekrar manuel giriş istenmez; önce mevcut yetkili oturum/korumalı teslim kullanılır. Desteklenen yönetim yoluyla yalnız izole ortamda ayrılmış TEST aktörünün hazırlanması ve gerektiğinde yalnız o aktörün parolasının yenilenmesi yetkilidir. Paylaşılan/gerçek hesap parolası değiştirme, rol yükseltme, auth kaldırma/gizli bypass yok. Eksik desteklenen setup somut engel olarak ayrılır; sırlar sohbet/çıktı/kod/GitHub/düz metin günlüğe taşınmaz.
