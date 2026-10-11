@@ -1,4 +1,18 @@
 .terminal-login button,.terminal-login input { min-height:44px; }
+@media(max-width:760px) {
+ .login-gate.terminal-login { display:flex; align-items:flex-start; justify-content:center; overflow-y:auto; overflow-x:hidden; padding:8px; overscroll-behavior:contain; scroll-padding:12px; }
+ .terminal-login .login-card { width:min(430px,100%); min-width:0; flex:0 0 auto; padding:14px 16px; border-radius:16px; }
+ .terminal-login .login-mark { width:32px; height:32px; margin-bottom:6px; border-radius:10px; }
+ .terminal-login .login-mark svg { width:22px; height:22px; }
+ .terminal-login .login-card .eyebrow { font-size:10px; line-height:1.2; }
+ .terminal-login .login-card h1 { margin:4px 0 6px; font-size:20px; line-height:1.2; }
+ .terminal-login .login-card > p { margin:0 0 12px; font-size:12px; line-height:1.4; }
+ .terminal-login .login-card label { gap:4px; font-size:12px; line-height:1.2; }
+ .terminal-login .login-card label + label { margin-top:10px; }
+ .terminal-login .login-card input { height:44px; font-size:16px; scroll-margin:12px; }
+ .terminal-login .login-card .login-button { height:44px; margin-top:12px; }
+ .terminal-login .login-card > small { margin-top:8px; font-size:11px; line-height:1.35; }
+}
 .terminal-entry.app-shell { display:block; }
 .terminal-entry > .sidebar,.terminal-entry .safety-strip,.terminal-entry .test-environment-label { display:none; }
 .terminal-entry .main-area { width:100%; min-width:0; }
