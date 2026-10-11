@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createTextDraftStorage, TEXT_DRAFT_STORAGE_KEY, textDraftActorScope} from '../src/lib/textDraftStorage.js';
+import {normalizeConversation} from '../src/liveApi.js';
 
 const actor = (id='a', extras={}) => ({accountIdentity:{id},role:'mudur',canSend:true,chatwootAgentId:7,liveSendEnabled:true,...extras});
 const conversation = (id='55', extras={}) => ({id,phone:'+90 538 721 77 33',channel:'whatsapp',assignedUserId:7,owner:'Personel',...extras});
@@ -11,6 +12,25 @@ test('only verified dedicated DB02 view-only personel persists unsent drafts for
  const storage=memoryStorage(),s=store(storage),a=dedicated(),c=conversation('55',{chatwootAgentId:3});s.activate(a,[c]);s.set(c,'Henüz gönderilmemiş TEST taslağı');
  assert.equal(store(storage).activate(a,[c]).drafts['55'],'Henüz gönderilmemiş TEST taslağı');assert.equal(a.canSend,false);assert.deepEqual(a.permissions,['crm.view']);
  const moved=conversation('55',{chatwootAgentId:4});assert.deepEqual(s.visibleDrafts([moved]),{});s.synchronize([moved]);s.set(moved,'must not store');assert.deepEqual(store(storage).activate(a,[c]).drafts,{});
+});
+
+test('actual gateway conversation normalization preserves verified assignment for draft reload and revokes a changed assignment',()=>{
+ const raw=conversation('4',{assignedUserId:'crm-personel-3',chatwootAgentId:3}),c=normalizeConversation(raw),storage=memoryStorage(),s=store(storage),a=dedicated();
+ assert.equal(c.chatwootAgentId,3);assert.equal(c.assignedUserId,'crm-personel-3');
+ s.activate(a,[c]);s.set(c,'Gönderilmemiş, yeniden açılacak taslak');
+ assert.equal(store(storage).activate(a,[normalizeConversation(raw)]).drafts['4'],'Gönderilmemiş, yeniden açılacak taslak');
+ const reassigned=normalizeConversation({...raw,chatwootAgentId:4});s.synchronize([reassigned]);
+ assert.deepEqual(s.visibleDrafts([reassigned]),{});assert.deepEqual(store(storage).activate(a,[c]).drafts,{});
+ assert.equal(a.canSend,false);assert.equal(a.liveSendEnabled,false);
+});
+
+test('normalizer never infers Chatwoot assignment from CRM user IDs or malformed source fields',()=>{
+ for(const invalid of [undefined,null,'3',0,-1,3.5,Number.MAX_SAFE_INTEGER+1,true,{},[]]){
+  const c=normalizeConversation(conversation('4',{assignedUserId:3,assigneeId:3,assignee:{id:3},meta:{assignee:{id:3}},chatwootAgentId:invalid}));
+  assert.notEqual(c.chatwootAgentId,3);
+  const storage=memoryStorage(),s=store(storage);s.activate(dedicated(),[c]);s.set(c,'must not persist');
+  assert.deepEqual(store(storage).activate(dedicated(),[c]).drafts,{});
+ }
 });
 test('missing scope, another actor, another database, changed assignment and bootstrap cannot open dedicated draft scope',()=>{
  const c=conversation('55',{chatwootAgentId:3});

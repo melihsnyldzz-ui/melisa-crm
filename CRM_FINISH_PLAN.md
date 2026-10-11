@@ -1,3 +1,7 @@
+## ERP-COMPLETE01 / CRM-DEC-011 — 11 Ekim 2026
+
+TC21v22/source09ca/ERP9cc, atanmış liste/geçmiş/gönderilmemiş taslak ve korumalı reopen/görev geçişi/çıkış teknik kanıtlı. İki mevcut gerçek adapter/storage/App regression testine kimlik/assignment turu eklendi; production fix/send yetkisi yok. İlk hızlı taslak kaybı gözlemi kontrollü tekrarda üretilemedi, kayıtlı kalır. Beş klip/dört görev özel eğitiminde CRM42sn ders hazır, insan sonucu bekler. Normal TEST send izni yok; gerçek Windows reboot/IP rezervasyonu ayrı. **25 toplam /12 tamam /13 kısmi /0 açık**, CRM-UA09/önceki kabuller değişmedi. [Kanıt](docs/evidence/crm/2026-10-11-terminal-normal-session/README.md). Bu kapsam sonrası otomatik ticari prova yok.
+
 ## K01 özgün katalog fotoğrafı — 10 Ekim 2026
 
 Kullanıcının8023 CONCEPT bulanıklık bildirimi dar kapsamda düzeltildi: normal TEST62700 aramasında1206×1500 özgün dosya gösterilir; önceki103×128 küçük görsel büyütülmez. ERP dosyasıyla byte/hash eşleşmesi, mevcut görünürlük yüklemesi ve güvenlik/boyut sınırları kanıtlı. Source222a95f teknik hazır; yeni netlik insan kabulü bekler. K01'in önceki katalog kabulü korunur; ikinci finish tree veya yeni PASS oluşturulmaz: **25 toplam /12🟢 /13🟡 /0🔴** aynı. [Anonim kanıt ve exact CI ayrımı](docs/evidence/crm/2026-10-10-catalog-original/README.md). Sıradaki tek kontrol, kullanıcının açık8023 kartındaki orijinal fotoğrafı görmesidir; ek geliştirme yok.

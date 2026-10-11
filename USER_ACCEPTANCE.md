@@ -1,4 +1,8 @@
-## CRM-UA09 / ERP-CRM-LEARN01 / CRM-DEC-010 — bekliyor
+## CRM-UA09 / ERP-COMPLETE01 / CRM-DEC-011 — ek teknik hazırlık, insan bekliyor
+
+11 Ekim normal TC21v22/source09ca, atanmış liste/geçmiş/gönderilmemiş taslak ve korumalı reopen/görev geçişi/çıkış/yeniden giriş teknik doğrulandı. CRM42sn gerçek Türkçe eğitim hazır; mevcut rol read/draft, send kapalı. İlk hızlı taslak kaybı gözlemi korunur, kontrollü tekrarda üretilemedi; production fix/yeni mesaj iddiası yok. Kullanıcı/personel kişi-tarih-sonuç vermedi: **CRM-UA09 ve önceki kabuller bekliyor**. [Kanıt/sınırlar](docs/evidence/crm/2026-10-11-terminal-normal-session/README.md). Genel ERP/CRM/LIVE kabulü değildir.
+
+## Önceki kayıt — CRM-UA09 / ERP-CRM-LEARN01 / CRM-DEC-010 — bekliyor
 
 Kullanıcı/İlker/personel kişi, deneme tarihi ve kullanım sonucu henüz bildirilmedi. Teknik ekran, ders veya quiz sonucu insan PASS değildir; **CRM-UA01–08 değişmez**. Önceki CRM source94453500/izole DB02, koordinatörün normal katalog3.830 kapsam/50 ürün ve sade CTA/seri görüntüsü kanıtına sahiptir. Bu arayüz hazırlığı için hedefli offline53 kontrol ve build PASS; güncel daha yeni222a95f runtime korunur, yeni fotoğraf değişikliğinin kanıtı ayrıca tutulur; fiziksel TC21 şirket Wi-Fi ile LAN5234 mal kabul ekranını ve rehberi açtı. 8 gerçek ekran kesiti/1422 taşmasız görünüm ve32,2 saniyelik cihaz videosu teknik kanıttır; personelin kendi kullanım ve gerçek barkod sonucu verilmedi, insan kabulü bekler. [Teknik hazırlık](docs/evidence/crm/2026-10-10-training-preparation/README.md).
 

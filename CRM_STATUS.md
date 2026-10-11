@@ -1,4 +1,12 @@
-## Katalog özgün fotoğraf düzeltmesi — 10 Ekim 2026
+## ERP-COMPLETE01 / CRM-DEC-011 — normal personel terminal teslimi — 11 Ekim 2026
+
+Çalışan CRM09ca / ERP9cc / DB02 korunur; TC21v22 Wi-Fi üzerinden normal dedicated TEST personel atanmış liste/geçmiş/gönderilmemiş taslağı açtı. Korumalı ayrı refresh reopen/görev geçişinde korundu. Çıkış sonrası giriş kapıları görüldü; root korumalı girişleri hazırladı, kullanıcıdan parola istenmedi. Shared hesap/rol/send yetkisi değişmedi. Mevcut `crm.view` read/draft; gerçek send/AI/çeviri/provider kapalı.
+
+İlk hızlı taslak kaybı gözlemi korunur; kontrollü tekrarda metin kaldı. İlk reader teşhisi doğrulanmadı, production fix yok. İki mevcut gerçek adapter/storage/App regression testine kimlik/assignment turu eklendi; root40/40 ve bağımsız3/3 PASS. CRM42sn gerçek Türkçe eğitim beş klip/dört görev özel pakette, telefonlar türevde maskelendi. Rootdecode/kare/ses kontrolü tamam; browser file URL politikası nedeniyle yerel HTML oynatım kontrolü yok. [Kanıt ve sınırlar](docs/evidence/crm/2026-10-11-terminal-normal-session/README.md).
+
+Bu test/belge HEAD'i source09ca değildir, runtime yenilenmedi. LAN v22APK HTTP200/exacthash; Windows aynı-kullanıcı logon var, gerçek reboot/logoff denenmedi; DHCP rezervasyonu ertelenmiş. PR3 son head CI push sonrası doğrulanır, ödeme/harcama engeli PASS değildir. CRM-UA09/önceki kabuller ve25/12/13/0 değişmedi. TEST125/DB02/roller/LL/karantina/yedekler korunur; cleanup/migration/LIVE/T1/main/message yok. Kalan: normal TEST send yetkisi, bağımsız personel kabulü ve reboot/ağ rezervasyonu. Parola/fiziksel barkod tekrarı istenmez.
+
+## Önceki checkpoint — Katalog özgün fotoğraf düzeltmesi — 10 Ekim 2026
 
 Kullanıcı 8023 CONCEPT'in doğru ürün olduğunu kabul etti; bulanık fotoğraf için dar düzeltme tamamlandı. Normal [TEST kataloğunda](http://127.0.0.1:62700/) aynı ürün gerçek tarayıcıda **103×128 thumbnail yerine 1206×1500 özgün fotoğraf** ile açıldı. Tarayıcıdan indirilen JPEG **152.197 byte** ve SHA256 e0a01ba0e0382d4bc5f0bc4562e862cbf8ee777655a9ab00295dafd373360c5f: ERP'deki özgün dosyayla birebir aynı. Kart349×349, fotoğraflı kapsam, arama sonucu1 ve kayıtlı USD15,78/ADET fiyatı korunur. [Anonim ekran/kanıt](docs/evidence/crm/2026-10-10-catalog-original/README.md). **Teknik hazır; yeni netlik kullanıcı kabulü henüz yok.** Önceki ürün kimliği kabulü ve finish tree **25 /12🟢 /13🟡 /0🔴** değişmedi.
 

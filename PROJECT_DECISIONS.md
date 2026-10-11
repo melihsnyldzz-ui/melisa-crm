@@ -1,5 +1,11 @@
 # CRM karar merkezi
 
+### CRM-DEC-011 — 11 Ekim 2026 — Onaylı
+
+Kullanıcının açık TEST erişim kararı ERP-DEC-047 ile aynı kapsamda uygulanır: kullanıcıdan parola/tekrar manuel giriş istenmez; önce mevcut yetkili oturum/korumalı teslim kullanılır. Desteklenen yönetim yoluyla yalnız izole ortamda ayrılmış TEST aktörünün hazırlanması ve gerektiğinde yalnız o aktörün parolasının yenilenmesi yetkilidir. Paylaşılan/gerçek hesap parolası değiştirme, rol yükseltme, auth kaldırma/gizli bypass yok. Eksik desteklenen setup somut engel olarak ayrılır; sırlar sohbet/çıktı/kod/GitHub/düz metin günlüğe taşınmaz.
+
+Mevcut ERP-COMPLETE01 koordineli terminal teslimi sürer; ikinci paralel ana iş değildir. Personel → İlker, müşteriyle satış, çoklu koli ve atanmış görüşme için normal TEST bağlantısı, kurulabilir APK ve ekran eğitimleri hazırlanır. Android korumalı depoda ayrı kimlikli refresh, yeniden açılış/görev geçişi/çıkış kontrol edilir; kimlik doğrulanmadan oturumlar eşleştirilmez. Mevcut roller, DB02/TEST125, karantina, LL, veriler/yedekler korunur. Gerçek WhatsApp/ücretliAI/LIVE/Vega/T1/main yetkisi yok. Personelin mevcut read/draft sınırı send yetkisine dönüşmez; insan kabulü teknik testle PASS değildir.
+
 ### CRM-DEC-010 — 10 Ekim 2026 — Onaylı
 
 Kullanıcının ERP + CRM EKRAN SADELEŞTİRME VE KULLANICI EĞİTİMİ talimatı; tek koordineli ERP-CRM-LEARN01 işi. Son izole DB02 sürümünde yalnız normal katalog/mesaj taslağı/sipariş görünümü ve kısa rehberler sadeleşir. Müşteri/personel kimliği, rol, fiyat/döviz/seri/finans hesaplaması ve mevcut POST/yetki/provider sınırları korunur. Yeni sipariş, ticari kayıt, mesaj veya ücretli AI yoktur. Eğitim PR27 uygun saf içerik yaklaşımıyla yeniden kullanılır; mevcut PR/worktree/SQLite değişmez. CRM-UA09 insan kabulü bekler; otomatik ekran veya quiz kabul değildir. LIVE/Vega/main/T1/finansal açılış yok; dar hazırlık tesliminde DUR.

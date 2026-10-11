@@ -1,4 +1,10 @@
-## ŞİMDİ — ERP-CRM-LEARN01 / CRM-DEC-010 — 10 Ekim 2026
+## ŞİMDİ — ERP-COMPLETE01 / CRM-DEC-011 — 11 Ekim 2026
+
+TC21v22/source09ca mevcut atanmış liste/geçmiş/gönderilmemiş taslak ve korumalı reopen/görev geçişi/çıkışla Wi-Fi üzerinde çalışıyor. Kaynak testine kimlik/assignment turu eklendi; production draft fix/yeni send yetkisi yok. İlk hızlı kayıp gözlemi korunur; kontrollü tekrarda taslak kaldı. [Teknik kanıt](docs/evidence/crm/2026-10-11-terminal-normal-session/README.md). Tek ortak ERP-COMPLETE01 işi sürer, ikinci ana görev yok.
+
+**Teslim sınırı:** normal TEST personel read/draft; send yetkisi yok. Beş klip/dört görev özel APK/rehber eğitiminde insan kabulü bekliyor. Gerçek Windows reboot/logoff ve DHCP rezervasyonu ayrı. Teslim sonrası yeni ticari prova otomatik başlamaz; TEST125/DB02/roller/LL/karantina/yedekler/25-12-13-0 korunur. Gerçek WhatsApp/ücretliAI/LIVE/Vega/main/T1 yok.
+
+## Önceki checkpoint — ERP-CRM-LEARN01 / CRM-DEC-010 — 10 Ekim 2026
 
 **Teknik ekran/eğitim hazırlığı tamamlandı; CRM-UA09 insan kabulü bekliyor.** Source94453500 normal katalogda3.830 fotoğraflı kapsam/50 ürün, açık mesaj taslağı düğmeleri ve temiz bilinmeyen-seri açıklamasıyla gerçek tarayıcıda doğrulandı. Sipariş penceresi üç kısa adımı ve taslak-only sınırını açıklar; yeni sipariş/satış/ödeme/mesaj/AI işlemi yok. Ortak [8 derslik rehber](http://127.0.0.1:5234/kullanim-egitimi.html#crm-order) mevcut ERP eğitim yüzündedir. ERP web rehberi sourceb5a8ce1 üzerinde 8 gerçek ekran kesitiyle tarayıcıda açıldı;1422 genişlikte taşma yok. Fiziksel TC21 şirket Wi-Fi ile LAN5234 mal kabul metinleri ve rehberi açtı; 32,2 saniyelik private video hazır. Bu teknik açılma kanıtı insan/barkod kabulü değildir. SQL169 işletme tablosunda before/after fark0 (auth/audit hariç), yeni ticari kayıt yok. Source944535 için 53 benzersiz hedefli offline kontrol ve frontend build PASS; güncel runtime daha yeni222a95f paketidir ve korunur (manifest `53f5260aef322024da42f29dce4d6766a58ed191c9a1ad8494bbcd947f2daa0e`). Fotoğraf değişikliğinin ek kontrolleri koordinatör makbuzunda ayrıca tutulur; güncel doküman diff kontrolü PASS, sonraki belge HEAD'i ayrı kimliktir. Son PR3 belge teslimi ve exact CI henüz tamamlanmadı; CI yeşil ilan edilmez. [Teknik kayıt](docs/evidence/crm/2026-10-10-training-preparation/README.md).
 

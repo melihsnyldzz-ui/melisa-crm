@@ -8,6 +8,7 @@ import React from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
 import {rememberTerminalShare} from '../src/terminalShareProof.js';
 import {TEXT_DRAFT_STORAGE_KEY,createTextDraftStorage} from '../src/lib/textDraftStorage.js';
+import {normalizeConversation} from '../src/liveApi.js';
 
 const frontend=fileURLToPath(new URL('../',import.meta.url)), temporary=frontend+'.sites-runtime/';
 const actor=()=>({accountIdentity:{id:42},role:'mudur',canSend:true,chatwootAgentId:7,liveSendEnabled:true,displayName:'Synthetic account'});
@@ -37,12 +38,17 @@ async function fixture(run,{compact=false,terminal=false,offline=false,isolated=
 function find(tree,predicate){if(!tree||typeof tree!=='object')return null;if(predicate(tree))return tree;for(const child of React.Children.toArray(tree.props?.children)){const found=find(child,predicate);if(found)return found;}return null;}
 const composer=tree=>find(tree,node=>node.type==='textarea'&&node.props['aria-label']==='Mesajınız');
 const dedicatedSession=()=>({accountIdentity:{id:'crm-agent-test-20261011',username:'crm-agent-test'},id:'crm-agent-test-20261011',username:'crm-agent-test',role:'personel',chatwootAgentId:3,permissions:['crm.view'],canSend:false,liveSendEnabled:false,displayName:'TEST personeli',normalTestScope:{database:'MELISA_ERP_CRM_SHARED_TEST_20261009_02',isolatedPreparation:true,draftOnly:true,chatwootAgentId:3}});
-test('actual dedicated normal personel composer stores an unsent assigned draft while Send stays forbidden',async()=>fixture(async h=>{
- const session=dedicatedSession(),assigned={...row(),chatwootAgentId:3};let sends=0;h.harness.api.send=async()=>sends++;h.harness.api.session=async()=>session;
+test('actual normalized dedicated personel draft survives chat back/reopen and is purged after reassignment while Send stays forbidden',async()=>fixture(async h=>{
+ const session=dedicatedSession(),raw={...row(),assignedUserId:'crm-personel-3',chatwootAgentId:3},assigned=normalizeConversation(raw);let sends=0;h.harness.api.send=async()=>sends++;h.harness.api.session=async()=>session;
  h.connect(session,[assigned]);h.harness.actions.selectConversation(assigned);h.render();h.harness.actions.setDraft('Gönderilmemiş kısa TEST taslağı');h.render();
  const reloaded=createTextDraftStorage({getStorage:()=>h.local}).activate(session,[assigned]);assert.equal(reloaded.drafts['55'],'Gönderilmemiş kısa TEST taslağı');
  await h.harness.actions.sendMessage();assert.equal(sends,0);assert.equal(composer(h.render()).props.value,'Gönderilmemiş kısa TEST taslağı');
  const send=find(h.render(),node=>node.type==='button'&&node.props.className?.includes('send-button'));assert.equal(send?.props.disabled,true);
+ const back=find(h.render(),node=>node.type==='button'&&node.props['aria-label']==='Mesaj listesine dön');back.props.onClick();assert.doesNotMatch(h.render().props.className,/chat-open/);
+ h.harness.actions.selectConversation(assigned);assert.match(h.render().props.className,/chat-open/);assert.equal(composer(h.render()).props.value,'Gönderilmemiş kısa TEST taslağı');
+ h.harness.api.conversation=async()=>({conversation:normalizeConversation({...raw,chatwootAgentId:4})});h.pollConversation();await settle();h.render();h.pollDrafts();
+ assert.equal(composer(h.render()).props.value,'');assert.deepEqual(createTextDraftStorage({getStorage:()=>h.local}).activate(session,[assigned]).drafts,{});
+ await h.harness.actions.sendMessage();assert.equal(sends,0);assert.equal(find(h.render(),node=>node.type==='button'&&node.props.className?.includes('send-button')).props.disabled,true);
 },{terminal:true,isolated:true}));
 test('actual expired-session renewal retains protected grant on503 but clears it on401 and closes authenticated UI',async()=>{
  for(const status of [503,401])await fixture(async h=>{
