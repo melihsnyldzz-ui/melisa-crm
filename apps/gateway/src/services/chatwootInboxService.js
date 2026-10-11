@@ -1,7 +1,9 @@
 import { env } from '../config/env.js';
+import { createHash } from 'node:crypto';
 import { resolvePhoneIdentity } from '../utils/phoneIdentity.js';
 import { chatwootApiRequest } from './chatwootApiService.js';
-import { assertConversationAccess } from './crmAuthService.js';
+import { assertConversationAccess, assertCrmPermission, findCrmUserById } from './crmAuthService.js';
+import { normalSessionFingerprint } from './normalRefreshSession.mjs';
 import { waapiSendReady, refreshWaapiReadiness } from './waapiReadiness.js';
 import { WAAPI_RECIPIENT } from '../providers/waapiProvider.js';
 import { enrichWaapiReceipt } from './waapiReceiptService.js';
@@ -551,6 +553,32 @@ async function readAccessibleConversation({ conversationId, user }) {
 // Fresh assignment metadata only: never hydrates message history or media.
 export async function getChatwootConversationAccess({ conversationId, user }) {
   return (await readAccessibleConversation({conversationId,user})).access;
+}
+
+// Namespace-preserving metadata read for the approved 7733 TEST interest flow.
+// No local PG ID, customer phone, messages or provider write is returned.
+export async function getChatwootProductRequestBinding({ conversationId, user }) {
+  const denied = () => Object.assign(new Error('Ürün talebi müşteri bağı doğrulanamadı.'), {code:'CUSTOMER_REQUEST_BINDING_UNAVAILABLE',statusCode:503});
+  const freshUser = () => {
+    const current = user?.id && findCrmUserById(user.id);
+    if (!current?.active || user.testAdmin || user.testPersonnel || !['patron','mudur','personel'].includes(current.role)
+      || normalSessionFingerprint(current) !== normalSessionFingerprint(user)) throw Object.assign(new Error('Normal CRM yetkisi değişti.'), {code:'CUSTOMER_REQUEST_FORBIDDEN',statusCode:403});
+    assertCrmPermission(current, 'crm.view'); return current;
+  };
+  if (process.env.CRM_ISOLATED_PREPARATION !== 'true' || process.env.CRM_TEST_EXPECTED_DATABASE !== 'MELISA_ERP_CRM_SHARED_TEST_20261009_02'
+    || env.whatsapp.testNumberOnly !== true || !env.whatsapp.allowedTestNumbers.some(value => resolvePhoneIdentity(value).normalizedPhone === '905387217733')) throw denied();
+  const actor = freshUser(), {raw,identity,policy} = await readAccessibleConversation({conversationId,user:actor});
+  freshUser(); assertBackendIdentity(identity); assertInboxPolicy(policy);
+  const positive = value => Number.isSafeInteger(Number(value)) && Number(value)>0 && String(Number(value))===String(value);
+  const phone = resolvePhoneIdentity(raw?.meta?.sender?.phone_number);
+  if (!positive(env.chatwoot.accountId) || !positive(raw?.id) || String(raw.id)!==String(Number(conversationId))
+    || !positive(raw.inbox_id) || !positive(raw.meta?.sender?.id) || !positive(raw.meta?.assignee?.id)
+    || raw.account_id!==undefined&&String(raw.account_id)!==String(env.chatwoot.accountId)
+    || !phone.verified || phone.normalizedPhone!=='905387217733' || isGroupConversation(raw)) throw denied();
+  assertConversationAccess(freshUser(), {id:Number(raw.id),chatwootAgentId:Number(raw.meta.assignee.id)});
+  const accountId=String(env.chatwoot.accountId),inboxId=String(raw.inbox_id),contactId=String(raw.meta.sender.id);
+  return {backend:'chatwoot',provider:'chatwoot',accountId,inboxId,chatwootConversationId:String(raw.id),chatwootContactId:contactId,
+    assigneeId:String(raw.meta.assignee.id),customerFingerprint:createHash('sha256').update(JSON.stringify([phone.normalizedPhone,accountId,inboxId,contactId])).digest('hex')};
 }
 export async function getChatwootConversationDetail({ conversationId, user }) {
   await refreshWaapiReadiness();

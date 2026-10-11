@@ -22,6 +22,8 @@ import { nextIncomingTranslation } from "./automaticTranslation.js";
 import { selectedSaleLines, selectionMessage } from "./catalog/productActions.js";
 import ERPOrderDialog from "./ERPOrderDialog.jsx";
 import CatalogWorkspace from "./catalog/CatalogWorkspace.jsx";
+import StaffProductRequests from './customerProductRequest/StaffProductRequests.jsx';
+import {createCatalogPhotoCache} from './catalog/photoCache.js';
 import JitsiPilot from "./video/JitsiPilot.jsx";
 import AccountInfo from "./AccountInfo.jsx";
 import SalesSuggestion from "./SalesSuggestion.jsx";
@@ -457,6 +459,17 @@ export function App() {
   }, []);
 
   const selected = selectedConversation(conversations, selectedId) || emptyLiveConversation;
+  const [customerRequestsEnabled,setCustomerRequestsEnabled]=useState(false);
+  useEffect(()=>{
+    if(import.meta.env?.VITE_CRM_TEST!=='1')return;
+    const controller=new AbortController();
+    void fetch('/api/customer-product-request-state',{cache:'no-store',signal:controller.signal}).then(response=>response.ok?response.json():null)
+      .then(payload=>{if(!controller.signal.aborted)setCustomerRequestsEnabled(payload?.success===true&&payload.data?.enabled===true);}).catch(()=>{});
+    return()=>controller.abort();
+  },[]);
+  const requestPhotoCache=useMemo(()=>createCatalogPhotoCache({fetchPhoto:(id,options)=>liveApi.canonicalCatalogPhoto(liveKey,id,options),isCurrent:()=>liveKeyRef.current===liveKey&&Boolean(liveKey)}),[liveKey]);
+  useEffect(()=>()=>requestPhotoCache.clear(),[requestPhotoCache]);
+  const loadRequestPhoto=useCallback(item=>requestPhotoCache.load({...item,hasSourceImage:true,photoStatus:'guarded-path'},{variant:'original'}),[requestPhotoCache]);
   const catalogVisible = Boolean(CATALOG_ENABLED && modal === 'catalog-builder' && selected.id && liveSession && catalogContextRef.current?.current() && liveKey === catalogContextRef.current?.key && String(selectedId) === catalogContextRef.current?.recipient);
   const catalogVisibleRef=useRef(catalogVisible);catalogVisibleRef.current=catalogVisible;
   const catalogWasVisible=useRef(false);
@@ -1348,6 +1361,7 @@ export function App() {
             <div className="chat-scroll" ref={chatScrollRef} onScroll={(event) => { const element = event.currentTarget; const away = element.scrollHeight - element.scrollTop - element.clientHeight > 120; nearBottomRef.current = !away; setShowJumpLatest(away); }}>
               {!selected.id ? <div className="empty-chat"><ChatCircleDots size={38} weight="duotone" /><strong>Konuşma seçilmedi</strong><span>Mesajları görmek için soldaki listeden bir müşteri seçin.</span></div> : <>
               <div className="date-pill">{liveSession && selected.messagesLoaded === false ? (detailLoadState.id === selected.id && detailLoadState.error ? detailLoadState.error : "Konuşma geçmişi yükleniyor…") : liveSession ? "Gerçek konuşma geçmişi" : "25 Eylül 2026, Cuma"}</div>
+              {customerRequestsEnabled&&liveSession&&!liveSession.testAdmin&&!liveSession.testPersonnel&&selected.isLive&&selected.messagesLoaded!==false?<StaffProductRequests key={`${sessionIdentityRef.current}:${selected.id}`} accessToken={liveKey} conversationId={String(selected.id)} canIssue={['patron','mudur'].includes(liveSession.role)&&liveSession.permissions?.includes('crm.manage')} loadPhoto={loadRequestPhoto} onAuthorizationError={()=>void closeLiveSession('Oturum sona erdi. Yeniden giriş yapın.',true)}/>:null}
               {liveSession ? (selected.messages || []).map((message) => { const translated = incomingTranslations[`${selected.id}:${message.id}`]; const hasText = Boolean(message.text?.trim()); const isOutgoing = message.direction === "outgoing"; if (message.direction === "activity") return <p className="system-message" key={message.id}>{message.text}</p>; return <div className={`message-block ${isOutgoing ? "outgoing" : "incoming"}`} key={message.id}><span className="message-sender">{isOutgoing ? "Melisa Baby" : selected.name}</span>{hasText ? <div className={`message ${isOutgoing ? "outgoing" : "incoming"}`}><p>{message.text}</p><time>{messageClock(message.createdAt)}{isOutgoing ? <CheckCircle size={14} weight="fill" /> : null}</time></div> : null}<MessageAttachments attachments={message.attachments} createdAt={message.createdAt} outgoing={isOutgoing} />{!isOutgoing && hasText ? <><button className="translate-message" disabled={translated?.loading || !liveSession.paidAiEnabled} onClick={() => translateIncomingMessage(message)}><Translate size={16} />{translated?.loading ? "Çevriliyor…" : translated?.translatedText && !translated.hidden ? "Türkçe çeviriyi gizle" : "Türkçeye Çevir"}</button>{translated?.translatedText && !translated.hidden && (!entry.enabled || (translationDisplay === "both" && (!translated.automatic || automaticTranslation))) ? <div className="translation-inline"><span>Türkçe çeviri · {translated.detectedLanguage || "dil otomatik algılandı"}</span><p>{translated.translatedText}</p>{translated.warning ? <small>{translated.warning}</small> : null}</div> : null}{translated?.error ? <div className="translation-inline error"><span>Çeviri kullanılamıyor</span><p>{translated.error}</p></div> : null}</> : null}</div>; }) : <>
               <div className="message incoming"><p>{selected.foreign}</p><time>10:14</time></div>
               <button className="translate-message" onClick={() => setTranslatedIncoming((value) => !value)}><Translate size={16} />{translatedIncoming ? "Türkçe çeviriyi gizle" : "Türkçeye Çevir"}</button>

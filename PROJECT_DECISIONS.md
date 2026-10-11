@@ -1,5 +1,13 @@
 # CRM karar merkezi
 
+### CRM-DEC-013 — 12 Ekim 2026 — Onaylı dar TEST kapsamı
+
+Kullanıcının “Bence güzel. Şimdilik bunu yapsak çok iyi olur.” kararıyla müşteri kataloğu → ürün seçimi/adet → CRM ürün talebi → atanmış normal personelde görünüm ilk MVP olarak uygulanır. Seçilen görsel [tasarım kaydıdır](docs/design/customer-catalog-flow-20261012.png); içindeki örnek ürünler ticari veri değildir. Gerçek ERP TEST ürünleri ve orijinal fotoğrafları, kod/ad arama ve yalnız kaynakta bulunan kategori kullanılacaktır. Kaynakta bulunmayan yaş, MOQ, teslim süresi veya fiyat uydurulmaz.
+
+Talep normal doğrulanmış CRM konuşmasının Chatwoot account/inbox/contact/conversation/assignee namespace'ine bağlanır; yeni mağaza müşterisinin ERP cari kaydı olması gerekmez. Chatwoot dış ID'si yerel PG ID'si sayılmaz. Ayrı TEST müşteri capability'si staff token taşımaz; normal korumalı issuer oturumu ve güncel atama/kimlik tekrar doğrulanır. Talep ayrı kalıcı CRM interest kaydıdır; eski customer-catalog/order native ERP taslak yolu çağrılmaz. Seçim/revision/readback ve idempotent operation kalıcı tutulur.
+
+Ortak 62700/personel/Semih/owner journal ve supervisor pinleri korunur; ayrı loopback TEST prova süreci 62800–62802 kendi paket ve özel state'ini kullanır. Gerçek WhatsApp/provider, ücretli AI, FedEx, native ERP/satış/finans, LIVE/main yoktur. Önceki gelecek fikir notunun yalnız katalog/talep kısmı bu kararla dar kapsamda onaylanmıştır; AI/lojistik fikirleri hâlâ gelecektir. İnsan kabulü ayrı kalır. Dar akış tamamlanınca mevcut beş aşamalı ana teslim sırası sürer.
+
 ### CRM-DEC-012 — 12 Ekim 2026 — Onaylı
 
 Kullanıcının önceliği geçici güvenli **Semih olarak devam et** TEST girişini şimdi tamamlamak, ardından mevcut ana teslim işine dönmektir. CRM yalnız kendi kaynak/normal oturum sözleşmesini sahiplenir; ERP/terminal sahibi ayrı çalışır. Ayrılmış doğrulanmış TEST patron hesabı desteklenen normal kullanıcı/rol ve korumalı ilk giriş yoluyla hazırlanır; gerçek/paylaşılan hesap veya parola değiştirilmez, kullanıcıdan parola istenmez. Kayıtsız cihaz/LAN anonim yönetici erişimi alamaz. Refresh döner, fresh kimlik/izin doğrulanır; çıkış/hesap değişimi/revoke çalışır. [Exact sözleşme ve LIVE'da kaldırma ölçütü](docs/development/SEMIH_TEST_SESSION.md).

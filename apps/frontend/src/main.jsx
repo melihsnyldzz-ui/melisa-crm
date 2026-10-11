@@ -9,6 +9,12 @@ import "./styles.css";
 import "./experience.css";
 import "./whatsapp.css";
 
+const CustomerProductRequestPage = React.lazy(() => import("./customerProductRequest/CustomerProductRequestPage.jsx"));
+function RootView() {
+  if (/^\/katalog\/?$/.test(window.location.pathname)) return <React.Suspense fallback={<div role="status" style={{padding:24}}>Katalog açılıyor…</div>}><CustomerProductRequestPage /></React.Suspense>;
+  return <App />;
+}
+
 class AppBoundary extends React.Component {
   state = { failed: false };
   static getDerivedStateFromError() { return { failed: true }; }
@@ -20,6 +26,6 @@ class AppBoundary extends React.Component {
 
 createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <AppBoundary><App /></AppBoundary>
+    <AppBoundary><RootView /></AppBoundary>
   </React.StrictMode>,
 );

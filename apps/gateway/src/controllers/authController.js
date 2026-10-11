@@ -7,6 +7,7 @@ import { catalogAccess } from '../services/crmCatalogAccess.mjs';
 export function postAuthLogin(req, res, next) {
   try {
     res.set('Cache-Control','no-store');
+    if(process.env.CRM_CUSTOMER_PRODUCT_REQUEST_PROOF==='true'&&req.body?.transport!=='native')semihSameOrigin(req,{write:true});
     const result=authenticateCrmUser({
       username: req.body?.username,
       password: req.body?.password,

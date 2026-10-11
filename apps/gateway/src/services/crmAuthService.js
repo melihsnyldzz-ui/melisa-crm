@@ -4,7 +4,7 @@ import { env } from '../config/env.js';
 import { waapiSendReady } from './waapiReadiness.js';
 import { verifyTestAdminSession } from './testAdminSession.mjs';
 import { verifyTestPersonnelSession } from './testPersonnelSession.mjs';
-import { configuredNormalRefreshStore, configuredSemihTestRefreshStore, isDedicatedNormalTestUser, isDedicatedSemihTestUser, normalRefreshUserPolicy, semihRefreshUserPolicy, DEDICATED_NORMAL_TEST_USER_ID, DEDICATED_SEMIH_TEST_USER_ID } from './normalRefreshSession.mjs';
+import { configuredNormalRefreshStore, configuredSemihTestRefreshStore, isDedicatedNormalTestUser, isDedicatedSemihTestUser, normalRefreshUserPolicy, semihRefreshUserPolicy, normalSessionFingerprint, DEDICATED_NORMAL_TEST_USER_ID, DEDICATED_SEMIH_TEST_USER_ID } from './normalRefreshSession.mjs';
 
 const ROLE_PERMISSIONS = Object.freeze({
   patron: ['crm.view', 'crm.send', 'crm.assign', 'crm.agents', 'crm.manage'],
@@ -224,6 +224,35 @@ export function assertCrmPermission(user, permissionKey) {
   if (!user?.permissions?.includes(permissionKey)) {
     throw authError('WHATSAPP_CRM_PERMISSION_DENIED', `Permission required: ${permissionKey}`, 403);
   }
+}
+
+// Internal read-only authority reference for a narrowly scoped TEST customer
+// capability. It never contains a JWT/refresh secret and cannot mint a login.
+export function captureNormalCrmAuthority(token) {
+  const context = verifyCrmAccessToken(token, { includeContext: true });
+  const user = context?.user;
+  // Decode only after normal verification; anonymous TEST actors cannot issue
+  // customer capabilities even if their displayed role is administrator.
+  if (!user || user.testAdmin || user.testPersonnel) throw authError('CUSTOMER_REQUEST_NORMAL_SESSION_REQUIRED', 'Normal CRM oturumu gerekli.');
+  const payload = jwt.decode(token);
+  const normalSessionId = payload?.normalSessionId;
+  if (!/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i.test(normalSessionId || '')
+    || !Number.isSafeInteger(context.expiresAt) || context.expiresAt <= Date.now()) throw authError('CUSTOMER_REQUEST_NORMAL_SESSION_REQUIRED', 'Korumalı normal CRM oturumu gerekli.');
+  const authority = { id: user.id, normalSessionId, fingerprint: normalSessionFingerprint(user), expiresAt: context.expiresAt };
+  verifyNormalCrmAuthority(authority);
+  return { user, authority };
+}
+
+export function verifyNormalCrmAuthority(authority) {
+  if (!authority || Array.isArray(authority) || Object.keys(authority).length !== 4
+    || !['id', 'normalSessionId', 'fingerprint', 'expiresAt'].every(key => Object.hasOwn(authority, key))
+    || typeof authority.id !== 'string' || !authority.id
+    || !/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i.test(authority.normalSessionId || '')
+    || !/^[a-f0-9]{64}$/.test(authority.fingerprint || '') || !Number.isSafeInteger(authority.expiresAt) || authority.expiresAt <= Date.now()) throw authError('CUSTOMER_REQUEST_NORMAL_SESSION_REQUIRED', 'Normal CRM oturumu sona erdi.');
+  const user = findCrmUserById(authority.id), store = user && refreshStoreForUser(user);
+  if (!user?.active || user.testAdmin || user.testPersonnel || !store || normalSessionFingerprint(user) !== authority.fingerprint) throw authError('CUSTOMER_REQUEST_NORMAL_SESSION_REQUIRED', 'Normal CRM oturumu değişti.');
+  store.verify(authority.normalSessionId, user);
+  return user;
 }
 
 export function canAccessConversation(user, conversation) {

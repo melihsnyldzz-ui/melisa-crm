@@ -8,7 +8,7 @@ import { routes } from './routes/index.js';
 import { createWaapiWebhookRoutes } from './routes/waapiWebhookRoutes.js';
 import { createMessageUploadParser } from './middleware/messageUploadParser.js';
 
-export function createApp() {
+export function createApp({customerProductRequestRouter=null}={}) {
   const app = express();
 
   // cloudflared is the only reverse proxy hop in the public deployment.
@@ -19,6 +19,15 @@ export function createApp() {
   app.use(crmCors());
   app.use(requestContext);
   app.use(apiRateLimit());
+  // The separate TEST customer request journal has no upstream side effects.
+  // Mount only its exact router; the existing preparation write denial stays intact.
+  if(customerProductRequestRouter){
+    if(process.env.CRM_CUSTOMER_PRODUCT_REQUEST_PROOF!=='true'||process.env.CRM_ISOLATED_PREPARATION!=='true'
+      ||process.env.CRM_UI_ORIGIN!=='http://127.0.0.1:62800'
+      ||process.env.CRM_TEST_EXPECTED_DATABASE!=='MELISA_ERP_CRM_SHARED_TEST_20261009_02')throw Error('CUSTOMER_REQUEST_PROOF_REQUIRED');
+    app.use(['/customer-product-requests','/crm/customer-product-requests'],express.json({limit:'16kb'}));
+    app.use(customerProductRequestRouter);
+  }
   // Shared preparation reads existing CRM data; all upstream writes are closed.
   // Native ERP drafts use the separate isolated order proxy, never this gateway.
   app.use((req,res,next)=>{
