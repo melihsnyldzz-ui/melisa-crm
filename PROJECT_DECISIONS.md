@@ -55,3 +55,15 @@ Kullanıcının ERP PR23 / CRM PR3 son ortak TEST teslimlerinden devam talimatı
 | CRM-DEC-003 | 2026-10-05 | AI satış ajanı ilk aşamada insan kontrollü copilot'tur; otomatik gerçek müşteri gönderimi ayrı kullanıcı kararı gerektirir. | İnsan satış kontrolünü korumak. | AI / gerçek gönderim | Onaylı |
 
 Ortak katalog API/UX yönünün asıl kararı ERP'deki **ERP-DEC-005** kaydıdır; [ERP karar merkezi](https://github.com/melihsnyldzz-ui/melisa-erp-v2/blob/7f04e1ad290048ae74096708c8d5a329cf7ce5bc/PROJECT_DECISIONS.md) ve [ERP teslim panosu](https://github.com/melihsnyldzz-ui/melisa-erp-v2/blob/7f04e1ad290048ae74096708c8d5a329cf7ce5bc/DELIVERY_BOARD.md) okunur. API yolu veya şeması bu belge işiyle icat edilmez; sözleşme kabul edildiğinde exact ERP commit bağlantısı ilgili teslim kaydına eklenir. Şirket kuralları [Melisa OS](https://github.com/melihsnyldzz-ui/melisa-os) içindedir.
+
+## Gelecek müşteri karşılama ve katalog akışı — 12 Ekim 2026 — fikir notu
+
+Kaynak: kullanıcının fikirlerini kalıcı kaydetme talebi, ERP/CRM koordinasyon sohbetinden CRM'ye iletildi. **Durum: öneri; onaylı ürün kararı veya uygulama talimatı değildir.** Mevcut ana teslim sırası, finish tree ve kabul edilmiş işler değişmez. CRM-DEC-003'teki insan kontrollü AI ve gerçek müşteriye otomatik gönderim sınırı sürer.
+
+- **Karşılama:** AI gelen müşterinin ihtiyacını anlayıp onaylı katalog, minimum alım ve temel işletme kurallarıyla görüşmeyi personelin devralacağı noktaya hazırlasın. Eski müşteriyi tanıma; dil, doğrulanmış ülke ve ürün grubuna göre dar katalog; açık sorular ve ürün kodu/fotoğraf/adet özeti önerilir. Mesai dışında ihtiyaç toplansın; personel devralınca AI konuşmayı ona bıraksın.
+- **Telefon kataloğu:** yaklaşık 3.000–4.000 fotoğraflı ürün için müşterinin telefonundan erişilebilir bağlantı; kategori/yaş/arama, büyük fotoğraf, kısa isim/kod ve “Listeye ekle” önerilir. Mevcut şirket içi adresin dış müşteriye açık olduğu doğrulanmış değildir. Web kataloğu ile yerleşik WhatsApp Commerce sepeti ayrı akışlardır.
+- **Talep paylaşımı:** seçilen ürün/adetleri gözden geçir → ürün talebini paylaş → mevcut müşteri konuşmasına bağlı CRM talebi ve personel özeti → personel stok, fiyat ve teslimatı netleştirir. Bu zincir henüz onaylı veya uygulanmış değildir; otomatik sipariş ya da kesin stok/fiyat vaadi sayılmaz.
+- **Lojistik:** WhatsApp telefon ülkesi yalnız ipucu olabilir; kesin varış ülkesi müşteriden doğrulanır. Gerekince konum/adres alınması ve koli bazlı FedEx API fiyatlarıyla kapıdan kapıya tahmin önerilir. API koşulları, gerçek koli ağırlık/ölçüleri ve tahmin/final ücret kapsamı ileride doğrulanmalıdır; hazır entegrasyon veya kesin fiyat yoktur.
+- **Canlandırma sınırı:** konuşmadaki **1.000 USD minimum**, **İrlanda**, **0–2 yaş** ve **bir haftada mağaza açılışı** yalnız canlandırma verisidir. Resmi kural, gerçek müşteri veya ticari kayıt oluşturmaz.
+
+Bu kayıt yeni servis/API, gerçek mesaj veya kod geliştirme başlatmaz; uygulama önceliği ve kapsamı ileride açık kullanıcı kararıyla belirlenir.
