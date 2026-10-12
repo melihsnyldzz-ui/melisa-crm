@@ -1,26 +1,116 @@
 {
+  "version": 2,
   "date": "2026-10-12",
-  "result": "PARTIAL-ERP-CATALOG-BLOCKED",
+  "result": "CORE-REAL-TEST-FLOW-VERIFIED-ACCEPTANCE-PENDING",
   "crmSource": "fb34c293fa58154e00b132d13b8246939ce8cbbb",
   "manifestSha256": "f3818f6cb1925ca652f36bdcc5334a75fb8ce1b4f09a9250011dce30c7498d9f",
-  "erpSource": "2d371c41442e4e92630f9191f4bae801fd1baebd",
-  "testUrl": "http://127.0.0.1:62800/",
-  "customerSessions": 1,
-  "submittedRequests": 0,
-  "erpLoginMs": 291,
-  "erpCatalogTimeoutMs": 25304,
+  "erpObservedSource": "625969da6252ef14b4f6bde52b054a6ba97feee5",
+  "erpStartupConfigSource": "2d371c41442e4e92630f9191f4bae801fd1baebd",
+  "database": "MELISA_ERP_CRM_SHARED_TEST_20261009_02",
+  "copyId": "e16b70f0-4057-428b-9abc-6bbcaf35fe82",
+  "testUrl": "http://127.0.0.1:62800/?login=roles",
+  "erpLoginMs": 293,
+  "erpPhotoCatalogMs": 4113,
+  "photoCatalogTotal": 3830,
+  "photoCatalogPageCount": 24,
+  "customerSessions": 2,
+  "submittedRequests": 1,
+  "exactSessionRequestCount": 1,
+  "modelCount": 2,
+  "quantityTotal": 5,
+  "requestReferenceSha256": "6ab9c8afc3e511d1c47533fd141c08b1a619e9c959d56caf7e3608f35cced2a6",
+  "coreRealFlowVerified": true,
+  "operationReplaySameRequest": true,
+  "assignedNormalPersonelUiVerified": true,
+  "foreignConversationRejected": true,
+  "issuerLogoutClosesCapability": true,
+  "wrongAssigneeAgent3Actual": "pending-existing-protected-credential-unavailable",
+  "mobile": {
+    "cssWidth": 390,
+    "cssHeight": 844,
+    "horizontalOverflow": false,
+    "completeVisualQa": false,
+    "physicalDeviceAcceptance": false,
+    "captureLimitation": "hidden IAB compositor repeats header; fromSurface=false captures a different foreground page; these images excluded"
+  },
   "offline": {
     "frontend": 433,
     "gateway": 574,
     "contracts": 158,
-    "total": 1165
+    "total": 1165,
+    "rerun": false,
+    "sourceUnchanged": true
   },
   "humanAccepted": false,
   "whatsappSend": false,
   "paidAi": false,
   "nativeOrderWrite": false,
   "sharedRuntimeChanged": false,
+  "sourceCodeChanged": false,
   "evidence": [
-    "customer-catalog-source-blocked-390.png"
+    {
+      "file": "customer-catalog-source-blocked-390.png",
+      "bytes": 21312,
+      "sha256": "b25a676cdf1b1d8cf51a930f7da39dbb637fd97ffe1722a90adaadccb76ac9c9",
+      "historical": true
+    },
+    {
+      "file": "customer-review-real.jpg",
+      "bytes": 43158,
+      "sha256": "3dc93c56b514287a95ee07c55c7bfe8ab7a07784dfa04b153eb34566108fde59",
+      "historical": false
+    },
+    {
+      "file": "customer-success-real.jpg",
+      "bytes": 42754,
+      "sha256": "063c71f941c0ee6ba0c496e37ec76b6e3500fb9c225a95b06eff4e9e9d6d89e5",
+      "historical": false
+    },
+    {
+      "file": "assigned-personel-request.jpg",
+      "bytes": 13780,
+      "sha256": "714c9f545f8ac8d5baac5426f9488f19219870c108149cb144a64f4c3805c053",
+      "historical": false
+    },
+    {
+      "file": "selection-checkpoints.json",
+      "bytes": 615,
+      "sha256": "d56cb4b5a8b99311a69a6958750cbaf5acc3df19eeaed9929088e5db0f440e7b",
+      "historical": false
+    },
+    {
+      "file": "request-readback.json",
+      "bytes": 2880,
+      "sha256": "8ed33fc148f849d82ad21b7b72f9072e6588a01b781213930f9e9dd9a19da7a4",
+      "historical": false
+    }
+  ],
+  "history": [
+    {
+      "date": "2026-10-12",
+      "result": "PARTIAL-ERP-CATALOG-BLOCKED",
+      "crmSource": "fb34c293fa58154e00b132d13b8246939ce8cbbb",
+      "manifestSha256": "f3818f6cb1925ca652f36bdcc5334a75fb8ce1b4f09a9250011dce30c7498d9f",
+      "erpSource": "2d371c41442e4e92630f9191f4bae801fd1baebd",
+      "testUrl": "http://127.0.0.1:62800/",
+      "customerSessions": 1,
+      "submittedRequests": 0,
+      "erpLoginMs": 291,
+      "erpCatalogTimeoutMs": 25304,
+      "offline": {
+        "frontend": 433,
+        "gateway": 574,
+        "contracts": 158,
+        "total": 1165
+      },
+      "humanAccepted": false,
+      "whatsappSend": false,
+      "paidAi": false,
+      "nativeOrderWrite": false,
+      "sharedRuntimeChanged": false,
+      "evidence": [
+        "customer-catalog-source-blocked-390.png"
+      ]
+    }
   ]
 }

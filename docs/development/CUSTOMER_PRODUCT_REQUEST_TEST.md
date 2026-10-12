@@ -14,6 +14,10 @@ Atanmış normal personel `crm.view` ile aynı konuşmada Ürün talepleri panel
 
 `deploy/customer-product-request-test.mjs` yalnız ayrı, owner'a özel config/paket/hash ile `127.0.0.1:62800/62801/62802` açar. ERP4184/DB02/source/package/copy ve private file pinleri başlangıçta doğrulanır. Eski ortak62700 servis ve Windows supervisor ayarları değiştirilmez. Proof cookie ve normal-personel/Semih/customer journal'ları ayrıdır. Provider/AI/PG/Redis/native ERP yazıları kapalıdır; normal parola doğrulaması ve scrypt korunur. Ortak süreçte default mount kapalıdır. Bu prova autostart veya ortak paketin kurulması değildir.
 
-## Güncel gerçek sonuç
+## Önceki gerçek sonuç — ERP2d blokajı
 
 [12 Ekim kanıtı](../evidence/crm/2026-10-12-customer-product-request/README.md): normal Semih girişi, gerçek7733 konuşması ve müşteri capability/session readback çalıştı. ERP normal girişi291ms; gerçek fotoğraflı ürün listesi25.304ms'de süre aşımına düştü, ERP kendi logunda503 `CATALOG_UNAVAILABLE` var. Bu nedenle ürün seçimi → talep → personel kayıt akışı gerçek ekranda tamamlanmış değildir. Kaynak teknik kontrolü ve tasarım hata görünümü gerçek kabul yerine geçmez.
+
+## 12 Ekim güncel gerçek çekirdek sonucu
+
+ERP625 fotoğraflı katalog200/4113ms. Gerçek8023erp36724×3 ve101erp30740×2: adet/çıkarma, reload kalıcılığı, talep/success, exactsameoperation replay/count1, normal assignedpersonel agent2 UI/list/detail çalıştı. Foreignconversation403 ve auth-type401 reddi var. Issuance view-onlyactor401 normalprotectedSIDrequired; shared grant kopyalanmadı. Prova issuerlogout eski cap401. [Redacted kanıt](../evidence/crm/2026-10-12-customer-product-request/README.md). Actualsame-targetagent3, tam mobil/fiziksel/insan kabulü bekler. Başlangıç ERPsource2d config değişmedi; actual625/sameDB02 freshcheck ayrıdır. Her read DB/server/isolation/effect sınırını kontrol eder; source/copy per-requestpin iddiası yok. Uygulama/paket/sharedruntime değişmedi.

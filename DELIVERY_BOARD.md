@@ -1,4 +1,10 @@
-## ŞİMDİ — CRM-CUSTOMER-REQUEST / CRM-DEC-013 — 12 Ekim 2026
+## ŞİMDİ — CRM-CUSTOMER-REQUEST — 12 Ekim — çekirdek gerçek akış teknik hazır
+
+ERP625 fotoğraflı24/3.830 listesi4113ms; gerçek8023×3+101×2 seç/adet/çıkar/reload/gönder→atanmış normalpersonel UI ve aynı operation/replay journal1 tamamlandı. Katalog kaynak/fotoğraf/rol/auth/hold/effect guard'ları korunur; sharedservis/source/provider/AI/native ticari/LIVE/main değişmedi. [Kanıt](docs/evidence/crm/2026-10-12-customer-product-request/README.md). CRM-UA11 insan/physical/mobile ve geçerli same-target agent3 prova açık; mevcut protected credential yok, reset/sharedgrant transfer yok. **25/12🟢/13🟡/0🔴**.
+
+**Sıradaki tek ana iş:** ortak normal Semih TEST aktivasyonunun eski personel pinlerini koruyan owner supervisor yoluna bağlanması. Ortak restart/config bu dar turda yasak olduğundan owner bağımlılığı aşılmaz. Önceki beş aşamalı ana CRM sırası korunur; eski ERP25sn hatası güncel blokaj değildir. İnsanın henüz denemediği işler PASS yapılmaz.
+
+## Önceki checkpoint — CRM-CUSTOMER-REQUEST / CRM-DEC-013 — 12 Ekim 2026
 
 Dar ilk ürün talebi kaynakta hazır: normal doğrulanmış müşteri konuşması → ERP gerçek fotoğraflı katalog → seç/adet → CRM-only kalıcı talep → atanmış personel. Cari eşlemesi/nativeERP taslak zorunluluğu yok. Ayrı62800 proof normal Semih/inbox/7733link/session doğrulandı; gerçek ERP liste25.304ms'de yanıt vermedi, source2d native503. **Tam ürün akışı/insan kabulü yok.** [Gerçek kanıt ve tek bağımlılık](docs/evidence/crm/2026-10-12-customer-product-request/README.md).
 

@@ -1,4 +1,6 @@
-## CRM-CUSTOMER-REQUEST / CRM-DEC-013 — 12 Ekim 2026 — güncel
+**12 Ekim güncel müşteri ürün talebi:** ERP katalog bağımlılığı çözüldü; gerçek çekirdek seçim/adet/çıkarma/reload/tek talep/atanmış normal personel kanıtlı. K01 baseline🟢; **25 toplam /12🟢 /13🟡 /0🔴**. CRM-UA11, aynı hedefte geçerli agent3 erişim provası ve tam mobil/insan kabulü bekler. Eski bloke kayıtlar STATUS/evidence history içinde korunur; bugünkü katalog blokajı sayılmaz. Ortak servis aktivasyonu owner bağımlılığıdır; source/runtime/main/LIVE ayrı kalır.
+
+## Önceki checkpoint — CRM-CUSTOMER-REQUEST / CRM-DEC-013 — ERP2d katalog blokajı (tarihsel)
 
 **25 toplam /11🟢 tamam /13🟡 kısmi /1🔴 açık.** Genel ilerleme bu durum sayımıdır; insan/LIVE hazırlık yüzdesi değildir. K01'in önceki gerçek kabulleri korunur; taze ERP2d371c4 fotoğraflı liste okuması503/süre aşımı olduğundan güncel teknik bağımlılık🔴'dır. Dar müşteri talebi mevcut K01/C01/C02/M01 alt kapsamıdır; ikinci tree/modül eklenmez.
 
@@ -58,7 +60,7 @@ Güncel ana hedef: **5 Ekim 2026 — günlük CRM + mobil + ERP + insan denetiml
 | C01 | Atanmamışlar, müşteri bilgisi, atama ve doğru personel ekranı | 🟡 kısmi / kullanıcı kabulü bekliyor | Test konuşması Ahmet'e atanıp Semih'e geri alındı; atanmamış filtresi doğru. Personelin kendi hesabında konuşma/müşteri/geçmiş görmesi kabul edilmedi. |
 | C02 | Patron/müdür/personel yetkileri | 🟡 kısmi / kullanıcı kabulü bekliyor | Kod/korumalı testler hazır, patron kullanımı var; üç gerçek rol hesabında görünüm/gönderim/atama kabulü gerekir. |
 | T01 | Otomatik çeviri, dil ve manuel kontrol | 🟢 tamam | Gelen Haloo→Merhaba ve önceki gerçek giden çeviri kabulü korunur; bütün dil kalitesi garantisi yok. AI müşteri dili ayrı A05'tedir. |
-| K01 | Gerçek katalog, arama/filtre, görsel/bilgi | 🔴 açık / güncel ERP okuması bloke | 12Ekim tazeERP2d371c4 fotoğraflı liste API'si25.304ms TimeoutError, native log503CATALOG_UNAVAILABLE; normal auth291ms/küçük DB identity okuması sağlıklı. ERP mevcut R3 okuması düzelmeden müşteri ürün talebi tam ekran kabulü yok. [Güncel kanıt](docs/evidence/crm/2026-10-12-customer-product-request/README.md). Önceki1085read/12foto/PDF/telefon,6Ekim3830foto/77sayfa/50ürün ve12Ekim09ca8023orijinal1206×1500 kabulleri tarihsel korunur; fotoğraflı filtre/orijinal kodu değiştirilmedi. Yeni genel/insanPASS uydurulmaz. |
+| K01 | Gerçek katalog, arama/filtre, görsel/bilgi | 🟢 tamam | 12Ekim ERP625 gerçek photo-only ilk24/3.830 listesi4113ms; normal kaynakta8023orijinal1206×1500 korunur. Dar müşteri akışında gerçek8023/101 seç-adet-çıkar-reload-talep ve atanmış normal personel2model5adet/replay tek kayıt kanıtlı. [Güncel kayıt](docs/evidence/crm/2026-10-12-customer-product-request/README.md). Önceki foto/PDF/arama kullanıcı baseline kabulleri korunur; eski2d25sn503 tarihsel checkpoint. Bu yeni CRM-UA11 genel/insan/mobile/yanlışagent3 kabulü değildir. |
 | K02 | Ürün gönderme | 🟢 tamam | 41140 doğru görsel/bilgi ile fiyatlı ürün PDF'si telefonda kabul edildi. |
 | K03 | Fiyat ve doğru para birimi | 🟢 tamam | Kayıtlı196 TRY/adet normal mesaj ve PDF'de kullanıcı kabulü. Stok/teslim taahhüdü değildir. |
 | E01 | CRM→ERP taslak: mevcut doğrulanmış müşteri/ürün kapsamı | 🟢 tamam | Müşteri593, ürün41140/native301982, 2×196=392 TRY; draft id4 ayrı GET readback ile kullanıcı kabulü. Aynı UUID tek sipariş/audit; stok/cari etkisi0. |

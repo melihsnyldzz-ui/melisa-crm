@@ -1,4 +1,10 @@
-## CRM-UA11 / müşteri ürün talebi / CRM-DEC-013 — 12 Ekim 2026 — gerçek katalog bağımlılığı bekliyor
+## CRM-UA11 — 12 Ekim — gerçek teknik akış hazır / insan bekliyor
+
+Kişi/tarih/insan sonucu verilmedi; **bekliyor**. Sourcefb34/ayrı62800 normal yönetici→genuine7733catalog; gerçek8023×3+101×2, seçim çıkar/reload, tek kalıcı talep/replay ve atanmış ordinary personel agent2 ekranı ajan tarafından doğrulandı. [Actual teknik kanıt](docs/evidence/crm/2026-10-12-customer-product-request/README.md). Eski25sn ERP blokajı625 ile çözüldü; kaynak/restart değiştirilmedi. Ordinarypersonel ownUI bu normalprova hesabıdır; gerçekpersonelin kendi kullanımı veyaphysicalphonePASS değil.
+
+İnsan kontrolü: normal personel ürün panelinde2ürün/5adet/fotoğrafları gör; yeni normal yönetici linkinde ürün seç/adet/çıkar/yenile; aynı talebin diğer personele açılmamasını dene. Geçerli agent3 protected login ve tam mobil görselQA henüz hazır değil; eski customer capability prova yöneticisi çıkışıyla401 kapanır, bu geçerli yeni müşteri linki diye verilmez. Parola reset/copy/provider/AI/ERP sipariş oluşturma yok. Önceki CRM-UA01–10 kabulleri değişmez.
+
+## Önceki checkpoint — CRM-UA11 / müşteri ürün talebi / CRM-DEC-013 — 12 Ekim 2026 — gerçek katalog bağımlılığı bekliyor
 
 Kaynak hazır; ayrı62800 normal Semih girişi/gerçek7733 konuşması/müşteri linki/session readback teknik doğrulandı. ERP gerçek ürün listesi25.304ms timeout/native503 olduğundan seç/adet/çıkar/reopen/gönder/atanmış personel görünümü gerçek ekran provası **tamamlanmadı**. [Kanıt](docs/evidence/crm/2026-10-12-customer-product-request/README.md), DesignQA blocked. Offline1165/build/reviewer gerçek insanPASS değildir. ERP liste düzeldiğinde gerçek fotoğraflı ürünleri arama, iki ürün seç/çıkar/adet, yeniden açılan aynı seçim, çift gönderimde tek talep ve normal atanmış personelde doğru aynı konuşma birlikte denenecek. Yanlış rol/müşteri reddi, eski oturumlar ve ticari/provider etkisizliği korunacak. İnsan kişi/tarih/sonuç yok; önceki CRM-UA01–10 değişmez.
 

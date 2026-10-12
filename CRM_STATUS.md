@@ -1,4 +1,16 @@
-## CRM-CUSTOMER-REQUEST / CRM-DEC-013 — 12 Ekim 2026 — kaynak hazır, ERP katalog okuması bloke
+## CRM-CUSTOMER-REQUEST — 12 Ekim 2026 — gerçek TEST çekirdek akışı kapandı
+
+ERP625969d gerçek fotoğraflı listeyi200/4113ms, ilk24/3.830 ürün ile sağladı; korumalı normal login293ms. Eski2d25sn başarısızlığı aşağıda tarihsel korunur, bugünkü kesin blokaj değildir. Mevcut CRMfb34 kaynak/immutable proof paketi değiştirilmeden gerçek8023erp36724 ve101erp30740 seçildi. Adet değiştirme/çıkarma→browser reload revision5 yalnız8023×3→yeniden ekleme revision7→Talebi gönder→aynı başarı reload→normal atanmış personelde8023×3+101×2 =2ürün/5adet tamamlandı. Aynı operation/revision tekrarında aynı session/request/items ve exact-session/toplam journal request1. [Ekran, readback ve sınırlar](docs/evidence/crm/2026-10-12-customer-product-request/README.md).
+
+**Normal rol ve güvenlik:** actual personel/agent2/crm.view aynı kayıt list/detail200 ve UI; yabancıconversation56 403/no data, cap/JWT/anonim karışımları401. Issuance401 normal korumalı SID gereği; yönetici403 diye yazılmaz. Prova Semih çıkışı eski customer capability'yi401 kapattı. Ortak7personel/Semih aileleri ve private baseline korunur. Native ERP, ticari/PG, Chatwoot mesaj/atama, provider/AI/main/LIVE yazısı0; shared62700/ERP servis restart/deploy/config0.
+
+**Açık kalan:** aynı hedefte geçerli normal agent3 actual erişim provası (korumalı credential mevcut değil), tam mobil görsel/physical personel ve CRM-UA11 insan kabulü. Kimlik reset/kopyalama/uydurma kabul yapılmadı. CSS390×844 overflow0; hidden IAB screenshot compositor arızası public kanıta alınmadı. [DesignQA](design-qa.md) PARTIAL, upstream katalog arızası değil. Reviewer kaynakP1/P2 yok; gerçek2model/5adet/replay/atanmışUI kanıtları tutarlı. Source değişmedi; önceki1165 offline/build yeniden koşulmadı, insan/CI PASS değildir.
+
+**Kimlik ve teslim:** prova sourcefb34c293fa58154e00b132d13b8246939ce8cbbb / manifestf3818f6c / own loopback62800–62802/PID38000; ortak62700/source09ca değişmedi. ERP4184 PID5092/source625969da6252ef14b4f6bde52b054a6ba97feee5 aynıDB02/copye16b; eski başlangıç ERP2d pinli config değişmedi, okuyucu every-request source/copy pin iddiası yok. Aktif codex/crm-agents-on-completion-20261003 / [PR3](https://github.com/melihsnyldzz-ui/melisa-crm/pull/3) açık; bu teslim belge/kanıt, uygulama source'u değil. Son belge HEAD CI checks'te ayrıca doğrulanır; önceki46c5e6f 7job/steps0 billing engeli uzakPASS değildir. Tek tree **25 toplam /12🟢 /13🟡 /0🔴**. K01 güncel gerçek okuma ile baseline🟢, genelCRM/insan bitişi iddiası yok.
+
+**Sıradaki ana iş:** normal Semih TEST paketini mevcut personel pinlerini koruyan sahipli ortak supervisor yoluna bağlama; bu servis değişikliği mevcut dar turda yasaktır, owner bağımlılığı açık. Önceki beş ana teslim sırası korunur; provider/ücretliAPI/gerçekmüşteri veya yeni mimari işi açılmaz.
+
+## Önceki checkpoint — CRM-CUSTOMER-REQUEST / CRM-DEC-013 — 12 Ekim 2026 — kaynak hazır, ERP katalog okuması bloke
 
 Müşteri kataloğu → ürün/adet seçimi → kalıcı CRM interest talebi → aynı konuşmada atanmış normal personel görünümü kaynakta hazır. ERP cari eşlemesi şart değildir; eski native ERP order yolu kullanılmaz. Gerçek orijinal fotoğraf, kaynak arama/kategori/paging ve toplamlar korunur; yaş/fiyat/MOQ uydurulmaz. [Exact sözleşme](docs/development/CUSTOMER_PRODUCT_REQUEST_TEST.md), [gerçek ölçüm/kanıt](docs/evidence/crm/2026-10-12-customer-product-request/README.md). Bu henüz çalışan uçtan uca ürün talebi veya insan kabulü değildir.
 

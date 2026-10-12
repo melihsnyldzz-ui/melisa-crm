@@ -1,3 +1,31 @@
+# 12 Ekim müşteri ürün talebi — gerçek çekirdek TEST akışı doğrulandı
+
+**Teknik gerçek akış hazır; insan kabulü ve iki dar kontrol bekliyor.** Önceki ERP25sn başarısızlığı bu klasörde tarihsel kanıttır. ERP625969d ile gerçek fotoğraflı katalog tekrar döndü; mevcut CRM sourcefb34c29 değiştirilmedi.
+
+| Kontrol | Gerçek sonuç |
+| --- | --- |
+| Katalog bağımlılığı | Mevcut korumalı ERP normal auth200/293ms; fotoğraflı liste200/4113ms, ilk24 ürün /3.830 toplam. Arama8023 tek gerçek ürün döndürdü; orijinal1206×1500 açıldı. Sayı bir UI görev beklemesi değil backend ölçümüdür. |
+| Seçim/adet/çıkarma | 8023 CONCEPT /erp-36724 adet3; 101 BEBESSİ /erp-30740 adet2. İkinci ürün çıkarılıp sayfa yenilendi: server revision5 yalnız8023adet3/request0 kaldı. Yeniden ekleme ve adet2 sonrası revision7, iki ürün/beş adet. |
+| Talebi gönder / yeniden açma | Normal müşteri ekranında Talebiniz alındı; iki ürün/beş adet. Tarayıcı yenilemesi aynı başarı kaydını geri okudu. |
+| Kalıcı tekrar | Journal'daki aynı revision ve operationUUID ile gerçek POST tekrarları200, aynı session/request/items. Exact-session kayıt sayısı1, tüm journal'da toplam1 talep; başka talep oluşturulmadı. |
+| Atanmış normal personel | Ayrı normal parola girişinde personel/Chatwoot agent2/crm.view; actual normal panel ve list/detail200 aynı ürün/adetleri gösterdi. Orijinal iki fotoğraf1206×1500 ve1023×1280 decode edildi; bağlantı oluşturma düğmesi yok. Bu ajan tarayıcı provası fiziksel personel kabulü değildir. |
+| Diğer kapsam | Aynı normal personelin farklı konuşma56 okuması403 WHATSAPP_CRM_CONVERSATION_FORBIDDEN, veri yok. Customer capability→staff ve staffJWT→customer401; anonim staff401. |
+| Yönetici işlemi / revoke | View-only normal personel issuance401 CUSTOMER_REQUEST_NORMAL_SESSION_REQUIRED; crm.manage403 diye gösterilmez. Prova Semih çıkışı eski customer capability'yi401 ile kapattı; ortak Semih/personel aileleri değiştirilmedi. |
+| Açık dar kontrol | Geçerli proof agent3 ile aynı hedefte yanlış atama kontrolü yapılmadı: mevcut korumalı giriş kaydı bulunamadı. Parola tahmini/reset/sharedgrant kopyalama yok. Offline assignment kontrolü bu gerçek sonucu tamamlamaz. |
+| Mobil / görsel | CSS390×844 overflow yok; review/success/normal personel gerçek ekranları bu klasördedir. Gizli IAB mobile capture header'ı tekrar çizdi; DOM birheader/0footer idi. Yanlış foreground yakalayan alternatif de public kanıta alınmadı. Tam mobil beş yüzey/fiziksel kullanıcı kabulü bekler; screenshot arızası ERP arızası sayılmaz. |
+
+[Gerçek request/replay/normal rol geri okuma](request-readback.json), [seçim checkpointleri](selection-checkpoints.json), [review](customer-review-real.jpg), [başarı](customer-success-real.jpg), [normal personel paneli](assigned-personel-request.jpg). Request referansı yalnız SHA256; capability/JWT/parola/müşteri telefonu veya ham mesajlar bu kanıtta yoktur. 101'in güncel gerçek productId'si30740'tır; eski keşif notundaki31091 kullanılmadı.
+
+Prova sourcefb34c293fa58154e00b132d13b8246939ce8cbbb / immutable manifestf3818f6cb1925ca652f36bdcc5334a75fb8ce1b4f09a9250011dce30c7498d9f; PID38000/ownerSEMIH\Xaser/loopback62800–62802. ERP4184 PID5092 current release625969d ve exactDB02/copye16b. Başlangıç config eski2d ERP source pinini taşır ve değiştirilmedi; sonraki read'ler DB/server/port/isolation/permission/T1/effect kontrollerini korur. ERPsource/copyId'nin her request'te yeniden pinlendiği iddia edilmez. Ortak62700/source09ca, servis/config/owner pinleri ve eski8 normal kullanıcı kayıtları aynıdır; ayrı proof view-only aktör korunur. Customer session2/request1; yalnız private CRM interest journal yazısı, normal auth/okuma vardır. Chatwoot mesaj/atama, native ERP/ticari/PG/provider/ücretliAI/LIVE/main etkisi0.
+
+Bağımsız reviewer core gerçek akış, üç ekran ve redacted equality/count kayıtlarını tutarlı buldu; açık kaynakP1/P2 yok. Source değişmediği için önceki1165 offline/build tekrar koşulmadı. Bunlar insan kabulü veya bu belge HEAD'inin CI PASS'i değildir. Finish tree25/12🟢/13🟡/0🔴; K01 eski bloke durumundan kayıtlı katalog baseline'ına döndü, CRM-UA11 bekler. [DesignQA](../../../../design-qa.md) PARTIAL: tam mobil görsel/insan kabulü açık.
+
+**Ana teslim dönüşü:** önceki beş ana aşama korunur; ortak normal Semih paket aktivasyonu sahipli supervisor bağımlılığıdır. Bu turda paylaşılan servis değişikliği/restart izni yok, dolayısıyla eski pinler aşılmadı. Kalan aynı-hedef agent3/fiziksel kabul ayrı açık kanıttır; eski25sn hata güncel kesin blokaj olarak kullanılmaz.
+
+GitHub PR3 açık; kaynakfb34 paketinin CI'si önceki7job/steps0 hesap ödeme/harcama engeliyle başlamadı. İzleyen belge HEAD/CI [PR checks](https://github.com/melihsnyldzz-ui/melisa-crm/pull/3/checks) üzerinden ayrı doğrulanır; main merge/yayın yok.
+
+## Önceki checkpoint — ERP2d katalog blokajı (tarihsel)
+
 # 12 Ekim müşteri ürün talebi — kaynak hazır, gerçek katalog bağımlılığı açık
 
 **PARTIAL / gerçek ürün akışı bloke.** Başarılı HTTP veya offline fixture, insan PASS olarak kaydedilmedi. Ürün seçimi/adet/gönderim/personel readback için gerçek ERP listesi henüz dönmedi; bu alanlarda başarı iddiası yok.
