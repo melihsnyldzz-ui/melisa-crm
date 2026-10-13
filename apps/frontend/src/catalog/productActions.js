@@ -1,3 +1,4 @@
+import {canonicalPricing} from './canonicalStock.js';
 export const exactPriceText=value=>typeof value==='string'&&/^\d+\.\d{8}$/.test(value)?value.replace(/0+$/,'').replace(/\.$/,''):null;
 export const priceLabelText=(value,language='tr')=>{
  if(exactPriceText(value)===null)return null;
@@ -24,7 +25,7 @@ export function selectedSaleLines(products){
   if(!['TRY','USD','EUR'].includes(currency)||typeof price!=='number'||!Number.isFinite(price)||price<=0)throw Error(`${product.code||product.name}: satış fiyatı ve para birimi doğrulanamadı.`);
   const candidates=(product.salePrices||[]).filter(p=>p.tier===1&&p.isMainUnit&&p.currency===currency&&p.priceExact===product.priceExact);
   if(product.erpProductId&&(product.hold?.blocked||product.status!=='active'||product.unit?.verified!==true||candidates.length!==1))throw Error(product.code+': sipariş fiyatı veya ürün durumu doğrulanamadı.');
-  const tuple=candidates[0];return {id:product.id,stockCode:product.code,name:product.name,currency,unitPrice:price,priceExact:product.priceExact??null,unitLabel:product.unitLabel??product.unit?.label??null,...(product.erpProductId?{productId:product.erpProductId,erpProductId:product.erpProductId,priceId:Number(tuple.id),unitSourceId:Number(tuple.unitSourceId),tier:tuple.tier,priceExact:tuple.priceExact,priceSourceKey:tuple.sourceKey,revision:product.revision,unitLabel:product.unit?.label||null}: {})};
+  const tuple=candidates[0];return {id:product.id,stockCode:product.code,name:product.name,currency,unitPrice:price,priceExact:product.priceExact??null,unitLabel:product.unitLabel??product.unit?.label??null,...(product.erpProductId?{productId:product.erpProductId,erpProductId:product.erpProductId,priceId:Number(tuple.id),unitSourceId:Number(tuple.unitSourceId),tier:tuple.tier,priceExact:tuple.priceExact,priceSourceKey:tuple.sourceKey,revision:product.revision,unitLabel:product.unit?.label||null,...(Object.hasOwn(tuple,'pricing')?{pricing:canonicalPricing(tuple.pricing,tuple.priceExact)}:{})}: {})};
  });
 }
 export function selectionMessage(products,priced=false){

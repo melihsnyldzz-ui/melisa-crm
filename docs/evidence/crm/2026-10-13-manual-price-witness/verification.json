@@ -1,0 +1,132 @@
+{
+  "date": "2026-10-13",
+  "scope": "CRM E02 MANUAL pricing witness consumer source only",
+  "branch": "codex/crm-agents-on-completion-20261003",
+  "baseHead": "eb3ff681897ddd28e5a51404b8b33e77b1e9e1e0",
+  "sourceCommit": null,
+  "pr": 3,
+  "sourceReady": true,
+  "runtimeActivated": false,
+  "nativeTransactionProof": false,
+  "humanAccepted": false,
+  "mobileAccepted": false,
+  "tree": {
+    "total": 25,
+    "complete": 12,
+    "partial": 13,
+    "open": 0
+  },
+  "ownerContractShapeAccepted": true,
+  "contract": "melisa-crm-draft-pricing.v1",
+  "legacySourceBodyPreserved": true,
+  "sourceFactNullable": true,
+  "versionSigned64String": true,
+  "tests": [
+    {
+      "phase": "adapter",
+      "command": "node --import ./scripts/ci/offline-guard.mjs --test packages/erp-adapter/services/canonicalCatalog.test.mjs",
+      "red": {
+        "pass": 12,
+        "fail": 5
+      },
+      "green": {
+        "pass": 17,
+        "fail": 0
+      }
+    },
+    {
+      "phase": "frontend",
+      "command": "node --import ./tests/offline-test-guard.mjs --test --test-name-pattern 'E02|native|response loss' apps/frontend/tests/goal4-canonical.test.mjs",
+      "red": {
+        "pass": 1,
+        "fail": 3
+      },
+      "green": {
+        "pass": 10,
+        "fail": 0
+      },
+      "newE02": 5
+    },
+    {
+      "phase": "rootTransport",
+      "command": "node --import ./scripts/ci/offline-guard.mjs --test tests/manual-price-transport.test.mjs",
+      "green": {
+        "pass": 2,
+        "fail": 0
+      },
+      "transport": "synthetic fetchFn no listener/socket/SQL/native authority"
+    },
+    {
+      "phase": "highReview",
+      "command": "node --import ./tests/offline-test-guard.mjs --test --test-name-pattern \"E02|pricing|legacy SOURCE|MANUAL|explicit SOURCE\" ./apps/frontend/tests/goal4-canonical.test.mjs ./packages/erp-adapter/services/canonicalCatalog.test.mjs",
+      "green": {
+        "pass": 11,
+        "fail": 0
+      },
+      "overlapsPrior": true,
+      "openP1P2": 0
+    }
+  ],
+  "countsMustNotBeAdded": true,
+  "build": {
+    "command": "node scripts/ci/build.mjs",
+    "exitCode": 0,
+    "compileSeconds": 20.5,
+    "appLatencyMeasurement": false,
+    "cleanProductionEnvironment": true,
+    "offlineGuard": true,
+    "existingWarnings": [
+      "chunk-size",
+      "static/dynamic same-module import"
+    ]
+  },
+  "changedFiles": [
+    {
+      "path": "apps/frontend/src/catalog/canonicalStock.js",
+      "sha256": "32c38ea16f194ff163ad47fced30640f2241fef104a3f9683096e1c5bfc2480b"
+    },
+    {
+      "path": "apps/frontend/src/catalog/productActions.js",
+      "sha256": "930a1bdcc056ac8dd31ae0b7a235bf793cf183babce937b0207569adc75e52ed"
+    },
+    {
+      "path": "apps/frontend/src/lib/nativeOrder.js",
+      "sha256": "4629bee7588081a3d7db9d71fc579941dd38371817fbeb54a940a9b31f04834d"
+    },
+    {
+      "path": "apps/frontend/tests/goal4-canonical.test.mjs",
+      "sha256": "bdbddd12ed8be36339321cb7907afd4774b60131e6781fa0deab838af2cb7495"
+    },
+    {
+      "path": "packages/erp-adapter/services/canonicalCatalog.mjs",
+      "sha256": "98e7dc065c46a2aa9098590f0a011e655426b1fc93b3a14eba1c701aa94ff922"
+    },
+    {
+      "path": "packages/erp-adapter/services/canonicalCatalog.test.mjs",
+      "sha256": "8984531ad0fe045db597dc4196f83b89a20b59749a891b7c3f9410d472f7ee52"
+    },
+    {
+      "path": "tests/manual-price-transport.test.mjs",
+      "sha256": "e3ef8f7d67811cd6c31f6f32565256d4f71499b3ae27ef990b1ce33e0180eb50"
+    }
+  ],
+  "unchangedBoundaries": [
+    "liveApi complete JSON transport",
+    "deploy/test-erp-orders existing two-token/conversation/native health guards",
+    "SOURCE body field order",
+    "store v2 actor/conversation",
+    "CRM permissions and messaging",
+    "catalog cache/worker",
+    "1be immutable package and candidate",
+    "LIVE/main/SQL/config/restarts"
+  ],
+  "ownerDependencies": [
+    "registered CURRENT same-transaction MANUAL version and source proof",
+    "legacy/mixed SOURCE cannot bypass active MANUAL pointer",
+    "native persisted body/hash/audit/readback",
+    "historical exact replay before current-readiness",
+    "owner immutable package and shared activation",
+    "normal/mobile/human E02 acceptance"
+  ],
+  "ci": null
+}

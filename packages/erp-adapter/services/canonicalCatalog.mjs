@@ -5,12 +5,22 @@ export const nativeProductId=value=>{if(typeof value==='string'&&!/^[1-9]\d*$/.t
 export const crmProductId=value=>`erp-${nativeProductId(value)}`;
 export function parseCrmProductId(value){if(typeof value!=='string'||!/^erp-[1-9]\d*$/.test(value))throw Error('INVALID_PRODUCT_ID');return nativeProductId(value.slice(4));}
 const exact=value=>value===null?null:typeof value==='string'&&/^-?(?:0|[1-9]\d{0,19})\.\d{8}$/.test(value)?value:(()=>{throw Error('ERP_CATALOG_PRODUCT_CONTRACT');})();
+function canonicalPricing(value,priceExact){
+ if(!value||typeof value!=='object'||Array.isArray(value)||Object.keys(value).sort().join()!=='origin,sourcePriceExact,versionId')throw Error('ERP_CATALOG_PRODUCT_CONTRACT');
+ const {origin,versionId}=value,sourcePriceExact=exact(value.sourcePriceExact);
+ if(origin==='MANUAL'){
+  // Native producer versions are signed64 decimal strings; never round through Number.
+  if(typeof versionId!=='string'||!/^[1-9]\d{0,18}$/.test(versionId)||BigInt(versionId)>9223372036854775807n)throw Error('ERP_CATALOG_PRODUCT_CONTRACT');
+ }else if(origin!=='SOURCE'||versionId!==null||sourcePriceExact!==priceExact)throw Error('ERP_CATALOG_PRODUCT_CONTRACT');
+ // This is a source snapshot, not native transaction authority.
+ return {origin,versionId,sourcePriceExact};
+}
 const number=value=>{if(value===null)return null;const n=Number(value);return Number.isFinite(n)&&Math.abs(n)<=Number.MAX_SAFE_INTEGER?n:null;};
 export function canonicalProduct(row){
  const erpProductId=nativeProductId(row?.id),id=crmProductId(erpProductId);
  if(typeof row.stockCode!=='string'||!row.stockCode||!(row.productName===null||typeof row.productName==='string')||typeof row.isActive!=='boolean'||typeof row.hold?.blocked!=='boolean'||row.provenance?.verified!==true||row.provenance.kind==='synthetic-test'||!Array.isArray(row.salePrices)||!Array.isArray(row.barcodes))throw Error('ERP_CATALOG_PRODUCT_CONTRACT');
  const blocked=!row.isActive||row.hold.blocked;
- const salePrices=row.salePrices.map(p=>{if(p.type!=='sale'||!['TRY','USD','EUR'].includes(p.currency)||!Number.isInteger(p.tier)||p.tier<1||p.tier>6||typeof p.isMainUnit!=='boolean'||typeof p.sourceKey!=='string')throw Error('ERP_CATALOG_PRODUCT_CONTRACT');return {id:String(nativeProductId(p.id)),type:'sale',tier:p.tier,currency:p.currency,isMainUnit:p.isMainUnit,sourceKey:p.sourceKey,unitSourceId:String(nativeProductId(p.unitSourceId)),priceExact:exact(p.priceExact)};});
+ const salePrices=row.salePrices.map(p=>{if(p.type!=='sale'||!['TRY','USD','EUR'].includes(p.currency)||!Number.isInteger(p.tier)||p.tier<1||p.tier>6||typeof p.isMainUnit!=='boolean'||typeof p.sourceKey!=='string')throw Error('ERP_CATALOG_PRODUCT_CONTRACT');const priceExact=exact(p.priceExact);return {id:String(nativeProductId(p.id)),type:'sale',tier:p.tier,currency:p.currency,isMainUnit:p.isMainUnit,sourceKey:p.sourceKey,unitSourceId:String(nativeProductId(p.unitSourceId)),priceExact,...(Object.hasOwn(p,'pricing')?{pricing:canonicalPricing(p.pricing,priceExact)}:{})};});
  // Never pick a currency, tier or unit when the source exposes multiple choices.
  const candidates=blocked?[]:salePrices.filter(p=>p.tier===1&&p.isMainUnit&&p.priceExact!==null&&number(p.priceExact)>0);
  const price=candidates.length===1?candidates[0]:null;

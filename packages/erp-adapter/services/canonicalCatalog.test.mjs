@@ -10,6 +10,42 @@ const row=()=>({id:'17',stockCode:'000123 MARKA',displayCode:'000123',productNam
 const rawMeta=()=>({schemaVersion:'melisa-catalog.v1',readOnly:true,freshLive:false,readAt:new Date().toISOString(),sourceAsOf:'2026-09-30',scopeCounts:{syntheticTest:0},total:1,page:1,limit:24,filters:{brands:['MARKA'],productTypes:['TAKIM']}});
 const actor={id:15,role:'personel',permissions:['crm.view']};
 const health={environment:'CANONICAL_TEST',databaseName:'MELISA_ERP_SIRKET_TEST_20260929_01',serverName:'Semih\\MELISADEV',port:4144,mode:'erp',liveDatabaseAccess:0,sysadmin:0,databaseControl:0,writes:true,externalOperations:false};
+test('legacy SOURCE price keeps its exact field order, output and revision',()=>{
+ const p=canonicalProduct(row());
+ assert.deepEqual(p.salePrices,[{id:'21',type:'sale',tier:1,currency:'TRY',isMainUnit:true,sourceKey:'source/17/PRICE/sale/11/1/TRY',unitSourceId:'11',priceExact:'196.00000000'}]);
+ assert.deepEqual(Object.keys(p.salePrices[0]),['id','type','tier','currency','isMainUnit','sourceKey','unitSourceId','priceExact']);
+ assert.equal(p.revision,'a2b5228397cae3bc847de1ec0828a614fb805768ba2c2fa0e716140029f07df3');
+});
+test('MANUAL pricing survives mapping and same-price version changes alter the revision',()=>{
+ const r=row(),pricing={origin:'MANUAL',versionId:'9007199254740993',sourcePriceExact:'15.78000000'};r.salePrices[0].pricing=pricing;
+ const first=canonicalProduct(r);assert.deepEqual(first.salePrices[0].pricing,pricing);assert.notEqual(first.salePrices[0].pricing,pricing);assert.equal(first.priceExact,'196.00000000');
+ r.salePrices[0].pricing.versionId='9007199254740994';const second=canonicalProduct(r);assert.notEqual(first.revision,second.revision);assert.equal(first.priceExact,second.priceExact);
+ r.salePrices[0].pricing.versionId='9223372036854775807';assert.equal(canonicalProduct(r).salePrices[0].pricing.versionId,'9223372036854775807');
+});
+test('immutable MANUAL SOURCE fact preserves null, zero and existing exact8 bounds',()=>{
+ for(const sourcePriceExact of [null,'0.00000000','1000001.00000000','99999999999999999999.12345678','-1.00000000']){
+  const r=row();r.salePrices[0].pricing={origin:'MANUAL',versionId:'1',sourcePriceExact};assert.equal(canonicalProduct(r).salePrices[0].pricing.sourcePriceExact,sourcePriceExact);
+ }
+});
+test('MANUAL zero and null effective price stay represented without SOURCE quote fallback',()=>{
+ for(const priceExact of ['0.00000000',null]){
+  const r=row();Object.assign(r.salePrices[0],{priceExact,pricing:{origin:'MANUAL',versionId:'1',sourcePriceExact:'196.00000000'}});
+  const p=canonicalProduct(r);assert.equal(p.salePrices[0].priceExact,priceExact);assert.equal(p.salePrices[0].pricing.origin,'MANUAL');assert.equal(p.salePrice,null);assert.equal(p.priceExact,null);assert.equal(p.currency,null);
+ }
+});
+test('explicit SOURCE pricing is valid only with null version and matching immutable fact',()=>{
+ for(const priceExact of ['196.00000000','0.00000000',null]){
+  const r=row();Object.assign(r.salePrices[0],{priceExact,pricing:{origin:'SOURCE',versionId:null,sourcePriceExact:priceExact}});assert.deepEqual(canonicalProduct(r).salePrices[0].pricing,r.salePrices[0].pricing);
+ }
+ for(const pricing of [{origin:'SOURCE',versionId:'1',sourcePriceExact:'196.00000000'},{origin:'SOURCE',versionId:null,sourcePriceExact:null},{origin:'SOURCE',versionId:null,sourcePriceExact:'0.00000000'}]){const r=row();r.salePrices[0].pricing=pricing;assert.throws(()=>canonicalProduct(r),/ERP_CATALOG_PRODUCT_CONTRACT/);}
+});
+test('unknown or malformed pricing cannot disappear or become a SOURCE fallback',()=>{
+ const valid={origin:'MANUAL',versionId:'1',sourcePriceExact:'196.00000000'};
+ const invalid=[undefined,null,[],{},'MANUAL',{...valid,origin:'OTHER'},{...valid,extra:true},{origin:'MANUAL',versionId:'1'},
+  ...['0','01','+1','1.0','1e3',' 1','1 ','-1','9223372036854775808',1,Number.MAX_SAFE_INTEGER+1,null].map(versionId=>({...valid,versionId})),
+  ...[undefined,0,'1.0000000','1.000000000','01.00000000','100000000000000000000.00000000'].map(sourcePriceExact=>({...valid,sourcePriceExact}))];
+ for(const pricing of invalid){const r=row();r.salePrices[0].pricing=pricing;assert.throws(()=>canonicalProduct(r),/ERP_CATALOG_PRODUCT_CONTRACT/);}
+});
 test('canonical exact native identity/full code/barcode/null quantities, no photo remains selectable',()=>{const p=canonicalProduct(row());assert.equal(p.id,'erp-17');assert.equal(p.erpProductId,17);assert.equal(p.stockCode,'000123 MARKA');assert.equal(p.barcode,'00099');assert.equal(p.stockQuantity,null);assert.equal(p.unit,null);assert.equal(p.photoPath,null);assert.equal(p.priceExact,'196.00000000');assert.equal(p.currency,'TRY');assert.match(p.revision,/^[a-f0-9]{64}$/);});
 test('unknown price and ambiguous currency never become fallback price; quarantine never becomes a price/photo',()=>{for(const change of [r=>r.salePrices[0].priceExact=null,r=>r.salePrices.push({...r.salePrices[0],id:'22',currency:'EUR'}),r=>r.hold.blocked=true]){const r=row();change(r);const p=canonicalProduct(r);assert.equal(p.salePrice,null);assert.equal(p.currency,null);assert.equal(p.photoPath,null);}});
 test('photo requires confirmed exact native identity and provenance; wrong identity cannot escape',()=>{const r=row();r.photo={status:'available',verified:true,url:'/api/catalog/products/17/photo?variant=preview',sourceKey:'source/17',sha256:'a'.repeat(64)};assert.equal(canonicalProduct(r).photoPath,'/crm/catalog/products/erp-17/photo');r.photo.sourceKey='other';assert.equal(canonicalProduct(r).photoPath,null);});

@@ -1,3 +1,7 @@
+## 13 Ekim — E02 fiyat-witness tüketicisi
+
+Yarım kalan mevcut E02 bağımlılığı dar kaynak kesitinde tamamlandı: gerçek ERP pricing metadata kaybı kapandı, SOURCE eski gövdesi korunarak MANUAL sürüm/null-source witness seçime ve native isteğe bağlandı. [Kanıt](docs/evidence/crm/2026-10-13-manual-price-witness/README.md). Kaynak/test hazır; ERP owner CURRENT transaction/native successor kanıtı ve sahipli aktivasyon olmadan yeni yol normal TEST'te açılmaz. Yeni SQL/config/store/port/restart yapılmadı;1be paket değişmedi. Normal/mobil/insan E02, I01 ve CRM06 kabulü açık; **25/12/13/0** korunur. Sonraki tek bağlı iş: ERP native successor hazır olduğunda aynı UUID/aynı fiyat sürümü taslak/readback, değişmiş sürüm reddi ve tarihsel readback normal ekran kontrolü.
+
 ## ŞİMDİ — 13 Ekim — CRM06 owner aktivasyonu / CRM01 geçmiş kaynağı
 
 CRM06 source1be7277/c262897 paketi owner tarafından alındı; ortak kurulum ERP04 güvenli checkpoint'inden sonra owner'da. Paket veya özel config tekrar üretilmez. Sıra6/CRM01 için yüklenmiş geçmişin korunması, eski assignment hata yarışı ve manuel eski sayfa açılması kaynakta hazırlanıyor; gerçek Chatwoot/mobil/insan kabulü hâlâ açık. [Teknik teslim ve kalan](docs/evidence/crm/2026-10-13-conversation-history/README.md). Yeni geçmiş kodu mevcut09ca runtime veya owner'a verilen1be paketi değildir. Kaynak hazır olunca aynı PR3'e teslim edilir; kurulum sahibinin yetkisi aşılmaz. 25 CRM/55 ana ID ve kabul edilmiş baseline korunur; aşağıdaki CRM06 source hazırlığı önceki checkpoint'tir.
