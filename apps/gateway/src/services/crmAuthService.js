@@ -5,6 +5,7 @@ import { waapiSendReady } from './waapiReadiness.js';
 import { verifyTestAdminSession } from './testAdminSession.mjs';
 import { verifyTestPersonnelSession } from './testPersonnelSession.mjs';
 import { configuredNormalRefreshStore, configuredSemihTestRefreshStore, isDedicatedNormalTestUser, isDedicatedSemihTestUser, normalRefreshUserPolicy, semihRefreshUserPolicy, normalSessionFingerprint, DEDICATED_NORMAL_TEST_USER_ID, DEDICATED_SEMIH_TEST_USER_ID } from './normalRefreshSession.mjs';
+import {configuredCustomerRequestIssuerStore,customerRequestSharedConfig} from './customerRequestIssuerSession.mjs';
 
 const ROLE_PERMISSIONS = Object.freeze({
   patron: ['crm.view', 'crm.send', 'crm.assign', 'crm.agents', 'crm.manage'],
@@ -14,6 +15,9 @@ const ROLE_PERMISSIONS = Object.freeze({
 
 const DUMMY_SALT = 'melisa-crm-invalid-user';
 const DUMMY_DIGEST = crypto.scryptSync('invalid-password', DUMMY_SALT, 64).toString('hex');
+// Account eligibility alone does not grant issuer authority to legacy JWTs.
+// Only a user object returned after verifying its issuer session carries it.
+const verifiedCustomerRequestIssuers = new WeakSet();
 
 function authError(code, message, statusCode = 401) {
   const error = new Error(message);
@@ -80,6 +84,7 @@ export function publicCrmUser(user) {
     role: user.role,
     chatwootAgentId: user.chatwootAgentId,
     permissions: [...user.permissions],
+    ...(verifiedCustomerRequestIssuers.has(user)?{customerProductRequestIssuer:true}:{}),
     ...(process.env.CRM_NORMAL_REFRESH_ENABLED==='true'&&process.env.CRM_ISOLATED_PREPARATION==='true'
       &&process.env.CRM_TEST_EXPECTED_DATABASE==='MELISA_ERP_CRM_SHARED_TEST_20261009_02'
       &&user.id===process.env.CRM_NORMAL_REFRESH_USER_ID&&isDedicatedNormalTestUser(user)
@@ -109,6 +114,11 @@ export function findCrmUserByUsername(username) {
 
 const normalRefreshStore = configuredNormalRefreshStore({resolveUser:findCrmUserById});
 const semihRefreshStore = configuredSemihTestRefreshStore({resolveUser:findCrmUserById});
+const customerRequestIssuer = configuredCustomerRequestIssuerStore({resolveUser:findCrmUserById});
+
+export function customerRequestIssuerSessionsEnabled(){
+  try{return Boolean(customerRequestIssuer&&customerRequestSharedConfig());}catch{return false;}
+}
 
 export function semihTestContinueEnabled(){
   return Boolean(semihRefreshStore&&normalRefreshStore&&process.env.CRM_NORMAL_REFRESH_ENABLED==='true'
@@ -123,6 +133,7 @@ function semihRefreshUserAllowed(user){
   try{return semihTestContinueEnabled()&&semihRefreshUserPolicy()(user);}catch{return false;}
 }
 function refreshStoreForUser(user){
+  if(customerRequestIssuer?.includes(user?.id))return customerRequestIssuer.allows(user)?customerRequestIssuer.store:null;
   return user?.id===DEDICATED_SEMIH_TEST_USER_ID?(semihRefreshUserAllowed(user)?semihRefreshStore:null)
     :(normalRefreshUserAllowed(user)?normalRefreshStore:null);
 }
@@ -140,7 +151,7 @@ function normalLoginResult(user, grant = null) {
     {subject:user.id,issuer:env.auth.issuer,audience:env.auth.audience,expiresIn:env.auth.tokenExpiresIn,jwtid:crypto.randomUUID()},
   );
   const expiresAt=jwt.decode(accessToken).exp*1000;
-  return {accessToken,tokenType:'Bearer',expiresIn:env.auth.tokenExpiresIn,user:publicCrmUser(user),
+  return {accessToken,tokenType:'Bearer',expiresIn:env.auth.tokenExpiresIn,user:publicCrmUser(verifyCrmAccessToken(accessToken)),
     ...(grant ? {refreshToken:grant.refreshToken,refreshExpiresAt:grant.refreshExpiresAt,expiresAt} : {})};
 }
 
@@ -159,15 +170,15 @@ export function authenticateCrmUser({ username, password }) {
 
   // A selected dedicated profile must pass its store policy; never fall back
   // to a grantless ordinary JWT when its role/assignment policy has changed.
-  const store=user.id===DEDICATED_SEMIH_TEST_USER_ID?semihRefreshStore
+  const store=customerRequestIssuer?.includes(user.id)?customerRequestIssuer.store:user.id===DEDICATED_SEMIH_TEST_USER_ID?semihRefreshStore
     :normalRefreshStore&&user.id===process.env.CRM_NORMAL_REFRESH_USER_ID?normalRefreshStore:null;
   const grant=store?store.issue(user):null;
   return normalLoginResult(user,grant);
 }
 
 function refreshStoreForToken(token,{includeRetired=false}={}){
-  if(!normalRefreshStore&&!semihRefreshStore)throw authError('AUTH_TOKEN_INVALID','Yeniden giriş yapın.');
-  for(const store of [normalRefreshStore,semihRefreshStore])if(store?.ownsToken(token,{includeRetired}))return store;
+  if(!normalRefreshStore&&!semihRefreshStore&&!customerRequestIssuer)throw authError('AUTH_TOKEN_INVALID','Yeniden giriş yapın.');
+  for(const store of [normalRefreshStore,semihRefreshStore,customerRequestIssuer?.store])if(store?.ownsToken(token,{includeRetired}))return store;
   return null;
 }
 function refreshFromStore(store,token){
@@ -181,6 +192,11 @@ export function refreshSemihCrmSession(refreshToken){return refreshFromStore(sem
 
 export function logoutNormalCrmSession(refreshToken) {
   return refreshStoreForToken(refreshToken,{includeRetired:true})?.revoke(refreshToken)||{loggedOut:true};
+}
+export function logoutCustomerRequestIssuerSession(accessToken){
+  const {user,authority}=captureNormalCrmAuthority(accessToken);
+  if(!customerRequestIssuer?.includes(user.id)||!customerRequestIssuer.allows(user))throw authError('AUTH_TOKEN_INVALID','Yeniden giriş yapın.');
+  return customerRequestIssuer.store.revokeSession(authority.normalSessionId,user);
 }
 export function logoutSemihCrmSession(refreshToken){
   if(!semihTestContinueEnabled())throw authError('AUTH_TOKEN_INVALID','Yeniden giriş yapın.');
@@ -216,6 +232,7 @@ export function verifyCrmAccessToken(token, { includeContext = false } = {}) {
     const store=refreshStoreForUser(user);
     if(!store)throw authError('AUTH_TOKEN_INVALID','Yeniden giriş yapın.');
     store.verify(payload.normalSessionId,user);
+    if(store===customerRequestIssuer?.store)verifiedCustomerRequestIssuers.add(user);
   }
   return includeContext ? { user, expiresAt: Number.isFinite(payload.exp) ? payload.exp * 1000 : NaN } : user;
 }

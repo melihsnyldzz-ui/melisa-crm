@@ -117,6 +117,15 @@ export function saveAccessKey(value) { try { if(terminalEntry(window.location).e
 let rememberedNormal=null;
 let normalBridge=null;
 const normalEpochs=new WeakMap();
+// Only /auth/me establishes this authority. Unknown access keys are rechecked
+// only after the existing memory/native refresh grant has been lost.
+const verifiedNormalSessionKeys=new Map();
+const normalSessionCloses=new Map();
+const normalSessionBegins=new Map();
+let failedNormalCloseKey='';
+const normalCloseOptions=accessToken=>({accessToken:typeof accessToken==='string'?accessToken:''});
+function normalCloseSucceeded(accessToken){verifiedNormalSessionKeys.delete(accessToken);if(failedNormalCloseKey===accessToken)failedNormalCloseKey='';}
+function normalCloseFailed(accessToken){if(accessToken)failedNormalCloseKey=accessToken;}
 async function inspectRememberedNormal(options={}) {
   try{return rememberedSessionMetadata(await request('/auth/remembered','',options));}
   catch(error){if(error.status===404)return {enabled:false,user:null};throw error;}
@@ -126,8 +135,24 @@ function normalRemember(){
     normalBridge=createNativeSessionBridge();
     const refresh=(refreshToken,options)=>request('/auth/refresh','',{method:'POST',body:JSON.stringify({refreshToken}),...options});
     const logout=refreshToken=>request('/auth/logout','',{method:'POST',body:JSON.stringify({refreshToken}),timeoutMs:3000});
-    rememberedNormal=normalBridge?createRememberedNormalSession({bridge:normalBridge,refresh,logout})
-      :createBrowserNormalSession({inspect:inspectRememberedNormal,nativeRefresh:refresh,nativeLogout:logout,
+    const logoutAccess=async accessToken=>{
+      if(!verifiedNormalSessionKeys.has(accessToken)){
+        try{await liveApi.session(accessToken,{timeoutMs:3000,preserveAuthDenial:true,redirect:'error',credentials:'omit'});}
+        catch(error){if(error.status===401)return;throw error;}
+      }
+      if(verifiedNormalSessionKeys.get(accessToken)!==true)return;
+      try{return await request('/auth/logout',accessToken,{method:'POST',body:'{}',redirect:'error',credentials:'omit',timeoutMs:3000,preserveAuthDenial:true});}
+      catch(error){
+        if(error.status!==401)throw error;
+        // A denied logout alone does not prove closure. Only this same key's
+        // current /me denial releases an expired/revoked local close barrier.
+        try{await request('/auth/me',accessToken,{timeoutMs:3000,preserveAuthDenial:true,redirect:'error',credentials:'omit'});}
+        catch(verification){if(verification.status===401)return;throw verification;}
+        throw error;
+      }
+    };
+    rememberedNormal=normalBridge?createRememberedNormalSession({bridge:normalBridge,refresh,logout,logoutAccess})
+      :createBrowserNormalSession({inspect:inspectRememberedNormal,nativeRefresh:refresh,nativeLogout:logout,logoutAccess,
         refresh:options=>request('/auth/refresh','',{method:'POST',body:'{}',...options}),
         logout:()=>request('/auth/logout','',{method:'POST',body:'{}',timeoutMs:3000})});
   }
@@ -637,7 +662,13 @@ export const liveApi = {
     };
   },
   async login(username, password, { signal } = {}) {
-    const manager=normalRemember(),epoch=await manager.begin();
+    const manager=normalRemember();let previousKey=failedNormalCloseKey||savedAccessKey(),epoch;
+    while(normalSessionCloses.size||normalSessionBegins.size){
+      const closingPrevious=normalSessionCloses.has(previousKey)||normalSessionBegins.has(previousKey);await Promise.all([...normalSessionCloses.values(),...normalSessionBegins.values()]);
+      previousKey=failedNormalCloseKey||(closingPrevious?'':previousKey);
+    }
+    const beginning=manager.begin(normalCloseOptions(previousKey)).then(value=>{normalCloseSucceeded(previousKey);return value;},error=>{normalCloseFailed(previousKey);throw error;}).finally(()=>normalSessionBegins.delete(previousKey));
+    normalSessionBegins.set(previousKey,beginning);epoch=await beginning;
     const authenticate=()=>request("/auth/login", "", { method: "POST", body: JSON.stringify({ username, password,...(normalBridge?{transport:'native'}:{}) }), signal });
     const result=manager.authenticate?await manager.authenticate(authenticate,epoch):await authenticate();
     const accessToken = result.accessToken || result.access_token || result.token;
@@ -646,7 +677,12 @@ export const liveApi = {
   },
   async resumeNormalSession(options={}){const resumed=await normalRemember().resume(options);if(!resumed)return null;normalEpochs.set(resumed.result,resumed.epoch);return resumed.result;},
   rememberNormalSession(result,user){return normalRemember().remember(result,user,normalEpochs.get(result));},
-  clearNormalSession(){return normalRemember().clear();},
+  clearNormalSession(accessToken=''){
+    accessToken=accessToken||failedNormalCloseKey;
+    if(normalSessionCloses.has(accessToken))return normalSessionCloses.get(accessToken);
+    const closed=normalRemember().clear(normalCloseOptions(accessToken)).then(result=>{normalCloseSucceeded(accessToken);return result;},error=>{normalCloseFailed(accessToken);throw error;}).finally(()=>normalSessionCloses.delete(accessToken));
+    normalSessionCloses.set(accessToken,closed);return closed;
+  },
   async rememberedNormalSession(options={}) {
     const manager=normalRemember();
     const remembered=manager.probe?await manager.probe(options):await inspectRememberedNormal(options);
@@ -658,7 +694,11 @@ export const liveApi = {
     return {enabled:true,user:isSemihTestUser(user)?user:null};
   },
   hasNativeNormalSession(){normalRemember();return Boolean(normalBridge);},
-  async session(token, options = {}) { return normalizePermissions(await request("/auth/me", token, options)); },
+  async session(token, options = {}) {
+    const session=normalizePermissions(await request("/auth/me", token, options));
+    verifiedNormalSessionKeys.set(token,session.customerProductRequestIssuer===true);
+    return session;
+  },
   // Chatwoot-backed inbox pages can take over 20 seconds; retain a bounded read
   // budget without extending sends or preventing session cancellation.
   async inbox(token, offset = 0, {view,...options} = {}) {

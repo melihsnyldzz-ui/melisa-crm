@@ -73,6 +73,99 @@ test('actual expired-session renewal retains protected grant on503 but clears it
  },{terminal:true,isolated:true});
 });
 
+test('actual App captures the issuer key before clearing local state and reports an unconfirmed logout honestly',async()=>fixture(async h=>{
+ const issuer={...actor(),customerProductRequestIssuer:true};h.connect(issuer);
+ let rejected;const pending=new Promise((_resolve,reject)=>{rejected=reject;}),calls=[];
+ h.harness.api.clearNormalSession=key=>{calls.push({key,stored:h.local.getItem('melisa-crm-access-token')});return pending;};
+ const closed=h.harness.actions.closeLiveSession('',true),failure=assert.rejects(closed,/Synthetic logout unavailable/);
+ assert.deepEqual(calls,[{key:'synthetic-session',stored:'synthetic-session'}]);assert.equal(h.local.getItem('melisa-crm-access-token'),null);
+ assert.doesNotMatch(renderToStaticMarkup(h.render()),/Synthetic fixture/);
+ rejected(Error('Synthetic logout unavailable'));await failure;await settle();assert.equal(h.render().props.error,'Synthetic logout unavailable');
+},{isolated:true,origin:'http://127.0.0.1:62700'}));
+
+test('actual App clears browser access on a failed issuer logout and still blocks password login through the captured old key',async()=>fixture(async h=>{
+ const beforeFetch=globalThis.fetch,calls=[],issuer={id:'synthetic-existing-manager',username:'synthetic-manager',role:'mudur',permissions:['crm.view','crm.manage'],customerProductRequestIssuer:true};
+ globalThis.fetch=async(url,options)=>{calls.push({url,options});return url.endsWith('/me')?Response.json({data:issuer}):Response.json({error:{message:'Synthetic revoke unavailable'}},{status:503});};
+ try{
+  const {liveApi}=await import('../src/liveApi.js?actual-app-failed-issuer-logout-barrier-test');
+  await liveApi.session('synthetic-session');h.connect({...actor(),customerProductRequestIssuer:true});
+  h.harness.api.clearNormalSession=key=>liveApi.clearNormalSession(key);h.harness.api.login=(...args)=>liveApi.login(...args);
+  const closed=h.harness.actions.closeLiveSession('',true);assert.equal(h.local.getItem('melisa-crm-access-token'),null);
+  await assert.rejects(closed,/Oturumun kapanışı doğrulanamadı/);await settle();
+  for(let i=0;i<2;i++){
+   h.render().props.onChange({username:'synthetic-manager',password:'synthetic-password'});h.render();await h.harness.actions.connectLive();
+   assert.match(h.render().props.error,/Oturumun kapanışı doğrulanamadı/);
+  }
+  assert.deepEqual(calls.map(call=>call.url),['/api/live/auth/me','/api/live/auth/logout','/api/live/auth/logout','/api/live/auth/logout']);
+  assert(calls.slice(1).every(call=>call.options.body==='{}'&&call.options.headers.Authorization==='Bearer synthetic-session'));
+ }finally{globalThis.fetch=beforeFetch;}
+},{isolated:true,origin:'http://127.0.0.1:62700'}));
+
+test('actual App blocks password login while its captured issuer logout is pending after browser access has been cleared',async()=>fixture(async h=>{
+ const beforeFetch=globalThis.fetch,calls=[],issuer={id:'synthetic-existing-manager',username:'synthetic-manager',role:'mudur',customerProductRequestIssuer:true};
+ let started,rejectLogout;const logoutStarted=new Promise(resolve=>started=resolve),logoutResponse=new Promise(resolve=>rejectLogout=()=>resolve(Response.json({error:{message:'Synthetic pending revoke failed'}},{status:503})));
+ globalThis.fetch=async(url,options)=>{calls.push({url,options});if(url.endsWith('/me'))return Response.json({data:issuer});started();return logoutResponse;};
+ try{
+  const {liveApi}=await import('../src/liveApi.js?actual-app-pending-issuer-close-barrier-test');await liveApi.session('synthetic-session');
+  h.connect({...actor(),customerProductRequestIssuer:true});h.harness.api.clearNormalSession=key=>liveApi.clearNormalSession(key);h.harness.api.login=(...args)=>liveApi.login(...args);
+  const closed=h.harness.actions.closeLiveSession('',true),failedClose=assert.rejects(closed,/Oturumun kapanışı doğrulanamadı/);assert.equal(h.local.getItem('melisa-crm-access-token'),null);
+  await logoutStarted;h.render().props.onChange({username:'synthetic-manager',password:'synthetic-password'});h.render();
+  const login=h.harness.actions.connectLive();await settle();assert.deepEqual(calls.map(call=>call.url),['/api/live/auth/me','/api/live/auth/logout']);
+  rejectLogout();await failedClose;assert.equal(await login,null);assert.match(h.render().props.error,/Oturumun kapanışı doğrulanamadı/);
+  assert.deepEqual(calls.map(call=>call.url),['/api/live/auth/me','/api/live/auth/logout']);
+ }finally{globalThis.fetch=beforeFetch;}
+},{isolated:true,origin:'http://127.0.0.1:62700'}));
+
+test('actual App permits expired or revoked issuer relogin only after the same captured key me401 settles',async()=>{
+ for(const reason of ['expired','revoked'])await fixture(async h=>{
+  const beforeFetch=globalThis.fetch,calls=[],issuer={id:'synthetic-existing-manager',username:'synthetic-manager',role:'mudur',customerProductRequestIssuer:true};
+  let verifying=false,started,finish;const verificationStarted=new Promise(resolve=>started=resolve),verification=new Promise(resolve=>finish=resolve);
+  globalThis.fetch=async(url,options)=>{
+   calls.push({url,options});
+   if(url.endsWith('/login'))return Response.json({data:{accessToken:'synthetic-new-access',user:issuer}});
+   if(url.endsWith('/logout'))return Response.json({error:{message:`Synthetic ${reason} logout denied`}},{status:401});
+   if(!verifying)return Response.json({data:issuer});started();return verification;
+  };
+  try{
+   const {liveApi}=await import(`../src/liveApi.js?actual-app-known-${reason}-revalidation-test`);await liveApi.session('synthetic-session');verifying=true;
+   h.connect({...actor(),customerProductRequestIssuer:true});h.harness.api.clearNormalSession=key=>liveApi.clearNormalSession(key);h.harness.api.login=(...args)=>liveApi.login(...args);
+   const closed=h.harness.actions.closeLiveSession('',true);assert.equal(h.local.getItem('melisa-crm-access-token'),null);await verificationStarted;
+   h.render().props.onChange({username:'synthetic-manager',password:'synthetic-password'});h.render();const login=h.harness.actions.connectLive();await settle();
+   assert.deepEqual(calls.map(call=>call.url),['/api/live/auth/me','/api/live/auth/logout','/api/live/auth/me']);
+   finish(Response.json({error:{message:`Synthetic ${reason} old authority`}},{status:401}));await closed;await login;
+   assert.equal(h.local.getItem('melisa-crm-access-token'),'synthetic-new-access');assert.match(renderToStaticMarkup(h.render()),/Synthetic fixture/);
+   assert.deepEqual(calls.map(call=>call.url),['/api/live/auth/me','/api/live/auth/logout','/api/live/auth/me','/api/live/auth/login']);
+   assert(calls.slice(1,3).every(call=>call.options.headers.Authorization==='Bearer synthetic-session'&&call.options.redirect==='error'&&call.options.credentials==='omit'));
+  }finally{globalThis.fetch=beforeFetch;}
+ },{isolated:true,origin:'http://127.0.0.1:62700'});
+});
+
+test('actual App keeps a known issuer logout401 barrier through valid or unavailable me and recovers after verified invalidation',async()=>{
+ for(const initial of ['valid','unavailable'])await fixture(async h=>{
+  const beforeFetch=globalThis.fetch,calls=[],issuer={id:'synthetic-existing-manager',username:'synthetic-manager',role:'mudur',customerProductRequestIssuer:true};let mode='bootstrap';
+  globalThis.fetch=async(url,options)=>{
+   calls.push({url,options});
+   if(url.endsWith('/login'))return Response.json({data:{accessToken:'synthetic-new-access',user:issuer}});
+   if(url.endsWith('/logout'))return Response.json({error:{message:'Synthetic logout denied'}},{status:401});
+   return mode==='bootstrap'||mode==='valid'?Response.json({data:issuer}):Response.json({error:{message:'Synthetic old authority unconfirmed'}},{status:mode==='invalid'?401:503});
+  };
+  try{
+   const {liveApi}=await import(`../src/liveApi.js?actual-app-known-${initial}-barrier-test`);await liveApi.session('synthetic-session');mode=initial;
+   h.connect({...actor(),customerProductRequestIssuer:true});h.harness.api.clearNormalSession=key=>liveApi.clearNormalSession(key);h.harness.api.login=(...args)=>liveApi.login(...args);
+   const closed=h.harness.actions.closeLiveSession('',true);assert.equal(h.local.getItem('melisa-crm-access-token'),null);await assert.rejects(closed,/Oturumun kapanışı doğrulanamadı/);
+   for(let i=0;i<2;i++){
+    h.render().props.onChange({username:'synthetic-manager',password:'synthetic-password'});h.render();await h.harness.actions.connectLive();
+    assert.match(h.render().props.error,/Oturumun kapanışı doğrulanamadı/);
+   }
+   assert.equal(calls.filter(call=>call.url.endsWith('/login')).length,0);mode='invalid';
+   h.render().props.onChange({username:'synthetic-manager',password:'synthetic-password'});h.render();await h.harness.actions.connectLive();
+   assert.equal(h.local.getItem('melisa-crm-access-token'),'synthetic-new-access');assert.match(renderToStaticMarkup(h.render()),/Synthetic fixture/);
+   assert.deepEqual(calls.map(call=>call.url),['/api/live/auth/me','/api/live/auth/logout','/api/live/auth/me','/api/live/auth/logout','/api/live/auth/me','/api/live/auth/logout','/api/live/auth/me','/api/live/auth/logout','/api/live/auth/me','/api/live/auth/login']);
+   assert(calls.slice(1,-1).every(call=>call.options.headers.Authorization==='Bearer synthetic-session'&&call.options.redirect==='error'&&call.options.credentials==='omit'));
+  }finally{globalThis.fetch=beforeFetch;}
+ },{isolated:true,origin:'http://127.0.0.1:62700'});
+});
+
 test('actual terminal entry has an isolated auth session and offline keyboard send cannot reach transport',async()=>fixture(async h=>{
  let sends=0;h.harness.api.send=async()=>{sends++;};
  const login=renderToStaticMarkup(h.render());

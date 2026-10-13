@@ -4,20 +4,24 @@ Kanonik repo `C:\Sirket\CRM\melisa-crm`, origin `https://github.com/melihsnyldzz
 
 ## Aktif iş
 
-Ortak sıra **2 / CRM06**: müşteri kataloğundan gerçek ürün/adet talebi → aynı atanmış normal personelde görünüm → yeniden açmada tek kalıcı kayıt → yanlış personelde erişim reddi → mevcut oturumların korunması. İlk bekleyen 12 Ekim belge/kanıt teslimi kapatılır; sonra dar shared entegrasyon ve inaktif paket owner'a hazırlanır.
+Ortak sıra **2 / CRM06**: müşteri kataloğundan gerçek ürün/adet talebi → aynı atanmış normal personelde görünüm → yeniden açmada tek kalıcı kayıt → yanlış personelde erişim reddi → mevcut oturumların korunması. Bekleyen12Ekim belge/kanıt teslimi kapalı; shared kaynak entegrasyonu tamamlandı, inaktif paket owner'a hazırlanır.
 
-## Korunan checkpoint
+**13 Ekim güncel alt kapsam:** bekleyen12Ekim kanıtları41b2f9e ile push/PR3'e teslim edildi; işletme kararları/korumalı snapshot sınırı9388455, taze8023orijinal ekranı45819ea kayıtlı. Ortak normal default-off router/config, seçili mevcut issuer için ayrı SID ailesi ve normal launcher mount kaynakta hazır. Legacygrantless JWT issuer sayılmaz; token-only hardreload, başarısız/bekleyen çıkış ve eşzamanlı giriş korunur. Geçersiz-oturum relogin regresyonu kapandı. Backend49/49, frontend55/55 ve bağlı10/10 (backend49ile örtüşür) hedefli offlinePASS; bağımsız highreviewer açıkP1/P2 yok. Tek immutable inaktif paket hazırlanır. Bu kaynak henüz ortak09ca runtime değildir.
 
-- Son teslim HEAD0424ac7; uygulama çekirdeği fb34c293fa58154e00b132d13b8246939ce8cbbb, ayrı proof628xx. Gerçek8023×3+101×2, tek CRM interest kaydı; atanmış normalpersonel okuması ve diğer normalpersonel same-target403 kanıtlı. İnsan/mobil/ortak kurulum kabulü yok.
+## Korunan tarihsel checkpoint — 12 Ekim
+
+- 12Ekim teslim HEAD0424ac7; uygulama çekirdeği fb34c293fa58154e00b132d13b8246939ce8cbbb, ayrı proof628xx. Gerçek8023×3+101×2, tek CRM interest kaydı; atanmış normalpersonel okuması ve diğer normalpersonel same-target403 kanıtlı. İnsan/mobil/ortak kurulum kabulü yok.
 - 12 Ekim manifestv3 dokuz byte/hash mühürlü kanıt içerir; kanıt dosyaları değiştirilmez. 11 bekleyen staged dosya yalnız belge/kanıttır. Source/code değişmediği için eski1165 offline suite tekrar edilmez.
 - Ortak CRM09ca1dac ayrı çalışan paket/normal terminal kapsamıdır; fb34 kuruldu diye sunulmaz. Eski628xx PID/adres ve ERP625 health tarihli checkpoint'tir. Güncel runtime her işlem öncesi yeniden tanımlanır.
 - Normal diğer personel teknik erişim boşluğu kapalı; tam mobil/görsel/fiziksel/personel ve insan CRM-UA11 bekler. Private snapshot/ayrı restore-check aktif DB/işletme restore kabulü değildir.
 
 ## Gerçek kalan entegrasyon
 
-Request factory/app mount exactproof628xx ve Semih helper şartıyla sınırlı. Normal shared627xx launcher mount/state endpoint, explicit default-off exactDB02 profil ve helper'dan bağımsız normal SID/fingerprint/expiry/revoke authority yolu gerekir. Çekirdek talep store/UI yeniden yazılmaz. Mevcut normal personel ve eski journal aileleri korunur; proof state/grant/credential shared'e kopyalanmaz.
+Shared627xx kaynak mount/state endpoint ve helper'dan bağımsız normal SID/fingerprint/expiry/revoke authority yolu uygulanıyor; eski proof628xx tarihsel/ayrı kalır. Çekirdek talep store/UI yeniden yazılmaz. Mevcut normal personel ve eski journal aileleri korunur; proof state/grant/credential shared'e kopyalanmaz. Müşteri katalog okuyucusu RAM-only olduğu için restart sonrası eski linkin katalog okuması yeniden açılmaz; kalıcı personel talep geçmişi korunur, yeni link gerekir.
 
 ERP sahibi shared supervisor env whitelist/package/config/dependency pinlerini ve restartı sahiplenir. ERP/native/startup/config/store/port üzerinde eşzamanlı veya habersiz yazı yok. CRM bağımsız kaynak/test/paket çalışmasını sürdürür; exact inaktif candidate/handoff ortak aktivasyondan önce teslim edilir.
+
+Seçili owner settings2bf27620b188: ERP4184/native4186/web5234, DB02/copye16b, CRM09ca62700 ve native-order60e424b. Dört yeni `CRM_CUSTOMER_PRODUCT_REQUEST_*` alanı owner whitelist'inde yok. Normal issuer mevcut `crm-patron`/agent2; müdür/nullagent veya personel/agent3 yerine geçirilmez. Protectedpatron credential teslimi doğrulanmadı; eski Semih/proof/personel DPAPI başka aktör için kullanılamaz. Bu iki somut bağımlılık kaynak/paket teslimini durdurmaz, gerçek issuer ekran kabulünü ayrı tutar.
 
 ## İptal ve sonraki iş
 
@@ -27,4 +31,4 @@ CRM06 sonrası ilk bağımsız CRM işi ortak **sıra6 / CRM01** mevcut izinli m
 
 ## Teslim sınırı
 
-GitHub PR3 aynı feature tabanında; main merge/tag/LIVE yok. Son0424 CI7job/steps0 ödeme/harcama engeli kayıtlı; yerel PASS uzakCI değildir. Source/paket, docHEAD, exactCI ve insan sonucu ayrı kaydedilir. Kaynak teslimi kullanıcı kabulü bekledi diye durdurulmaz.
+GitHub PR3 aynı feature tabanında; main merge/tag/LIVE yok. Önceki0424/41b2/45819ea CI7job/steps0 ödeme/harcama engeli tarihli kayıtlı; yeni sourceexactCI ayrıca doğrulanır, yerelPASS uzakCI değildir. Source/paket, docHEAD, exactCI ve insan sonucu ayrı kaydedilir. Kaynak teslimi kullanıcı kabulü bekledi diye durdurulmaz.

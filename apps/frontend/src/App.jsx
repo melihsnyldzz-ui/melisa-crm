@@ -648,7 +648,7 @@ export function App() {
     else textDraftStorageRef.current.suspend();
     salesDraftFlowRef.current?.close();
     const closingKey = liveKeyRef.current;
-    const normalSessionClose=preserveNormal?Promise.resolve():liveApi.clearNormalSession();
+    const normalSessionClose=preserveNormal?Promise.resolve():liveApi.clearNormalSession(closingKey);
     if(!preserveNormal){setNormalResumeAvailable(false);setSemihEntry(current=>({...current,user:null}));}
     sessionLoaderRef.current?.invalidate(); permissionRefreshRef.current?.invalidate();
     uiOperationEpochRef.current++;

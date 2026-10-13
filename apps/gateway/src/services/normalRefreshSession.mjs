@@ -78,6 +78,13 @@ export function createNormalRefreshStore({file,resolveUser,authorizeUser=()=>tru
     // A simultaneous logout can hold the token retired by an in-flight refresh.
     // Retired hashes may revoke their own family but never rotate it again.
     revoke(token){return mutate(data=>{const digest=tokenHash(token),grant=data.grants.find(g=>g.tokenHash===digest||g.retiredHashes?.includes(digest));if(grant)grant.revoked=true;return {loggedOut:true};});},
+    // A password-issued access JWT can close only its own currently valid
+    // family after a browser reload lost the RAM-only refresh secret.
+    revokeSession(sid,user){return mutate(data=>{
+      const grant=data.grants.find(value=>value.sid===sid),actual=current(grant);
+      if(actual.id!==user?.id||!authorizeUser(user)||normalSessionFingerprint(user)!==grant.fingerprint)throw reject();
+      grant.revoked=true;return {loggedOut:true};
+    });},
   };
 }
 

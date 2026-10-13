@@ -97,3 +97,205 @@ test('the real native API preserves protected refresh secrets and explicitly sel
     await liveApi.clearNormalSession();assert.equal(saved,null);assert.deepEqual(calls[2].body,{refreshToken:'synthetic-next-refresh'});
   }finally{globalThis.fetch=beforeFetch;if(beforeWindow===undefined)delete globalThis.window;else globalThis.window=beforeWindow;}
 });
+
+test('actual disabled-helper browser reload verifies the saved issuer access token and revokes it after local access is cleared',async()=>{
+  const beforeFetch=globalThis.fetch,beforeWindow=globalThis.window,calls=[],values=new Map();
+  const issuer={id:'synthetic-existing-manager',username:'synthetic-manager',role:'mudur',permissions:['crm.view','crm.manage'],customerProductRequestIssuer:true};
+  const signedIn={accessToken:'synthetic-own-issuer-access',refreshToken:'synthetic-ram-only-refresh',expiresAt:100000,user:issuer};
+  globalThis.window={location:{origin:'http://127.0.0.1:62700',pathname:'/',search:''},sessionStorage:{getItem:key=>values.get(key)??null,setItem:(key,value)=>values.set(key,value),removeItem:key=>values.delete(key)}};
+  globalThis.fetch=async(url,options)=>{
+    calls.push({url,options,storedAccess:values.get('melisa-crm-access-token')});
+    const data=url.endsWith('/remembered')?{enabled:false,user:null}:url.endsWith('/login')?signedIn:url.endsWith('/me')?issuer:url.includes('/crm/inbox?')?{conversations:[],summary:{total:0}}:{loggedOut:true};
+    return Response.json({data});
+  };
+  try{
+    const first=await import('../src/liveApi.js?issuer-first-password-session-test');
+    assert.deepEqual(await first.liveApi.rememberedNormalSession(),{enabled:false,user:null});
+    const normal=await first.liveApi.login('synthetic-manager','synthetic-password'),profile=await first.liveApi.session(normal.accessToken);
+    await first.liveApi.rememberNormalSession(normal,profile);first.saveAccessKey(normal.accessToken);
+    assert.deepEqual([...values], [['melisa-crm-access-token',normal.accessToken]]);
+
+    // A fresh API instance has no in-memory refresh grant, matching a hard reload.
+    const reloaded=await import('../src/liveApi.js?issuer-hard-reloaded-browser-test'),commits=[];
+    assert.deepEqual(await reloaded.liveApi.rememberedNormalSession(),{enabled:false,user:null});
+    const loader=createSessionLoader({api:reloaded.liveApi,onCommit:value=>commits.push(value),onError:error=>{throw error;},onBusy:()=>{}});
+    await loader.start({token:reloaded.savedAccessKey()});assert.equal(commits[0].session.customerProductRequestIssuer,true);
+    assert.equal(calls.filter(call=>call.url.endsWith('/refresh')).length,0);
+    const closingKey=commits[0].key,closed=reloaded.liveApi.clearNormalSession(closingKey);
+    reloaded.saveAccessKey('');loader.invalidate();await closed;
+    const mutations=calls.filter(call=>call.options.method==='POST');assert.equal(mutations.length,2);
+    const logout=mutations[1];assert.equal(logout.url,'/api/live/auth/logout');assert.equal(logout.options.body,'{}');
+    assert.equal(logout.options.headers.Authorization,`Bearer ${closingKey}`);assert.equal(logout.options.headers['Content-Type'],'application/json');
+    assert.equal(logout.options.redirect,'error');assert.equal(logout.options.credentials,'omit');assert.equal(logout.storedAccess,undefined);
+    assert.equal(JSON.stringify([...values]).includes(signedIn.refreshToken),false);
+  }finally{globalThis.fetch=beforeFetch;if(beforeWindow===undefined)delete globalThis.window;else globalThis.window=beforeWindow;}
+});
+
+test('actual issuer replacement revokes its verified old access before password login, and a failed revoke prevents the new mutation',async()=>{
+  const beforeFetch=globalThis.fetch,beforeWindow=globalThis.window;
+  try{
+    for(const status of [200,401,503]){
+      let stored='synthetic-old-issuer';const calls=[],issuer={id:'synthetic-existing-manager',username:'synthetic-manager',role:'mudur',customerProductRequestIssuer:true};
+      globalThis.window={location:{origin:'http://127.0.0.1:62700',pathname:'/',search:''},sessionStorage:{getItem:()=>stored,setItem:(_key,value)=>stored=value,removeItem:()=>stored=null}};
+      globalThis.fetch=async(url,options)=>{
+        calls.push({url,options});
+        if(url.endsWith('/logout'))return Response.json(status===200?{data:{loggedOut:true}}:{error:{message:'Synthetic revoke rejected'}},{status});
+        return Response.json({data:url.endsWith('/me')?issuer:{accessToken:'synthetic-new-issuer',user:issuer}});
+      };
+      const {liveApi}=await import(`../src/liveApi.js?issuer-replacement-${status}-test`);await liveApi.session(stored);
+      if(status===200)await liveApi.login('synthetic-manager','synthetic-password');
+      else{
+        await assert.rejects(()=>liveApi.login('synthetic-manager','synthetic-password'),/Oturumun kapanışı doğrulanamadı/);
+        await assert.rejects(()=>liveApi.login('synthetic-manager','synthetic-password'),/Oturumun kapanışı doğrulanamadı/);
+      }
+      assert.equal(calls[1].url,'/api/live/auth/logout');assert.equal(calls[1].options.headers.Authorization,'Bearer synthetic-old-issuer');assert.equal(calls[1].options.body,'{}');
+      assert.deepEqual(calls.map(call=>call.url),['/api/live/auth/me','/api/live/auth/logout',...(status===200?['/api/live/auth/login']:status===401?['/api/live/auth/me','/api/live/auth/logout','/api/live/auth/me']:['/api/live/auth/logout'])]);
+    }
+  }finally{globalThis.fetch=beforeFetch;if(beforeWindow===undefined)delete globalThis.window;else globalThis.window=beforeWindow;}
+});
+
+test('an unknown access is classified through me and a verified normal nonissuer cannot select the issuer bearer logout',async()=>{
+  const beforeFetch=globalThis.fetch,beforeWindow=globalThis.window,calls=[];
+  globalThis.window={location:{origin:'http://127.0.0.1:62700',pathname:'/',search:''},sessionStorage:{getItem:()=>null}};
+  globalThis.fetch=async(url,options)=>{calls.push({url,options});return Response.json({data:{id:'synthetic-personnel',username:'synthetic-personnel',role:'personel'}});};
+  try{
+    const {liveApi}=await import('../src/liveApi.js?issuer-nonauthority-logout-test');
+    await liveApi.clearNormalSession('synthetic-unverified-issuer');assert.equal(calls.length,1);assert.equal(calls[0].options.headers.Authorization,'Bearer synthetic-unverified-issuer');
+    await liveApi.session('synthetic-personnel-access');await liveApi.clearNormalSession('synthetic-personnel-access');
+    assert.deepEqual(calls.map(call=>call.url),['/api/live/auth/me','/api/live/auth/me']);
+  }finally{globalThis.fetch=beforeFetch;if(beforeWindow===undefined)delete globalThis.window;else globalThis.window=beforeWindow;}
+});
+
+test('actual issuer repeated close and simultaneous replacement share one pending refresh-grant logout without bearer mixing',async()=>{
+  const beforeFetch=globalThis.fetch,beforeWindow=globalThis.window,calls=[],started=deferred(),revocation=deferred();let stored=null;
+  const issuer={id:'synthetic-existing-manager',username:'synthetic-manager',role:'mudur',customerProductRequestIssuer:true};
+  const result={accessToken:'synthetic-issuer-access',refreshToken:'synthetic-refresh-grant',expiresAt:100000,user:issuer};
+  globalThis.window={location:{origin:'http://127.0.0.1:62700',pathname:'/',search:''},sessionStorage:{getItem:()=>stored,setItem:(_key,value)=>stored=value,removeItem:()=>stored=null}};
+  globalThis.fetch=async(url,options)=>{calls.push({url,options});if(url.endsWith('/logout')){started.resolve();await revocation.promise;return Response.json({data:{loggedOut:true}});}return Response.json({data:url.endsWith('/me')?issuer:result});};
+  try{
+    const {liveApi,saveAccessKey}=await import('../src/liveApi.js?issuer-concurrent-rt-logout-test');
+    const normal=await liveApi.login('synthetic-manager','synthetic-password'),profile=await liveApi.session(normal.accessToken);
+    await liveApi.rememberNormalSession(normal,profile);saveAccessKey(normal.accessToken);
+    const closed=liveApi.clearNormalSession(normal.accessToken);assert.equal(liveApi.clearNormalSession(normal.accessToken),closed);
+    const replacement=liveApi.login('synthetic-manager','synthetic-password');await started.promise;
+    const logout=calls.at(-1);assert.equal(logout.url,'/api/live/auth/logout');assert.equal(logout.options.body,JSON.stringify({refreshToken:result.refreshToken}));
+    assert.equal(logout.options.headers.Authorization,undefined);assert.equal(calls.filter(call=>call.url.endsWith('/login')).length,1);
+    revocation.resolve();await Promise.all([closed,replacement]);
+    assert.deepEqual(calls.map(call=>call.url),['/api/live/auth/login','/api/live/auth/me','/api/live/auth/logout','/api/live/auth/login']);
+  }finally{globalThis.fetch=beforeFetch;if(beforeWindow===undefined)delete globalThis.window;else globalThis.window=beforeWindow;}
+});
+
+test('unknown reloaded access blocks account replacement on repeated me503 and recovers through its own issuer logout before login',async()=>{
+  const beforeFetch=globalThis.fetch,beforeWindow=globalThis.window,calls=[];let meStatus=503,stored='synthetic-unknown-old-access';
+  const issuer={id:'synthetic-existing-manager',username:'synthetic-manager',role:'mudur',customerProductRequestIssuer:true};
+  globalThis.window={location:{origin:'http://127.0.0.1:62700',pathname:'/',search:''},sessionStorage:{getItem:()=>stored,setItem:(_key,value)=>stored=value,removeItem:()=>stored=null}};
+  globalThis.fetch=async(url,options)=>{
+    calls.push({url,options});
+    if(url.endsWith('/me'))return Response.json(meStatus===200?{data:issuer}:{error:{message:'Synthetic profile unavailable'}},{status:meStatus});
+    return Response.json({data:url.endsWith('/logout')?{loggedOut:true}:{accessToken:'synthetic-next-access',user:issuer}});
+  };
+  try{
+    const {liveApi}=await import('../src/liveApi.js?issuer-unknown-reload-replacement-test');
+    for(let i=0;i<2;i++)await assert.rejects(()=>liveApi.login('synthetic-manager','synthetic-password'),/Oturumun kapanışı doğrulanamadı/);
+    assert.deepEqual(calls.map(call=>call.url),['/api/live/auth/me','/api/live/auth/me']);
+    assert(calls.every(call=>call.options.headers.Authorization==='Bearer synthetic-unknown-old-access'&&call.options.redirect==='error'&&call.options.credentials==='omit'));
+    meStatus=200;await liveApi.login('synthetic-manager','synthetic-password');
+    assert.deepEqual(calls.slice(2).map(call=>call.url),['/api/live/auth/me','/api/live/auth/logout','/api/live/auth/login']);
+    assert.equal(calls[3].options.headers.Authorization,'Bearer synthetic-unknown-old-access');assert.equal(calls[3].options.body,'{}');
+  }finally{globalThis.fetch=beforeFetch;if(beforeWindow===undefined)delete globalThis.window;else globalThis.window=beforeWindow;}
+});
+
+test('unknown access401 closes locally without claiming revocation or sending an issuer logout',async()=>{
+  const beforeFetch=globalThis.fetch,beforeWindow=globalThis.window,calls=[];
+  globalThis.window={location:{origin:'http://127.0.0.1:62700',pathname:'/',search:''}};
+  globalThis.fetch=async(url,options)=>{calls.push({url,options});return Response.json({error:{message:'Synthetic expired access'}},{status:401});};
+  try{
+    const {liveApi}=await import('../src/liveApi.js?issuer-unknown-expired-access-test');
+    assert.equal(await liveApi.clearNormalSession('synthetic-expired-access'),undefined);assert.deepEqual(calls.map(call=>call.url),['/api/live/auth/me']);
+  }finally{globalThis.fetch=beforeFetch;if(beforeWindow===undefined)delete globalThis.window;else globalThis.window=beforeWindow;}
+});
+
+test('unknown close aborts an actual pending me read and retains its old key barrier after browser storage is cleared',async()=>{
+  const beforeFetch=globalThis.fetch,beforeWindow=globalThis.window,calls=[];let stored='synthetic-timed-out-access',pending=true,aborts=0;
+  globalThis.window={location:{origin:'http://127.0.0.1:62700',pathname:'/',search:''},sessionStorage:{getItem:()=>stored,setItem:(_key,value)=>stored=value,removeItem:()=>stored=null}};
+  globalThis.fetch=async(url,options)=>{
+    calls.push({url,options});
+    if(!pending)return Response.json({error:{message:'Synthetic profile unavailable'}},{status:503});
+    return new Promise((_resolve,reject)=>options.signal.addEventListener('abort',()=>{aborts++;reject(new DOMException('Synthetic aborted profile','AbortError'));},{once:true}));
+  };
+  try{
+    const {liveApi,saveAccessKey}=await import('../src/liveApi.js?issuer-unknown-aborted-read-test');
+    const closed=liveApi.clearNormalSession(stored);saveAccessKey('');
+    await assert.rejects(closed,/Oturumun kapanışı doğrulanamadı/);assert.equal(aborts,1);assert.equal(calls[0].options.signal.aborted,true);
+    pending=false;await assert.rejects(()=>liveApi.login('synthetic-manager','synthetic-password'),/Oturumun kapanışı doğrulanamadı/);
+    assert.deepEqual(calls.map(call=>call.url),['/api/live/auth/me','/api/live/auth/me']);assert(calls.every(call=>call.options.headers.Authorization==='Bearer synthetic-timed-out-access'));
+  }finally{globalThis.fetch=beforeFetch;if(beforeWindow===undefined)delete globalThis.window;else globalThis.window=beforeWindow;}
+});
+
+test('two concurrent unknown-key login begins join a failed old close despite cleared storage and later retry that same key before login',async()=>{
+  const beforeFetch=globalThis.fetch,beforeWindow=globalThis.window,calls=[],started=deferred(),profile=deferred();let stored='synthetic-concurrent-old-access',recover=false;
+  const issuer={id:'synthetic-existing-manager',username:'synthetic-manager',role:'mudur',customerProductRequestIssuer:true};
+  globalThis.window={location:{origin:'http://127.0.0.1:62700',pathname:'/',search:''},sessionStorage:{getItem:()=>stored,setItem:(_key,value)=>stored=value,removeItem:()=>stored=null}};
+  globalThis.fetch=async(url,options)=>{
+    calls.push({url,options});
+    if(url.endsWith('/me')){if(!recover){started.resolve();return profile.promise;}return Response.json({data:issuer});}
+    return Response.json({data:url.endsWith('/logout')?{loggedOut:true}:{accessToken:'synthetic-recovered-access',user:issuer}});
+  };
+  try{
+    const {liveApi,saveAccessKey}=await import('../src/liveApi.js?issuer-concurrent-unknown-begins-test');
+    const first=liveApi.login('synthetic-manager','synthetic-password'),firstRejected=assert.rejects(first,/Oturumun kapanışı doğrulanamadı/);await started.promise;
+    saveAccessKey('');const second=liveApi.login('synthetic-manager','synthetic-password'),secondRejected=assert.rejects(second,/Oturumun kapanışı doğrulanamadı/);
+    await Promise.resolve();await Promise.resolve();assert.deepEqual(calls.map(call=>call.url),['/api/live/auth/me']);
+    profile.resolve(Response.json({error:{message:'Synthetic pending profile failed'}},{status:503}));await Promise.all([firstRejected,secondRejected]);
+    assert.deepEqual(calls.map(call=>call.url),['/api/live/auth/me']);recover=true;await liveApi.login('synthetic-manager','synthetic-password');
+    assert.deepEqual(calls.map(call=>call.url),['/api/live/auth/me','/api/live/auth/me','/api/live/auth/logout','/api/live/auth/login']);
+    assert.equal(calls[1].options.headers.Authorization,'Bearer synthetic-concurrent-old-access');assert.equal(calls[2].options.headers.Authorization,'Bearer synthetic-concurrent-old-access');
+  }finally{globalThis.fetch=beforeFetch;if(beforeWindow===undefined)delete globalThis.window;else globalThis.window=beforeWindow;}
+});
+
+test('a previously verified issuer logout401 rechecks the same expired or revoked key and permits login without a revocation claim',async()=>{
+  const beforeFetch=globalThis.fetch,beforeWindow=globalThis.window;
+  try{
+    for(const reason of ['expired','revoked']){
+      const calls=[],issuer={id:'synthetic-existing-manager',username:'synthetic-manager',role:'mudur',customerProductRequestIssuer:true};let valid=true,stored='synthetic-known-old-access';
+      globalThis.window={location:{origin:'http://127.0.0.1:62700',pathname:'/',search:''},sessionStorage:{getItem:()=>stored,setItem:(_key,value)=>stored=value,removeItem:()=>stored=null}};
+      globalThis.fetch=async(url,options)=>{
+        calls.push({url,options});
+        if(url.endsWith('/login'))return Response.json({data:{accessToken:'synthetic-new-access',user:issuer}});
+        if(url.endsWith('/me')&&valid)return Response.json({data:issuer});
+        return Response.json({error:{message:`Synthetic ${reason} old authority`}},{status:401});
+      };
+      const {liveApi,saveAccessKey}=await import(`../src/liveApi.js?issuer-known-${reason}-logout401-test`);await liveApi.session(stored);valid=false;
+      const closed=liveApi.clearNormalSession(stored);saveAccessKey('');assert.equal(await closed,undefined);
+      await liveApi.login('synthetic-manager','synthetic-password');
+      assert.deepEqual(calls.map(call=>call.url),['/api/live/auth/me','/api/live/auth/logout','/api/live/auth/me','/api/live/auth/login']);
+      assert(calls.slice(1,3).every(call=>call.options.headers.Authorization==='Bearer synthetic-known-old-access'&&call.options.redirect==='error'&&call.options.credentials==='omit'));
+    }
+  }finally{globalThis.fetch=beforeFetch;if(beforeWindow===undefined)delete globalThis.window;else globalThis.window=beforeWindow;}
+});
+
+test('known issuer logout401 keeps the old-key barrier when me is valid, unavailable or aborted and recovers only after same-key me401',async()=>{
+  const beforeFetch=globalThis.fetch,beforeWindow=globalThis.window;
+  try{
+    for(const initial of ['valid','unavailable','aborted']){
+      const calls=[],issuer={id:'synthetic-existing-manager',username:'synthetic-manager',role:'mudur',customerProductRequestIssuer:true};let mode='bootstrap',stored='synthetic-known-retry-access',aborts=0;
+      globalThis.window={location:{origin:'http://127.0.0.1:62700',pathname:'/',search:''},sessionStorage:{getItem:()=>stored,setItem:(_key,value)=>stored=value,removeItem:()=>stored=null}};
+      globalThis.fetch=async(url,options)=>{
+        calls.push({url,options});
+        if(url.endsWith('/login'))return Response.json({data:{accessToken:'synthetic-recovered-access',user:issuer}});
+        if(url.endsWith('/logout'))return Response.json({error:{message:'Synthetic logout denied'}},{status:401});
+        if(mode==='bootstrap'||mode==='valid')return Response.json({data:issuer});
+        if(mode==='aborted')return new Promise((_resolve,reject)=>options.signal.addEventListener('abort',()=>{aborts++;reject(new DOMException('Synthetic verification aborted','AbortError'));},{once:true}));
+        return Response.json({error:{message:'Synthetic verification denied'}},{status:mode==='invalid'?401:503});
+      };
+      const {liveApi,saveAccessKey}=await import(`../src/liveApi.js?issuer-known-${initial}-verification-test`);await liveApi.session(stored);mode=initial;
+      const closed=liveApi.clearNormalSession(stored);saveAccessKey('');await assert.rejects(closed,/Oturumun kapanışı doğrulanamadı/);
+      if(initial==='aborted'){assert.equal(aborts,1);assert.equal(calls[2].options.signal.aborted,true);mode='unavailable';}
+      await assert.rejects(()=>liveApi.login('synthetic-manager','synthetic-password'),/Oturumun kapanışı doğrulanamadı/);
+      assert.equal(calls.filter(call=>call.url.endsWith('/login')).length,0);
+      mode='invalid';await liveApi.login('synthetic-manager','synthetic-password');
+      assert.deepEqual(calls.map(call=>call.url),['/api/live/auth/me','/api/live/auth/logout','/api/live/auth/me','/api/live/auth/logout','/api/live/auth/me','/api/live/auth/logout','/api/live/auth/me','/api/live/auth/login']);
+      assert(calls.slice(1,-1).every(call=>call.options.headers.Authorization==='Bearer synthetic-known-retry-access'&&call.options.redirect==='error'&&call.options.credentials==='omit'));
+    }
+  }finally{globalThis.fetch=beforeFetch;if(beforeWindow===undefined)delete globalThis.window;else globalThis.window=beforeWindow;}
+});

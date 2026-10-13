@@ -24,16 +24,16 @@ export function initialSessionAction({remembered,testAdminEnabled,manualTestLogi
 // The refresh grant is an HttpOnly cookie owned by the browser. Only a verified
 // identity is returned to the entry screen; /me still precedes every UI commit.
 // Mutations share a queue so logout also revokes a late login/refresh response.
-export function createBrowserNormalSession({inspect,refresh,logout,nativeRefresh,nativeLogout}) {
-  const fallback=createRememberedNormalSession({bridge:null,refresh:nativeRefresh,logout:nativeLogout});
+export function createBrowserNormalSession({inspect,refresh,logout,nativeRefresh,nativeLogout,logoutAccess}) {
+  const fallback=createRememberedNormalSession({bridge:null,refresh:nativeRefresh,logout:nativeLogout,logoutAccess});
   let generation=0,queue=Promise.resolve(),enabled=false,fallbackEpoch;
   const fallbackEpochs=new WeakMap();
   const serialize=fn=>{const call=queue.then(fn);queue=call.catch(()=>{});return call;};
   async function probe(options={}){const epoch=generation,result=rememberedSessionMetadata(await inspect(options));if(epoch!==generation||options.signal?.aborted)return {enabled:false,user:null};enabled=result.enabled;return result;}
-  function clear(){generation++;return serialize(async()=>{await fallback.clear();if(enabled)await logout();});}
+  function clear(options){generation++;return serialize(async()=>{await fallback.clear(enabled?undefined:options);if(enabled)await logout();});}
   return {
     probe,
-    async begin(){const closed=clear(),epoch=generation;await closed;fallbackEpoch=await fallback.begin();return epoch;},
+    async begin(options){const closed=clear(options),epoch=generation;await closed;fallbackEpoch=await fallback.begin();return epoch;},
     authenticate: (authenticate,epoch)=>serialize(async()=>{if(epoch!==generation)return null;const result=await authenticate();if(isSemihTestUser(result?.user)&&!result.refreshToken)enabled=true;return result;}),
     async remember(result,user,epoch){
       if(epoch!==generation)return false;

@@ -7,6 +7,7 @@ import { apiRateLimit, crmCors, securityHeaders } from './middleware/security.js
 import { routes } from './routes/index.js';
 import { createWaapiWebhookRoutes } from './routes/waapiWebhookRoutes.js';
 import { createMessageUploadParser } from './middleware/messageUploadParser.js';
+import {customerRequestRuntimeConfig} from './services/customerProductRequestIntegration.mjs';
 
 export function createApp({customerProductRequestRouter=null}={}) {
   const app = express();
@@ -22,9 +23,7 @@ export function createApp({customerProductRequestRouter=null}={}) {
   // The separate TEST customer request journal has no upstream side effects.
   // Mount only its exact router; the existing preparation write denial stays intact.
   if(customerProductRequestRouter){
-    if(process.env.CRM_CUSTOMER_PRODUCT_REQUEST_PROOF!=='true'||process.env.CRM_ISOLATED_PREPARATION!=='true'
-      ||process.env.CRM_UI_ORIGIN!=='http://127.0.0.1:62800'
-      ||process.env.CRM_TEST_EXPECTED_DATABASE!=='MELISA_ERP_CRM_SHARED_TEST_20261009_02')throw Error('CUSTOMER_REQUEST_PROOF_REQUIRED');
+    if(!customerRequestRuntimeConfig())throw Error('CUSTOMER_REQUEST_PROOF_REQUIRED');
     app.use(['/customer-product-requests','/crm/customer-product-requests'],express.json({limit:'16kb'}));
     app.use(customerProductRequestRouter);
   }
@@ -32,7 +31,7 @@ export function createApp({customerProductRequestRouter=null}={}) {
   // Native ERP drafts use the separate isolated order proxy, never this gateway.
   app.use((req,res,next)=>{
     if(process.env.CRM_ISOLATED_PREPARATION==='true'&&!['GET','HEAD','OPTIONS'].includes(req.method)
-      &&!(req.method==='POST'&&(req.path==='/auth/login'||(process.env.CRM_NORMAL_REFRESH_ENABLED==='true'&&['/auth/refresh','/auth/logout'].includes(req.path))))){
+      &&!(req.method==='POST'&&(req.path==='/auth/login'||((process.env.CRM_NORMAL_REFRESH_ENABLED==='true'||process.env.CRM_CUSTOMER_PRODUCT_REQUEST_ENABLED==='true')&&['/auth/refresh','/auth/logout'].includes(req.path))))){
       return res.status(403).json({success:false,error:{code:'CRM_PREPARATION_READ_ONLY',message:'Ortak hazırlık ortamında mevcut CRM kayıtları değiştirilemez.'}});
     }
     next();

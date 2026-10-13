@@ -30,21 +30,22 @@ function sameUser(record,user){return record.userId===String(user?.id??'')&&reco
 
 // No browser storage of credentials or tokens. Reopening always rotates a
 // server-verified grant, then /auth/me establishes the visible identity.
-export function createRememberedNormalSession({bridge,refresh,logout}) {
+export function createRememberedNormalSession({bridge,refresh,logout,logoutAccess}) {
   let generation=0,record=null,queue=Promise.resolve();
   const serialize=fn=>{const call=queue.then(fn);queue=call.catch(()=>{});return call;};
-  function clear(){
+  function clear({accessToken=''}={}){
     const old=record;generation++;record=null;
     return serialize(async()=>{
       let saved=old,failure=null;
       if(!saved)try{saved=await bridge?.get();}catch(error){failure=error;}
       try{await bridge?.clear();}catch(error){failure??=error;}
       if(saved?.refreshToken)try{await logout(saved.refreshToken);}catch(error){failure??=error;}
+      else if(accessToken&&logoutAccess)try{await logoutAccess(accessToken);}catch(error){failure??=error;}
       if(failure)throw Error('Oturumun kapanışı doğrulanamadı. Bağlantınızı kontrol edin.');
     });
   }
   return {
-    async begin(){const closed=clear(),epoch=generation;await closed;return epoch;},
+    async begin(options){const closed=clear(options),epoch=generation;await closed;return epoch;},
     async remember(result,user,epoch){
       if(epoch!==generation)return false;
       if(!result?.refreshToken)return false;

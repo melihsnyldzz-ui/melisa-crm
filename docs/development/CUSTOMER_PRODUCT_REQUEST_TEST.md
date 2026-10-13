@@ -1,5 +1,24 @@
 # Müşteri kataloğu → CRM ürün talebi TEST sözleşmesi
 
+## 13 Ekim — ortak normal TEST kaynak sözleşmesi
+
+CRM-DEC-014 / ortak sıra2 / CRM06. Mevcut fb34 talep çekirdeği yeniden yazılmadan normal62700/62701 sunucusuna bağlanır. Feature default-off'tur; owner config şu dört alanı açıkça sağlamalıdır:
+
+- `CRM_CUSTOMER_PRODUCT_REQUEST_ENABLED=true`
+- `CRM_CUSTOMER_PRODUCT_REQUEST_ISSUER_IDS`: mevcut normal kullanıcı ID'lerinden JSON liste; hazırlanan candidate yalnız mevcut `crm-patron`/agent2 kimliğini seçer.
+- `CRM_CUSTOMER_PRODUCT_REQUEST_STORE_FILE`: ayrı CRM-only talep journal'ı.
+- `CRM_CUSTOMER_PRODUCT_REQUEST_REFRESH_JOURNAL_PATH`: ayrı issuer refresh journal'ı.
+
+Exactshared DB02/ERP4184, isolatedPreparation, izinli62700origin ve loopback gateway, gönderim/ücretliAI=false şartları sürer. Private dosyalar kanonik CRM runtime içinde farklı yollarda olmalıdır; mevcut normal personel/Semih journal'ları kullanılamaz. Bilinmeyen, inaktif, personel, anonim TEST veya agent eşlemesi olmayan issuer ID startup hatasıdır; rol veya kullanıcı üretilmez. Semih yardımcı düğmesi bu candidate'te kapalıdır ve aktivasyon şartı değildir. Proof bayrağı shared launcher'da kapalı tutulur.
+
+Seçili mevcut yönetici resmi parola girişinden ayrı normal SID/refresh ailesi alır. `/auth/me` issuer işaretini yalnız doğrulanmış geçerli issuer ailesinde verir; feature öncesi grantless normal JWT bu aile sayılmaz ve eski normal kullanımı korunur. Session storage'daki access anahtarı sayfa yenilenince RAM refresh olmadan kalabilir: mevcut logout yolu yalnız kendi doğrulanmış SID ailesini iptal eder; başka personel/aile iptal edilmez. Belirsiz kapanış veya `/me` ağ hatası yeni parola POST'unu engeller; iptali doğrulanmış/geçersiz oturum yerel kapanışla tekrar girişi engellememelidir. Bekleyen çıkış veya hesap geçişi, yerel anahtar silinse bile eşzamanlı girişten önce tamamlanır. SID, refresh veya iç staff JWT müşteri URL/cevabına veya kalıcı talep kaydına konmaz.
+
+Katalog okuma JWT'si yalnız RAM'de, issuer ID+SID+fingerprint+access expiry anahtarıyla tutulur. Her operasyon fresh issuer ve konuşma/atama sınırını kontrol eder; yetki/fiyat cache'i eklenmez. Süreç yeniden başlayınca bu RAM okuyucu yeniden üretilemez: eski müşteri katalog okuması kapalı kalır ve normal girişten yeni müşteri linki gerekir. Kalıcı personel talep geçmişi journal'da korunur. Bu sınır kesintisiz eski-link restart kabulü değildir. Müşteri fotoğraf katmanının3MiB/MIME/signature kontrolü sürer; mevcut upstream reader'ın buffer davranışı bu entegrasyonla yeniden tasarlanmadı.
+
+**Runtime teslimi ayrı:** ERP owner'ın mevcut supervisor whitelist'i bu dört yeni alanı henüz kabul etmiyor. Yeni source/package/manifest, inaktif aktivasyon dosyası/hash, dependency-lock ve hub/source projection pinleri owner yoluna bağlanmadan ortak09ca yeni talep paketi sayılmaz. Eski7 kullanıcı/baseline ve korumalı normal-personel journal'ı birebir korunmalıdır; proof grant/state kopyalanmaz. Mevcut `crm-patron` için korumalı normal giriş teslimi henüz doğrulanmadı; başka personel tokenıyla issuer taklidi veya parola reseti yapılmaz. Kaynak/offline kontrol, normal ekran/mobil/personel ve CRM-UA11 insan kabulünden ayrıdır.
+
+## Önceki 12 Ekim çekirdek sözleşmesi
+
 12 Ekim 2026, CRM-DEC-013. ERP cari kaydı bulunmayan yeni mağaza müşterisi de doğrulanmış normal CRM konuşması üzerinden ürün ilgisini bildirebilir. Bu akış satış, rezervasyon, ödeme veya ERP taslak sipariş değildir.
 
 Normal korumalı patron/müdür oturumu konuşmadan bağımsız rastgele müşteri oluşturmaz: sunucu gerçek Chatwoot account/inbox/contact/conversation/assignee ve izin verilen 7733 numarasını doğrular. Linkte 32 rastgele byte'tan üretilen bağımsız opaque capability bulunur; staff JWT veya parola bulunmaz. Tarayıcı adres parçasını temizler, yalnız ayrı müşteri sessionStorage anahtarını kullanır. Grant en fazla bir saat ve issuer access expiry kadar yaşar; korumalı normal SID, rol/parola/izin/atama değişimi ve revoke her işlem öncesi/sonrası kontrol edilir. İlk TEST yalnız7733 içindir; genel müşteri erişimi kanıtlanmış değildir.

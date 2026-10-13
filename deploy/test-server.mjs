@@ -83,12 +83,18 @@ const uiOrigins=[endpoints.uiOrigin,...(lanAddress?[`http://${lanAddress}:${endp
 const salesMode=env.CRM_AI_SALES_MODE==='copilot'?'copilot':'off';
 const terminalPersonnel=env.CRM_TEST_TERMINAL_PERSONNEL_USERNAME||(endpoints.isolated?'crm-ahmet':'');
 if(terminalPersonnel!==''&&terminalPersonnel!=='crm-ahmet')throw Error('TEST_PERSONNEL_IDENTITY_REQUIRED');
+// Activation belongs to the owner configuration, never inherited from a baseline.
+const requests={CRM_CUSTOMER_PRODUCT_REQUEST_ENABLED:env.CRM_CUSTOMER_PRODUCT_REQUEST_ENABLED==='true'?'true':'false',
+  CRM_CUSTOMER_PRODUCT_REQUEST_STORE_FILE:env.CRM_CUSTOMER_PRODUCT_REQUEST_STORE_FILE||'',
+  CRM_CUSTOMER_PRODUCT_REQUEST_REFRESH_JOURNAL_PATH:env.CRM_CUSTOMER_PRODUCT_REQUEST_REFRESH_JOURNAL_PATH||'',
+  CRM_CUSTOMER_PRODUCT_REQUEST_ISSUER_IDS:env.CRM_CUSTOMER_PRODUCT_REQUEST_ISSUER_IDS||'',CRM_CUSTOMER_PRODUCT_REQUEST_PROOF:'false'};
 // Sales rules belong to this validated TEST runtime, never a baseline/LIVE policy file.
 const salesRules=path.join(runtime,'ai-sales-rules.json');
 // Read the existing protected configuration in process memory; never copy or log it.
 const loaded=loadBaseline({ path: env.CRM_BASELINE_ENV, processEnv:env, override: true, quiet: true });
 if(loaded?.error)throw Error('CRM_BASELINE_ENV_UNAVAILABLE');
 Object.assign(env, {
+  ...requests,
   WHATSAPP_CRM_PORT: String(endpoints.gateway), CRM_UI_ORIGIN: endpoints.uiOrigin,
   WHATSAPP_CRM_CORS_ORIGINS: uiOrigins.join(','),
   CRM_CATALOG_UI_ORIGINS:uiOrigins.join(','),CRM_TEST_LAN_ADDRESS:lanAddress,
@@ -110,6 +116,12 @@ Object.assign(env, {
   CRM_ISOLATED_PREPARATION:String(endpoints.isolated),CRM_PAID_AI_ENABLED:String(paidAi),
 });
 if(endpoints.isolated)Object.assign(env,{WHATSAPP_SEND_ENABLED:'false',WHATSAPP_LIVE_SEND_APPROVED:'false',WAAPI_CHATWOOT_BRIDGE_ENABLED:'false',WAAPI_INCOMING_READER_ENABLED:'false',CRM_AI_SALES_MODE:'off'});
+if(requests.CRM_CUSTOMER_PRODUCT_REQUEST_ENABLED==='true')env.CRM_SEMIH_TEST_CONTINUE_ENABLED='false';
+}
+export async function createTestCustomerProductRequestIntegration({environment=process.env,endpoints=resolveTestEndpoints(environment),Router,catalogReader}={}){
+  if(environment.CRM_CUSTOMER_PRODUCT_REQUEST_ENABLED!=='true')return {enabled:false,service:null,router:null};
+  const {createCustomerProductRequestIntegration}=await import('../apps/gateway/src/services/customerProductRequestIntegration.mjs');
+  return createCustomerProductRequestIntegration({Router,environment,crmOrigin:endpoints.gatewayOrigin,catalogReader});
 }
 async function startTestServer(){
 configureTestServerEnvironment(root);
@@ -125,7 +137,15 @@ const { startTestIncomingReader } = await import('../apps/gateway/src/services/t
 const { startWaapiWorker } = await import('../apps/gateway/src/services/waapiChatwootBridge.js');
 const stopIncoming = endpoints.isolated?()=>{}:startTestIncomingReader();
 const stopWorker = endpoints.isolated?()=>{}:startWaapiWorker();
-const gateway = createApp().listen(endpoints.gateway, '127.0.0.1');
+let customerProductRequestRouter=null;
+if(process.env.CRM_CUSTOMER_PRODUCT_REQUEST_ENABLED==='true'){
+  const [{Router},{createCanonicalCatalogReader},{getErpAuthorization}]=await Promise.all([
+    import('../apps/gateway/node_modules/express/index.js'),import('../packages/erp-adapter/services/canonicalCatalogReader.mjs'),import('./test-erp-catalog.mjs'),
+  ]);
+  const catalogReader=createCanonicalCatalogReader({crmOrigin:endpoints.gatewayOrigin,erpOrigin:endpoints.erpOrigin,expectedDatabase:endpoints.database,getErpAuthorization});
+  customerProductRequestRouter=(await createTestCustomerProductRequestIntegration({endpoints,Router,catalogReader})).router;
+}
+const gateway = createApp({customerProductRequestRouter}).listen(endpoints.gateway, '127.0.0.1');
 const assets = path.join(root, 'apps/frontend/dist/client');
 const handler=createTestUiHandler({assets,createTestSession,createPersonnelSession,lanNetwork});
 const ui=http.createServer(handler).listen(endpoints.ui,'127.0.0.1',()=>console.log('Melisa CRM TEST hazır: '+endpoints.uiOrigin));

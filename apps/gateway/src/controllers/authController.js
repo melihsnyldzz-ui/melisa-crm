@@ -1,5 +1,5 @@
 import { refreshWaapiReadiness } from '../services/waapiReadiness.js';
-import { authenticateCrmUser, publicCrmUser, refreshNormalCrmSession, logoutNormalCrmSession, refreshSemihCrmSession, logoutSemihCrmSession, rememberedSemihCrmUser, semihTestContinueEnabled } from '../services/crmAuthService.js';
+import { authenticateCrmUser, publicCrmUser, refreshNormalCrmSession, logoutNormalCrmSession, logoutCustomerRequestIssuerSession, refreshSemihCrmSession, logoutSemihCrmSession, rememberedSemihCrmUser, semihTestContinueEnabled } from '../services/crmAuthService.js';
 import { semihCookieToken, semihSameOrigin, semihBrowserLogin, writeSemihCookie, clearSemihCookie, clearRejectedSemihCookie } from '../services/semihTestCookie.mjs';
 import { ok } from '../utils/response.js';
 import { catalogAccess } from '../services/crmCatalogAccess.mjs';
@@ -42,6 +42,15 @@ export function postAuthRefresh(req,res,next){
 export function postAuthLogout(req,res,next){
   try{
     res.set('Cache-Control','no-store');
+    const authorization=req.get('authorization')||'';
+    if(authorization){
+      // A reloaded browser has its existing access JWT but no RAM-only refresh
+      // secret. Never combine this exact own-family operation with another grant.
+      if(!/^Bearer [^\s]+$/.test(authorization)||!req.is('application/json')||!req.body||Array.isArray(req.body)
+        ||Object.keys(req.body).length||Object.keys(req.query||{}).length
+        ||/melisa-crm-semih-test(?:-request-proof)?-refresh=/.test(req.get('cookie')||''))throw Object.assign(new Error('Oturum isteği geçerli değil.'),{code:'AUTH_TOKEN_INVALID',statusCode:401});
+      return ok(res,logoutCustomerRequestIssuerSession(authorization.slice(7)),{source:'crm-auth'});
+    }
     const nativeMode=typeof req.body?.refreshToken==='string';
     const token=nativeMode?req.body.refreshToken:cookieRefreshToken(req);
     const result=nativeMode?logoutNormalCrmSession(token):semihTestContinueEnabled()&&!token?{loggedOut:true}:logoutSemihCrmSession(token);
