@@ -3,7 +3,7 @@
   "scope": "CRM E02 MANUAL pricing witness consumer source only",
   "branch": "codex/crm-agents-on-completion-20261003",
   "baseHead": "eb3ff681897ddd28e5a51404b8b33e77b1e9e1e0",
-  "sourceCommit": null,
+  "sourceCommit": "5b6dfe5acf1c0c1ea301f66aea39bf2abcec8f36",
   "pr": 3,
   "sourceReady": true,
   "runtimeActivated": false,
@@ -128,5 +128,41 @@
     "owner immutable package and shared activation",
     "normal/mobile/human E02 acceptance"
   ],
-  "ci": null
+  "ci": {
+    "sourceHead": "5b6dfe5acf1c0c1ea301f66aea39bf2abcec8f36",
+    "result": "FAILURE_BILLING_BLOCKED",
+    "jobCount": 7,
+    "stepCount": 0,
+    "allJobsBillingBlocked": true,
+    "secondaryAnnotations": "Ubuntu runner migration advisory only",
+    "runs": [
+      {
+        "id": 38403062438,
+        "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38403062438",
+        "head": "5b6dfe5acf1c0c1ea301f66aea39bf2abcec8f36",
+        "status": "completed",
+        "conclusion": "failure",
+        "jobCount": 3,
+        "steps": 0
+      },
+      {
+        "id": 38403062164,
+        "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38403062164",
+        "head": "5b6dfe5acf1c0c1ea301f66aea39bf2abcec8f36",
+        "status": "completed",
+        "conclusion": "failure",
+        "jobCount": 1,
+        "steps": 0
+      },
+      {
+        "id": 38403053762,
+        "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38403053762",
+        "head": "5b6dfe5acf1c0c1ea301f66aea39bf2abcec8f36",
+        "status": "completed",
+        "conclusion": "failure",
+        "jobCount": 3,
+        "steps": 0
+      }
+    ]
+  }
 }

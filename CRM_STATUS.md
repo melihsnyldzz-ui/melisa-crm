@@ -1,4 +1,6 @@
-## 13 Ekim 2026 — E02 MANUAL fiyat sürümü kaynak teslimi hazırlanıyor
+## 13 Ekim 2026 — E02 MANUAL fiyat sürümü kaynağı GitHub'a teslim edildi
+
+**Source teslimi:** `5b6dfe5acf1c0c1ea301f66aea39bf2abcec8f36` commit/push; uzak dal ve açık PR3 head eşleşti, base feature/crm-completion. Exact source CI **FAILURE /7job /0step**, her işte ödeme/harcama engeli nedeniyle test başlamadı; ek Ubuntu runner uyarısı bilgilendirmedir. [PR CI](https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38403062438), [AI offline](https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38403062164), [push CI](https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38403053762). İzleyen yalnız-belge HEAD ayrı okunur; source/build ve inaktif1be paket aynı. CI veya insan PASS yok.
 
 Katalog mapper'ı ve seçili ürün snapshot'ı ERP'nin MANUAL fiyat sürümünü düşürüyordu. Bu iki kayıp düzeltildi: `pricing` doğrulanıp ürün revision'ına katılır; seçim → donmuş taslak → istek → ayrı readback boyunca sürüm korunur. En az bir MANUAL satırda `pricingContract: melisa-crm-draft-pricing.v1` ve `pricingWitness` eklenir. Eski SOURCE 8-root/9-line gövdesi ve alan sırası korunur. Signed64 sürüm string kalır; kaynak exact8/null sıfıra dönüştürülmez. MANUAL0/null pozitif fiyat seçimini aşamaz ve SOURCE'a düşmez. Mevcut ekran/CSS, yetki, oturum, katalog cache/worker ve mesajlaşma değiştirilmedi.
 
