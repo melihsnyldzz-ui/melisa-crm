@@ -1,4 +1,6 @@
-## 13 Ekim 2026 — ana teslim devam ediyor; sıra 2 / CRM06
+## 13 Ekim 2026 — ana teslim devam ediyor; CRM06 kurulum, CRM01 geçmiş kabulü açık
+
+CRM06 1be7277/c262897 inaktif paketi ERP owner aldı; kurulmadı, paket tekrar üretilmez. Bağımsız sıra 6 / CRM01 geçmiş kaynağı yüklenmiş medya/metni korur; manuel tek `before` sayfası, atama/oturum sınırları, private-only cursor ilerlemesi ve empty-only bitiş hazırlanır. [Kaynak ve teknik kanıt](docs/evidence/crm/2026-10-13-conversation-history/README.md). Bu geçmiş değişiklikleri eski 1be paketinde yoktur; çalışan CRM09ca'da hazır diye sunulmaz. Gerçek normal Chatwoot sayfası, mobil ve I01 insan kabulü bekler; genel incoming/personel kabulleri silinmez. **25 / 12 tamam / 13 kısmi / 0 kırmızı**, 55 sabit ana ID ve 21 ortak sıra korunur. Aşağıdaki CRM06 hazırlık kaydı önceki checkpoint'tir.
 
 Kullanıcı CRM duraklamasını kaldırdı. Mevcut kabul edilmiş kapsamlar ve 25 sabit CRM ID korunur; ortak 55 ana başlığın sırası koordinatör kaydındadır, ikinci ağaç oluşturulmaz. Şimdiki iş ortak sırada **2 / CRM06**: ayrı fb34 ürün-talep çekirdeğini ortak normal TEST paketine bağlama, ardından değişen mobil/personel entegrasyonu. Sonraki bağımsız CRM işi ortak sırada **6 / CRM01** mesaj/geçmiş görünümüdür.
 

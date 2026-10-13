@@ -1,4 +1,6 @@
-## ŞİMDİ — 13 Ekim — ortak sıra 2 / CRM06
+## ŞİMDİ — 13 Ekim — CRM06 owner aktivasyonu / CRM01 geçmiş kaynağı
+
+CRM06 source1be7277/c262897 paketi owner tarafından alındı; ortak kurulum ERP04 güvenli checkpoint'inden sonra owner'da. Paket veya özel config tekrar üretilmez. Sıra6/CRM01 için yüklenmiş geçmişin korunması, eski assignment hata yarışı ve manuel eski sayfa açılması kaynakta hazırlanıyor; gerçek Chatwoot/mobil/insan kabulü hâlâ açık. [Teknik teslim ve kalan](docs/evidence/crm/2026-10-13-conversation-history/README.md). Yeni geçmiş kodu mevcut09ca runtime veya owner'a verilen1be paketi değildir. Kaynak hazır olunca aynı PR3'e teslim edilir; kurulum sahibinin yetkisi aşılmaz. 25 CRM/55 ana ID ve kabul edilmiş baseline korunur; aşağıdaki CRM06 source hazırlığı önceki checkpoint'tir.
 
 Kullanıcının devam talimatı geçerli; ana teslim paused değildir.12Ekim bekleyen11belge/kanıt41b2f9e teslimi kapalıdır. Fb34 ayrı ürün talebi çekirdeğinin ortak normalTEST source mount/config ve helper'dan bağımsız korumalı authority entegrasyonu hazırlandı. Kanıtlı seçim/adet/replay/personel kontrolleri yalnız değişen entegrasyon gerektiğinde dar doğrulanır; ortak09ca henüz yeni talep runtime teslimi değildir.
 

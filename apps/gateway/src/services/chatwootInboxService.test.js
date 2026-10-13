@@ -320,6 +320,54 @@ const syntheticConversation = (id, agent = 7, inbox = 1) => ({ id, inbox_id: inb
   meta: { sender: { phone_number: '+18880000001', name: 'Synthetic ' + id }, assignee: { id: agent } } });
 const jsonResponse = body => new Response(JSON.stringify(body), { status: 200 });
 
+test('older history uses one bounded before page and advances through private/activity-only rows', async t => {
+  inboxFixture(t, 'older-cursor'); const reads=[];
+  let payload=[{id:8,conversation_id:1,private:true,message_type:0,content:'Hidden'},
+    {id:9,conversation_id:1,message_type:2,content:'Activity'}];
+  global.fetch=async url=>{const u=new URL(url);if(u.pathname.endsWith('/messages')){reads.push(u.search);return jsonResponse({payload});}return jsonResponse(syntheticConversation(1));};
+  const user={role:'personel',chatwootAgentId:7,permissions:['crm.view']};
+  const result=await getChatwootConversationDetail({conversationId:1,user,before:10});
+  assert.deepEqual(result.messages,[]);assert.deepEqual(result.history,{nextBefore:8,hasMore:true});assert.deepEqual(reads,['?before=10']);
+  payload=[];const end=await getChatwootConversationDetail({conversationId:1,user,before:8});
+  assert.deepEqual(end.history,{nextBefore:null,hasMore:false});assert.equal(reads.length,2);
+});
+
+test('history rejects malformed, foreign and non-progress pages; normalizes duplicates without a fabricated total',async t=>{
+  inboxFixture(t,'older-contract');let payload;
+  global.fetch=async url=>String(url).includes('/messages')?jsonResponse({payload}):jsonResponse(syntheticConversation(1));
+  const user={role:'personel',chatwootAgentId:7,permissions:['crm.view']};
+  for(const bad of [null,{},[{id:0}],[{id:'01'}],[{id:Number.MAX_SAFE_INTEGER+1}],[{id:10}],[{id:11}],[{id:7,conversation_id:2}],Array.from({length:21},()=>({id:1}))]){
+    payload=bad;await assert.rejects(()=>getChatwootConversationDetail({conversationId:1,user,before:10}),e=>e.code==='WHATSAPP_CRM_HISTORY_PAGE_INVALID'&&e.statusCode===502);
+  }
+  payload=[{id:9,conversation_id:1,message_type:0,content:'Earlier'}, {id:8,conversation_id:1,message_type:1,content:'Reply'}, {id:9,conversation_id:1,message_type:0,content:'Updated'}];
+  const result=await getChatwootConversationDetail({conversationId:1,user,before:10});
+  assert.equal(result.messages.length,2);assert.equal(result.messages.find(m=>m.id===9).text,'Updated');assert.deepEqual(result.history,{nextBefore:8,hasMore:true});assert.equal(Object.hasOwn(result.history,'total'),false);
+});
+
+test('latest history retains twenty public messages and workflow with raw cursor, without another history fetch',async t=>{
+  inboxFixture(t,'latest-history-cursor');let reads=0;
+  const payload=Array.from({length:20},(_,index)=>({id:index+10,message_type:0,content:'Synthetic '+index}));
+  global.fetch=async url=>{if(String(url).includes('/messages')){reads++;assert.equal(new URL(url).search,'');return jsonResponse({payload});}return jsonResponse(syntheticConversation(1));};
+  const user={role:'patron',permissions:['crm.view']},result=await getChatwootConversationDetail({conversationId:1,user});
+  assert.equal(result.messages.length,20);assert.deepEqual(result.history,{nextBefore:10,hasMore:true});assert.equal(reads,1);
+  payload[0]={id:5,private:true,content_attributes:{melisa_crm:{type:'note',data:{note:'Existing workflow'}}}};
+  const workflow=await getChatwootConversationDetail({conversationId:1,user});
+  assert.equal(workflow.messages.length,19);assert.equal(workflow.notes,'Existing workflow');assert.deepEqual(workflow.history,{nextBefore:5,hasMore:true});assert.equal(reads,2);
+  payload.push({id:4,message_type:0,content:'Must not silently skip'});
+  await assert.rejects(()=>getChatwootConversationDetail({conversationId:1,user}),{code:'WHATSAPP_CRM_HISTORY_PAGE_INVALID',statusCode:502});assert.equal(reads,3);
+});
+
+test('older pages fail closed on reassignment and backend drift even during the final metadata read',async t=>{
+  inboxFixture(t,'older-final-access');const user={role:'personel',chatwootAgentId:7,permissions:['crm.view']};
+  for(const drift of ['assignment','backend','foreign']){
+    let metadataReads=0;
+    global.fetch=async url=>{if(String(url).includes('/messages'))return jsonResponse({payload:[{id:9,conversation_id:1,message_type:0,content:'Protected'}]});
+      metadataReads++;if(metadataReads===2&&drift==='backend')env.chatwoot.accountId=3;
+      return jsonResponse(syntheticConversation(metadataReads===2&&drift==='foreign'?2:1,metadataReads===2&&drift==='assignment'?8:7));};
+    await assert.rejects(()=>getChatwootConversationDetail({conversationId:1,user,before:10}),e=>[403,502,503].includes(e.statusCode));env.chatwoot.accountId=2;
+  }
+});
+
 test('management bootstrap reads one fresh activity page without messages, workflow or exact counts', async t => {
   inboxFixture(t, 'bootstrap-fresh');
   const requests = [];

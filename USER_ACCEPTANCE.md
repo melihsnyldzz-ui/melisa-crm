@@ -1,5 +1,7 @@
 ## 13 Ekim — kabul sınırı ve iptal edilen yardımcı giriş
 
+**CRM01 / I01 değişen geçmiş kabulü hazırlanıyor:** kaynak henüz normal TEST paketinde yok; kullanıcıya hazır deneme diye sunulmaz. Owner yeni kaynak kurulumunu doğrulayınca normal atanmış konuşmada (1) eski fotoğraf/PDF'ye git ve **Eski mesajları yükle** ile bir sayfa aç, (2) yenileme sonrası eski medya, güncel mesaj ve gönderilmemiş taslak korunsun, (3) sayfa yüklenirken okuduğun satır yerinde kalsın ve **En yeni mesaja git** çalışsın, (4) normal personel/konuşma değişiminde diğer kapsamın geçmişi görünmesin, (5) aynı akışı mobilde dene. Sadece teknik actual App/API/build kontrolü insan kabulü değildir; kişi/tarih/paket sonucu bekler. Genel incoming ve önceki CRM-UA kayıtları açık kalır. [Kanıt ve sınır](docs/evidence/crm/2026-10-13-conversation-history/README.md).
+
 Ana geliştirme yeniden yetkilendirildi; bu talimat hiçbir insan kabulünü otomatik PASS yapmaz. **CRM-UA10'un Semih yardımcı düğmesi/ayrı Windows programı özel talebi iptal edildi; ana teslim kapısı değildir.** Normal login/session/refresh/logout/revoke ve mevcut personel oturumlarının korunması C02/U01/M01/O02 içinde geçerlidir. Önceki UA01–09 ve UA11 sonuçları korunur.
 
 CRM-UA11'in 12 Ekim ayrı fb34/628xx teknik kanıtı ortak09ca kurulumu veya fiziksel/personel kabulü değildir. Ortak sıra2/CRM06'daki dar entegrasyon sonrası yalnız değişen normal/mobil/personel akışı denenir; kabul edilmiş medya/çeviri/ERP dar taslak/rollback yeniden açılmaz. Aşağıdaki kayıtlar tarih ve kaynak kapsamıyla okunur.

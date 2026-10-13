@@ -154,11 +154,32 @@ export function mapChatwootMessage(message) {
   };
 }
 
-async function readMessagesUnshared(conversation, identity) {
+function historyId(value) {
+  if ((typeof value !== 'number' && typeof value !== 'string') || !/^[1-9]\d*$/.test(String(value))) return null;
+  const id = Number(value);
+  return Number.isSafeInteger(id) && id > 0 ? id : null;
+}
+const historyPageInvalid = () => Object.assign(new Error('Konusma gecmisi dogrulanamadi.'), {code:'WHATSAPP_CRM_HISTORY_PAGE_INVALID',statusCode:502});
+
+async function readMessagesUnshared(conversation, identity, before) {
   assertBackendIdentity(identity);
-  const response = await chatwootApiRequest(`/conversations/${conversation.id}/messages`);
+  const response = await chatwootApiRequest(`/conversations/${conversation.id}/messages${before === undefined ? '' : '?before=' + before}`);
   assertBackendIdentity(identity);
-  const rows = response?.payload || [];
+  // Chatwoot's latest/before page is bounded to 20 raw rows. Reject an oversized
+  // page rather than slicing public rows and advancing past unseen messages.
+  if (!Array.isArray(response?.payload) || response.payload.length > 20) throw historyPageInvalid();
+  const unique = new Map(); let nextBefore = null;
+  for (const row of response.payload) {
+    const id = row && historyId(row.id);
+    if (!id || before !== undefined && id >= before
+      || row.conversation_id !== undefined && historyId(row.conversation_id) !== historyId(conversation.id)
+      || row.private !== undefined && typeof row.private !== 'boolean') throw historyPageInvalid();
+    nextBefore = nextBefore === null ? id : Math.min(nextBefore, id);
+    const previous = unique.get(id);
+    // Conflicting duplicates may never turn a private/activity record public.
+    if (!previous || !previous.private && normalizeChatwootMessageType(previous) !== 'activity') unique.set(id, row);
+  }
+  const rows = [...unique.values()];
   const workflow = rows
     .filter((message) => message.private && message.content_attributes?.melisa_crm)
     .map((message) => ({ id: message.id, ...message.content_attributes.melisa_crm }));
@@ -167,17 +188,18 @@ async function readMessagesUnshared(conversation, identity) {
       .filter((message) => !message.private && normalizeChatwootMessageType(message) !== 'activity')
       .map(row => enrichWaapiReceipt(mapChatwootMessage(row), row))))
       .sort((a, b) => (Date.parse(a.createdAt) || 0) - (Date.parse(b.createdAt) || 0) || Number(a.id) - Number(b.id))
-      .slice(-20),
+      .slice(before === undefined ? -20 : 0),
     workflow,
+    history: {nextBefore,hasMore:nextBefore !== null},
   };
 }
 
-function readMessages(conversation) {
+function readMessages(conversation, before) {
   const identity = backendIdentity();
   if (messageReadIdentity !== identity) { messageReads.clear(); messageReadIdentity = identity; }
-  const key = String(conversation.id);
+  const key = `${conversation.id}:${before === undefined ? 'latest' : before}`;
   if (messageReads.has(key)) return messageReads.get(key);
-  const pending = readMessagesUnshared(conversation, identity);
+  const pending = readMessagesUnshared(conversation, identity, before);
   // Share only an in-flight read. The next poll always reads new messages/workflow.
   if (messageReads.size < CHATWOOT_MAX_OVERVIEW_LIMIT) {
     messageReads.set(key, pending);
@@ -486,7 +508,7 @@ export async function listChatwootInboxOverview({ limit = 25, offset = 0, user =
   const rows = accessibleRows.slice(safeOffset, safeOffset + safeLimit);
   const metadataOnly = user?.role === 'personel' && view === 'bootstrap';
   const [messagesByConversation] = await Promise.all([
-    metadataOnly ? Promise.resolve([]) : mapWithConcurrency(rows, 5, readMessages), readiness,
+    metadataOnly ? Promise.resolve([]) : mapWithConcurrency(rows, 5, row => readMessages(row)), readiness,
   ]);
   assertBackendIdentity(identity);
   assertInboxPolicy(policy);
@@ -580,17 +602,23 @@ export async function getChatwootProductRequestBinding({ conversationId, user })
   return {backend:'chatwoot',provider:'chatwoot',accountId,inboxId,chatwootConversationId:String(raw.id),chatwootContactId:contactId,
     assigneeId:String(raw.meta.assignee.id),customerFingerprint:createHash('sha256').update(JSON.stringify([phone.normalizedPhone,accountId,inboxId,contactId])).digest('hex')};
 }
-export async function getChatwootConversationDetail({ conversationId, user }) {
+export async function getChatwootConversationDetail({ conversationId, user, before }) {
+  if (before !== undefined && historyId(before) === null) throw Object.assign(new Error('Gecmis imleci gecersiz.'), {code:'WHATSAPP_CRM_HISTORY_CURSOR_INVALID',statusCode:400});
   await refreshWaapiReadiness();
   const {raw,identity,policy} = await readAccessibleConversation({conversationId,user});
-  const messageData = await readMessages(raw);
+  if (before !== undefined && historyId(raw.id) !== historyId(conversationId)) throw historyPageInvalid();
+  const messageData = await readMessages(raw, before);
   assertBackendIdentity(identity); assertInboxPolicy(policy);
   // Reassignment while history is being read must not return the old actor's messages.
-  if (user?.role === 'personel') await getChatwootConversationAccess({conversationId,user});
-  return assertConversationAccess(user, mapConversation(raw, messageData, {
+  if (before !== undefined) {
+    const fresh = await readAccessibleConversation({conversationId,user});
+    if (historyId(fresh.raw.id) !== historyId(conversationId)) throw historyPageInvalid();
+  } else if (user?.role === 'personel') await getChatwootConversationAccess({conversationId,user});
+  assertBackendIdentity(identity); assertInboxPolicy(policy);
+  return {...assertConversationAccess(user, mapConversation(raw, messageData, {
     canSend:isChatwootSendEnabled() && Boolean(user?.permissions?.includes('crm.send')),
     canAssign:Boolean(user?.permissions?.includes('crm.assign')),
-  }));
+  })),history:messageData.history};
 }
 
 export async function listChatwootAgents() {

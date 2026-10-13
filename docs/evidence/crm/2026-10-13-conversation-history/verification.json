@@ -1,0 +1,162 @@
+{
+  "checkedAt": "2026-10-13T12:11:28Z",
+  "commonSequence": 6,
+  "mainId": "CRM01",
+  "finishTreeId": "I01",
+  "sourceBaseCommit": "c262897064161a117a208b2ad15da9a5cceecb3a",
+  "branch": "codex/crm-agents-on-completion-20261003",
+  "pullRequest": "https://github.com/melihsnyldzz-ui/melisa-crm/pull/3",
+  "status": "SOURCE_TECHNICALLY_READY_RUNTIME_ACCEPTANCE_PENDING",
+  "runtime": {
+    "activated": false,
+    "newHistoryInPrepared1bePackage": false,
+    "crmLastOwnerReported": "09ca1dac346e42037fd02901baf3240aa6ce6285",
+    "erpLastOwnerReported": "2bf27620b1884742b509328969b90bca90c2972c",
+    "nativeOrderLastOwnerReported": "60e424b61febd062668be0ccf3595c546da263a0",
+    "database": "MELISA_ERP_CRM_SHARED_TEST_20261009_02",
+    "copyId": "e16b70f0-4057-428b-9abc-6bbcaf35fe82",
+    "rootSharedRuntimeWrites": 0,
+    "rootSharedDatabaseWrites": 0,
+    "realAccountRoleChanges": 0,
+    "whatsappOperations": 0,
+    "paidCalls": 0,
+    "mainMerge": false,
+    "live": false
+  },
+  "checks": {
+    "backendInitial": {
+      "executor": "audit_source_explorer",
+      "passed": 60,
+      "failed": 0,
+      "command": "node --import ./tests/offline-test-guard.mjs --test tests/conversation-history.test.mjs apps/gateway/src/services/chatwootInboxService.test.js",
+      "note": "Includes original controller tests; later controller delta is listed separately, not added to this count."
+    },
+    "backendFinalController": {
+      "executor": "audit_source_explorer",
+      "passed": 3,
+      "failed": 0,
+      "command": "node --import ./tests/offline-test-guard.mjs --test tests/conversation-history.test.mjs",
+      "note": "Actual controller deferred success and six drift cases; three mock GETs per page, no returned JSON on drift. Service hashes unchanged; service suite not repeated. Real SID logout/revoke was not performed."
+    },
+    "frontendPrimary": {
+      "executor": "shared_request_frontend",
+      "passed": 23,
+      "failed": 0,
+      "commands": [
+        "node --import ../../tests/offline-test-guard.mjs --test --test-name-pattern='^actual App older history|^actual App detail and inbox polling|^actual App loaded-history' tests/text-draft-app.test.mjs",
+        "node --import ../../tests/offline-test-guard.mjs --test --test-name-pattern='^older history|^selected history keeps|^changed assignment replaces|^an inbox preview cannot replace|^selected conversation updates' tests/live-media.test.mjs"
+      ],
+      "note": "15 actual App and 8 API/merge. Later raw DTO guard delta is separately listed; overlapping tests must not be added."
+    },
+    "frontendFinalRawDto": {
+      "executor": "shared_request_frontend",
+      "passed": 7,
+      "failed": 0,
+      "commands": [
+        "node --import ../../tests/offline-test-guard.mjs --test --test-name-pattern='^older history API' tests/live-media.test.mjs",
+        "node --import ../../tests/offline-test-guard.mjs --test --test-name-pattern='^actual App older history keeps cursor messages and draft|^actual App older history retries only manually|^actual App older history advances through private-only' tests/text-draft-app.test.mjs"
+      ],
+      "note": "4 API and 3 actual App, overlaps primary tests. Missing/null/object/oversized raw messages rejected before normalization; valid hidden-only [] remains valid."
+    },
+    "bootstrap": {
+      "executor": "root",
+      "passed": 6,
+      "failed": 0,
+      "command": "node --import ./scripts/ci/offline-guard.mjs --test --test-reporter=tap tests/conversation-history-integration.test.mjs apps/frontend/tests/inbox-bootstrap.test.mjs",
+      "note": "The first root batch also included one coupled test; not counted again here. Bootstrap path unchanged by the final before-only raw DTO guard."
+    },
+    "finalCoupled": {
+      "executor": "root",
+      "passed": 1,
+      "failed": 0,
+      "command": "node --import ./scripts/ci/offline-guard.mjs --test --test-reporter=tap tests/conversation-history-integration.test.mjs",
+      "note": "Final frozen production frontend API and actual controller, synthetic transports only: latest20, JPEG, private-only, PDF, empty end; 15 mock GETs over five reads, no invented totals."
+    },
+    "build": {
+      "executor": "root",
+      "command": "node scripts/ci/build.mjs",
+      "exitCode": 0,
+      "environment": "clean production environment; .env discovery and external sockets disabled",
+      "deployed": false,
+      "note": "Final source compiled. Existing bundle-size and static/dynamic import warnings remain; build duration is not a user-facing runtime measurement."
+    },
+    "review": {
+      "executor": "shared_request_final_review",
+      "effort": "high",
+      "openP1": 0,
+      "openP2": 0,
+      "note": "Backend, metadata-read simplification, frontend and raw DTO fix reviewed without new tests or runtime operations."
+    }
+  },
+  "sourceFiles": [
+    {
+      "path": "apps/frontend/src/App.jsx",
+      "worktreeSha256": "72a679c1d15bd8e1e600c29a31af0a1b133d2d60ec6b3d9ba4c8b9da06f93cc1",
+      "lfNormalizedSha256": "323dea1489163dc710a011f26121454594139d4c2702085787b798045c541694"
+    },
+    {
+      "path": "apps/frontend/src/liveApi.js",
+      "worktreeSha256": "183da335fdedc76305e82b426cfc2ccc18a1934b3b0b524455cd1bf139c31123",
+      "lfNormalizedSha256": "183da335fdedc76305e82b426cfc2ccc18a1934b3b0b524455cd1bf139c31123"
+    },
+    {
+      "path": "apps/frontend/tests/text-draft-app.test.mjs",
+      "worktreeSha256": "50570c2b6410842b9724cd0d833fc1f85307dc15c8962d2b25c46c6a3851a4e5",
+      "lfNormalizedSha256": "50570c2b6410842b9724cd0d833fc1f85307dc15c8962d2b25c46c6a3851a4e5"
+    },
+    {
+      "path": "apps/frontend/tests/live-media.test.mjs",
+      "worktreeSha256": "0dcde6dcf6cc2734d7b94a20983b8f010849209ef70b00fccac6a65d01505ff2",
+      "lfNormalizedSha256": "06dc115090bc34e4421f6d428694b7557f07a8c1f4d274715ef4af83b9377efa"
+    },
+    {
+      "path": "apps/gateway/src/controllers/conversationController.js",
+      "worktreeSha256": "cac65130ce3d9b0a807bf7c63fa809d019886f332c3dc6a9dedf0e4281e14de0",
+      "lfNormalizedSha256": "7994ce0124c4a964db7a631da9c05022467ca65662b206830fc218a908f718b7"
+    },
+    {
+      "path": "apps/gateway/src/services/chatwootInboxService.js",
+      "worktreeSha256": "0179418f4a849c67e492d323e12d9dda60aa630f97913c095d6ed846e2dcb355",
+      "lfNormalizedSha256": "27bd65a3e5e9ceec5f31158da67904d7f872321f3a2c88bb78e9a41510b8d3d4"
+    },
+    {
+      "path": "apps/gateway/src/services/chatwootInboxService.test.js",
+      "worktreeSha256": "9be69cee1ebaeffbeff2e7f238106f6e6ff351b898e86ef541e4ea277081444b",
+      "lfNormalizedSha256": "4585f755b2dd1900972f672cbb7647a29dcb1eeb82201645699d66987e42b6b5"
+    },
+    {
+      "path": "tests/conversation-history.test.mjs",
+      "worktreeSha256": "0cdfc80088cdb9b45a6c7bb9f626e3514ca68159d0a7fcc17371a9596793e13a",
+      "lfNormalizedSha256": "0cdfc80088cdb9b45a6c7bb9f626e3514ca68159d0a7fcc17371a9596793e13a"
+    },
+    {
+      "path": "tests/conversation-history-integration.test.mjs",
+      "worktreeSha256": "024832c30436317bb33955b0775d4ef57a6485c143dda28109671c195bbd5e02",
+      "lfNormalizedSha256": "024832c30436317bb33955b0775d4ef57a6485c143dda28109671c195bbd5e02"
+    }
+  ],
+  "contract": {
+    "path": "GET /crm/conversations/:id?before=<canonical-positive-safe-integer>",
+    "historyFields": [
+      "nextBefore",
+      "hasMore"
+    ],
+    "maxRawPageRows": 20,
+    "end": "Only an empty raw payload proves end; private/activity-only pages advance cursor.",
+    "totals": "Not supplied",
+    "inflight": "Keyed by backend identity, conversation and cursor; no authority or price caching",
+    "pageTransportCount": "Three synthetic GETs: metadata, messages, metadata; token/expiry/fingerprint/permission pre/post checks retained"
+  },
+  "acceptance": {
+    "realChatwootBefore": "PENDING",
+    "normalSharedScreen": "PENDING",
+    "mobile": "PENDING",
+    "humanI01": "PENDING",
+    "generalIncoming": "PENDING",
+    "crm06OwnerActivation": "PENDING"
+  },
+  "ci": {
+    "newSourceExactHead": "PENDING_PUSH_AND_READ",
+    "previousC262": "Billing failure; seven jobs, zero steps; not a new-source CI result"
+  }
+}

@@ -4,6 +4,29 @@ import { getChatwootConversationDetail, getChatwootConversationAccess, assertCha
 import { verifyCrmAccessToken, assertCrmPermission } from '../services/crmAuthService.js';
 import { sendCrmTextMessage, readCrmOutboundStatus } from '../services/sendService.js';
 import { ok } from '../utils/response.js';
+import { normalSessionFingerprint } from '../services/normalRefreshSession.mjs';
+
+export function parseConversationHistoryBefore(query = {}) {
+  const keys = Object.keys(query);
+  if (!keys.length) return undefined;
+  if (keys.length !== 1 || keys[0] !== 'before' || typeof query.before !== 'string'
+    || !/^[1-9]\d*$/.test(query.before) || !Number.isSafeInteger(Number(query.before)))
+    throw Object.assign(new Error('Gecmis imleci gecersiz.'), {code:'WHATSAPP_CRM_HISTORY_CURSOR_INVALID',statusCode:400});
+  return Number(query.before);
+}
+
+// Only the explicit older-page path adds this fresh normal-token guard.
+export function createConversationHistoryRequestGuard(req, {verify = verifyCrmAccessToken} = {}) {
+  const header = req.get('authorization') || '', original = normalSessionFingerprint(req.user);
+  const current = () => {
+    if (!/^Bearer [^\s]+$/.test(header)) throw Object.assign(new Error('CRM oturumu dogrulanamadi.'), {code:'AUTH_TOKEN_INVALID',statusCode:401});
+    const {user,expiresAt} = verify(header.slice(7), {includeContext:true});
+    if (!user?.active || !Number.isFinite(expiresAt) || expiresAt <= Date.now() || normalSessionFingerprint(user) !== original)
+      throw Object.assign(new Error('CRM oturumu degisti.'), {code:'AUTH_TOKEN_INVALID',statusCode:401});
+    assertCrmPermission(user,'crm.view'); return user;
+  };
+  return async () => current();
+}
 
 // The short TEST rehearsal may expire during a provider read. Normal sessions
 // retain their established path; no permanent user or role is changed here.
@@ -55,11 +78,16 @@ export async function patchConversationAssignment(req, res, next) {
 
 export async function getConversationDetail(req, res, next) {
   try {
+    const before = parseConversationHistoryBefore(req.query);
+    const historyGuard = before === undefined ? null : createConversationHistoryRequestGuard(req);
+    if (historyGuard) await historyGuard();
     const guard = createTestPersonnelRequestGuard(req);
     const result = await getChatwootConversationDetail({
       conversationId: req.params.conversationId,
       user: req.user,
+      ...(before === undefined ? {} : {before}),
     });
+    if (historyGuard) await historyGuard();
     await guard?.({conversationId:req.params.conversationId});
     return ok(res, result, { source: 'chatwoot-conversation', readOnly: true });
   } catch (error) {

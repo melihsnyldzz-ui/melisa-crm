@@ -74,5 +74,52 @@
       }
     ]
   },
-  "deliveryStatus": "Source/package ready; owner activation and protected normal login delivery pending; CRM06/CRM-UA11 not closed"
+  "deliveryStatus": "Source/package ready; owner activation and protected normal login delivery pending; CRM06/CRM-UA11 not closed",
+  "ownerMessage": {
+    "authorizedByHuman": true,
+    "toolAccepted": true,
+    "targetTitle": "Melisa ERP’yi tamamla",
+    "targetThreadId": "01a107ef-f13e-73c0-9e08-fd5c4545325e",
+    "sentOn": "2026-10-13",
+    "ownerReceived": true,
+    "ownerAcknowledgedOn": "2026-10-13",
+    "ownerNextStep": "After ERP04 native evidence: inspect activation whitelist and pins in a separate owner-controlled step; do not rebuild the same package",
+    "ownerEvaluatedOrActivated": false,
+    "rootSharedDatabaseWrites": 0
+  },
+  "artifactDelivery": {
+    "head": "c262897064161a117a208b2ad15da9a5cceecb3a",
+    "remoteEqualsHead": true,
+    "prEqualsHead": true,
+    "allAnnotationsBillingBlocked": true,
+    "runs": [
+      {
+        "conclusion": "failure",
+        "databaseId": 38387685559,
+        "headSha": "c262897064161a117a208b2ad15da9a5cceecb3a",
+        "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38387685559",
+        "workflowName": "CRM CI",
+        "jobs": 3,
+        "steps": 0
+      },
+      {
+        "conclusion": "failure",
+        "databaseId": 38387685586,
+        "headSha": "c262897064161a117a208b2ad15da9a5cceecb3a",
+        "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38387685586",
+        "workflowName": "AI Sales Agent - Offline",
+        "jobs": 1,
+        "steps": 0
+      },
+      {
+        "conclusion": "failure",
+        "databaseId": 38387680252,
+        "headSha": "c262897064161a117a208b2ad15da9a5cceecb3a",
+        "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38387680252",
+        "workflowName": "CRM CI",
+        "jobs": 3,
+        "steps": 0
+      }
+    ]
+  }
 }

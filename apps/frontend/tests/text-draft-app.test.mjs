@@ -14,11 +14,11 @@ const frontend=fileURLToPath(new URL('../',import.meta.url)), temporary=frontend
 const actor=()=>({accountIdentity:{id:42},role:'mudur',canSend:true,chatwootAgentId:7,liveSendEnabled:true,displayName:'Synthetic account'});
 const row=(id='55')=>({id,phone:'+905387217733',channel:'whatsapp',assignedUserId:7,owner:'Synthetic staff',name:'Synthetic fixture',initials:'SF',country:'',code:'TR',messages:[],preview:'',unread:0});
 const storage=()=>{const values=new Map();return {getItem:key=>values.get(key)??null,setItem:(key,value)=>values.set(key,value),removeItem:key=>values.delete(key)};};
-const fakeWindow=sessionStorage=>({location:{pathname:'/',search:''},crypto:{randomUUID},sessionStorage,localStorage:{getItem:()=>null,setItem(){}},matchMedia:()=>({matches:false}),dispatchEvent(){},setTimeout:()=>0,clearTimeout(){},setInterval:()=>0,clearInterval(){},addEventListener(){},removeEventListener(){}});
+const fakeWindow=sessionStorage=>({location:{pathname:'/',search:''},crypto:{randomUUID},sessionStorage,localStorage:{getItem:()=>null,setItem(){}},matchMedia:()=>({matches:false}),dispatchEvent(){},requestAnimationFrame:fn=>{fn();return 1;},cancelAnimationFrame(){},setTimeout:()=>0,clearTimeout(){},setInterval:()=>0,clearInterval(){},addEventListener(){},removeEventListener(){}});
 const settle=async()=>{await Promise.resolve();await Promise.resolve();};
 async function bundle(file,instrument=false,isolated=false){
  await build({absWorkingDir:frontend,tsconfigRaw:{},entryPoints:[frontend+'src/App.jsx'],outfile:file,bundle:true,platform:'node',format:'esm',jsx:'automatic',define:{'import.meta.env.DEV':'false','import.meta.env.VITE_CRM_TEST':'"1"','import.meta.env.VITE_CRM_ISOLATED_PREPARATION':JSON.stringify(isolated?'1':'0')},external:['react','@phosphor-icons/react'],loader:{'.css':'empty'},plugins:instrument?[{name:'isolated-app-handler-harness',setup(build){
-  build.onLoad({filter:/App\.jsx$/},args=>({loader:'jsx',contents:readFileSync(args.path,'utf8').replace(/^import \{ useCallback, useEffect, useMemo, useRef, useState \} from "react";/,'const {useCallback,useEffect,useMemo,useRef,useState}=globalThis.__draftHooks;').replace('  if(liveMode&&!liveSession&&!semihEntry.checked)','  globalThis.__draftHarness.actions={commitLiveSession,setDraft,sendMessage,closeLiveSession,refreshLivePermissions,selectConversation,setQuery,setFilter,loadRemainingConversations,activateTerminal,checkSendStatus,translateDraft,renewExpiredNormalSession,continueSemihSession,connectLive};\n  if(liveMode&&!liveSession&&!semihEntry.checked)')}));
+  build.onLoad({filter:/App\.jsx$/},args=>({loader:'jsx',contents:readFileSync(args.path,'utf8').replace(/^import \{ useCallback, useEffect, useMemo, useRef, useState \} from "react";/,'const {useCallback,useEffect,useMemo,useRef,useState}=globalThis.__draftHooks;').replace('  if(liveMode&&!liveSession&&!semihEntry.checked)','  globalThis.__draftHarness.actions={commitLiveSession,setDraft,sendMessage,closeLiveSession,refreshLivePermissions,selectConversation,setQuery,setFilter,loadRemainingConversations,activateTerminal,checkSendStatus,translateDraft,renewExpiredNormalSession,continueSemihSession,connectLive,getConversations:()=>conversations,setHistoryPanel:panel=>chatScrollRef.current=panel};\n  if(liveMode&&!liveSession&&!semihEntry.checked)')}));
   build.onLoad({filter:/liveApi\.js$/},args=>({loader:'js',contents:readFileSync(args.path,'utf8')+'\nfor(const name of Object.keys(globalThis.__draftHarness.api))liveApi[name]=(...args)=>globalThis.__draftHarness.api[name](...args);'}));
  }}]:[]});
 }
@@ -36,7 +36,7 @@ async function fixture(run,{compact=false,terminal=false,offline=false,isolated=
   const checking=render();assert.match(renderToStaticMarkup(checking),/Oturum kontrol ediliyor/);assert.doesNotMatch(renderToStaticMarkup(checking),/Synthetic fixture|Mesajınız/);
   const startup=effects.find(fn=>String(fn).includes('liveApi.rememberedNormalSession'));assert.equal(typeof startup,'function');const stopStartup=startup();
   for(let i=0;i<12;i++)await Promise.resolve();render();
-  try{await run({local,harness,render,connect,pollAutomatic:()=>effects.filter(fn=>String(fn).includes("automaticTranslationBusy.current")).forEach(fn=>fn()),pollBackground:()=>effects.filter(fn=>String(fn).includes('const refreshInbox = async')||String(fn).includes('permissionPollRef.current')).forEach(fn=>fn()),pollDrafts:()=>effects.filter(fn=>String(fn).includes('textDraftStorageRef.current.synchronize')).forEach(fn=>fn()),pollConversation:()=>effects.filter(fn=>String(fn).includes('const refreshConversation = async')).forEach(fn=>fn())});}finally{stopStartup?.();}
+  try{await run({local,harness,render,connect,pollAutomatic:()=>effects.filter(fn=>String(fn).includes("automaticTranslationBusy.current")).forEach(fn=>fn()),pollBackground:()=>effects.filter(fn=>String(fn).includes('const refreshInbox = async')||String(fn).includes('permissionPollRef.current')).forEach(fn=>fn()),pollDrafts:()=>effects.filter(fn=>String(fn).includes('textDraftStorageRef.current.synchronize')).forEach(fn=>fn()),pollHistoryScroll:()=>effects.filter(fn=>String(fn).includes('previousChatRef.current')).forEach(fn=>fn()),pollConversation:()=>effects.filter(fn=>String(fn).includes('const refreshConversation = async')).forEach(fn=>fn())});}finally{stopStartup?.();}
  }finally{globalThis.window=previous.window;globalThis.document=previous.document;globalThis.__draftHooks=previous.hooks;globalThis.__draftHarness=previous.harness;rmSync(file,{force:true});}
 }
 function find(tree,predicate){if(!tree||typeof tree!=='object')return null;if(predicate(tree))return tree;for(const child of React.Children.toArray(tree.props?.children)){const found=find(child,predicate);if(found)return found;}return null;}
@@ -223,6 +223,207 @@ test('actual personnel terminal polls metadata without rehydrating every convers
   assert.equal(composer(tree).props.value,'Unsent personnel message');assert.match(renderToStaticMarkup(tree),/Existing own history/);
  }finally{Date.now=originalNow;}
 },{terminal:true,compact:true}));
+
+const loadedHistory=(ids=Array.from({length:20},(_,i)=>i+1),changes={})=>normalizeConversation({...row(),messages:ids.map(id=>({id:String(id),messageType:'incoming',content:`Fixture history ${id}`,createdAt:`2026-10-13T12:00:${String(id).padStart(2,'0')}Z`,deliveryState:'sent',attachments:id===1?[{id:'photo-1',type:'image/jpeg',fileName:'oldest-photo.jpg',url:'https://example.test/oldest-photo.jpg'},{id:'pdf-1',type:'application/pdf',fileName:'oldest-history.pdf',url:'https://example.test/oldest-history.pdf'}]:[],...changes[id]}))});
+const flushHistoryPoll=async()=>{for(let i=0;i<8;i++)await Promise.resolve();};
+const olderButton=tree=>find(tree,node=>node.type==='button'&&node.props['aria-label']==='Eski mesajları yükle');
+const historyPage=(ids,before,extra={})=>({...loadedHistory(ids),history:{nextBefore:before,hasMore:before!==null},...extra});
+function historyPanel(h){const panel={scrollTop:290,clientHeight:200,get scrollHeight(){const row=h.harness.actions.getConversations()[0];return (row.history?.hasMore?40:0)+row.messages.length*50;},querySelectorAll(){const row=h.harness.actions.getConversations()[0];return row.messages.map((message,index)=>({dataset:{crmMessageId:message.id},offsetTop:(row.history?.hasMore?40:0)+index*50,offsetHeight:50}));},scrollTo(options){this.scrollTop=Math.max(0,options.top-this.clientHeight);}};h.harness.actions.setHistoryPanel(panel);return panel;}
+
+test('actual App older history is manual single-flight and keeps latest metadata media draft cursor and scroll anchor in either return order',async()=>{
+ for(const order of ['older-first','latest-first'])await fixture(async h=>{
+  const initial=historyPage(Array.from({length:20},(_,i)=>i+21),21,{name:'Current person',preview:'Current preview',workflow:[{id:'current-workflow'}]}),latest=historyPage(Array.from({length:20},(_,i)=>i+20),20,{name:'Latest person',preview:'Latest preview',workflow:[{id:'latest-workflow'}]});
+  latest.messages.find(message=>message.id==='20').text='Latest body 20';latest.messages.find(message=>message.id==='20').deliveryState='read';
+  const old=historyPage(Array.from({length:20},(_,i)=>i+1),1,{name:'Old snapshot person',preview:'OLD preview',workflow:[{id:'old-workflow'}],capabilities:{canSend:false}});let finishOlder,finishLatest,olderCalls=0;
+  h.connect(actor(),[initial]);h.harness.actions.selectConversation(initial);h.render();h.harness.actions.setDraft('Unchanged history draft');h.render();
+  const panel=historyPanel(h),scroll=find(h.render(),node=>node.props.className==='chat-scroll');scroll.props.onScroll({currentTarget:panel});h.render();
+  const button=olderButton(h.render());assert.equal(typeof button?.props.onClick,'function');
+  h.harness.api.conversation=(_key,id,options)=>{assert.equal(id,'55');return options.before!==undefined?(olderCalls++,assert.equal(options.before,21),new Promise(resolve=>finishOlder=resolve)):new Promise(resolve=>finishLatest=resolve);};
+  const pending=button.props.onClick();button.props.onClick();h.render();assert.equal(olderButton(h.render()).props.disabled,true);h.pollConversation();await flushHistoryPoll();assert.equal(olderCalls,1);
+  if(order==='latest-first'){finishLatest({conversation:latest});await flushHistoryPoll();h.render();}
+  const visibleBefore=panel.querySelectorAll().find(node=>node.offsetTop+node.offsetHeight>panel.scrollTop),offsetBefore=visibleBefore.offsetTop-panel.scrollTop;
+  finishOlder({conversation:old});await pending;h.render();h.pollHistoryScroll();h.render();
+  const anchored=panel.querySelectorAll().find(node=>node.dataset.crmMessageId===visibleBefore.dataset.crmMessageId);assert.equal(anchored.offsetTop-panel.scrollTop,offsetBefore);
+  if(order==='older-first'){finishLatest({conversation:latest});await flushHistoryPoll();h.render();h.pollHistoryScroll();h.render();}
+  const current=h.harness.actions.getConversations()[0];assert.deepEqual(current.messages.map(message=>message.id),Array.from({length:40},(_,i)=>String(i+1)));
+  assert.equal(current.messages.find(message=>message.id==='20').text,'Latest body 20');assert.equal(current.messages.find(message=>message.id==='20').deliveryState,'read');
+  assert.equal(current.name,'Latest person');assert.equal(current.preview,'Latest preview');assert.deepEqual(current.workflow,[{id:'latest-workflow'}]);assert.equal(current.capabilities,undefined);
+  assert.deepEqual(current.messages[0].attachments.map(media=>media.fileName),['oldest-photo.jpg','oldest-history.pdf']);assert.equal(current.history.nextBefore,1);assert.equal(olderCalls,1);assert.equal(composer(h.render()).props.value,'Unchanged history draft');
+  const jump=find(h.render(),node=>node.type==='button'&&node.props.className==='jump-latest');assert.equal(typeof jump?.props.onClick,'function');jump.props.onClick();assert.equal(panel.scrollTop,panel.scrollHeight-panel.clientHeight);assert.equal(find(h.render(),node=>node.props.className==='jump-latest'),null);
+ },{isolated:true,origin:'http://127.0.0.1:62700'});
+});
+
+test('actual App older history advances through private-only pages ends on raw-empty and stays hidden for legacy metadata',async()=>fixture(async h=>{
+ const initial=historyPage([21,22],21);h.connect(actor(),[initial]);h.harness.actions.selectConversation(initial);h.render();h.harness.actions.setDraft('Private page draft');h.render();
+ const calls=[];h.harness.api.conversation=async(_key,_id,options)=>{calls.push(options.before);return {conversation:historyPage([],options.before===21?16:null)};};
+ await olderButton(h.render()).props.onClick();h.render();assert.deepEqual(calls,[21]);assert.deepEqual(h.harness.actions.getConversations()[0].messages.map(message=>message.id),['21','22']);assert.equal(h.harness.actions.getConversations()[0].history.nextBefore,16);assert(olderButton(h.render()));
+ await olderButton(h.render()).props.onClick();h.render();assert.deepEqual(calls,[21,16]);assert.equal(olderButton(h.render()),null);assert.deepEqual(h.harness.actions.getConversations()[0].history,{nextBefore:null,hasMore:false,loadedEarlier:true});assert.equal(composer(h.render()).props.value,'Private page draft');
+ h.harness.api.conversation=async()=>({conversation:initial});h.pollConversation();await flushHistoryPoll();h.render();assert.equal(olderButton(h.render()),null);assert.equal(h.harness.actions.getConversations()[0].history.hasMore,false);
+ h.connect(actor(),[loadedHistory([21,22])]);h.harness.actions.selectConversation(h.harness.actions.getConversations()[0]);h.render();assert.equal(olderButton(h.render()),null);assert.equal(h.harness.actions.getConversations()[0].history,undefined);
+},{isolated:true,origin:'http://127.0.0.1:62700'}));
+
+test('actual App older history retries only manually and rejects foreign malformed or nonprogress pages without changing messages or draft',async()=>{
+ for(const failure of [503,'foreign','assignment','cursor','missing'])await fixture(async h=>{
+  const initial=historyPage([21,22],21);h.connect(actor(),[initial]);h.harness.actions.selectConversation(initial);h.render();h.harness.actions.setDraft('Retry page draft');h.render();let calls=0;
+  h.harness.api.conversation=async()=>{calls++;if(calls===2)return {conversation:historyPage([1,20],1)};if(failure===503)throw Object.assign(Error('Synthetic history unavailable'),{status:503});return {conversation:{...historyPage([20],failure==='cursor'?21:20),...(failure==='foreign'?{id:'56'}:failure==='assignment'?{assignedUserId:8}:failure==='missing'?{history:undefined}:{})}};};
+  await olderButton(h.render()).props.onClick();h.render();await flushHistoryPoll();assert.equal(calls,1);assert.deepEqual(h.harness.actions.getConversations()[0].messages.map(message=>message.id),['21','22']);assert.equal(h.harness.actions.getConversations()[0].history.nextBefore,21);assert(find(h.render(),node=>node.props.role==='alert'));assert.equal(olderButton(h.render()).props.disabled,false);assert.equal(composer(h.render()).props.value,'Retry page draft');
+  await olderButton(h.render()).props.onClick();h.render();assert.equal(calls,2);assert.deepEqual(h.harness.actions.getConversations()[0].messages.map(message=>message.id),['1','20','21','22']);assert.equal(find(h.render(),node=>node.props.role==='alert'),null);
+ },{isolated:true,origin:'http://127.0.0.1:62700'});
+});
+
+test('actual App older history keeps cursor messages and draft when production API receives invalid raw message lists',async()=>{
+ for(const messages of [undefined,null,{},Array.from({length:21},()=>({id:20,content:'Synthetic duplicate'}))])await fixture(async h=>{
+  const previousFetch=globalThis.fetch,initial=historyPage([21,22],21);let calls=0;
+  try{
+   const {liveApi}=await import('../src/liveApi.js?actual-app-raw-history-list-test');
+   globalThis.fetch=async(url)=>{calls++;assert.equal(url,'/api/live/crm/conversations/55?before=21');return Response.json({data:{conversation:{id:55,assignedUserId:7,history:{nextBefore:16,hasMore:true},messages}}});};
+   h.connect(actor(),[initial]);h.harness.actions.selectConversation(initial);h.render();h.harness.actions.setDraft('Raw page unchanged draft');h.render();h.harness.api.conversation=(...args)=>liveApi.conversation(...args);
+   await olderButton(h.render()).props.onClick();h.render();await flushHistoryPoll();assert.equal(calls,1);
+   const current=h.harness.actions.getConversations()[0];assert.equal(current.history.nextBefore,21);assert.deepEqual(current.messages.map(message=>message.id),['21','22']);assert.equal(composer(h.render()).props.value,'Raw page unchanged draft');assert.match(h.local.getItem(TEXT_DRAFT_STORAGE_KEY),/Raw page unchanged draft/);assert(find(h.render(),node=>node.props.role==='alert'));assert.equal(olderButton(h.render()).props.disabled,false);
+  }finally{globalThis.fetch=previousFetch;}
+ },{isolated:true,origin:'http://127.0.0.1:62700'});
+});
+
+test('actual App older history ignores late success across recipient actor session permission logout and assignment changes',async()=>{
+ for(const changed of ['recipient','actor','session','permission','logout','assignment'])await fixture(async h=>{
+  const originalNow=Date.now;let time=100000;Date.now=()=>time;
+  try{
+   const initial=historyPage([21,22],21),fresh=historyPage([40],40),other={...historyPage([30],30),id:'56'};let finish,signal;
+   h.connect(actor(),[initial,other]);h.harness.actions.selectConversation(initial);h.render();h.harness.api.conversation=(_key,_id,options)=>{signal=options.signal;return new Promise(resolve=>finish=resolve);};const pending=olderButton(h.render()).props.onClick();h.render();
+   if(changed==='recipient'){h.harness.actions.selectConversation(other);h.render();}
+   else if(changed==='actor')h.connect({...actor(),accountIdentity:{id:43}},[fresh]);
+   else if(changed==='session'){h.harness.actions.commitLiveSession({key:'replacement-session',session:actor(),inbox:{conversations:[fresh],summary:{total:1}}});h.render();}
+   else if(changed==='permission'){h.harness.api.session=async()=>({...actor(),role:'personel',canSend:false});await h.harness.actions.refreshLivePermissions();h.render();}
+   else if(changed==='logout'){await h.harness.actions.closeLiveSession('',true);h.render();}
+   else{h.harness.api.inbox=async()=>({conversations:[{...fresh,assignedUserId:8,chatwootAgentId:8}],summary:{total:1}});time+=20000;h.pollBackground();await flushHistoryPoll();h.render();}
+   if(changed!=='assignment')assert.equal(signal.aborted,true);
+   finish({conversation:historyPage([1,20],1)});await pending;h.render();assert.equal(h.harness.actions.getConversations().some(row=>row.messages.some(message=>message.id==='1')),false);assert.doesNotMatch(renderToStaticMarkup(h.render()),/oldest-photo|oldest-history/);
+  }finally{Date.now=originalNow;}
+ },{isolated:true,origin:'http://127.0.0.1:62700'});
+});
+
+for(const status of [403,404,401])test(`actual App older history assignment race keeps scoped${status} separate from current token renewal`,async()=>fixture(async h=>{
+ const originalNow=Date.now;let time=100000,deny,renewals=0;Date.now=()=>time;
+ try{
+  const initial=historyPage([21,22],21),fresh={...historyPage([40],40),assignedUserId:8,chatwootAgentId:8};h.connect(actor(),[initial]);h.harness.actions.selectConversation(initial);h.render();
+  h.harness.api.conversation=()=>new Promise((_resolve,reject)=>deny=reject);const pending=olderButton(h.render()).props.onClick();h.render();
+  h.harness.api.inbox=async()=>({conversations:[fresh],summary:{total:1}});time+=20000;h.pollBackground();await flushHistoryPoll();h.render();h.harness.actions.setDraft('Fresh older-page assignment draft');h.render();
+  h.harness.api.resumeNormalSession=async()=>{renewals++;return {accessToken:'synthetic-renewed-authority'};};deny(Object.assign(Error('Synthetic old page denied'),{status}));await pending;await flushHistoryPoll();h.render();
+  assert.equal(renewals,status===401?1:0);assert.deepEqual(h.harness.actions.getConversations().map(row=>row.id),['55']);assert.equal(h.harness.actions.getConversations()[0].assignedUserId,8);if(status!==401)assert.equal(composer(h.render()).props.value,'Fresh older-page assignment draft');
+ }finally{Date.now=originalNow;}
+},{isolated:true,origin:'http://127.0.0.1:62700'}));
+
+test('actual App older history current 403 404 and revoked 401 retain denial cleanup',async()=>{
+ for(const status of [403,404,401])await fixture(async h=>{
+  const initial=historyPage([21,22],21);h.connect(actor(),[initial]);h.harness.actions.selectConversation(initial);h.render();h.harness.actions.setDraft('Denied older draft');h.render();
+  h.harness.api.conversation=async()=>{throw Object.assign(Error('Synthetic older page denied'),{status});};h.harness.api.resumeNormalSession=async()=>{throw Object.assign(Error('Synthetic revoked session'),{status:401});};
+  await olderButton(h.render()).props.onClick();await flushHistoryPoll();h.render();
+  if(status===401){assert.match(renderToStaticMarkup(h.render()),/Melisa CRM güvenli giriş/);assert.equal(h.local.getItem('melisa-crm-access-token'),null);assert.equal(olderButton(h.render()),null);}
+  else{assert.deepEqual(h.harness.actions.getConversations(),[]);assert.doesNotMatch(h.local.getItem(TEXT_DRAFT_STORAGE_KEY)||'',/Denied older draft/);}
+ },{isolated:true,origin:'http://127.0.0.1:62700'});
+});
+
+test('actual App detail and inbox polling retain loaded media and merge message updates in either return order',async()=>{
+ for(const order of ['detail-first','inbox-first'])await fixture(async h=>{
+  const originalNow=Date.now;let time=100000,finishDetail,finishInbox,detailCalls=0,inboxCalls=0;Date.now=()=>time;
+  try{
+   const loaded=loadedHistory(),latest=loadedHistory(Array.from({length:20},(_,i)=>i+2).reverse(),{10:{content:'Updated history 10',deliveryState:'read'}});
+   h.connect(actor(),[loaded]);h.harness.actions.selectConversation(loaded);h.render();
+   h.harness.api.conversation=()=>{detailCalls++;return new Promise(resolve=>finishDetail=resolve);};h.harness.api.inbox=()=>{inboxCalls++;return new Promise(resolve=>finishInbox=resolve);};
+   time+=20000;h.pollConversation();h.pollBackground();await flushHistoryPoll();assert.equal(detailCalls,1);assert.equal(inboxCalls,1);
+   const resolveDetail=()=>finishDetail({conversation:latest}),resolveInbox=()=>finishInbox({conversations:[loadedHistory([21])],summary:{total:1}});
+   if(order==='detail-first')resolveDetail();else resolveInbox();await flushHistoryPoll();h.render();
+   if(order==='detail-first')resolveInbox();else resolveDetail();await flushHistoryPoll();const tree=h.render();
+   const messages=h.harness.actions.getConversations()[0].messages;
+   assert.deepEqual(messages.map(message=>message.id),Array.from({length:21},(_,i)=>String(i+1)));
+   assert.equal(messages.find(message=>message.id==='10').text,'Updated history 10');assert.equal(messages.find(message=>message.id==='10').deliveryState,'read');
+   assert.deepEqual(messages[0].attachments.map(attachment=>attachment.fileName),['oldest-photo.jpg','oldest-history.pdf']);
+   const html=renderToStaticMarkup(tree);assert.match(html,/oldest-photo\.jpg/);assert.match(html,/oldest-history\.pdf/);assert.equal((html.match(/class="message-block /g)||[]).length,21);
+  }finally{Date.now=originalNow;}
+ },{isolated:true,origin:'http://127.0.0.1:62700'});
+});
+
+test('actual App loaded-history polling replaces changed assignments and ignores late old-assignment detail',async()=>fixture(async h=>{
+ const originalNow=Date.now;let time=100000,finishOld;Date.now=()=>time;
+ try{
+  const old=loadedHistory(),assigned=normalizeConversation({...row(),assignedUserId:8,chatwootAgentId:8,messages:loadedHistory([22]).messages});
+  h.connect(actor(),[old]);h.harness.actions.selectConversation(old);h.render();
+  h.harness.api.conversation=()=>new Promise(resolve=>finishOld=resolve);h.pollConversation();await flushHistoryPoll();
+  h.harness.api.inbox=async()=>({conversations:[assigned],summary:{total:1}});time+=20000;h.pollBackground();await flushHistoryPoll();h.render();
+  assert.deepEqual(h.harness.actions.getConversations()[0].messages.map(message=>message.id),['22']);
+  finishOld({conversation:loadedHistory(Array.from({length:20},(_,i)=>i+2))});await flushHistoryPoll();h.render();
+  assert.deepEqual(h.harness.actions.getConversations()[0].messages.map(message=>message.id),['22']);assert.equal(h.harness.actions.getConversations()[0].assignedUserId,8);
+  h.harness.api.conversation=async()=>({conversation:{...assigned,messages:loadedHistory([23]).messages}});time+=20000;h.pollConversation();await flushHistoryPoll();h.render();
+  assert.deepEqual(h.harness.actions.getConversations()[0].messages.map(message=>message.id),['22','23']);
+  h.harness.api.conversation=async()=>({conversation:{...assigned,assignedUserId:9,chatwootAgentId:9,messages:loadedHistory([24]).messages}});time+=20000;h.pollConversation();await flushHistoryPoll();h.render();
+  assert.deepEqual(h.harness.actions.getConversations()[0].messages.map(message=>message.id),['24']);assert.doesNotMatch(renderToStaticMarkup(h.render()),/oldest-photo|oldest-history/);
+ }finally{Date.now=originalNow;}
+},{isolated:true,origin:'http://127.0.0.1:62700'}));
+
+for(const status of [403,404])test(`actual App loaded-history ignores stale assignment${status} without removing the new conversation or draft`,async()=>fixture(async h=>{
+ const originalNow=Date.now;let time=100000,denyOld;Date.now=()=>time;
+ try{
+  const old=loadedHistory(),assigned=normalizeConversation({...row(),assignedUserId:8,chatwootAgentId:8,messages:loadedHistory([22]).messages});
+  h.connect(actor(),[old]);h.harness.actions.selectConversation(old);h.render();
+  h.harness.api.conversation=()=>new Promise((_resolve,reject)=>denyOld=reject);h.pollConversation();await flushHistoryPoll();
+  h.harness.api.inbox=async()=>({conversations:[assigned],summary:{total:1}});time+=20000;h.pollBackground();await flushHistoryPoll();h.render();
+  h.harness.actions.setDraft('Fresh assignment draft');h.render();assert.equal(composer(h.render()).props.value,'Fresh assignment draft');
+  denyOld(Object.assign(Error('Synthetic old assignment denied'),{status}));await flushHistoryPoll();const tree=h.render(),rows=h.harness.actions.getConversations();
+  assert.deepEqual(rows.map(item=>item.id),['55']);assert.equal(rows[0].assignedUserId,8);assert.deepEqual(rows[0].messages.map(message=>message.id),['22']);
+  assert.equal(composer(tree).props.value,'Fresh assignment draft');assert.match(h.local.getItem(TEXT_DRAFT_STORAGE_KEY),/Fresh assignment draft/);
+ }finally{Date.now=originalNow;}
+},{isolated:true,origin:'http://127.0.0.1:62700'}));
+
+test('actual App loaded-history same-key401 still renews authority after the conversation assignment changes',async()=>fixture(async h=>{
+ const originalNow=Date.now;let time=100000,denyOld,renewals=0;Date.now=()=>time;
+ try{
+  const old=loadedHistory(),assigned=normalizeConversation({...row(),assignedUserId:8,chatwootAgentId:8,messages:loadedHistory([22]).messages});
+  h.connect(actor(),[old]);h.harness.actions.selectConversation(old);h.render();
+  h.harness.api.conversation=()=>new Promise((_resolve,reject)=>denyOld=reject);h.pollConversation();await flushHistoryPoll();
+  h.harness.api.inbox=async()=>({conversations:[assigned],summary:{total:1}});time+=20000;h.pollBackground();await flushHistoryPoll();h.render();
+  h.harness.api.resumeNormalSession=async()=>{renewals++;return {accessToken:'synthetic-renewed-authority'};};
+  denyOld(Object.assign(Error('Synthetic current access expired'),{status:401}));await flushHistoryPoll();h.render();
+  assert.equal(renewals,1);assert.equal(h.local.getItem('melisa-crm-access-token'),'synthetic-renewed-authority');
+  assert.deepEqual(h.harness.actions.getConversations().map(item=>item.id),['55']);assert.equal(h.harness.actions.getConversations()[0].assignedUserId,8);
+ }finally{Date.now=originalNow;}
+},{isolated:true,origin:'http://127.0.0.1:62700'}));
+
+test('actual App loaded-history polling cannot restore stale detail across recipient actor session permission or logout changes',async()=>{
+ for(const {changed,status} of [{changed:'recipient'},{changed:'actor'},{changed:'session'},{changed:'permission'},{changed:'logout'},{changed:'actor',status:403},{changed:'session',status:401},{changed:'recipient',status:404}])await fixture(async h=>{
+  const old=loadedHistory(),fresh=loadedHistory([40]),other={...loadedHistory([30]),id:'56',name:'Other fixture conversation'};let finishOld,denyOld;
+  h.connect(actor(),[old,other]);h.harness.actions.selectConversation(old);h.render();
+  h.harness.api.conversation=()=>new Promise((resolve,reject)=>{finishOld=resolve;denyOld=reject;});h.pollConversation();await flushHistoryPoll();
+  if(changed==='recipient'){h.harness.actions.selectConversation(other);h.render();}
+  else if(changed==='actor')h.connect({...actor(),accountIdentity:{id:43}},[fresh]);
+  else if(changed==='session'){h.harness.actions.commitLiveSession({key:'replacement-session',session:actor(),inbox:{conversations:[fresh],summary:{total:1}}});h.render();}
+  else if(changed==='permission'){h.harness.api.session=async()=>({...actor(),role:'personel',canSend:false});await h.harness.actions.refreshLivePermissions();h.render();}
+  else{await h.harness.actions.closeLiveSession('',true);h.render();}
+  if(status)denyOld(Object.assign(Error('Synthetic stale detail denied'),{status}));else finishOld({conversation:loadedHistory(Array.from({length:20},(_,i)=>i+2))});await flushHistoryPoll();const tree=h.render(),rows=h.harness.actions.getConversations();
+  if(changed==='recipient'){
+   assert.deepEqual(rows.find(item=>item.id==='56').messages.map(message=>message.id),['30']);assert.equal(rows.some(item=>item.messages.some(message=>message.id==='21')),false);
+  }else if(changed==='actor'||changed==='session'){
+   assert.deepEqual(rows[0].messages.map(message=>message.id),['40']);assert.doesNotMatch(renderToStaticMarkup(tree),/oldest-photo|oldest-history/);
+  }else{assert.deepEqual(rows,[]);assert.match(renderToStaticMarkup(tree),/Melisa CRM güvenli giriş/);}
+ },{isolated:true,origin:'http://127.0.0.1:62700'});
+});
+
+test('actual App loaded-history polling keeps existing 401 403 404 transient and malformed-ID boundaries',async()=>{
+ for(const status of [401,403,404,503,'foreign-id'])await fixture(async h=>{
+  const old=loadedHistory();h.connect(actor(),[old]);h.harness.actions.selectConversation(old);h.render();
+  h.harness.api.resumeNormalSession=async()=>{throw Object.assign(Error('Synthetic expired authority'),{status:401});};
+  h.harness.api.conversation=async()=>{
+   if(status==='foreign-id')return {conversation:{...loadedHistory([21]),id:'56',name:'Unexpected foreign conversation'}};
+   throw Object.assign(Error('Synthetic detail denied'),{status});
+  };
+  h.pollConversation();await flushHistoryPoll();const tree=h.render(),html=renderToStaticMarkup(tree),rows=h.harness.actions.getConversations();
+  if(status===401){assert.match(html,/Melisa CRM güvenli giriş/);assert.doesNotMatch(html,/oldest-photo|oldest-history/);}
+  else if(status===403||status===404){assert.deepEqual(rows,[]);assert.doesNotMatch(html,/oldest-photo|oldest-history/);}
+  else{
+   assert.deepEqual(rows.map(item=>item.id),['55']);assert.deepEqual(rows[0].messages.map(message=>message.id),Array.from({length:20},(_,i)=>String(i+1)));
+   assert.match(html,/oldest-photo\.jpg/);assert.match(html,/oldest-history\.pdf/);assert.match(html,/Güncelleme gecikti/);assert.doesNotMatch(html,/Unexpected foreign conversation|Fixture history 21/);
+  }
+ },{isolated:true,origin:'http://127.0.0.1:62700'});
+});
 
 test('actual compact App exposes the first real bootstrap list, truthful partial search and selected-history loading',async()=>fixture(async h=>{
  const boot={...row(),messagesLoaded:false,detailLoaded:false,preview:'Son mesaj yükleniyor…'};

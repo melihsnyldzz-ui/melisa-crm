@@ -469,6 +469,7 @@ export function normalizeConversation(value, index = 0) {
     channel,
     tags: Array.isArray(row.tags) ? row.tags.map(String) : [],
     messages,
+    history: normalizeConversationHistory(row.history),
     messagesLoaded: row.messagesLoaded!==undefined?row.messagesLoaded===true:Array.isArray(row.messages),
     detailLoaded: row.detailLoaded!==undefined?row.detailLoaded===true:Array.isArray(row.messages),
   };
@@ -489,14 +490,59 @@ export function normalizeInboxPayload(payload) {
   return { conversations, summary:{...summary,complete:true}, pagination:payload.pagination||{} };
 }
 
+export function sameConversationHistoryScope(left, right) {
+  return Boolean(left&&right&&String(left.id)===String(right.id)
+    &&['assignedUserId','chatwootAgentId'].every(key=>String(left[key]??'')===String(right[key]??'')));
+}
+
+function positiveHistoryId(value) {
+  const text=String(value??'');
+  return /^[1-9]\d*$/.test(text)&&Number.isSafeInteger(Number(text))?Number(text):null;
+}
+
+function normalizeConversationHistory(value) {
+  if(!value||typeof value.hasMore!=='boolean')return undefined;
+  if(value.hasMore&&typeof value.nextBefore==='number'&&positiveHistoryId(value.nextBefore))return {nextBefore:value.nextBefore,hasMore:true};
+  if(!value.hasMore&&value.nextBefore===null)return {nextBefore:null,hasMore:false};
+  return undefined;
+}
+
+function historyPageError() { return Object.assign(new Error('Eski mesajlar doğrulanamadı. Yeniden deneyin.'),{code:'CRM_HISTORY_PAGE_INVALID'}); }
+
+function validateOlderConversation(page,before,scope) {
+  const history=normalizeConversationHistory(page?.history);
+  if(!positiveHistoryId(before)||!sameConversationHistoryScope(scope,page)||!history||!Array.isArray(page.messages)||page.messages.length>20)throw historyPageError();
+  const ids=page.messages.map(message=>positiveHistoryId(message.id));
+  if(ids.some(id=>id===null||id>=before)||(!history.hasMore&&ids.length)||
+    (history.hasMore&&(history.nextBefore>=before||ids.some(id=>id<history.nextBefore))))throw historyPageError();
+  return history;
+}
+
+// An older page only extends loaded messages; fresh detail owns message updates and metadata.
+export function mergeOlderConversation(current,page,before) {
+  const history=validateOlderConversation(page,before,current);
+  const messages=new Map(page.messages.map(message=>[String(message.id),message]));
+  (current.messages||[]).forEach(message=>messages.set(String(message.id),message));
+  return {...current,messages:[...messages.values()].sort((a,b)=>(Date.parse(a.createdAt)||0)-(Date.parse(b.createdAt)||0)),history:{...history,loadedEarlier:true}};
+}
+
+function retainedConversationHistory(existing,incoming) {
+  if(existing?.history?.loadedEarlier)return existing.history;
+  if(!incoming.history)return existing?.history;
+  if(existing?.history?.hasMore&&incoming.history.hasMore)return {...incoming.history,nextBefore:Math.min(existing.history.nextBefore,incoming.history.nextBefore)};
+  return incoming.history;
+}
+
 export function mergeInboxConversations(currentRows, incomingRows, selectedId = "", detailConversation = null, preserveMissing = false) {
   const currentById = new Map((currentRows || []).map((item) => [String(item.id), item]));
   const merged = (incomingRows || []).map((item) => {
     if (String(item.id) === String(selectedId) && detailConversation) return { ...item, ...detailConversation };
     const existing = currentById.get(String(item.id));
+    if(existing&&!sameConversationHistoryScope(existing,item))return item;
+    item={...item,history:retainedConversationHistory(existing,item)};
     if(item.messagesLoaded===false&&existing?.messagesLoaded===true)return {...existing,...item,messages:existing.messages,workflow:existing.workflow,preview:existing.preview,foreign:existing.foreign,waitingForReply:existing.waitingForReply,messagesLoaded:true,detailLoaded:existing.detailLoaded};
     const incomingHasMessages = Array.isArray(item.messages) && item.messages.length > 0;
-    if (String(item.id) === String(selectedId) && existing?.messages?.length && incomingHasMessages) {
+    if ((String(item.id) === String(selectedId)||existing?.history?.loadedEarlier) && existing?.messages?.length && incomingHasMessages) {
       const history = new Map(existing.messages.map((message) => [String(message.id), message]));
       item.messages.forEach((message) => history.set(String(message.id), message));
       return { ...item, messages: [...history.values()].sort((a, b) => (Date.parse(a.createdAt) || 0) - (Date.parse(b.createdAt) || 0)) };
@@ -705,9 +751,17 @@ export const liveApi = {
     if(view!==undefined&&view!=='bootstrap')throw new Error('CRM liste görünümü geçerli değil.');
     return normalizeInboxPayload(await request(`/crm/inbox?limit=100&offset=${Math.max(0, Number(offset) || 0)}${view==='bootstrap'?'&view=bootstrap':''}`, token, { timeoutMs: 45000, ...options }));
   },
-  async conversation(token, id, options = {}) {
-    const result = await request(`/crm/conversations/${id}`, token, options);
-    return { conversation: normalizeConversation(result.conversation || result) };
+  async conversation(token, id, {before,historyScope,...options} = {}) {
+    const conversationId=positiveHistoryId(id);
+    if(!conversationId||(before!==undefined&&(!positiveHistoryId(before)||!historyScope||String(historyScope.id)!==String(id))))throw historyPageError();
+    const cursor=before===undefined?undefined:positiveHistoryId(before);
+    const result = await request(`/crm/conversations/${conversationId}${cursor===undefined?'':`?before=${cursor}`}`, token, options);
+    const raw=result.conversation||result;
+    if(String(raw?.id)!==String(conversationId)||(raw.history!==undefined&&!normalizeConversationHistory(raw.history)))throw historyPageError();
+    if(cursor!==undefined&&(!Array.isArray(raw.messages)||raw.messages.length>20))throw historyPageError();
+    const conversation=normalizeConversation(raw);
+    if(cursor!==undefined)validateOlderConversation(conversation,cursor,historyScope);
+    return { conversation };
   },
   async agents(token, options = {}) {
     const result = await request("/crm/agents", token, options);

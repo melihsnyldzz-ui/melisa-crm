@@ -9,7 +9,7 @@ import {
 } from "@phosphor-icons/react";
 import {
   applyReadReceipts, conversationRevision, effectiveInboxSummary, liveApi,
-  mergeInboxConversations, reconcileBootstrapConversations, saveAccessKey, savedAccessKey, sortInboxByActivity,
+  mergeInboxConversations, mergeOlderConversation, reconcileBootstrapConversations, sameConversationHistoryScope, saveAccessKey, savedAccessKey, sortInboxByActivity,
 } from "./liveApi";
 import { matchesContactSearch, phoneUnavailableLabel } from "./contactIdentity.js";
 import CustomerPhone from "./CustomerPhone.jsx";
@@ -363,6 +363,7 @@ export function App() {
   const [agents, setAgents] = useState([]);
   const [agentLoadState,setAgentLoadState] = useState({busy:false,error:''});
   const [detailLoadState,setDetailLoadState] = useState({id:'',busy:false,error:''});
+  const [olderHistoryState,setOlderHistoryState] = useState({scope:null,busy:false,error:''});
   const [summary, setSummary] = useState({ total: 0, unread: 0, pendingHumanReply: 0, unassigned: 0 });
   const [productQuery, setProductQuery] = useState("");
   const [selectedProductId, setSelectedProductId] = useState(productSeed[0].id);
@@ -398,6 +399,8 @@ export function App() {
   const [tabletQueueOpen, setTabletQueueOpen] = useState(false);
   const [tabletInspectorOpen, setTabletInspectorOpen] = useState(false);
   const chatScrollRef = useRef(null);
+  const olderHistoryReadRef = useRef(null);
+  const olderHistoryAnchorRef = useRef(null);
   const readReceiptsRef = useRef(readReceipts);
   const conversationsRef = useRef(conversations);
   const backgroundPageLoadRef = useRef("");
@@ -552,7 +555,8 @@ export function App() {
   useEffect(() => {
     if (liveMode && liveSessionRef.current && textDraftStorageRef.current.isActive()) applyStoredDrafts(textDraftStorageRef.current.synchronize(conversations));
   }, [conversations, liveSession, liveMode]);
-  const selectedHistoryRevision = `${selected.id}:${selected.messages?.length || 0}:${selected.messages?.at(-1)?.id || ""}:${sentMessages.length}`;
+  const selectedHistoryRevision = `${selected.id}:${selected.messages?.length || 0}:${selected.messages?.at(-1)?.id || ""}:${sentMessages.length}:${selected.history?.nextBefore}:${selected.history?.hasMore}`;
+  const selectedOlderHistoryState=sameConversationHistoryScope(olderHistoryState.scope,selected)?olderHistoryState:{busy:false,error:''};
   const syncStale = Boolean(syncError || (lastSyncAt && statusClock - lastSyncAt.getTime() > POLL_INTERVAL.inbox * 2 + 5000));
 
   useEffect(() => {
@@ -593,6 +597,8 @@ export function App() {
 
   const selectConversation = useCallback((conversation) => {
     if (!conversation?.id) return;
+    olderHistoryReadRef.current?.controller.abort();olderHistoryReadRef.current=null;olderHistoryAnchorRef.current=null;
+    setOlderHistoryState({scope:null,busy:false,error:''});
     uiOperationEpochRef.current++; setTranslationBusy(false); salesDraftFlowRef.current?.close();
     setIncomingTranslations(items => Object.fromEntries(Object.entries(items).filter(([, item]) => !item.loading)));
     closeVideoPilot(); setSelectedId(conversation.id); setAttachmentMenu(false); setChatMenu(false); setDesktopInspectorOpen(false);
@@ -636,6 +642,8 @@ export function App() {
   }, []);
 
   const closeLiveSession = (message = "", clearReceipts = false, {preserveNormal=false} = {}) => {
+    olderHistoryReadRef.current?.controller.abort();olderHistoryReadRef.current=null;olderHistoryAnchorRef.current=null;
+    setOlderHistoryState({scope:null,busy:false,error:''});
     remainingReadRef.current?.controller.abort();remainingReadRef.current=null;
     bootstrapReconcileRef.current=null;
     setAgentLoadState({busy:false,error:''});setDetailLoadState({id:'',busy:false,error:''});
@@ -678,9 +686,53 @@ export function App() {
     return sessionLoaderRef.current.start({resume:true,requireResume:true});
   };
 
+  const loadOlderHistory = async () => {
+    const scope=selectedConversation(conversationsRef.current,selectedIdRef.current);
+    if(!liveSessionRef.current||!scope?.history?.hasMore||!scope.detailLoaded||catalogVisibleRef.current)return;
+    const pending=olderHistoryReadRef.current;
+    if(pending?.current())return;
+    pending?.controller.abort();
+    const key=liveKeyRef.current,identity=sessionIdentityRef.current,actor=textDraftActorScope(liveSessionRef.current);
+    const epoch=sendScopeRef.current.capture(),uiEpoch=uiOperationEpochRef.current,before=scope.history.nextBefore,controller=new AbortController();
+    const authorityCurrent=()=>Boolean(liveSessionRef.current&&liveKeyRef.current===key&&sessionIdentityRef.current===identity&&textDraftActorScope(liveSessionRef.current)===actor&&sendScopeRef.current.isCurrent(epoch));
+    const current=()=>authorityCurrent()&&!controller.signal.aborted&&!catalogVisibleRef.current&&uiOperationEpochRef.current===uiEpoch&&String(selectedIdRef.current)===String(scope.id)&&sameConversationHistoryScope(scope,selectedConversation(conversationsRef.current,scope.id));
+    const operation={controller,current};olderHistoryReadRef.current=operation;
+    setOlderHistoryState({scope,busy:true,error:''});
+    try {
+      const {conversation}=await liveApi.conversation(key,scope.id,{before,historyScope:scope,signal:controller.signal});
+      if(!current())return;
+      mergeOlderConversation(selectedConversation(conversationsRef.current,scope.id),conversation,before);
+      const panel=chatScrollRef.current;
+      if(panel){
+        const position=node=>node.getBoundingClientRect?node.getBoundingClientRect().top-panel.getBoundingClientRect().top:node.offsetTop-panel.scrollTop;
+        const visible=[...panel.querySelectorAll('[data-crm-message-id]')].find(node=>position(node)+(node.offsetHeight||0)>0);
+        olderHistoryAnchorRef.current={scope,current,id:visible?.dataset.crmMessageId,offset:visible?position(visible):0,top:panel.scrollTop,height:panel.scrollHeight};
+      }
+      setConversations(items=>{
+        if(!current())return items;
+        const next=items.map(item=>String(item.id)===String(scope.id)?mergeOlderConversation(item,conversation,before):item);
+        conversationsRef.current=next;return next;
+      });
+    } catch(error) {
+      if(!authorityCurrent())return;
+      if(error.status===401){void renewExpiredNormalSession();return;}
+      if(!current())return;
+      if(error.status===403||error.status===404){
+        forgetDraft(scope.id);const next=conversationsRef.current.filter(item=>String(item.id)!==String(scope.id));
+        conversationsRef.current=next;setConversations(next);setSelectedId('');setMobileChatOpen(false);
+      }else setOlderHistoryState({scope,busy:false,error:error.message||'Eski mesajlar alınamadı. Yeniden deneyin.'});
+    } finally {
+      if(olderHistoryReadRef.current===operation){olderHistoryReadRef.current=null;setOlderHistoryState(state=>state.scope===scope?{...state,busy:false}:state);}
+    }
+  };
+
+  useEffect(()=>()=>olderHistoryReadRef.current?.controller.abort(),[]);
+
   const commitLiveSession = ({ key, session: sessionResult, inbox: inboxResult, agents: agentsResult={agents:[]}, permissionReadAt = Date.now(), inboxReadAt = Date.now() }) => {
     const identity = accountIdentityKey(sessionResult.accountIdentity);
     if (!identity) throw new Error("CRM kullanıcı kimliği sunucu tarafından bildirilmedi.");
+    olderHistoryReadRef.current?.controller.abort();olderHistoryReadRef.current=null;olderHistoryAnchorRef.current=null;
+    setOlderHistoryState({scope:null,busy:false,error:''});
     if (sessionIdentityRef.current !== identity || liveKeyRef.current !== key) salesDraftFlowRef.current?.close();
     if (sessionIdentityRef.current !== identity) { setProductDrafts({}); setDraftOrders([]); orderPreviewLedgerRef.current.clear(); }
     if (sessionIdentityRef.current && sessionIdentityRef.current !== identity) { setProductDrafts({}); setDraftOrders([]); orderPreviewLedgerRef.current.clear(); uiOperationEpochRef.current++; setIncomingTranslations({}); clearCatalogStorage(safeCatalogStorage()); setModal(null); catalogSessionRef.current?.close(); setCatalogSource(initialCatalogSource); sendScopeRef.current.invalidate(); sendInFlightRef.current = false; setDrafts({}); setAttachments({}); attachmentRef.current = {}; setSendStates({}); readReceiptsRef.current = {}; setReadReceipts({}); }
@@ -931,11 +983,18 @@ export function App() {
       if(poll.id === selectedId && now - poll.at < POLL_INTERVAL.conversation)return;
       poll.inFlight=true;poll.at = now; poll.id = selectedId;
       setDetailLoadState({id:selectedId,busy:true,error:''});
+      const readConversation=selectedConversation(conversationsRef.current,selectedId);
       try {
         const { conversation } = await liveApi.conversation(liveKey, selectedId,{signal:controller.signal});
-        if (!currentRead()) return;
+        if (!currentRead()||!sameConversationHistoryScope(readConversation,selectedConversation(conversationsRef.current,selectedId))) return;
+        if(String(conversation?.id)!==String(selectedId))throw new Error('Konuşma geçmişi doğrulanamadı. Yeniden deneyin.');
         setConversations((items) => {
-          const next = applyReadReceipts(items.map((item) => item.id === selectedId ? { ...item, ...conversation,messagesLoaded:true,detailLoaded:true } : item), readReceiptsRef.current);
+          if(!currentRead()||!sameConversationHistoryScope(readConversation,selectedConversation(items,selectedId)))return items;
+          const next = applyReadReceipts(items.map((item) => {
+            if(item.id!==selectedId)return item;
+            const detail={...(sameConversationHistoryScope(item,conversation)?item:{}),...conversation,messagesLoaded:true,detailLoaded:true};
+            return mergeInboxConversations([item],[detail],selectedId)[0];
+          }), readReceiptsRef.current);
           conversationsRef.current = next;
           return next;
         });
@@ -943,6 +1002,7 @@ export function App() {
         if (!currentRead()) return;
         if (error.status === 401) void renewExpiredNormalSession();
         else if (error.status === 403 || error.status === 404) {
+          if(!sameConversationHistoryScope(readConversation,selectedConversation(conversationsRef.current,selectedId)))return;
           forgetDraft(selectedId);
           setConversations((items) => items.filter((item) => item.id !== selectedId));
           setSelectedId(""); setMobileChatOpen(false);
@@ -970,6 +1030,12 @@ export function App() {
     const changed = previousChatRef.current !== selected.id;
     previousChatRef.current = selected.id;
     if (!selectedChatVisible) return;
+    const anchor=olderHistoryAnchorRef.current;olderHistoryAnchorRef.current=null;
+    if(anchor?.current()&&sameConversationHistoryScope(anchor.scope,selected)){
+      const panel=chatScrollRef.current,node=panel&&[...panel.querySelectorAll('[data-crm-message-id]')].find(item=>item.dataset.crmMessageId===anchor.id);
+      if(panel){const offset=node?(node.getBoundingClientRect?node.getBoundingClientRect().top-panel.getBoundingClientRect().top:node.offsetTop-panel.scrollTop):null;panel.scrollTop=offset===null?anchor.top+panel.scrollHeight-anchor.height:panel.scrollTop+offset-anchor.offset;nearBottomRef.current=panel.scrollHeight-panel.scrollTop-panel.clientHeight<=120;setShowJumpLatest(!nearBottomRef.current);}
+      return;
+    }
     if (!changed && !nearBottomRef.current) { setShowJumpLatest(true); return; }
     const frame = window.requestAnimationFrame(() => scrollToLatest("auto"));
     return () => window.cancelAnimationFrame(frame);
@@ -1361,8 +1427,10 @@ export function App() {
             <div className="chat-scroll" ref={chatScrollRef} onScroll={(event) => { const element = event.currentTarget; const away = element.scrollHeight - element.scrollTop - element.clientHeight > 120; nearBottomRef.current = !away; setShowJumpLatest(away); }}>
               {!selected.id ? <div className="empty-chat"><ChatCircleDots size={38} weight="duotone" /><strong>Konuşma seçilmedi</strong><span>Mesajları görmek için soldaki listeden bir müşteri seçin.</span></div> : <>
               <div className="date-pill">{liveSession && selected.messagesLoaded === false ? (detailLoadState.id === selected.id && detailLoadState.error ? detailLoadState.error : "Konuşma geçmişi yükleniyor…") : liveSession ? "Gerçek konuşma geçmişi" : "25 Eylül 2026, Cuma"}</div>
+              {liveSession&&selected.detailLoaded&&selected.history?.hasMore?<button className="secondary-button" aria-label="Eski mesajları yükle" disabled={selectedOlderHistoryState.busy} onClick={loadOlderHistory}>{selectedOlderHistoryState.busy?'Yükleniyor…':'Eski mesajları yükle'}</button>:null}
+              {selectedOlderHistoryState.error?<p role="alert">{selectedOlderHistoryState.error}</p>:null}
               {customerRequestsEnabled&&liveSession&&!liveSession.testAdmin&&!liveSession.testPersonnel&&selected.isLive&&selected.messagesLoaded!==false?<StaffProductRequests key={`${sessionIdentityRef.current}:${selected.id}`} accessToken={liveKey} conversationId={String(selected.id)} canIssue={['patron','mudur'].includes(liveSession.role)&&liveSession.permissions?.includes('crm.manage')} loadPhoto={loadRequestPhoto} onAuthorizationError={()=>void closeLiveSession('Oturum sona erdi. Yeniden giriş yapın.',true)}/>:null}
-              {liveSession ? (selected.messages || []).map((message) => { const translated = incomingTranslations[`${selected.id}:${message.id}`]; const hasText = Boolean(message.text?.trim()); const isOutgoing = message.direction === "outgoing"; if (message.direction === "activity") return <p className="system-message" key={message.id}>{message.text}</p>; return <div className={`message-block ${isOutgoing ? "outgoing" : "incoming"}`} key={message.id}><span className="message-sender">{isOutgoing ? "Melisa Baby" : selected.name}</span>{hasText ? <div className={`message ${isOutgoing ? "outgoing" : "incoming"}`}><p>{message.text}</p><time>{messageClock(message.createdAt)}{isOutgoing ? <CheckCircle size={14} weight="fill" /> : null}</time></div> : null}<MessageAttachments attachments={message.attachments} createdAt={message.createdAt} outgoing={isOutgoing} />{!isOutgoing && hasText ? <><button className="translate-message" disabled={translated?.loading || !liveSession.paidAiEnabled} onClick={() => translateIncomingMessage(message)}><Translate size={16} />{translated?.loading ? "Çevriliyor…" : translated?.translatedText && !translated.hidden ? "Türkçe çeviriyi gizle" : "Türkçeye Çevir"}</button>{translated?.translatedText && !translated.hidden && (!entry.enabled || (translationDisplay === "both" && (!translated.automatic || automaticTranslation))) ? <div className="translation-inline"><span>Türkçe çeviri · {translated.detectedLanguage || "dil otomatik algılandı"}</span><p>{translated.translatedText}</p>{translated.warning ? <small>{translated.warning}</small> : null}</div> : null}{translated?.error ? <div className="translation-inline error"><span>Çeviri kullanılamıyor</span><p>{translated.error}</p></div> : null}</> : null}</div>; }) : <>
+              {liveSession ? (selected.messages || []).map((message) => { const translated = incomingTranslations[`${selected.id}:${message.id}`]; const hasText = Boolean(message.text?.trim()); const isOutgoing = message.direction === "outgoing"; if (message.direction === "activity") return <p className="system-message" data-crm-message-id={message.id} key={message.id}>{message.text}</p>; return <div className={`message-block ${isOutgoing ? "outgoing" : "incoming"}`} data-crm-message-id={message.id} key={message.id}><span className="message-sender">{isOutgoing ? "Melisa Baby" : selected.name}</span>{hasText ? <div className={`message ${isOutgoing ? "outgoing" : "incoming"}`}><p>{message.text}</p><time>{messageClock(message.createdAt)}{isOutgoing ? <CheckCircle size={14} weight="fill" /> : null}</time></div> : null}<MessageAttachments attachments={message.attachments} createdAt={message.createdAt} outgoing={isOutgoing} />{!isOutgoing && hasText ? <><button className="translate-message" disabled={translated?.loading || !liveSession.paidAiEnabled} onClick={() => translateIncomingMessage(message)}><Translate size={16} />{translated?.loading ? "Çevriliyor…" : translated?.translatedText && !translated.hidden ? "Türkçe çeviriyi gizle" : "Türkçeye Çevir"}</button>{translated?.translatedText && !translated.hidden && (!entry.enabled || (translationDisplay === "both" && (!translated.automatic || automaticTranslation))) ? <div className="translation-inline"><span>Türkçe çeviri · {translated.detectedLanguage || "dil otomatik algılandı"}</span><p>{translated.translatedText}</p>{translated.warning ? <small>{translated.warning}</small> : null}</div> : null}{translated?.error ? <div className="translation-inline error"><span>Çeviri kullanılamıyor</span><p>{translated.error}</p></div> : null}</> : null}</div>; }) : <>
               <div className="message incoming"><p>{selected.foreign}</p><time>10:14</time></div>
               <button className="translate-message" onClick={() => setTranslatedIncoming((value) => !value)}><Translate size={16} />{translatedIncoming ? "Türkçe çeviriyi gizle" : "Türkçeye Çevir"}</button>
               {translatedIncoming ? <div className="translation-inline"><span>Türkçe çeviri</span><p>{selected.translation}</p></div> : null}
