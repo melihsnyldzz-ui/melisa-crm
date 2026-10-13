@@ -1,4 +1,16 @@
-## ŞİMDİ — CRM-CUSTOMER-REQUEST — 12 Ekim — çekirdek gerçek akış teknik hazır
+## ŞİMDİ — 13 Ekim — ortak sıra 2 / CRM06
+
+Kullanıcının devam talimatı geçerli; ana teslim paused değildir. Önce 12 Ekim bekleyen 11 belge/kanıt dosyasının kaynak teslimi, sonra fb34 ayrı ürün talebi çekirdeğinin ortak normal TEST paketine bağlanması kapatılır. Kanıtlı seçim/adet/replay/personel kontrolleri yalnız değişen entegrasyon gerektiğinde dar doğrulanır. Kaynakta proof-only mount/config ve helper'a bağlı korumalı authority ayrılmalıdır; ortak09ca henüz yeni talep teslimi değildir.
+
+İptal Semih yardımcı düğmesi/ayrı Windows programı geri gelmez; normal giriş/refresh/logout/revoke koşulları sürer. ERP sahibi ortak runtime/config/store/port ve restartları sıralar; CRM bağımsız kaynak/paket hazırlığını bekletmez. **Sonraki yapılabilir CRM işi sıra 6 / CRM01** mesaj/geçmiş/sayfalama görünümüdür; sonra ortak sıradaki personel/rol, ERP bağlantısı, oturum, AI, mobil, veri/eğitim/kurulum kalemleri izlenir. İnsan/IT/policy bağımlılığı yalnız ilgili işi bekletir. Sabit25 CRM ID ve ortak55 ana başlık yeniden sayım veya yeni modül değildir.
+
+## Önceki checkpoint — 12 Ekim — normal yanlış temsilci ve kurtarma hazırlığı kapandı
+
+Ordinarynormalagent3login/me200 → aynı55list/detail403/nodata; assignednormalagent2aynıkayıt200/actualUI2ürün5adet. Eski9user/env/JWT/grantentries ve tekrequeststatekorundu; sadeceownproof628xxstartuppinERP625ileyenilendi. [Kanıt](docs/evidence/crm/2026-10-12-customer-product-request/README.md). Privatejournal snapshot/ayrırestore-check hazırlanıp mevcutstatepostrestartreadback görüldü; LIVE/DBrestore/activeoverwrite yok. Source/build değişmedi; fixture veya insanPASS eklenmedi. **25/12🟢/13🟡/0🔴**, mobil/fiziksel/UA11 bekler.
+
+**Sıradaki tek ana iş:** sahipli ortakSemih TEST aktivasyonu için exactpaket/config/normalekranteslimi. Koordinatörün ortakcheckpoint'inde PID'ler değişti; rootsharedservisrestart/configyapmadı. Eskiagent3credentialbekleme teknikboşluğu kapalı, rootnormalotheractor resmi authsetup yoluyla ayrıhazırlandı. Önceki beşaşamalıana sıra korunur.
+
+## Önceki checkpoint — CRM-CUSTOMER-REQUEST0424ac7 — çekirdek akış
 
 ERP625 fotoğraflı24/3.830 listesi4113ms; gerçek8023×3+101×2 seç/adet/çıkar/reload/gönder→atanmış normalpersonel UI ve aynı operation/replay journal1 tamamlandı. Katalog kaynak/fotoğraf/rol/auth/hold/effect guard'ları korunur; sharedservis/source/provider/AI/native ticari/LIVE/main değişmedi. [Kanıt](docs/evidence/crm/2026-10-12-customer-product-request/README.md). CRM-UA11 insan/physical/mobile ve geçerli same-target agent3 prova açık; mevcut protected credential yok, reset/sharedgrant transfer yok. **25/12🟢/13🟡/0🔴**.
 

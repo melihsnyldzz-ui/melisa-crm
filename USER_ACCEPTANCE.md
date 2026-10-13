@@ -1,4 +1,14 @@
-## CRM-UA11 — 12 Ekim — gerçek teknik akış hazır / insan bekliyor
+## 13 Ekim — kabul sınırı ve iptal edilen yardımcı giriş
+
+Ana geliştirme yeniden yetkilendirildi; bu talimat hiçbir insan kabulünü otomatik PASS yapmaz. **CRM-UA10'un Semih yardımcı düğmesi/ayrı Windows programı özel talebi iptal edildi; ana teslim kapısı değildir.** Normal login/session/refresh/logout/revoke ve mevcut personel oturumlarının korunması C02/U01/M01/O02 içinde geçerlidir. Önceki UA01–09 ve UA11 sonuçları korunur.
+
+CRM-UA11'in 12 Ekim ayrı fb34/628xx teknik kanıtı ortak09ca kurulumu veya fiziksel/personel kabulü değildir. Ortak sıra2/CRM06'daki dar entegrasyon sonrası yalnız değişen normal/mobil/personel akışı denenir; kabul edilmiş medya/çeviri/ERP dar taslak/rollback yeniden açılmaz. Aşağıdaki kayıtlar tarih ve kaynak kapsamıyla okunur.
+
+## CRM-UA11 — 12 Ekim ek teknik hazırlık — insan bekliyor
+
+**bekliyor**; insan kişi/tarih/sonuç yok. Normal diğerpersonel/agent3 officialpasswordlogin/me200 ve same55/request403/nodata, normal assignedagent2same200/UI2ürün5adet taze kanıtlandı. [Scopeteknik kayıt](docs/evidence/crm/2026-10-12-customer-product-request/other-personel-scope.json). Eskiexistingagent3passwordreset değil, ayrıordinaryview-onlyTESTsetup. Credentialdependency teknik boşluğu kapandı; fiziksel çalışan veya gerçek personelin kendi kullanımıPASS değil. Fullmobile/screenshotQA ve insan sonucu hâlâbekler. Privatecopyrestore/hash ve ownrestartstatekoruması teknik hazırlıktır; tamDB/işletmerestorePASS değil. ÖncekiUA01–10/kabuller korunur.
+
+## Önceki checkpoint — CRM-UA11 — çekirdek0424ac7
 
 Kişi/tarih/insan sonucu verilmedi; **bekliyor**. Sourcefb34/ayrı62800 normal yönetici→genuine7733catalog; gerçek8023×3+101×2, seçim çıkar/reload, tek kalıcı talep/replay ve atanmış ordinary personel agent2 ekranı ajan tarafından doğrulandı. [Actual teknik kanıt](docs/evidence/crm/2026-10-12-customer-product-request/README.md). Eski25sn ERP blokajı625 ile çözüldü; kaynak/restart değiştirilmedi. Ordinarypersonel ownUI bu normalprova hesabıdır; gerçekpersonelin kendi kullanımı veyaphysicalphonePASS değil.
 

@@ -1,5 +1,11 @@
 # CRM karar merkezi
 
+### CRM-DEC-014 — 13 Ekim 2026 — Ana teslim devamı ve ortak sıra
+
+Kullanıcı CRM duraklamasını kaldırdı ve kalanları birlikte bitirme talimatı verdi. Mevcut 55 sabit ana başlık/21 ortak sıra kullanılır; CRM ilk **sıra2/CRM06 ürün talebi** ardından kendi ilk yapılabilir bağımsız kalemiyle sürer. Kabul edilmiş işler tekrarlanmaz. CRM'nin 25 sabit alt ID'si ve insan kabulleri korunur. Kaynak/paket/test hazırlığı runtime/cihaz/insan kabulü değildir.
+
+Önceki CRM-DEC-012'nin **Semih olarak devam et** yardımcı düğmesi ve ayrı Windows deneme programı talebi iptal edildi; yeniden etkinleştirilmez ve teslim kapısı yapılmaz. Normal giriş/session/refresh/logout/revoke ve doğru personel kapsamı şartları sürer. Ortak ERP/native/startup/config/port/store sahibi ERP ajanıdır; bağımsız CRM kaynak/paket hazırlığı serbest, ortak aktivasyon önce sahiplikle sıralanır. Kullanıcıdan TEST parolası istenmez; mevcut desteklenen korumalı normal oturum yolu korunur. Main/LIVE/Vega/T1, gerçek müşteriye mesaj, ücretli servis/AI, gerçek hesap/rol değişikliği ve retli eylemi başka yoldan aşma yetkisi yoktur.
+
 ### CRM-DEC-013 — 12 Ekim 2026 — Onaylı dar TEST kapsamı
 
 Kullanıcının “Bence güzel. Şimdilik bunu yapsak çok iyi olur.” kararıyla müşteri kataloğu → ürün seçimi/adet → CRM ürün talebi → atanmış normal personelde görünüm ilk MVP olarak uygulanır. Seçilen görsel [tasarım kaydıdır](docs/design/customer-catalog-flow-20261012.png); içindeki örnek ürünler ticari veri değildir. Gerçek ERP TEST ürünleri ve orijinal fotoğrafları, kod/ad arama ve yalnız kaynakta bulunan kategori kullanılacaktır. Kaynakta bulunmayan yaş, MOQ, teslim süresi veya fiyat uydurulmaz.

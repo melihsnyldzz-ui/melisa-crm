@@ -1,3 +1,23 @@
+# 12 Ekim — normal diğer temsilci erişimi kapandı
+
+Desteklenen normal auth yapılandırmasıyla yalnız ayrı proof'a yeni bir personel/crm.view profili eklendi; gerçek/paylaşılan hesabın parolası veya Chatwoot rolü/ataması değiştirilmedi. Eski9 kullanıcı ve tüm eski env/JWT ayarları birebir korundu; normal scrypt parola doğrulaması + DPAPI kayıt kullanıldı. Çalışan kaynak/paketfb34 değişmedi. Bu profil TEST ADMIN/testPersonnel veya taklit JWT değildir.
+
+| Gerçek kontrol | Sonuç |
+| --- | --- |
+| Diğer normal personel/agent3 | Normal password login200, fresh me200/personel/crm.view. Aynı hedef55 talep listesi403 ve aynı varolan request detayı403 WHATSAPP_CRM_CONVERSATION_FORBIDDEN; data yok. |
+| Atanmış normal personel/agent2 | Aynı55 list/detail200; aynı requesthash/8023×3+101×2 =2ürün/5adet. Normal UI'da aynı fotoğraflar tekrar açıldı. |
+| Durum ve oturum koruması | Customer journal tüm byte/SHA ile aynı, exact-session/toplam request1. Eski proof Semih grant girişleri birebir aynı; yeni private internalreader için2grant ayrı eklendi. Shared grant/JWT taşınmadı. Ordinary grantless personel hardreload sonrası normal parola formunu kullandı; cookie/otomatik giriş kalıcılığı PASS değildir. |
+| Yalnız own TEST yenilemesi | Eski ownPID38000 durdu; kısa shell launchPID39236 ready sonrası sona erdi, aynı sealed config kalıcı exec session ilePID25616 açıldı. Uygulama hatası veya kaynak düzeltmesi iddiası yok. Startup ERP625/sameDB02/copye16b freshguard doğrulandı. Root ortak627xx/ERP/LIVE servisini stop/restart etmedi; eşzamanlı koordinatör checkpoint'inde ortak PID'ler değiştiği gözlendi, sebebi ayrıca denetlenmedi. |
+| Bağımsız ana teslim adımı | CRM-only interest journal ve mevcut proof refresh state'i repo dışı owner-only snapshot'a alındı; ayrı restore-check kopyası byte/hash ve aynı request/session ile doğrulandı. Aktif journal üzerine restore yapılmadı. Son own restart gerçek mevcut journal'dan aynı kaydı okudu; tam işletme taşıma/restore veya insan kabulü değildir. |
+
+[Normal diğer personel negative/positive proof](other-personel-scope.json), [yenileme sonrası atanmış personel](assigned-personel-after-proof-restart.jpg), [state koruma/ayrı restore-check](request-state-preservation.json). Eski request-readback.json agent3pending alanı önceki0424ac7 checkpoint'indendir; bu taze kayıt o teknik boşluğu kapatır. Capability, JWT, parola, private snapshot içeriği veya ham müşteri verisi yayınlanmadı.
+
+Güncel proof PID25616 / immutable sourcefb34 / manifestf3818f6c / startup configcb8345c5 / ERP625. Önceki PID38000/startup2d aşağıda tarihsel. Ortak CRM source09ca son okumada korundu; ortak süreç PID sabitliği iddiası yok. Root application source/SQL/mesaj/provider/AI/native sipariş/LIVE/main değişikliği0. [DesignQA](../../../../design-qa.md) tam mobil/fiziksel/insan kabulü nedeniyle PARTIAL; actual yanlış temsilci API boşluğu kapalı. Reviewer açıkP1/P2 yok. Tek tree25/12🟢/13🟡/0🔴; kullanıcı PASS eklenmedi.
+
+**Ana sırada ilerleme:** yeni CRM-only state'in private kurtarma hazırlığı tamamlandı. Sonraki tek iş ortak Semih normal TEST aktivasyonunun sahibi tarafından exact paket/config ve ekran kimliğiyle teslimi; sharedservis sahibi yerine müdahale edilmez. İnsan/mobile açıkları ve CI hesap ödeme/harcama engeli korunur.
+
+## Önceki checkpoint — çekirdek akış0424ac7
+
 # 12 Ekim müşteri ürün talebi — gerçek çekirdek TEST akışı doğrulandı
 
 **Teknik gerçek akış hazır; insan kabulü ve iki dar kontrol bekliyor.** Önceki ERP25sn başarısızlığı bu klasörde tarihsel kanıttır. ERP625969d ile gerçek fotoğraflı katalog tekrar döndü; mevcut CRM sourcefb34c29 değiştirilmedi.

@@ -1,4 +1,24 @@
-## CRM-CUSTOMER-REQUEST — 12 Ekim 2026 — gerçek TEST çekirdek akışı kapandı
+## 13 Ekim 2026 — ana teslim yeniden başladı; sıra 2 / CRM06 açık
+
+Kullanıcı CRM geliştirmesinin duraklamasını kaldırdı: kabul edilmiş işler tekrarlanmayacak, kalan yetkili TEST işleri ortak sırada sürdürülecek. İptal edilmiş **Semih olarak devam et** yardımcı düğmesi ve ayrı Windows deneme programı teslim şartı değildir. Normal giriş, oturum yenileme, hesap/konuşma kapsamı, çıkış ve erişim iptali korunur.
+
+12 Ekim müşteri ürün talebi source **fb34c29**, ayrı 628xx prova ve tek kalıcı kayıt kapsamındadır; ortak **09ca1dac** paketine kurulmuş veya insan/mobil kabulü alınmış sayılmaz. Önceki atanmış normal personel okuması, diğer normal personelin aynı hedefte erişim reddi ve özel state koruma kanıtları yeniden test edilmeden korunuyor; dokuz dosyanın byte/hash mühürleri doğrulandı. Aşağıdaki PID ve adresler tarihli kanıttır, bugünkü çalışan servis iddiası değildir.
+
+**Şimdiki somut açık — ortak sıra 2 / CRM06:** ürün talebi yalnız özel prova sunucusuna bağlı; ortak normal TEST mount/config ve Semih yardımcısından bağımsız korumalı normal oturum authority entegrasyonu gerekiyor. Talep çekirdeği yeniden yazılmaz. ERP sahibi ortak startup/config/port/store ve runtime değişikliklerini koordine eder; CRM habersiz müdahale etmez. Sonraki bağımsız CRM işi **sıra 6 / CRM01**, mevcut izinli mesaj/geçmiş/sayfalama görünümüdür. İlk teslim bekleyen belge/kanıt commit-push-PR kaydı, ardından dar entegrasyon ve inaktif paket/owner teslimidir.
+
+Tek CRM tree **25 /12 tamam /13 kısmi /0 kırmızı** kayıtlı kapsamıyla korunur; ortak **55 ana başlık** sayımı mevcut koordinatör takip kaydıdır. Kaynak/test, runtime, cihaz ve insan kabulü ayrıdır. Önceki GitHub ödeme/harcama engeli PASS değildir. Main/LIVE/Vega/T1, gerçek müşteri mesajı, ücretli AI/servis ve gerçek hesap/rol değişikliği yetkisi yoktur.
+
+## Önceki checkpoint — CRM-CUSTOMER-REQUEST — 12 Ekim — normal diğer temsilci ve state koruması doğrulandı
+
+Desteklenen izole normal auth setup'ıyla ayrı ordinary personel/agent3/crm.view hazırlandı; gerçek/shared hesap reseti, role/assignment değişimi, sharedgrant/JWT kopyası yok. Eski9 kullanıcı ve env/JWT alanları aynı. Normal passwordlogin/me200 → aynı55list ve aynırequestdetail403/noData; normalatanmış agent2same kayıt200, actualUI2ürün5adet. **Yanlış temsilci teknik kontrolü kapandı.** [Taze scoped kanıt](docs/evidence/crm/2026-10-12-customer-product-request/other-personel-scope.json), [yenilenmiş ekran](docs/evidence/crm/2026-10-12-customer-product-request/assigned-personel-after-proof-restart.jpg).
+
+Yalnız rootowned62800–02 proof yenilendi: mevcutfb34source/sealedmanifestf3818f6c, aynıjournal/oldprofiles, yeniownPID25616/startupconfigcb8345c5/ERP625/sameDB02/copye16b. Customer journal byte/hash aynı ve tek kayıt; eski proofgrant girişleri aynı, privateinternalreader2newgrant ayrı. İlk kısa shell başlatmasıready ardından sona erdi; aynıconfig kalıcıexecsession20454 ile açıldı, uygulama hatası/kodfix iddiası yok. Shared627xx/ERP/LIVE'a rootstop/restart/config0; diğercheckpoint sırasında ortakPID'lerin değiştiği gözlendi, PID değişmezliği iddia edilmez. Ordinaryview-onlypersonelhardreload sonrası normalkorumalıpasswordreentry: cookie/autocontinuePASS değil.
+
+Ana teslimde bağımsız kurtarma hazırlığı yapıldı: yalnız ownCRM interest/refreshstate owner-only repo dışı snapshot → ayrırestore-check bytes/hash+same request/session; aktifstateoverwrite/DBrestore0. Yeniownrestart mevcutjournal'dan aynırequest'i okudu. [Sınır ve metadata](docs/evidence/crm/2026-10-12-customer-product-request/request-state-preservation.json). Tam işletme/fizikselrestore kabulü değil; eskiR02baseline yeniden ispatlanmadı.
+
+Source/app değişmedi; önceki1165offline/build tekrar yok. FreshnormalrolAPI ve gerçekUI/statekanıtı +reviewer açıkP1/P2 yok. **25/12🟢/13🟡/0🔴**, CRM-UA11 ve tam mobil/fiziksel/insan kabulü bekler; agent3credentialbağımlılığı teknik olarak kaldırıldı. **Sıradaki tek ana iş:** ortakSemihnormalTESTaktivasyonunun exactpaket/config/ekrankimliğiyle owner teslimi. Kaynakbranchaynı/[PR3](https://github.com/melihsnyldzz-ui/melisa-crm/pull/3) açık; yeni evidenceHEAD CI ayrıca okunur, önceki0424ac7 7job/steps0 billingFAIL uzakPASS değildir. Main/LIVE/gerçekmesaj/ücretliAI/native ticari yazı0.
+
+## Önceki checkpoint — CRM-CUSTOMER-REQUEST0424ac7 — çekirdek akış
 
 ERP625969d gerçek fotoğraflı listeyi200/4113ms, ilk24/3.830 ürün ile sağladı; korumalı normal login293ms. Eski2d25sn başarısızlığı aşağıda tarihsel korunur, bugünkü kesin blokaj değildir. Mevcut CRMfb34 kaynak/immutable proof paketi değiştirilmeden gerçek8023erp36724 ve101erp30740 seçildi. Adet değiştirme/çıkarma→browser reload revision5 yalnız8023×3→yeniden ekleme revision7→Talebi gönder→aynı başarı reload→normal atanmış personelde8023×3+101×2 =2ürün/5adet tamamlandı. Aynı operation/revision tekrarında aynı session/request/items ve exact-session/toplam journal request1. [Ekran, readback ve sınırlar](docs/evidence/crm/2026-10-12-customer-product-request/README.md).
 

@@ -1,4 +1,6 @@
-# Design QA — 12 October continuation
+**12 Ekim ek:** Normal diğer temsilci actual list/detail403 ve assignedpersonel same200/UI taze doğrulandı; teknik agent3boşluğu kapalı. assigned-personel-after-proof-restart.jpg aynı2ürün5adeti gösterir. Tam mobile/fiziksel/insan QA bekler; screenshot/policy sınırı tekrar aşılmadı. final result: PARTIAL — yalnız kalanmobile/humanQA.
+
+# Previous checkpoint — Design QA, 12 October0424ac7
 
 Source docs/design/customer-catalog-flow-20261012.png,1536×1024/right card x895–1352/y130–971; source and actual review/success screenshots viewed in the same comparison. Actual immutable sourcefb34, real products8023/101, desktop CSS1422×800; screenshot file scale differs from CSS due browser0.9 zoom. Header/card455CSS cap, green action, source photos, short code/name and reversible review/remove match the selected direction. Source fictional age/photos/WhatsApp automation were not implemented as real data.
 
