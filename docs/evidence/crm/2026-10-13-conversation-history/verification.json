@@ -155,8 +155,49 @@
     "generalIncoming": "PENDING",
     "crm06OwnerActivation": "PENDING"
   },
+  "sourceCommit": "30f78ded3dac98f74b663dc08cdb6a9a4baa2259",
   "ci": {
-    "newSourceExactHead": "PENDING_PUSH_AND_READ",
-    "previousC262": "Billing failure; seven jobs, zero steps; not a new-source CI result"
+    "sourceCommit": "30f78ded3dac98f74b663dc08cdb6a9a4baa2259",
+    "remoteEqualsHead": true,
+    "prEqualsHead": true,
+    "prState": "OPEN",
+    "base": "feature/crm-completion",
+    "jobs": 7,
+    "steps": 0,
+    "runs": [
+      {
+        "conclusion": "failure",
+        "databaseId": 38396143970,
+        "headSha": "30f78ded3dac98f74b663dc08cdb6a9a4baa2259",
+        "status": "completed",
+        "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38396143970",
+        "workflowName": "CRM CI",
+        "jobs": 3,
+        "steps": 0
+      },
+      {
+        "conclusion": "failure",
+        "databaseId": 38396143957,
+        "headSha": "30f78ded3dac98f74b663dc08cdb6a9a4baa2259",
+        "status": "completed",
+        "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38396143957",
+        "workflowName": "AI Sales Agent - Offline",
+        "jobs": 1,
+        "steps": 0
+      },
+      {
+        "conclusion": "failure",
+        "databaseId": 38396137067,
+        "headSha": "30f78ded3dac98f74b663dc08cdb6a9a4baa2259",
+        "status": "completed",
+        "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38396137067",
+        "workflowName": "CRM CI",
+        "jobs": 3,
+        "steps": 0
+      }
+    ],
+    "allJobsBillingBlocked": true,
+    "additionalAnnotationsOnlyRunnerImageAdvisories": true,
+    "testsStarted": false
   }
 }
