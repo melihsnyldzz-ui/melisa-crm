@@ -1,5 +1,7 @@
 ## 13 Ekim — son E02 kaynak checkpoint'i
 
+Son5b6 immutable sharedTEST paket build/verifyPASS; manifest8209226b9e4fefc1b788fc4bec328b4071c375d77630d29fff424bd4cc6fee47. Ayrı korumalı candidate/handoff metadata ERPowner'a iletildi; eski1beaynı. Candidate current59csettings değil, eskiinaktifşablondan3CRMpin farkıdır; ownergüncelconfigrebasing/nativeproof/pin/serializedactivation bekler. [Anonim paket kaydı](docs/evidence/crm/2026-10-13-manual-price-witness/package-delivery.json). Sharedruntime/SQL/config/restart0.
+
 CRM MANUAL pricing metadata → revision → cloned selection → frozen native request/readback tüketicisi kaynakta hazır. Additive `melisa-crm-draft-pricing.v1` teknik şekli ERP owner tarafından uygun bulundu; SOURCE8/9 legacy body korunur. Owner CURRENT transaction/native successor kanıtı ve SOURCE bypass korumasını tamamlamadan runtime açılmaz. CRM source/teknik Git teslimi [kanıtta](docs/evidence/crm/2026-10-13-manual-price-witness/README.md); normal/mobil/insan kabulü bekler.1be immutable owner paket/candidate değişmedi, I01 source30f ayrı. Root sharedruntime/DB/config/restart, gerçekmesaj/LIVE/main/credential değişikliği yapmadı. Genel25/12/13/0 korunur; sonraki bağlı iş owner native successor ile normal E02 taslak/replay/readback kabulüdür.
 
 # CRM kontrol noktası — 13 Ekim 2026

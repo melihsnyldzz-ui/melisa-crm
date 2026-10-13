@@ -16,7 +16,7 @@ Donmuş request/UUID/store-v2/actor-conversation key ve expectedSource korunur; 
 
 ERP owner teknik sözleşme şeklini uygun buldu. JSON witness veya client validation fiyat authority değildir. Aynı native transaction içinde registered CURRENT MANUAL pointer/version/source/identity kontrolü ve legacy/mixed SOURCE satırın aktif MANUAL'ı atlayamaması gerekir. Yeni create stale witness409/no record; aynıUUID completebody tarihsel replay-before-current-readiness; persisted request/hash/audit/readback successor ERP owner'ın işidir. Native SQL kanıtı bu CRM testlerinde yoktur.
 
-ERP owner59c444f çalışan DB02 normal GUI MANUAL fiyat kaydını bildirdi; bu CRM yeni taslak kabulü değildir. Sharedconfig/DB/restart ERP owner'da. CRM1be immutable paket/candidate ve30f geçmiş teslimi korunur; yeni fiyat-witness paketi/aktivasyonu yapılmadı. Rol/credential/SQL/provider/AI/LIVE/main yazısı yok.
+ERP owner59c444f çalışan DB02 normal GUI MANUAL fiyat kaydını bildirdi; bu CRM yeni taslak kabulü değildir. Sharedconfig/DB/restart ERP owner'da. CRM1be immutable paket/candidate ve30f geçmiş teslimi korunur; son5b6 inaktifpaket hazırlandı, aktivasyon yapılmadı. Rol/credential/SQL/provider/AI/LIVE/main yazısı yok.
 
 ## Hedefli doğrulama
 
@@ -31,5 +31,7 @@ ERP owner59c444f çalışan DB02 normal GUI MANUAL fiyat kaydını bildirdi; bu 
 Komut/hash/sınırlar verification.json'dadır. High reviewer final7kaynak/test dosyasında açıkP1/P2 yok; roottransport2 sonucunu yeniden çalıştırmadı. Existing bundle-size/dynamic-static import uyarıları yeni hata değildir. TeknikPASS normal/mobil/insanPASS değildir.
 
 ## Git / sonraki tek iş
+
+Son source5b6 için tek immutable inaktif sharedTEST paket lockedoffline install/build/verifyPASS ile hazırlandı; manifest8209226b ve source tree6768fa5. CRM06/I01/E02 birlikte sealed source'tur; önceki1be paket/candidate değiştirilmedi. Ayrı candidateownerSID+SYSTEM/ACL inheritanceoff, yalnız CRMsource/package/manifest3alan farkı ve aynı request/normalpersonel yolları. ÖncekiINACTIVE1beşablonu bazdır, current59cownerconfig değil; native successor pin/proof+güncelownerrebasing gerektirir. Sharedactivation/config/restart/SQL0. Metadata kullanıcıyetkiliERPtask'eiletildi; alım/aktivasyon teyidi bekler. [Tam anonim makbuz](package-delivery.json); normal/mobil/insanPASS yok.
 
 Dal codex/crm-agents-on-completion-20261003; mevcut [PR3](https://github.com/melihsnyldzz-ui/melisa-crm/pull/3), base feature/crm-completion. Source `5b6dfe5acf1c0c1ea301f66aea39bf2abcec8f36` push/remote/PR head eşleşti. Exact source CI **FAILURE /7job /0step**; bütün işlerin taze annotations'ı ödeme/harcama engeli, ek Ubuntu runner uyarısı bilgi bildirimi. Test başlamadı; yerel PASS uzak CI değildir. [PR CI](https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38403062438), [AI](https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38403062164), [push](https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38403053762). İzleyen docHEAD/CI ayrı okunur; kaynak/binary değişmez. Mainmerge/tag/LIVE yok. E02 sarı ve sabit25/12/13/0 aynı. Sonraki bağlı iş: owner native successor kanıtı ardından exactpaket normal E02 taslak/readback/replay ve mobil/insan kabulü.
