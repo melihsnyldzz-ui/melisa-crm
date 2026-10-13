@@ -1,0 +1,78 @@
+{
+  "preparedAt": "2026-10-13T10:54:45.150Z",
+  "commonSequence": 2,
+  "mainId": "CRM06",
+  "sourceCommit": "1be727746a22cd6ca3232c74272a93a5749e7dc1",
+  "packageManifestSha256": "f7e193644c5595e942a95457456ac4f54a06957d81da874e9f9defee8b9fbc3a",
+  "activationCandidateSha256": "f54bd892b9f20266b5ba69bc78f28aaf0921eb120013a92ae3841217fd30b0f8",
+  "handoffSha256": "4d7eb8ddd59d68b67d719ec8328483152f496fc98f7046a66129da7044943164",
+  "status": "INACTIVE_OWNER_REVIEW_REQUIRED",
+  "activated": false,
+  "addedEnvironmentKeys": [
+    "CRM_CUSTOMER_PRODUCT_REQUEST_ENABLED",
+    "CRM_CUSTOMER_PRODUCT_REQUEST_ISSUER_IDS",
+    "CRM_CUSTOMER_PRODUCT_REQUEST_STORE_FILE",
+    "CRM_CUSTOMER_PRODUCT_REQUEST_REFRESH_JOURNAL_PATH"
+  ],
+  "preserved": {
+    "database": "MELISA_ERP_CRM_SHARED_TEST_20261009_02",
+    "copyId": "e16b70f0-4057-428b-9abc-6bbcaf35fe82",
+    "nativeOrderSource": "60e424b61febd062668be0ccf3595c546da263a0",
+    "baselineUnchanged": true,
+    "catalogAccessUnchanged": true,
+    "oldEnvironmentValuesUnchangedExceptSourcePackageManifest": true,
+    "existingUsers": 7,
+    "realAccountRoleChanges": 0,
+    "proofGrantStateCopied": false,
+    "normalPersonelJournalMutated": false,
+    "semihHelperActivated": false
+  },
+  "dependencies": {
+    "paidAi": false,
+    "externalOperations": false,
+    "whatsappSend": false,
+    "live": false,
+    "mainMerge": false,
+    "customerReaderAfterRestart": "RAM authority missing: old customer catalog reads fail closed; issue a new normal link",
+    "persistentStaffHistory": "preserved in separate request journal",
+    "normalPatronCredentialDelivery": "NOT_CONFIRMED",
+    "ownerWhitelist": "FOUR_KEYS_NOT_YET_SUPPORTED",
+    "dependencyLockProjection": "OWNER_PENDING",
+    "backupOffsite": "NOT_VERIFIED"
+  },
+  "sourceCi": {
+    "remoteEqualsHead": true,
+    "prEqualsHead": true,
+    "allAnnotationsBillingBlocked": true,
+    "runs": [
+      {
+        "conclusion": "failure",
+        "databaseId": 38386047843,
+        "headSha": "1be727746a22cd6ca3232c74272a93a5749e7dc1",
+        "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38386047843",
+        "workflowName": "AI Sales Agent - Offline",
+        "jobs": 1,
+        "steps": 0
+      },
+      {
+        "conclusion": "failure",
+        "databaseId": 38386048282,
+        "headSha": "1be727746a22cd6ca3232c74272a93a5749e7dc1",
+        "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38386048282",
+        "workflowName": "CRM CI",
+        "jobs": 3,
+        "steps": 0
+      },
+      {
+        "conclusion": "failure",
+        "databaseId": 38386042913,
+        "headSha": "1be727746a22cd6ca3232c74272a93a5749e7dc1",
+        "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38386042913",
+        "workflowName": "CRM CI",
+        "jobs": 3,
+        "steps": 0
+      }
+    ]
+  },
+  "deliveryStatus": "Source/package ready; owner activation and protected normal login delivery pending; CRM06/CRM-UA11 not closed"
+}
