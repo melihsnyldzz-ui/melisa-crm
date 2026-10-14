@@ -11,9 +11,23 @@
     "secretScan": "success",
     "windowsStartup": "success",
     "syntaxAndFrontendBuild": "success",
-    "frontend": {"total":476,"pass":476,"fail":0,"skip":0},
-    "gateway": {"total":563,"pass":558,"fail":2,"skip":3},
-    "localReproduction": {"total":3,"pass":1,"fail":2}
+    "frontend": {
+      "total": 476,
+      "pass": 476,
+      "fail": 0,
+      "skip": 0
+    },
+    "gateway": {
+      "total": 563,
+      "pass": 558,
+      "fail": 2,
+      "skip": 3
+    },
+    "localReproduction": {
+      "total": 3,
+      "pass": 1,
+      "fail": 2
+    }
   },
   "causes": [
     "mediaMapping sent 25 raw rows despite the current bounded 20-row Chatwoot history contract",
@@ -26,12 +40,52 @@
   "localAfter": {
     "node": "24.15.0",
     "platform": "Windows",
-    "targeted": {"total":60,"pass":60,"fail":0,"skip":0},
-    "gatewayCiCleanEnvironmentAndOfflineGuard": {"total":581,"pass":581,"fail":0,"skip":0},
+    "targeted": {
+      "total": 60,
+      "pass": 60,
+      "fail": 0,
+      "skip": 0
+    },
+    "gatewayCiCleanEnvironmentAndOfflineGuard": {
+      "total": 581,
+      "pass": 581,
+      "fail": 0,
+      "skip": 0
+    },
     "overlappingAndPlatformCountsAreNotAdded": true,
     "independentHighReviewOpenP1P2": 0
   },
-  "hostedAfter": {"status":"pending-repair-commit-ci"},
+  "hostedAfter": {
+    "status": "success",
+    "repairCommit": "9e8d1e3754085bad7efb5ae6bab056c95db099eb",
+    "prRun": 38574653072,
+    "pushRun": 38574642723,
+    "aiOfflineRun": 38574653028,
+    "allThreeRunsExactRepairHead": true,
+    "secretScan": "success",
+    "windowsStartup": "success",
+    "syntaxAndFrontendBuild": "success",
+    "frontend": {
+      "skip": 0,
+      "fail": 0,
+      "pass": 476,
+      "total": 476
+    },
+    "gateway": {
+      "skip": 3,
+      "fail": 0,
+      "pass": 560,
+      "total": 563
+    },
+    "contractsAndCiBoundary": {
+      "skip": 48,
+      "fail": 0,
+      "pass": 124,
+      "total": 172
+    },
+    "existingSkipsNotChanged": true,
+    "documentationDeliveryHeadIsSeparate": true
+  },
   "preserved": {
     "productionCodeUnchanged": true,
     "signatureIssuerAudienceAndActiveRoleChecks": true,
