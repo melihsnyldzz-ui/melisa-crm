@@ -84,5 +84,7 @@
   "paidAiCalls": 0,
   "liveDeployed": false,
   "mainMerged": false,
-  "sourceCommit": "da82fc6644c1d9dba0c10eaa861773534d43c288"
+  "sourceCommit": "da82fc6644c1d9dba0c10eaa861773534d43c288",
+  "preparationSnapshotOnly": true,
+  "installedEvidenceRef": "installed-runtime.json"
 }
