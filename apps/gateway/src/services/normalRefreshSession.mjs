@@ -88,7 +88,7 @@ export function createNormalRefreshStore({file,resolveUser,authorizeUser=()=>tru
   };
 }
 
-function assertPrivateRefreshJournal(file,config,repoRoot){
+export function assertPrivateRefreshJournal(file,config,repoRoot){
   const privateRoot=path.resolve('C:/Sirket/CRM/runtime');
   const relative=file&&path.relative(privateRoot,path.resolve(file));
   const repoRelative=file&&path.relative(path.resolve(repoRoot),path.resolve(file));

@@ -1,5 +1,5 @@
 import { refreshWaapiReadiness } from '../services/waapiReadiness.js';
-import { authenticateCrmUser, publicCrmUser, refreshNormalCrmSession, logoutNormalCrmSession, logoutCustomerRequestIssuerSession, refreshSemihCrmSession, logoutSemihCrmSession, rememberedSemihCrmUser, semihTestContinueEnabled } from '../services/crmAuthService.js';
+import { authenticateCrmUser, publicCrmUser, refreshNormalCrmSession, logoutNormalCrmSession, logoutNormalAccessSession, refreshSemihCrmSession, logoutSemihCrmSession, rememberedSemihCrmUser, semihTestContinueEnabled } from '../services/crmAuthService.js';
 import { semihCookieToken, semihSameOrigin, semihBrowserLogin, writeSemihCookie, clearSemihCookie, clearRejectedSemihCookie } from '../services/semihTestCookie.mjs';
 import { ok } from '../utils/response.js';
 import { catalogAccess } from '../services/crmCatalogAccess.mjs';
@@ -49,7 +49,7 @@ export function postAuthLogout(req,res,next){
       if(!/^Bearer [^\s]+$/.test(authorization)||!req.is('application/json')||!req.body||Array.isArray(req.body)
         ||Object.keys(req.body).length||Object.keys(req.query||{}).length
         ||/melisa-crm-semih-test(?:-request-proof)?-refresh=/.test(req.get('cookie')||''))throw Object.assign(new Error('Oturum isteği geçerli değil.'),{code:'AUTH_TOKEN_INVALID',statusCode:401});
-      return ok(res,logoutCustomerRequestIssuerSession(authorization.slice(7)),{source:'crm-auth'});
+      return ok(res,logoutNormalAccessSession(authorization.slice(7)),{source:'crm-auth'});
     }
     const nativeMode=typeof req.body?.refreshToken==='string';
     const token=nativeMode?req.body.refreshToken:cookieRefreshToken(req);

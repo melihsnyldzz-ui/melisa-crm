@@ -742,7 +742,7 @@ export const liveApi = {
   hasNativeNormalSession(){normalRemember();return Boolean(normalBridge);},
   async session(token, options = {}) {
     const session=normalizePermissions(await request("/auth/me", token, options));
-    verifiedNormalSessionKeys.set(token,session.customerProductRequestIssuer===true);
+    verifiedNormalSessionKeys.set(token,session.customerProductRequestIssuer===true||session.assignedStaffRefresh===true);
     return session;
   },
   // Chatwoot-backed inbox pages can take over 20 seconds; retain a bounded read

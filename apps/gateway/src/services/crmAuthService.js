@@ -6,6 +6,7 @@ import { verifyTestAdminSession } from './testAdminSession.mjs';
 import { verifyTestPersonnelSession } from './testPersonnelSession.mjs';
 import { configuredNormalRefreshStore, configuredSemihTestRefreshStore, isDedicatedNormalTestUser, isDedicatedSemihTestUser, normalRefreshUserPolicy, semihRefreshUserPolicy, normalSessionFingerprint, DEDICATED_NORMAL_TEST_USER_ID, DEDICATED_SEMIH_TEST_USER_ID } from './normalRefreshSession.mjs';
 import {configuredCustomerRequestIssuerStore,customerRequestSharedConfig} from './customerRequestIssuerSession.mjs';
+import {configuredAssignedStaffRefreshStore,DEDICATED_ASSIGNED_STAFF_TEST_USER_ID} from './assignedStaffRefreshSession.mjs';
 
 const ROLE_PERMISSIONS = Object.freeze({
   patron: ['crm.view', 'crm.send', 'crm.assign', 'crm.agents', 'crm.manage'],
@@ -18,6 +19,7 @@ const DUMMY_DIGEST = crypto.scryptSync('invalid-password', DUMMY_SALT, 64).toStr
 // Account eligibility alone does not grant issuer authority to legacy JWTs.
 // Only a user object returned after verifying its issuer session carries it.
 const verifiedCustomerRequestIssuers = new WeakSet();
+const verifiedAssignedStaffSessions = new WeakSet();
 
 function authError(code, message, statusCode = 401) {
   const error = new Error(message);
@@ -85,6 +87,7 @@ export function publicCrmUser(user) {
     chatwootAgentId: user.chatwootAgentId,
     permissions: [...user.permissions],
     ...(verifiedCustomerRequestIssuers.has(user)?{customerProductRequestIssuer:true}:{}),
+    ...(verifiedAssignedStaffSessions.has(user)?{assignedStaffRefresh:true}:{}),
     ...(process.env.CRM_NORMAL_REFRESH_ENABLED==='true'&&process.env.CRM_ISOLATED_PREPARATION==='true'
       &&process.env.CRM_TEST_EXPECTED_DATABASE==='MELISA_ERP_CRM_SHARED_TEST_20261009_02'
       &&user.id===process.env.CRM_NORMAL_REFRESH_USER_ID&&isDedicatedNormalTestUser(user)
@@ -114,6 +117,7 @@ export function findCrmUserByUsername(username) {
 
 const normalRefreshStore = configuredNormalRefreshStore({resolveUser:findCrmUserById});
 const semihRefreshStore = configuredSemihTestRefreshStore({resolveUser:findCrmUserById});
+const assignedStaffRefreshStore = configuredAssignedStaffRefreshStore({resolveUser:findCrmUserById});
 const customerRequestIssuer = configuredCustomerRequestIssuerStore({resolveUser:findCrmUserById});
 
 export function customerRequestIssuerSessionsEnabled(){
@@ -134,6 +138,7 @@ function semihRefreshUserAllowed(user){
 }
 function refreshStoreForUser(user){
   if(customerRequestIssuer?.includes(user?.id))return customerRequestIssuer.allows(user)?customerRequestIssuer.store:null;
+  if(assignedStaffRefreshStore&&user?.id===DEDICATED_ASSIGNED_STAFF_TEST_USER_ID)return assignedStaffRefreshStore;
   return user?.id===DEDICATED_SEMIH_TEST_USER_ID?(semihRefreshUserAllowed(user)?semihRefreshStore:null)
     :(normalRefreshUserAllowed(user)?normalRefreshStore:null);
 }
@@ -170,15 +175,17 @@ export function authenticateCrmUser({ username, password }) {
 
   // A selected dedicated profile must pass its store policy; never fall back
   // to a grantless ordinary JWT when its role/assignment policy has changed.
-  const store=customerRequestIssuer?.includes(user.id)?customerRequestIssuer.store:user.id===DEDICATED_SEMIH_TEST_USER_ID?semihRefreshStore
+  const store=customerRequestIssuer?.includes(user.id)?customerRequestIssuer.store
+    :assignedStaffRefreshStore&&user.id===DEDICATED_ASSIGNED_STAFF_TEST_USER_ID?assignedStaffRefreshStore
+    :user.id===DEDICATED_SEMIH_TEST_USER_ID?semihRefreshStore
     :normalRefreshStore&&user.id===process.env.CRM_NORMAL_REFRESH_USER_ID?normalRefreshStore:null;
   const grant=store?store.issue(user):null;
   return normalLoginResult(user,grant);
 }
 
 function refreshStoreForToken(token,{includeRetired=false}={}){
-  if(!normalRefreshStore&&!semihRefreshStore&&!customerRequestIssuer)throw authError('AUTH_TOKEN_INVALID','Yeniden giriş yapın.');
-  for(const store of [normalRefreshStore,semihRefreshStore,customerRequestIssuer?.store])if(store?.ownsToken(token,{includeRetired}))return store;
+  if(!normalRefreshStore&&!semihRefreshStore&&!customerRequestIssuer&&!assignedStaffRefreshStore)throw authError('AUTH_TOKEN_INVALID','Yeniden giriş yapın.');
+  for(const store of [normalRefreshStore,semihRefreshStore,customerRequestIssuer?.store,assignedStaffRefreshStore])if(store?.ownsToken(token,{includeRetired}))return store;
   return null;
 }
 function refreshFromStore(store,token){
@@ -194,9 +201,17 @@ export function logoutNormalCrmSession(refreshToken) {
   return refreshStoreForToken(refreshToken,{includeRetired:true})?.revoke(refreshToken)||{loggedOut:true};
 }
 export function logoutCustomerRequestIssuerSession(accessToken){
+  return logoutAccessSession(accessToken);
+}
+export function logoutNormalAccessSession(accessToken){
+  return logoutAccessSession(accessToken,{allowAssignedStaff:true});
+}
+function logoutAccessSession(accessToken,{allowAssignedStaff=false}={}){
   const {user,authority}=captureNormalCrmAuthority(accessToken);
-  if(!customerRequestIssuer?.includes(user.id)||!customerRequestIssuer.allows(user))throw authError('AUTH_TOKEN_INVALID','Yeniden giriş yapın.');
-  return customerRequestIssuer.store.revokeSession(authority.normalSessionId,user);
+  const store=customerRequestIssuer?.includes(user.id)&&customerRequestIssuer.allows(user)?customerRequestIssuer.store
+    :allowAssignedStaff&&assignedStaffRefreshStore&&user.id===DEDICATED_ASSIGNED_STAFF_TEST_USER_ID?assignedStaffRefreshStore:null;
+  if(!store)throw authError('AUTH_TOKEN_INVALID','Yeniden giriş yapın.');
+  return store.revokeSession(authority.normalSessionId,user);
 }
 export function logoutSemihCrmSession(refreshToken){
   if(!semihTestContinueEnabled())throw authError('AUTH_TOKEN_INVALID','Yeniden giriş yapın.');
@@ -228,11 +243,13 @@ export function verifyCrmAccessToken(token, { includeContext = false } = {}) {
     throw authError('AUTH_TOKEN_INVALID', 'CRM kullanicisi aktif degil veya yetkileri degisti.', 401);
   }
   if(user.id===DEDICATED_SEMIH_TEST_USER_ID&&(!semihRefreshUserAllowed(user)||!payload.normalSessionId))throw authError('AUTH_TOKEN_INVALID','Yeniden giriş yapın.');
+  if(assignedStaffRefreshStore&&user.id===DEDICATED_ASSIGNED_STAFF_TEST_USER_ID&&!payload.normalSessionId)throw authError('AUTH_TOKEN_INVALID','Yeniden giriş yapın.');
   if(payload.normalSessionId){
     const store=refreshStoreForUser(user);
     if(!store)throw authError('AUTH_TOKEN_INVALID','Yeniden giriş yapın.');
     store.verify(payload.normalSessionId,user);
     if(store===customerRequestIssuer?.store)verifiedCustomerRequestIssuers.add(user);
+    if(store===assignedStaffRefreshStore)verifiedAssignedStaffSessions.add(user);
   }
   return includeContext ? { user, expiresAt: Number.isFinite(payload.exp) ? payload.exp * 1000 : NaN } : user;
 }
