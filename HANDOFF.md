@@ -1,3 +1,9 @@
+## 14 Ekim 13:51 — bağlı normal HTTP ekranı açıldı; yönetici girişi tamamlanmadı
+
+Kullanıcı “bu sefer senin tarayıcında açtım” sonrası bağlıIAB62700 gerçekCRM ekranı gözlendi; aşağıdaki error-protocol engeli artık tarihsel. MevcutTESTADMIN ile7733/SemihŞ konuşması açıldı. Gerçekroller girişformunun önceden dolu alanları değerleri okunmadan birkez gönderildi; “Kullanıcı adı veya parola hatalı” yanıtı geldi. Retry/reset/rol/grant/allowlist/proofauthority aktarımı yok. Normalissuer erişimi henüz başarılı değil; kullanıcı/personel/mobilCRM06 kabulü açık. [Güncel GUI checkpoint'i](docs/evidence/crm/2026-10-14-crm06-closure/README.md).
+
+Kaynak/paket/SQL/config/restart/mesaj değişmedi. Aynı5b6/7aTEST ve55ID/21sıra/25-12-13-0 korunur. Sonraki tek iş mevcutnormal yönetici girişi sonrası CRM06 değişen müşteri→tek talep→atanmış/yanlışpersonel→reopen→mobil kabulü; CRM07/AI veya başka başlığa geçilmez.
+
 ## 14 Ekim — CRM06 tek odak; kurtarma doğrulandı, normal ekran kabulü açık
 
 ERP sahibi 13:00 kesinti sonrası taze recovery bildirdi: aynı CRM5b6dfe5/manifest8209226b ve ERP/native7a41, DB02/copye16b/T1false, provider/send/bridge/translation/dış/otomatik kapalı; 21/21 ticari tablo hash/sayı aynı (owner kanıtı). CRMroot13:43 listener62700/62701 PID41720 ve exact5b6 test-server paket yolunu doğruladı. 11:30 health aşağıda tarihsel checkpoint olarak korunur.

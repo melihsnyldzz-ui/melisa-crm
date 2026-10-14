@@ -30,3 +30,11 @@ Kullanıcı bekleyen HTTP ekran sorusuna “Açtım” yanıtını verdi. Ancak 
 Mevcut korumalı normal issuer erişimi doğrulanmadı. TEST ADMIN ürün-talebi personel paneline dahil değildir; mevcut crm-agent-test view-only hesabı issuer yerine geçirilmez. Parola, rol/grant/reset veya eski prova authority/state taşıma yapılmadı. Ortak runtime/config/startup/SQL/restart ERP sahibinde kalır.
 
 Sonraki tek iş: izinli normal HTTP yüzeyi ve zaten yetkili normal issuer erişimi mevcut olduğunda, CRM06'nın yalnız değişen ortak müşteri → tek talep → atanmış/yanlış personel → yeniden açma → mobil kabul halkasını tamamlamak. CRM07/native taslak, AI veya müşteri kartı geliştirmesine geçilmez. Build/HTTP/teknik inceleme bu kabulleri kapatmaz.
+
+## 13:51 TRT — HTTP erişimi düzeldi; normal giriş açık
+
+Kullanıcı “bu sefer senin tarayıcında açtım” dedi. Bağlı IAB tab2 artık normal `http://127.0.0.1:62700/` / Melisa Baby CRM; önceki error-protocol engeli **kalktı**. Kullanıcının önkoşulu değiştirmesi sonrası normal API ile aynı sekme okundu; alternatif araç veya güvenlik aşımı yok. Mevcut TEST ADMIN ekranında 7733 araması ve doğru Semih Ş konuşması açıldı. Yeni mesaj veya eski müşteri katalog URL'si üzerinden işlem yapılmadı. Bu ekran okuması normal issuer veya CRM06 insan kabulü değildir.
+
+“Gerçek rollerle giriş” mevcut normal formunu açtı. Kullanıcı adı ve parola alanları önceden doluydu; yalnız dolu/boş durumları kontrol edildi, değerleri okunmadı veya çıktıya taşınmadı. Mevcut form **bir kez** gönderildi: uygulama “Kullanıcı adı veya parola hatalı” yanıtı verdi. Tekrar deneme, credential/reset/rol/grant/allowlist değişikliği veya prova oturumu aktarımı yapılmadı. Normal giriş başarıyla tamamlanmadı; kalan erişim engeli budur. Ekran kanıtı repo dışında yereldir; giriş alanı görüntüsü Git'e yüklenmedi. Yukarıdaki data: hata checkpoint'i tarihsel olarak korunur.
+
+Mevcut normal yönetici girişinin tamamlanması sonrası yalnız CRM06 akışına dönülür. TEST ADMIN veya view-only hesapla normal issuer başarı iddiası yoktur; kaynak/paket, tree ve kabul sonuçları değişmedi.
