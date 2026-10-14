@@ -45,8 +45,35 @@
     "photo object URL revocation",
     "existing design and authoritative catalogue data"
   ],
-  "sourceCi": "pending at source preparation",
-  "package": "pending owner delivery",
+  "sourceCi": [
+    {
+      "kind": "PR",
+      "run": 38645694752,
+      "conclusion": "success"
+    },
+    {
+      "kind": "push",
+      "run": 38645688172,
+      "conclusion": "success"
+    },
+    {
+      "kind": "AI offline",
+      "run": 38645694891,
+      "conclusion": "success"
+    }
+  ],
+  "package": {
+    "root": "C:/Sirket/CRM/releases/crm-shared-test-da82fc6644c1d9dba0c10eaa861773534d43c288",
+    "manifestSha256": "9c6f013599dea1c6d7062ce9179d5d115c6022d3f95296a7be3276d3bdc900a2",
+    "sourceTree": "4e3d56b57669d913da2a7df3c20fbb4c1629a17c",
+    "sourceFiles": 184,
+    "payloadFiles": 2290,
+    "payloadBytes": 23929121,
+    "indexSha256": "e23229de145ca53f5e2f4b662530431ac101737640b0c043dcd35b7bd4dbfdf4",
+    "lockedOfflineBuildAndManifestVerification": true,
+    "activated": false,
+    "activationOwner": "ERP"
+  },
   "realBrowserBfcacheVerified": false,
   "physicalMobileVerified": false,
   "humanAccepted": false,
@@ -56,5 +83,6 @@
   "realMessages": 0,
   "paidAiCalls": 0,
   "liveDeployed": false,
-  "mainMerged": false
+  "mainMerged": false,
+  "sourceCommit": "da82fc6644c1d9dba0c10eaa861773534d43c288"
 }
