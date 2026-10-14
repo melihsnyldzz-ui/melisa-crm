@@ -10,9 +10,15 @@
     "role": "personel",
     "active": true,
     "chatwootAgentId": 2,
-    "permissions": ["crm.view"]
+    "permissions": [
+      "crm.view"
+    ]
   },
-  "ownerKeys": ["CRM_ASSIGNED_STAFF_REFRESH_ENABLED", "CRM_ASSIGNED_STAFF_REFRESH_USER_ID", "CRM_ASSIGNED_STAFF_REFRESH_JOURNAL_PATH"],
+  "ownerKeys": [
+    "CRM_ASSIGNED_STAFF_REFRESH_ENABLED",
+    "CRM_ASSIGNED_STAFF_REFRESH_USER_ID",
+    "CRM_ASSIGNED_STAFF_REFRESH_JOURNAL_PATH"
+  ],
   "journal": "C:/Sirket/CRM/runtime/CRM06-TEST-ACTORS-20261014/assigned-staff-refresh.json",
   "existingEngineReused": "createNormalRefreshStore",
   "guarded": [
@@ -27,7 +33,12 @@
   "localVerification": {
     "platform": "Windows",
     "node": "24.15.0",
-    "newTargetedTests": {"total":15,"pass":15,"fail":0,"skip":0},
+    "newTargetedTests": {
+      "total": 15,
+      "pass": 15,
+      "fail": 0,
+      "skip": 0
+    },
     "changedModuleSyntax": 6,
     "independentHighReviewOpenP1P2": 0,
     "repairedReviewFinding": "Win32 journal path dot/space alias",
@@ -35,13 +46,49 @@
     "engineReopen": "synthetic OS temp journal only",
     "linuxAuthTestMeaning": "Windows-private-path rejection; not staff auth flow acceptance"
   },
-  "ci": {"status":"pending-new-source-commit"},
+  "ci": {
+    "status": "success",
+    "sourceCommit": "b2985d2295c022848c769ea5f494012c1eb3fa00",
+    "prRun": 38578480326,
+    "pushRun": 38578470631,
+    "aiOfflineRun": 38578480228,
+    "allThreeRunsExactSourceHead": true,
+    "secretScan": "success",
+    "windowsStartup": "success",
+    "syntaxAndBuild": "success",
+    "frontend": {
+      "pass": 479,
+      "total": 479,
+      "fail": 0,
+      "skip": 0
+    },
+    "gateway": {
+      "pass": 566,
+      "total": 569,
+      "fail": 0,
+      "skip": 3
+    },
+    "contracts": {
+      "pass": 124,
+      "total": 172,
+      "fail": 0,
+      "skip": 48
+    },
+    "existingSkipsUnchanged": true,
+    "linuxAuthFlowAcceptanceGranted": false,
+    "followingMetadataHeadIsSeparate": true
+  },
   "activation": {
     "performed": false,
     "currentCrmApplicationSource": "5b6dfe5acf1c0c1ea301f66aea39bf2abcec8f36",
     "currentErpApplicationSource": "7a41f6492273dd1ec0bcb086f820be5575372be8",
     "erpOwnerReportedSupervisorGuardSource": "140fac3aa2a9293b63fdf7a6998acf4aaa814d77",
-    "requires": ["new CRM package", "owner-pinned finite settings", "parent-bound successor projection", "owner physical file identity and protection checks"],
+    "requires": [
+      "new CRM package",
+      "owner-pinned finite settings",
+      "parent-bound successor projection",
+      "owner physical file identity and protection checks"
+    ],
     "oldActorReceiptBaselineAndJournalsModified": false
   },
   "firstProtectedGuiLoginSolved": false,
