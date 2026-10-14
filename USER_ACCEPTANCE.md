@@ -2,6 +2,8 @@
 
 **15 Ekim kullanıcı yanıtı: “Henüz denemedim.”** Normal ekran ve fiziksel telefon denemesi henüz yapılmadı; kabul veya hata sonucu bildirilmedi. CRM-UA11 ve CRM06 açık kalır; mevcut teknik kanıt insan kabulü yerine geçmez.
 
+**15 Ekim TEST geçişi koordinasyonu:** ERP sahibinin planlı başlangıç düzeltmesi kurulumu sırasında RAM müşteri bağlantısı ve kaydedilmemiş talep kaybolmaması için aşağıdaki son insan akışı henüz başlatılmaz. Yeni kurulum makbuzu teslim edilip eşleşince aynı kabul adımları kullanılır; aşağıdaki supervisor266 kimliği son doğrulanmış kurulum checkpoint'idir, yeni paket kuruldu iddiası değildir. Kabul adımları ve önceki kabuller değişmez.
+
 **BEKLİYOR; kişi/tarih/sonuç verilmedi.** CRM-DEC-015/016 kapsamında bu son kabul ilgili personelin kendi mevcut yetkili hesabıyla yapılır; parola/secret sohbetten istenmez. TEST ADMIN normal personel kabulü değildir. Kurulu [masaüstü TEST](http://127.0.0.1:62700/) / [aynı ağdaki telefon](http://192.168.1.46:62700/): CRM **da82fc6644c1d9dba0c10eaa861773534d43c288 / manifest9c6f**, supervisor266, ERP/native7a41 / DB02/copye16b/T1false; 15 Ekim01:43 TR owner ready makbuzu CRM tarafından hash ile doğrulandı. Yeni teknik API tek-talep/no-sale kontrolü geçti; bu gerçek normal ekran/BFCache/fizikseltelefon/insan kabulü değildir. CUA first-GUI secret aktarımı desteklenmiyor ve tekrar denenmez. Eski K01/K02/K03 medya/ürün/fiyat kabulleri tekrar istenmez.
 
 1. Yetkili normal yönetici aynı izinli7733 TEST konuşmasının **Müşteri ürün talepleri** bölümünde **Müşteri kataloğu bağlantısı hazırla** ile yeni müşteri kataloğunu açar. Link/fragment/kimlik bilgisi public kanıta taşınmaz; WhatsApp mesajı gönderilmez.
