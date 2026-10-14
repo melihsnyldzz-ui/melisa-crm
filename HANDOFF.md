@@ -1,4 +1,10 @@
-## 13 Ekim — son E02 kaynak checkpoint'i
+## 14 Ekim — güncel kesinti/TEST checkpoint'i
+
+Kalıcı1talep/2ürün/5adet ve normalpersoneljournal öncekihashlerle korunmuş; snapshot/restorecheck aynı, localGitHEADa2256fe temiz. YeniTEST owneraktivasyonuyla CRMsource5b6/manifest8209226b ve ERP/native7a41/DB02/copye16b/T1false; taze health/package/listener kimliği rootokumasıyla doğrulandı. OrtakDB/config/startup/restart ERPowner'da, CRMrootyazısı0. ÖnGUIprivateCRMbackup14Ekim hazır, restore yok.
+
+MevcutIABhata sayfasında browsersecuritypolicy engeli, kullanıcıdan yalnız normal62700HTTPsekmesini açması beklendi; alternatifbypass/credentialisteği0. Birsentetik849/159USD/native15/product29909qty1MANUALGUI/GET/refresh henüz yapılmadı; oldSOURCEbd3frozenbody/native15 korunur. View-onlypersonel writerPASSdeğil,25/12/13/0 aynı. [Kanıt ve kalan](docs/evidence/crm/2026-10-14-power-recovery/README.md). Aşağıdaki1be/09caaktifdeğil notları tarihsel; sonruntime5b6'dır.
+
+## Önceki E02 kaynak checkpoint'i — 13 Ekim
 
 Son5b6 immutable sharedTEST paket build/verifyPASS; manifest8209226b9e4fefc1b788fc4bec328b4071c375d77630d29fff424bd4cc6fee47. Ayrı korumalı candidate/handoff metadata ERPowner'a iletildi; eski1beaynı. Candidate current59csettings değil, eskiinaktifşablondan3CRMpin farkıdır; ownergüncelconfigrebasing/nativeproof/pin/serializedactivation bekler. [Anonim paket kaydı](docs/evidence/crm/2026-10-13-manual-price-witness/package-delivery.json). Sharedruntime/SQL/config/restart0.
 

@@ -1,4 +1,8 @@
-## 13 Ekim — E02 değişen MANUAL fiyat kabulü hazırlanıyor
+## 14 Ekim — NEWTEST aktivasyonu, kabul bekliyor
+
+**BEKLİYOR**. KalıcıCRMtalep/state kesinti sonrası öncekihashlerle korunmuş; newCRM5b6/ERP-native7a41 runtime kimliği teknik doğrulandı. Personel/mobil/insan veya yeniMANUALGUI taslak kabulü henüz yok. MevcutIABhata sayfasındaki browsersecuritypolicy engeli için kullanıcıdan yalnız normal62700HTTPsekmesini açması istendi; parola istenmedi ve alternatif yol denenmedi. Hazırlanan tek sentetikUSD/qty1draft gerçekUIquote/version→separateGET→refresh kapsamıdır; normalview-onlyactor writerPASSsayılmaz. AynıE02/öncekiUA kayıtları,25/12/13/0 korunur. [Kapsam ve kanıt](docs/evidence/crm/2026-10-14-power-recovery/README.md).
+
+## Önceki E02 değişen MANUAL fiyat kabulü hazırlanıyor — 13 Ekim
 
 **BEKLİYOR**; kaynak hazırlığı veya ERP owner fiyat GUI kaydı CRM taslak insan kabulü değildir. Yeni witness yolu henüz normal TEST'te açık değil. Owner native successor ve exact paket aktivasyonunu doğrulayınca mevcut E02 kapsamında: (1) normal katalogda kaydedilmiş MANUAL fiyatlı gerçek ürünü seç, (2) müşteri/para birimi/adedi doğrulayıp yalnız TEST taslak oluştur, (3) ayrı ERP readback ve sayfa yenilemede aynı tutar/UUID'yi gör, (4) sonraki fiyat sürümünde yeni seçim gerekmesini ve eski taslağın tarihsel tutarını korumasını kontrol et, (5) aynı akışı mobilde dene. Kaynak fiyat/versiyon bilinmiyorsa sıfır veya fallback gösterilmez. Kişi/tarih/paket/sonuç bekler; önceki kabuller korunur. [Teknik kayıt](docs/evidence/crm/2026-10-13-manual-price-witness/README.md).
 

@@ -1,4 +1,8 @@
-## 13 Ekim — mevcut E02 MANUAL fiyat sözleşmesi
+## 14 Ekim — kesinti sonrası kalan mevcut E02 / I01 / CRM06 kabulü
+
+Sabit25/12🟢/13🟡/0🔴 ve ortak55ID/21sıra korunur. Elektrik kesintisi sonrası kalıcıtalep/oturum hashleri ve local kaynak kayıtları korunmuş; currentCRM5b6/ERP-native7a41 TEST aktivasyonu owner tarafından yapıldı ve darfreshhealth/package kimliği doğrulandı. Kaynak/paket/aktivasyon, normalGUI/personel/mobil/insan kabulü değildir. MevcutIABhata sayfası browsersecuritypolicy engeli nedeniyle kullanıcıdan yalnız normal62700HTTPsekmesini açması bekleniyor; bypass/credentialisteği yok. Sonraki tek iş aynı mevcutE02 için tek sentetikMANUALdraft/separateGET/refresh; I01/CRM06 değişenakışkabulleri ayrıca açık. [Taze kayıt](docs/evidence/crm/2026-10-14-power-recovery/README.md). Önceki13Ekim inaktifnotlar tarihli korunur.
+
+## Önceki mevcut E02 MANUAL fiyat sözleşmesi — 13 Ekim
 
 Sabit tree **25 /12🟢 /13🟡 /0🔴** değişmez; ikinci modül veya finish tree yok. ERP MANUAL fiyat metadata/sürümünü katalog → seçim → donmuş native taslak/readback gövdesine taşıyan CRM kaynak alt kapsamı hazır; SOURCE legacy gövdesi korunur. Bu source/shared runtime kabulü değildir. Aynı transaction CURRENT fiyat/version ve SOURCE bypass koruması ERP owner'da, ardından normal/mobil/insan E02 kabulü bekler. [Kaynak sınırı ve hedefli kanıt](docs/evidence/crm/2026-10-13-manual-price-witness/README.md). I01 source30f78de ve CRM06 inaktif1be paket teslimi ayrı kalır.
 
