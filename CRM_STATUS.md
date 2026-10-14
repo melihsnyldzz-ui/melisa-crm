@@ -1,23 +1,25 @@
 ## Sıradaki iş — CRM06 (tek etkin yürütme kaydı)
 
 - **Ana ID / sıra:** CRM06 — Katalog ve müşteri ürün talebi; ortak21 sıra2, sabit55/selectedMainClosure görünümü. 25 alt kayıt, 12 tamam, 13 kısmi, 0 açık sayımı değişmedi; kapanış henüz yok.
-- **Güncel adım:** CRM exactb298 personel kaynağı, başarılı sourceCI ve immutable paket/manifest7b44 hazır; ERP PR23/current1440007 ardıl kurulum kaydı bu deviri tüketiyor. CRM tarafı kaynak/paket uyumluluğunu tamamladı; ERP tek sahibi ayrı journal fiziksel ACL/kimlik, original-parent successor/rollback ve Hub pinlerini hazırlayıp sahipliği doğrulanmış servis geçişini kontrol ediyor. Bu gözlem kurulmuş sürüm kanıtı değildir; yeni runtime teslimi gelmeden mevcut7a/5b6 kaydı değiştirilmez. Ayrı normal TEST müdür/personel9profil hazır, eski7profil korunur. İlk korumalı GUI giriş API'si bağlı CUA ortamında eksik kalır; aynı reader/import/login veya kabul araştırması yeniden yapılmaz.
+- **Güncel adım:** ERP sahibi 14 Ekim 19:05 TR kurulum makbuzuyla CRM **b2985d2295c022848c769ea5f494012c1eb3fa00 / manifest7b44**, supervisor **1440007392df803ec7d0843de4d584c5ab4f51a8** ve aynı ERP/native7a41/DB02/copye16b/T1false TEST geçişini tamamladı. Kurulum ve yeni personel API makbuzlarının SHA256 değerleri CRM tarafından doğrulandı. Personel normal login/me, aynı SID ile refresh, kendi logout ve eski oturumda401 geçti; issuer değildir. Eski7profil, baseline ve journal'lar korunur. Bağlı62700 normal formda parola boş, alan hazır dedicated müdür/personel ile eşleşmiyor; submit/login yapılmadı. İlk korumalı GUI giriş API'si bağlı CUA ortamında eksik kalır; aynı reader/import/login veya kabul araştırması yeniden yapılmaz.
 - **Sahibi:** ERP ortak protected baseline/auth/config/issuer seçim/journal/servis değişikliğinin tek yazarı; CRM rol eşlemesi, normal müşteri/personel/mobil ekran ve kabul kanıtı sahibi.
-- **Somut bitiş koşulu:** Eski shared kullanıcı ID/rol/hash/agent ve state korunarak yeni ayrılmış normal issuer ve assigned staff için korumalı teslim; resmi login/me ile gerçek rol/agent/issuer SID ailesi doğrulanmış ve aynı source5b6/ERP7a/DB02 TEST ready. TEST ADMIN, mevcut view-only agent3 veya iptal Semih/proof actor issuer yerine geçirilmez. Sırlar çıktıya/Git'e girmez; kullanıcıdan parola/tekrar giriş istenmez.
+- **Somut bitiş koşulu:** Eski shared kullanıcı ID/rol/hash/agent ve state korunarak ayrılmış normal issuer/personel oturumu üzerinden aynı kurulu b298/ERP7a/DB02 TEST'te normal müşteri → tek talep → atanmış personel → reopen → son mobil akış ve gereken insan kabulü tamamlanmalı. Personel resmi API doğrulaması ilk müdür GUI girişi veya issuer API kanıtı yerine geçirilmez. TEST ADMIN, mevcut view-only agent3 veya iptal Semih/proof actor issuer yerine geçirilmez. Sırlar çıktıya/Git'e girmez; kullanıcıdan parola/tekrar giriş istenmez.
 - **Mevcut kanıt:** [CRM06 kaynak/kabul eşlemesi](docs/evidence/crm/2026-10-14-crm06-closure/README.md); auth kaynağı `WHATSAPP_CRM_AUTH_USERS_JSON`, normal `createPasswordHash`, rol bazlı izinler ve `configuredCustomerRequestIssuerStore`. Patron/müdür rolü mevcut beş izni üretir; JSON permissions override edilmez, provider/send/AI runtimefalse korunur. Assigned normal personel gerçek assignee agent2/crm.view; wrong staff agent3. Bağlı62700 HTTP ekranı ve7733 konuşması görüldü; eski error-protocol engeli kalktı. Recovery7a/5b ve21/21 tablo korunması ERP owner kanıtı; root SQL değil. Eski K01/K02/K03 ve fb34/403/readback yeniden çalıştırılmadı.
-- **Bağımlılık / engel:** ERP owner'ın exact supervisor/package/lock/projection ve kurulu runtime teslimi beklenir; CRM bu ortak değişikliği yapmaz. Sunucu ve hesapların mevcut hazırlık kanıtı REUSE; dokümanlı güvenli UI-credential transport CUA ortamında desteklenmiyor. Protected reader CLI/PS7'de çalışıyor, CUA kabulü değil. Başka API/araç/ajan/model, process shim/export, clipboard/HTTP sır köprüsü veya JWT/storage injection ile ret aşılmadı; kullanıcıdan parola/giriş istenmez. Yeni aktör GUIlogin0, müşteri session/interest0; kalan akış denenmedi. Yeni staff refresh b298 kaynak/paketinde hazırdır; mevcut5b6 runtime için kurulmuş sayılmaz. Son normal mobil/fiziksel/insan kabulü de açık. Önceki Samsung offline/aygıt görünmüyor kaydı yeni cihaz kanıtı değildir; viewport gerçektelefon PASS değildir.
+- **Bağımlılık / engel:** ERP kurulu runtime teslimi geldi; paket/servis geçişi artık bekleyen bağımlılık değildir. Kalan erişim bileşeni dokümanlı güvenli UI-credential transport: CUA ortamında desteklenmiyor. Protected reader CLI/PS7'de çalışıyor, CUA kabulü değil. Başka API/araç/ajan/model, process shim/export, clipboard/HTTP sır köprüsü veya JWT/storage injection ile ret aşılmadı; kullanıcıdan parola/giriş istenmez. Yeni aktör GUIlogin0, bu son GUI halkasında müşteri session/interest0; kalan akış denenmedi. Staff refresh b298 kurulu runtime'da resmi API ile doğrulandı; logout edilmiş grant geçerli ekran oturumu değildir. Son normal mobil/fiziksel/insan kabulü ve Windows reboot/logon kabulü açık. Önceki Samsung offline/aygıt görünmüyor kaydı yeni cihaz kanıtı değildir; viewport gerçektelefon PASS değildir.
 - **Bitince aynı başlıktaki sonraki adım:** CRM aynı7733 konuşmasında normal issuer → müşteri gerçek katalog/seç/adet/çıkar/reload → tek kalıcı talep → atanmış normal personelde aynı kayıt → son normal mobil akışı tamamlar. ERP aynı kaydın bağımsız kalıcılık/çift kayıt/no-sale etkisini okur; CRM yeniden açılış ve değişmeyen yanlış-personel kanıtı/özgün kabulleri son sürümle eşler. Gereken son insan kabulü yalnız hazırlık bittikten sonra ayrı tutulur.
 - **CRM06 tüm özgün koşulları kapanınca geçiş:** Yalnız CRM06 tüm özgün koşulları ve gereken insan kabulüyle tam kapanınca ortak21 sıra1 **ERP09 — Satış, açık hesap ve kullanılabilir hız**. ERP kalan SQL/normal satış/açık hesap-vade ve doğru stok/cari tek etkiyi sahiplenir; CRM yalnız gerçekten gerekli müşteri/yetki bağlantılarını destekler. ERP03/ERP04/ERP06/ERP14 bağımlılıklarının yalnız bu akışa düşen eksik kısmı çözülür; geniş modüller veya kabul edilmiş hız/satış kanıtı yeniden açılmaz. Kullanıcı/denetçi mesajı beklenmez; kapanış öncesi ERP09 başlamaz.
+
+**14 Ekim 19:05 TR — kurulu b298 TEST ve atanmış personel API teslimi:** ERP owner'ın `installed-readback.json` SHA256 **220cf2cd69bc73c7ce73fad54c7a5bdd3869c0bcce44d363c56ab1f452eaabf6** ve `staff-auth-proof.json` SHA256 **ece3652fd63c2afb69828613dbbf1c911baf48c946602358e7811594d30d7259** değerleri doğrulandı. Owner altı süreç/source/pin/parent/index ve erişilebilirlik kanıtı, aynı DB02/copy/T1false, eski profil/baseline/journal korunması ve Hub PID44808 teslim etti. CRM kurulu sourceb298/manifest7b44; supervisor1440007; ERP/native7a41 değişmedi. Yeni personel resmi normal login, personel/agent2/yalnızcrm.view, issuerfalse, aynı SID refresh, kendi logout ve revoked/me401 geçti. Bu personel kanıtı müdür issuer veya normal GUI kanıtı değildir; genel kurulum makbuzunun authenticatedOperationsVerified=false değeri korunur. Windows reboot/logon ve insan kabulü yok. Bağlı normal form yalnız değer çıkarmayan booleanlarla gözlendi: parola boş, hazır dedicated kullanıcı yok, yeni login0. CRM yeni health/auth/CI/kabul testi veya ortak runtime yazısı yapmadı. [Sanitize edilmiş kurulum ve sınır makbuzu](docs/evidence/crm/2026-10-14-assigned-staff-refresh/installed-runtime.json). Aşağıdaki paket/kaynak hazırlık checkpoint'leri tarihsel olup bu güncel kurulum kaydını değiştirmez.
 
 **Çalışma düzeni başlangıç notu uygulandı — 14 Ekim:** [CRM PR3 review5520343640](https://github.com/melihsnyldzz-ui/melisa-crm/pull/3#pullrequestreview-5520343640) ve [ERP PR23 review5520337238](https://github.com/melihsnyldzz-ui/melisa-erp-v2/pull/23#pullrequestreview-5520337238) okundu; notlar review gövdesindedir. Kendi AGENTS/currentCRM_STATUS ve karşı projenin yerel STATUS/Sıradaki iş kaydı okunabildi; GitHub checkpoint'leri CRMda10b9e/ERP1440007 ile doğrulandı. İki sohbetin kendiliğinden haberleştiği varsayılmadı: devir mevcut kayıt/PR ve açıkça yetkili owner iletişimiyle yürür. Yeni plan/tracker/izin oluşturulmadı.
 
 Dar salt okunur explorer, b298 kaynak/paket/manifest/index ve üç finite personel key tüketiminin ERP successor ile uyumlu olduğunu buldu; bu kapsamda yeni CRM P1/P2 yok. Manifest indexSHA256 `3b672c12ed534c2bd3f30e02990a686afef1cef8f36c11af42a6159bd86cceb1`, CRM dependency-lock hedefi `crm-b2985d2295c0-dependency-lock.json`. DB01 build literal'i ayrı ERP draft context/receipt doğrulamasındadır; CRM06 müşteri/personel API köklerinde kullanılmaz, bu başlıkta yeni DB/ERP mimarisi işi açılmaz. Gerçek private successor/settings/journal/credential verisi bu incelemede okunmadı; source/paket uyumu activation veya normalGUI/insan kabulü değildir. YeniCI/unit/auth/health/restore/packageverify tekrarı yok; mevcut b298 kanıtı korunur. CRM sahibi ancak yeni runtime ve desteklenen normal oturum hazır olduğunda son UI halkasına geçer; ERP09/ana kapanış sayısı değişmez.
 
-**14 Ekim — b298 immutable paket hazır, aktive edilmedi:** Mevcut desteklenen `createTestPackage({commit:b2985d2295c022848c769ea5f494012c1eb3fa00,isolatedPreparation:true})` seçili commit'in Git blob'larını alarak paket oluşturdu; checkout647/feature ve temiz çalışma ağacı korundu, yeniworktree/reset/branchswitch yok. Paket `C:/Sirket/CRM/releases/crm-shared-test-b2985d2295c022848c769ea5f494012c1eb3fa00`, manifestSHA256 **7b44c381975fa54fad1a45dcbd4105ee31df836714ba34afba2f11fac29c01eb**, sourceTree **5dd6765c4a81db32fdc83b6b29bbe5e284a6e47e**. Locked offline ignore-scripts dependency kurulum ve yeni frontendbuild, builder'ın payload/manifest/sourceblob/lock doğrulaması geçti;183kaynakfile/2289payloadfile/23.926.692byte. Sonraki provenance okuması183/183sourceblob ve altıpersonelrouting/modülün paket içinde b298'e ait olduğunu doğruladı. Node24.15.0/Windowsx64; sourceCIb298 mevcut başarılı kanıtı reuse, yeniCI/unit/auth/health/restore/kabul yok.
+**Önceki hazırlık checkpoint — 14 Ekim — b298 immutable paket hazır, o anda aktive edilmedi:** Mevcut desteklenen `createTestPackage({commit:b2985d2295c022848c769ea5f494012c1eb3fa00,isolatedPreparation:true})` seçili commit'in Git blob'larını alarak paket oluşturdu; checkout647/feature ve temiz çalışma ağacı korundu, yeniworktree/reset/branchswitch yok. Paket `C:/Sirket/CRM/releases/crm-shared-test-b2985d2295c022848c769ea5f494012c1eb3fa00`, manifestSHA256 **7b44c381975fa54fad1a45dcbd4105ee31df836714ba34afba2f11fac29c01eb**, sourceTree **5dd6765c4a81db32fdc83b6b29bbe5e284a6e47e**. Locked offline ignore-scripts dependency kurulum ve yeni frontendbuild, builder'ın payload/manifest/sourceblob/lock doğrulaması geçti;183kaynakfile/2289payloadfile/23.926.692byte. Sonraki provenance okuması183/183sourceblob ve altıpersonelrouting/modülün paket içinde b298'e ait olduğunu doğruladı. Node24.15.0/Windowsx64; sourceCIb298 mevcut başarılı kanıtı reuse, yeniCI/unit/auth/health/restore/kabul yok.
 
 Eski paket/privateenv/sharedruntime/config/baseline/audit/journal korunur. Builder'ın mevcut isolatedprofile ERP frontend fallback'i DB01 literalidir; gerçek shared DB02 runtime kimliği değildir ve değiştirilmedi. ERP sahibine bu build sınırıyla paket refs iletildi; owner finite settings, fiziksel ayrıjournal/ACL/alias ve parent-bound successorprojection hazırlanması ayrı adımdır. **Paketin varlığı activation, ilk korumalı normalGUIgiriş, native/telefon/reopen veya insan kabulü değildir; CRM06 açık.** [Public-safe paket makbuzu](docs/evidence/crm/2026-10-14-assigned-staff-refresh/package-preparation.json).
 
-**14 Ekim — yeni atanmış personel refresh halkası kaynakta hazır, kurulu değil:** İlkGUIgirişten bağımsız eksik giderildi: exact `crm-crm06-staff-test-20261014` / `crm-crm06-staff` / aktifpersonel / agent2 / yalnızcrm.view için default-off ayrı finite policy, mevcut `createNormalRefreshStore` engine'ine bağlandı. Üç yeni ownerkey: CRM_ASSIGNED_STAFF_REFRESH_ENABLED, CRM_ASSIGNED_STAFF_REFRESH_USER_ID, CRM_ASSIGNED_STAFF_REFRESH_JOURNAL_PATH; dosya sabit `C:/Sirket/CRM/runtime/CRM06-TEST-ACTORS-20261014/assigned-staff-refresh.json`. Login/SID/rotate/retired-token/kendiJWTlogout mevcut resmi yolda; yalnız doğrulanmış personelSID `/me` marker'ıyla frontend kendi family kapanışını yapar. Staff issuer'e açıkça alınmaz, yönetici/send izinleri verilmez; grantless/eskiSID transplant ve rol/agent/parola/config değişimi fail-closed. Ayrı journal yolunda Win32 dot/space/ADS alias P2 bulundu ve kapandı. Owner private path/pin/projection ve fiziksel dosya kimliği aktivasyon önkoşuludur; kaynak lexical guard fiziksel symlink/hardlink kabulü sayılmaz.
+**Önceki kaynak checkpoint — 14 Ekim — atanmış personel refresh o anda kurulu değildi:** İlkGUIgirişten bağımsız eksik giderildi: exact `crm-crm06-staff-test-20261014` / `crm-crm06-staff` / aktifpersonel / agent2 / yalnızcrm.view için default-off ayrı finite policy, mevcut `createNormalRefreshStore` engine'ine bağlandı. Üç yeni ownerkey: CRM_ASSIGNED_STAFF_REFRESH_ENABLED, CRM_ASSIGNED_STAFF_REFRESH_USER_ID, CRM_ASSIGNED_STAFF_REFRESH_JOURNAL_PATH; dosya sabit `C:/Sirket/CRM/runtime/CRM06-TEST-ACTORS-20261014/assigned-staff-refresh.json`. Login/SID/rotate/retired-token/kendiJWTlogout mevcut resmi yolda; yalnız doğrulanmış personelSID `/me` marker'ıyla frontend kendi family kapanışını yapar. Staff issuer'e açıkça alınmaz, yönetici/send izinleri verilmez; grantless/eskiSID transplant ve rol/agent/parola/config değişimi fail-closed. Ayrı journal yolunda Win32 dot/space/ADS alias P2 bulundu ve kapandı. Owner private path/pin/projection ve fiziksel dosya kimliği aktivasyon önkoşuludur; kaynak lexical guard fiziksel symlink/hardlink kabulü sayılmaz.
 
 Yalnız yeni hedefli Windows15/15pass/0skip ve değişen6modül syntax/diff kontrolü; bağımsız high review kalanP1/P2=0. Auth/router kanıtı RAM'de kesilen sentetik journal ve ephemeral loopback'tir; Linux dalı Windows privatepath reddini doğrular, gerçekstaffauth akışı değildir. Temp engine reopen protectednative/telefon/gatewayrestart kabulü değildir. Eski kabul/restore/normal giriş denenmedi; Yeni source **b2985d2295c022848c769ea5f494012c1eb3fa00** uzak feature ve PR3 ile eşleşti; exact [PR CI](https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38578480326), [push CI](https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38578470631) ve [AI offline CI](https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38578480228) SUCCESS. Syntax/build/secret scan/Windows startup geçti; frontend479pass/0skip, gateway566pass/3skip, contracts124pass/48skip, tümfail0. Mevcut skip sayıları değişmedi; yeni Linux auth testi yalnız privatepath reddidir. İzleyen metadata HEAD için eski sourceCI PASS devralınmaz; docs-only CI tekrarı açılmaz. ERP owner finite supervisor guard source140fac3/PR23 hazır olduğunu bildirdi; eskiimmutable actor receipt, baseline ve7a/5b6 runtime/settings/journal değişmedi. **Çalışan5b6 personel refresh hâlâ kurulu değil; protected ilkGUIgiriş/mobil/insan kabulü açık.** B298 paket makbuzu yukarıdadır; owner-sahipli finite settings ve parent-bound successorprojection hâlâ gerekir. Activation/restart bu tur yok. CRM06 ve25/12/13/0 sayımı kapanmadı. [Kaynak teslim kapsamı](docs/evidence/crm/2026-10-14-assigned-staff-refresh/source-preparation.json).
 
@@ -31,7 +33,9 @@ Yalnız yeni hedefli Windows15/15pass/0skip ve değişen6modül syntax/diff kont
 
 ### melisa-preflight — mevcut kanıt görünümü
 
-Kayıt kontrolü; uygulama/insan PASS veya yeni tracker değildir. Sağlık ve normal müdür rolü owner makbuzundan REUSE; korumalı GUI aktarımı BLOCKED/PROOF_BLOCKED. Ortak script kaynakb433b00e9bc9ec5e4ad79961b0db52489f77ad01, ERP tek sahibi; CRM config/cache repo dışında ayrıdır. Opsiyonel hook/trust etkinleştirilmedi. Bu kurulum için normal giriş, eski kabul/sağlık/restore veya sentetik30test tekrar edilmedi.
+Kayıt kontrolü; uygulama/insan PASS veya yeni tracker değildir. Güncel runtime sağlık kanıtı owner kurulum makbuzundan REUSE; eski müdür API kanıtı eski runtime bağlamında tarihsel korunur, yeni staff API onun yerine geçirilmez. Runtime bağlamı değiştiği için normal-role kaydı güncel kapsamı karşılamaz; yeni auth hatası veya tekrar API testi talebi değildir. Korumalı GUI aktarımı BLOCKED/PROOF_BLOCKED. Ortak script kaynakb433b00e9bc9ec5e4ad79961b0db52489f77ad01, ERP tek sahibi; CRM config/cache repo dışında ayrıdır. Opsiyonel hook/trust etkinleştirilmedi. Bu kurulum için normal giriş, eski kabul/sağlık/restore veya sentetik30test tekrar edilmedi.
+
+**Yeni runtime bağlamı kayıt kontrolü — 14 Ekim 19:05 sonrası:** Aynı mevcut checker bir kez çağrıldı: `CHECK_REQUIRED`, `changed:true`, `cacheSaved:true`; süreç exit1 döndü. CRM runtime-health REUSE; normal-role CONTEXT_CHANGED çünkü müdür API kanıtı eski runtime'a aittir; normal-ui PROOF_BLOCKED. ERP kaydı aynı CRM06 odağında sağlık/rol REUSE, GUI PROOF_BLOCKED; wholeClosureGranted=false ve repeatAcceptedTests=false. Bu kayıt sonucu yeni auth/servis arızası veya kabul tekrarı yetkisi değildir; yeni staff API müdür kanıtının yerine taşınmadı. Checker, health/login/CI/kabul araştırması tekrarlanmadı.
 
 **Kurulum doğrulandı — 14 Ekim:** ERP sahibindeki dokuz script Git clean blob karşılaştırmasında kaynakb433 ile 9/9 eşleşti; ham byte farkları Windows CRLF'dir, dosyalar değiştirilmedi. CRM ayrı config'iyle ilk gerçek çağrı `CHECK_REQUIRED / exit3 / changed:true`, değişmeyen ikinci çağrı `changed:false / cacheSaved:true`; cache byte'ları aynı. İki proje de CRM06 odağında; mevcut sağlık ve normal rol kanıtı REUSE, normal UI `PROOF_BLOCKED`, `wholeClosureGranted:false`. Yeni uygulama/insan kabulü veya sayaç artışı yok. [Dar kurulum makbuzu](docs/evidence/crm/2026-10-14-agent-checks/installation.json). E34 tesliminde secret taramasının işaretlediği değer bağımsız doğrulanmış herkese açık ERP commit SHA'sıdır; yalnız tam tarihi fingerprint istisnası eklendi, genel kural korunur ve hata sonrası commit/push durdurma talimatı açıklaştırıldı.
 
@@ -39,19 +43,68 @@ Kayıt kontrolü; uygulama/insan PASS veya yeni tracker değildir. Sağlık ve n
 {
   "current": {
     "environment": "db02-copy-e16b70f0-test-t1false",
-    "runtime": "supervisor7a081-erp7a41-crm5b6-20261014T120958Z",
+    "runtime": "supervisor1440007-erp7a41-crmb298-20261014T160515542Z",
     "identityRole": "normal-issuer-mudur-agent2-api-20261014T122144Z",
-    "surface": "cua-iab-normal-form-20261014-credential-transport-blocked"
+    "surface": "cua-iab-normal-form-installed-b298-no-ready-login-20261014"
   },
   "required": [
-    {"id":"runtime-health","contextKeys":["environment","runtime"]},
-    {"id":"normal-role","contextKeys":["environment","runtime","identityRole"]},
-    {"id":"normal-ui","contextKeys":["environment","runtime","identityRole","surface"]}
+    {
+      "id": "runtime-health",
+      "contextKeys": [
+        "environment",
+        "runtime"
+      ]
+    },
+    {
+      "id": "normal-role",
+      "contextKeys": [
+        "environment",
+        "runtime",
+        "identityRole"
+      ]
+    },
+    {
+      "id": "normal-ui",
+      "contextKeys": [
+        "environment",
+        "runtime",
+        "identityRole",
+        "surface"
+      ]
+    }
   ],
   "proofs": [
-    {"requirementId":"runtime-health","status":"verified","context":{"environment":"db02-copy-e16b70f0-test-t1false","runtime":"supervisor7a081-erp7a41-crm5b6-20261014T120958Z"},"evidenceRef":"docs/evidence/crm/2026-10-14-crm06-closure/ui-transport-blocker.json"},
-    {"requirementId":"normal-role","status":"verified","context":{"environment":"db02-copy-e16b70f0-test-t1false","runtime":"supervisor7a081-erp7a41-crm5b6-20261014T120958Z","identityRole":"normal-issuer-mudur-agent2-api-20261014T122144Z"},"evidenceRef":"docs/evidence/crm/2026-10-14-crm06-closure/ui-transport-blocker.json"},
-    {"requirementId":"normal-ui","status":"blocked","context":{"environment":"db02-copy-e16b70f0-test-t1false","runtime":"supervisor7a081-erp7a41-crm5b6-20261014T120958Z","identityRole":"normal-issuer-mudur-agent2-api-20261014T122144Z","surface":"cua-iab-normal-form-20261014-credential-transport-blocked"},"evidenceRef":"docs/evidence/crm/2026-10-14-crm06-closure/ui-transport-blocker.json","error":"CUA_PROTECTED_CREDENTIAL_TRANSPORT_UNSUPPORTED"}
+    {
+      "requirementId": "runtime-health",
+      "status": "verified",
+      "context": {
+        "environment": "db02-copy-e16b70f0-test-t1false",
+        "runtime": "supervisor1440007-erp7a41-crmb298-20261014T160515542Z"
+      },
+      "evidenceRef": "docs/evidence/crm/2026-10-14-assigned-staff-refresh/installed-runtime.json"
+    },
+    {
+      "requirementId": "normal-role",
+      "status": "verified",
+      "context": {
+        "environment": "db02-copy-e16b70f0-test-t1false",
+        "runtime": "supervisor7a081-erp7a41-crm5b6-20261014T120958Z",
+        "identityRole": "normal-issuer-mudur-agent2-api-20261014T122144Z"
+      },
+      "evidenceRef": "docs/evidence/crm/2026-10-14-crm06-closure/ui-transport-blocker.json"
+    },
+    {
+      "requirementId": "normal-ui",
+      "status": "blocked",
+      "context": {
+        "environment": "db02-copy-e16b70f0-test-t1false",
+        "runtime": "supervisor1440007-erp7a41-crmb298-20261014T160515542Z",
+        "identityRole": "normal-issuer-mudur-agent2-api-20261014T122144Z",
+        "surface": "cua-iab-normal-form-installed-b298-no-ready-login-20261014"
+      },
+      "evidenceRef": "docs/evidence/crm/2026-10-14-assigned-staff-refresh/installed-runtime.json",
+      "error": "CUA_PROTECTED_CREDENTIAL_TRANSPORT_UNSUPPORTED"
+    }
   ]
 }
 ```
