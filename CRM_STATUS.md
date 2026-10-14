@@ -1,3 +1,11 @@
+## 14 Ekim — CRM06 tek odak; kurtarma doğrulandı, normal ekran kabulü açık
+
+ERP sahibi 13:00 kesinti sonrası taze recovery bildirdi: aynı CRM5b6dfe5/manifest8209226b ve ERP/native7a41, DB02/copye16b/T1false, provider/send/bridge/translation/dış/otomatik kapalı; 21/21 ticari tablo hash/sayı aynı (owner kanıtı). CRMroot13:43 listener62700/62701 PID41720 ve exact5b6 test-server paket yolunu doğruladı. 11:30 health aşağıda tarihsel checkpoint olarak korunur.
+
+Kullanıcı bekleyen HTTP sorusuna “Açtım” dedi; bağlı IAB envanteri hâlâ data: hata belgesi/ERR_CONNECTION_REFUSED. Ret sınırı sürer; alternatif araç veya tekrar soru yok. Mevcut korumalı normal issuer erişimi doğrulanmadı; TEST ADMIN panel dışı, crm-agent-test view-only. Explorer ve bağımsız source reviewer kesin yeni P1/P2 bulmadı; değişmeyen müşteri-talep çekirdeği/baseline yeniden geliştirilmedi veya test edilmedi.
+
+K01/K02/K03 eski insan kabulleri korunur; ortak normal müşteri/personel/reopen/mobil/CRM-UA11 kabulü açık. CRM06 kapanmadan CRM07/E02 taslak veya başka başlığa geçilmez. Sabit55ID/21sıra ve25/12🟢/13🟡/0🔴 değişmez. [Koşul/kanıt eşlemesi ve sonraki tek iş](docs/evidence/crm/2026-10-14-crm06-closure/README.md). Kaynak/runtime/SQL/config/rol/restart/mesaj yazısı yapılmadı.
+
 ## 14 Ekim 2026 — kesinti sonrası veri korundu; yeni TEST aktif, GUI kabulü açık
 
 CRM yerel kalıcı talep2700byte/SHAde493 önceki mühür/backup/restorecheck ile aynı:1talep/2ürün/5adet. Normalpersonel journal3339/SHA47e2 aynı; prova eski2grant+12Ekim ek2grant korunur. BozukJSON/yarımfile artığı yok. Kontrolanında kanonik GitHEADa2256fe temiz/cachedtracking0/0, kaynak commitleri korunmuş; tazeGitHub denetimi ayrı kayıttır. Farklıcihaz/offsite kopyası ve browserSessionStorage taslaklarının kesinti sonrası durumu doğrulanmadı. [Taze kapsam/kanıt](docs/evidence/crm/2026-10-14-power-recovery/README.md).
