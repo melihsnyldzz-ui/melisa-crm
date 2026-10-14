@@ -1,9 +1,3 @@
-## 15 Ekim 2026 — ana çalışma sözleşmesi kayıt teslimi
-
-CRM-DEC-016 / MELISA-WORKING-AGREEMENT-2026-10-15-v3, AGENTS ve PROJECT_DECISIONS içinde kayıtlıdır; karşı proje ERP-DEC-058. Yalnız talimat/karar ve bu kısa teslim kaydı değişti. Mevcut işletme kapsamı, bitiş planı, kabul kayıtları ve aşağıdaki tek etkin Sıradaki iş korunur. Belge kontrolü: dar fark, eski içerik korunumu ve karar bağlantıları; uygulama/DB/restore testi bu değişiklik için çalıştırılmadı, eski CI sonucu bu teslimin PASS'i değildir.
-
-Teslim dalı `codex/crm-agents-on-completion-20261003`; [mevcut PR3](https://github.com/melihsnyldzz-ui/melisa-crm/pull/3) uzak head/commit kaydıdır. TEST/LIVE runtime bu belge teslimiyle değiştirilmedi veya yeniden doğrulanmadı; gerçek kullanıcı kabulü ve CRM06 kapanışı verilmedi. Kalan: mevcut yetkili ana iş kayıtlı yerden sürer; açık başka oturumun yeni sözleşmeyi okuduğu varsayılmaz.
-
 ## Sıradaki iş — CRM06 (tek etkin yürütme kaydı)
 
 - **15 Ekim yürütme kararı / bağımsız halka:** [CRM PR3 kararı](https://github.com/melihsnyldzz-ui/melisa-crm/pull/3#issuecomment-6179459282) ve [ERP PR23 kararı](https://github.com/melihsnyldzz-ui/melisa-erp-v2/pull/23#issuecomment-6179460000) okundu, CRM-DEC-015 ve AGENTS v2'ye işlendi. Geniş yetki yalnız kimliği/yalıtımı doğrulanmış TEST ve mevcut owner/rollback sınırındadır; yeniden rutin onay beklenmez. CUA giriş engeli yeniden denenmez. Salt okunur frontend explorer müşteri kataloğunda BFCache geri dönüşünden sonra kapalı controller nedeniyle seç/adet/gönder kontrollerinin sessiz kalabildiği bağımsız kaynak açığını buldu; lifecycle düzeltmesi hazır: pagehide güvenli disposal, persisted pageshow sırasında boş loading → yeni controller/fresh session/photo loader; kapalı/expired/revoked sayfa açılmaz, eski async/foto URL kapanır ve operation ID korunur. Yeni5 lifecycle, mevcut12 controller/API ve değişen1 entry kontrolü ayrık PASS; high reviewer açıkP1/P2 yok. Birlikte test koşusu takıldı, PASS sayılmadı ve yalnız kendi test süreçleri durduruldu; aynı koşu tekrarlanmaz. Source **da82fc6644c1d9dba0c10eaa861773534d43c288** exact PR/push/AI offline CI SUCCESS. Immutable paket/manifest9c6f hazır ve ERP owner'a kurulum için açıkça iletildi; çalışan son doğrulanmış paket hâlâ b298, gerçekBFCache/telefon/insan kabulü değildir. Backend explorer bağımsız kesin yeni hata bulmadı; mevcut journal/tek talep/rol kanıtları tekrar edilmez. Normal/fiziksel/insan kabulü BEKLİYOR.
@@ -118,6 +112,12 @@ Kayıt kontrolü; uygulama/insan PASS veya yeni tracker değildir. Güncel runti
   ]
 }
 ```
+
+## 15 Ekim 2026 — ana çalışma sözleşmesi kayıt teslimi
+
+CRM-DEC-016 / MELISA-WORKING-AGREEMENT-2026-10-15-v3, AGENTS ve PROJECT_DECISIONS içinde kayıtlıdır; karşı proje ERP-DEC-058. Yalnız talimat/karar ve bu kısa teslim kaydı değişti. Mevcut işletme kapsamı, bitiş planı, kabul kayıtları ve aşağıdaki tek etkin Sıradaki iş korunur. Belge kontrolü: dar fark, eski içerik korunumu ve karar bağlantıları; uygulama/DB/restore testi bu değişiklik için çalıştırılmadı, eski CI sonucu bu teslimin PASS'i değildir.
+
+Teslim dalı `codex/crm-agents-on-completion-20261003`; [mevcut PR3](https://github.com/melihsnyldzz-ui/melisa-crm/pull/3) uzak head/commit kaydıdır. TEST/LIVE runtime bu belge teslimiyle değiştirilmedi veya yeniden doğrulanmadı; gerçek kullanıcı kabulü ve CRM06 kapanışı verilmedi. Kalan: mevcut yetkili ana iş kayıtlı yerden sürer; açık başka oturumun yeni sözleşmeyi okuduğu varsayılmaz.
 
 ## Tarihsel checkpoint'ler — aşağıdaki eski sonraki iş kayıtları etkin sıra değildir
 
