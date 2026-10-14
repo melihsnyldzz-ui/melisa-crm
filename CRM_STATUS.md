@@ -1,13 +1,40 @@
 ## Sıradaki iş — CRM06 (tek etkin yürütme kaydı)
 
-- **Ana ID / sıra:** CRM06 — Katalog ve müşteri ürün talebi; ortak21 sıra2, sabit55/selectedMainClosure görünümü. CRM25/12tamam/13kısmi/0açık sayımı değişmedi; kapanış henüz yok.
+- **Ana ID / sıra:** CRM06 — Katalog ve müşteri ürün talebi; ortak21 sıra2, sabit55/selectedMainClosure görünümü. 25 alt kayıt, 12 tamam, 13 kısmi, 0 açık sayımı değişmedi; kapanış henüz yok.
 - **Güncel adım:** Ayrı normal TEST yönetici/personel ve korumalı teslim artık hazır; startup9profil, eski7profil korunur. ERP sahibi normal yönetici login/me/issuerSID/refresh/logout/ownJWT401 teknik kanıtını tamamladı. Kalan tek yazılım/araç bileşeni CUA içinde desteklenen korumalı giriş tüketimi: consumer çağrısı `ReferenceError: process is not defined`, `node:process` importu açıkça yasak; dokümanlarda protected credential/browserAuth veya yerel OS süreç API'si yok. Bu rol/parola kaynağı eksikliği değildir.
 - **Sahibi:** ERP ortak protected baseline/auth/config/issuer seçim/journal/servis değişikliğinin tek yazarı; CRM rol eşlemesi, normal müşteri/personel/mobil ekran ve kabul kanıtı sahibi.
 - **Somut bitiş koşulu:** Eski shared kullanıcı ID/rol/hash/agent ve state korunarak yeni ayrılmış normal issuer ve assigned staff için korumalı teslim; resmi login/me ile gerçek rol/agent/issuer SID ailesi doğrulanmış ve aynı source5b6/ERP7a/DB02 TEST ready. TEST ADMIN, mevcut view-only agent3 veya iptal Semih/proof actor issuer yerine geçirilmez. Sırlar çıktıya/Git'e girmez; kullanıcıdan parola/tekrar giriş istenmez.
 - **Mevcut kanıt:** [CRM06 kaynak/kabul eşlemesi](docs/evidence/crm/2026-10-14-crm06-closure/README.md); auth kaynağı `WHATSAPP_CRM_AUTH_USERS_JSON`, normal `createPasswordHash`, rol bazlı izinler ve `configuredCustomerRequestIssuerStore`. Patron/müdür rolü mevcut beş izni üretir; JSON permissions override edilmez, provider/send/AI runtimefalse korunur. Assigned normal personel gerçek assignee agent2/crm.view; wrong staff agent3. Bağlı62700 HTTP ekranı ve7733 konuşması görüldü; eski error-protocol engeli kalktı. Recovery7a/5b ve21/21 tablo korunması ERP owner kanıtı; root SQL değil. Eski K01/K02/K03 ve fb34/403/readback yeniden çalıştırılmadı.
 - **Bağımlılık / engel:** Sunucu ve hesaplar READY; dokümanlı güvenli UI-credential transport CUA ortamında desteklenmiyor. Protected reader CLI/PS7'de çalışıyor, CUA kabulü değil. Başka API/araç/ajan/model, process shim/export, clipboard/HTTP sır köprüsü veya JWT/storage injection ile ret aşılmadı; kullanıcıdan parola/giriş istenmez. Yeni aktör GUIlogin0, müşteri session/interest0; kalan akış denenmedi. Yeni staff için durable refresh yalnız mevcut özelagent3 profiline destekli olduğundan ayrıca UNSUPPORTED; son fiziksel/insan kabulü de açık. Samsung Tailscale offline ve bağlı Android aygıtı görünmedi; viewport gerçektelefon PASS değildir.
 - **Bitince aynı başlıktaki sonraki adım:** CRM aynı7733 konuşmasında normal issuer → müşteri gerçek katalog/seç/adet/çıkar/reload → tek kalıcı talep → atanmış normal personelde aynı kayıt → son normal mobil akışı tamamlar. ERP aynı kaydın bağımsız kalıcılık/çift kayıt/no-sale etkisini okur; CRM yeniden açılış ve değişmeyen yanlış-personel kanıtı/özgün kabulleri son sürümle eşler. Gereken son insan kabulü yalnız hazırlık bittikten sonra ayrı tutulur.
-- **CRM06 tüm özgün koşulları kapanınca geçiş:** Ortak21 sıra1 **ERP09 — Satış, açık hesap ve kullanılabilir hız**. ERP kalan SQL/normal satış/açık hesap-vade ve doğru stok/cari tek etkiyi sahiplenir; CRM yalnız gerçekten gerekli müşteri/yetki bağlantılarını destekler. ERP03/ERP04/ERP06/ERP14 bağımlılıklarının yalnız bu akışa düşen eksik kısmı çözülür; geniş modüller veya kabul edilmiş hız/satış kanıtı yeniden açılmaz. Kullanıcı/denetçi mesajı beklenmez; kapanış öncesi ERP09 başlamaz.
+- **CRM06 tüm özgün koşulları kapanınca geçiş:** Yalnız CRM06 tüm özgün koşulları ve gereken insan kabulüyle tam kapanınca ortak21 sıra1 **ERP09 — Satış, açık hesap ve kullanılabilir hız**. ERP kalan SQL/normal satış/açık hesap-vade ve doğru stok/cari tek etkiyi sahiplenir; CRM yalnız gerçekten gerekli müşteri/yetki bağlantılarını destekler. ERP03/ERP04/ERP06/ERP14 bağımlılıklarının yalnız bu akışa düşen eksik kısmı çözülür; geniş modüller veya kabul edilmiş hız/satış kanıtı yeniden açılmaz. Kullanıcı/denetçi mesajı beklenmez; kapanış öncesi ERP09 başlamaz.
+
+### melisa-preflight — mevcut kanıt görünümü
+
+Kayıt kontrolü; uygulama/insan PASS veya yeni tracker değildir. Sağlık ve normal müdür rolü owner makbuzundan REUSE; korumalı GUI aktarımı BLOCKED/PROOF_BLOCKED. Ortak script kaynakb433b00e9bc9ec5e4ad79961b0db52489f77ad01, ERP tek sahibi; CRM config/cache repo dışında ayrıdır. Opsiyonel hook/trust etkinleştirilmedi. Bu kurulum için normal giriş, eski kabul/sağlık/restore veya sentetik30test tekrar edilmedi.
+
+**Kurulum doğrulandı — 14 Ekim:** ERP sahibindeki dokuz script Git clean blob karşılaştırmasında kaynakb433 ile 9/9 eşleşti; ham byte farkları Windows CRLF'dir, dosyalar değiştirilmedi. CRM ayrı config'iyle ilk gerçek çağrı `CHECK_REQUIRED / exit3 / changed:true`, değişmeyen ikinci çağrı `changed:false / cacheSaved:true`; cache byte'ları aynı. İki proje de CRM06 odağında; mevcut sağlık ve normal rol kanıtı REUSE, normal UI `PROOF_BLOCKED`, `wholeClosureGranted:false`. Yeni uygulama/insan kabulü veya sayaç artışı yok. [Dar kurulum makbuzu](docs/evidence/crm/2026-10-14-agent-checks/installation.json). E34 tesliminde secret taramasının işaretlediği değer bağımsız doğrulanmış herkese açık ERP commit SHA'sıdır; yalnız tam tarihi fingerprint istisnası eklendi, genel kural korunur ve hata sonrası commit/push durdurma talimatı açıklaştırıldı.
+
+```melisa-preflight
+{
+  "current": {
+    "environment": "db02-copy-e16b70f0-test-t1false",
+    "runtime": "supervisor7a081-erp7a41-crm5b6-20261014T120958Z",
+    "identityRole": "normal-issuer-mudur-agent2-api-20261014T122144Z",
+    "surface": "cua-iab-normal-form-20261014-credential-transport-blocked"
+  },
+  "required": [
+    {"id":"runtime-health","contextKeys":["environment","runtime"]},
+    {"id":"normal-role","contextKeys":["environment","runtime","identityRole"]},
+    {"id":"normal-ui","contextKeys":["environment","runtime","identityRole","surface"]}
+  ],
+  "proofs": [
+    {"requirementId":"runtime-health","status":"verified","context":{"environment":"db02-copy-e16b70f0-test-t1false","runtime":"supervisor7a081-erp7a41-crm5b6-20261014T120958Z"},"evidenceRef":"docs/evidence/crm/2026-10-14-crm06-closure/ui-transport-blocker.json"},
+    {"requirementId":"normal-role","status":"verified","context":{"environment":"db02-copy-e16b70f0-test-t1false","runtime":"supervisor7a081-erp7a41-crm5b6-20261014T120958Z","identityRole":"normal-issuer-mudur-agent2-api-20261014T122144Z"},"evidenceRef":"docs/evidence/crm/2026-10-14-crm06-closure/ui-transport-blocker.json"},
+    {"requirementId":"normal-ui","status":"blocked","context":{"environment":"db02-copy-e16b70f0-test-t1false","runtime":"supervisor7a081-erp7a41-crm5b6-20261014T120958Z","identityRole":"normal-issuer-mudur-agent2-api-20261014T122144Z","surface":"cua-iab-normal-form-20261014-credential-transport-blocked"},"evidenceRef":"docs/evidence/crm/2026-10-14-crm06-closure/ui-transport-blocker.json","error":"CUA_PROTECTED_CREDENTIAL_TRANSPORT_UNSUPPORTED"}
+  ]
+}
+```
 
 ## Tarihsel checkpoint'ler — aşağıdaki eski sonraki iş kayıtları etkin sıra değildir
 

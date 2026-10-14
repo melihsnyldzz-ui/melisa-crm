@@ -5,7 +5,7 @@
   "crmApplicationSource": "5b6dfe5acf1c0c1ea301f66aea39bf2abcec8f36",
   "erpApplicationSource": "7a41f6492273dd1ec0bcb086f820be5575372be8",
   "supervisorSource": "7a081ab2b017",
-  "credentialConsumerSource": "d3a47cc5b0af32a3d2bb65681c3d5d8dd0b76484",
+  "readerSourceCommit": "d3a47cc5b0af32a3d2bb65681c3d5d8dd0b76484",
   "actorSetup": {
     "existingProfilesPreserved": 7,
     "addedOrdinaryTestProfiles": 2,

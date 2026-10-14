@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-14",
+  "scope": "record-consistency-and-prerequisite-metadata-only",
+  "sourceCommit": "b433b00e9bc9ec5e4ad79961b0db52489f77ad01",
+  "scriptOwner": "ERP",
+  "scriptPath": "C:/Sirket/ERP/melisa-erp-v2/scripts/delivery-checks/run.mjs",
+  "configPath": "C:/Sirket/CRM/runtime/agent-checks/config.json",
+  "cachePath": "C:/Sirket/CRM/runtime/agent-checks/record-check-cache.json",
+  "sourceVerification": {
+    "method": "git hash-object --path with repository clean filters",
+    "checked": 9,
+    "matched": 9,
+    "rawCheckoutLineEndingDifferences": 9,
+    "sharedFilesModifiedByCrm": false
+  },
+  "firstRun": {
+    "status": "CHECK_REQUIRED",
+    "exitCode": 3,
+    "changed": true,
+    "cacheSaved": true
+  },
+  "unchangedSecondRun": {
+    "status": "CHECK_REQUIRED",
+    "exitCode": 3,
+    "changed": false,
+    "cacheSaved": true,
+    "cacheBytesUnchanged": true
+  },
+  "bothProjectViews": {
+    "mainId": "CRM06",
+    "runtimeHealth": "REUSE",
+    "normalRole": "REUSE",
+    "normalUi": "BLOCKED",
+    "issueCode": "PROOF_BLOCKED",
+    "wholeClosureGranted": false
+  },
+  "normalUiBlocker": "CUA_PROTECTED_CREDENTIAL_TRANSPORT_UNSUPPORTED",
+  "repeatAcceptedTests": false,
+  "hooksActive": false,
+  "trustSettingsChanged": false,
+  "runtimeChangesByCrm": false,
+  "authAttemptsForInstallation": 0,
+  "applicationOrHumanAcceptanceGranted": false,
+  "mainOrLiveChanges": false
+}
