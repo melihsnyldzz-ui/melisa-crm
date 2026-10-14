@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-14",
+  "mainId": "CRM06",
+  "scope": "two-existing-offline-fixture-regressions-only",
+  "before": {
+    "head": "f72dc4d5a6a24a2d787d3af5f1fb88d2bf1e4d73",
+    "ciRun": 38572491712,
+    "realRunnerStarted": true,
+    "billingBlockerCurrent": false,
+    "secretScan": "success",
+    "windowsStartup": "success",
+    "syntaxAndFrontendBuild": "success",
+    "frontend": {"total":476,"pass":476,"fail":0,"skip":0},
+    "gateway": {"total":563,"pass":558,"fail":2,"skip":3},
+    "localReproduction": {"total":3,"pass":1,"fail":2}
+  },
+  "causes": [
+    "mediaMapping sent 25 raw rows despite the current bounded 20-row Chatwoot history contract",
+    "sessionProcess requested an already-expired login; normalLoginResult verifies its own token, so no token was returned and the later undefined-token verification yielded INVALID"
+  ],
+  "changes": [
+    "Only the synthetic media page is bounded to 20; all existing expected IDs, provider timestamps and attachment values remain unchanged",
+    "A normal 5-minute synthetic login returns a real token; only the disposable verification process advances Date.now to exp*1000 and runs the real verifyCrmAccessToken"
+  ],
+  "localAfter": {
+    "node": "24.15.0",
+    "platform": "Windows",
+    "targeted": {"total":60,"pass":60,"fail":0,"skip":0},
+    "gatewayCiCleanEnvironmentAndOfflineGuard": {"total":581,"pass":581,"fail":0,"skip":0},
+    "overlappingAndPlatformCountsAreNotAdded": true,
+    "independentHighReviewOpenP1P2": 0
+  },
+  "hostedAfter": {"status":"pending-repair-commit-ci"},
+  "preserved": {
+    "productionCodeUnchanged": true,
+    "signatureIssuerAudienceAndActiveRoleChecks": true,
+    "expiryErrorExpectationUnchanged": true,
+    "oversizedLatestAndBeforePageRejection": true,
+    "testsRemovedOrNewlySkipped": false,
+    "testGuardBypassed": false,
+    "runtimeRestartOrSharedWrites": false,
+    "newLoginOrRealCustomerMessages": false,
+    "mainMergeOrLiveDeploy": false,
+    "normalBrowserCredentialBlockerStillOpen": true,
+    "wholeCrm06ClosureGranted": false
+  }
+}
