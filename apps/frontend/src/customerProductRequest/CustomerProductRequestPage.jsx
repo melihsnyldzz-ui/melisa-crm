@@ -2,6 +2,7 @@ import {useEffect,useRef,useState} from 'react';
 import {ArrowLeft,ArrowRight,Check,CheckCircle,Leaf,MagnifyingGlass,Plus,Trash,X} from '@phosphor-icons/react';
 import {createCustomerRequestApi} from './api.js';
 import {createRequestController} from './controller.js';
+import {createCustomerRequestLifecycle} from './lifecycle.js';
 import {consumeCapability,clearCustomerStorage,customerStorage,quantity} from './model.js';
 import './customerProductRequest.css';
 
@@ -21,11 +22,11 @@ function QuantityInput({item,disabled,onChange}) {
 }
 export default function CustomerProductRequestPage() {
   const [capability]=useState(openingCapability),[view,setView]=useState({status:capability?'loading':'missing',session:null,products:[],busy:false,listBusy:false,error:'',step:'catalog'}),[search,setSearch]=useState('');
-  const controllerRef=useRef(null);const [photoLoader,setPhotoLoader]=useState(()=>()=>Promise.reject(Error('Not ready')));
+  const controllerRef=useRef(null),lifecycleRef=useRef(null);const [photoLoader,setPhotoLoader]=useState(()=>()=>Promise.reject(Error('Not ready')));
   useEffect(()=>{document.body.classList.add('customer-product-request-body');return()=>document.body.classList.remove('customer-product-request-body');},[]);
-  useEffect(()=>{if(!capability)return;const controller=createRequestController({api:createCustomerRequestApi(capability),storage:customerStorage(),onChange:setView});controllerRef.current=controller;setPhotoLoader(()=>controller.photo);void controller.open();const clear=()=>controller.dispose();window.addEventListener('pagehide',clear);return()=>{window.removeEventListener('pagehide',clear);controller.dispose();controllerRef.current=null;};},[capability]);
+  useEffect(()=>{if(!capability)return;const lifecycle=createCustomerRequestLifecycle({target:window,createController:onChange=>createRequestController({api:createCustomerRequestApi(capability),storage:customerStorage(),onChange}),onChange:setView,onController:controller=>{controllerRef.current=controller;if(controller)setSearch('');setPhotoLoader(()=>controller?controller.photo:()=>Promise.reject(Error('Not ready')));}});lifecycleRef.current=lifecycle;return()=>{lifecycle.dispose();lifecycleRef.current=null;controllerRef.current=null;};},[capability]);
   const controller=controllerRef.current,session=view.session,items=session?.draft.items||[],selected=new Set(items.map(item=>item.productId)),locked=view.busy||view.uncertain||Boolean(session?.request);
-  const close=()=>{controller?.dispose();clearCustomerStorage();initialCapability='';setView({status:'closed',session:null,products:[],busy:false,error:''});};
+  const close=()=>{lifecycleRef.current?.close();clearCustomerStorage();initialCapability='';setView({status:'closed',session:null,products:[],busy:false,error:''});};
   const updateQuantity=(id,value)=>void controller?.edit(items.map(item=>({productId:item.productId,quantity:item.productId===id?value:item.quantity})));
   const formSubmit=event=>{event.preventDefault();void controller?.search({...view.filters,search,page:1});};
   const filter=(key,value)=>void controller?.search({...view.filters,search,[key]:value,page:1});

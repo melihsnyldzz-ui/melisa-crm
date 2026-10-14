@@ -1,0 +1,60 @@
+{
+  "schemaVersion": "crm06-customer-bfcache-technical.v1",
+  "date": "2026-10-15",
+  "decision": "CRM-DEC-015",
+  "previousSource": "e5c23d8ade066cf7a14a6e9778cac7fcf655941d",
+  "trigger": "Navigate away from customer catalogue and return to the same document through persisted pageshow (BFCache).",
+  "before": "pagehide disposed the controller permanently; same component returned with visible controls and inactive controller.",
+  "after": "pagehide disposes and clears cached rendered state; persisted return installs a fresh controller/photo loader and reads the server session before edits.",
+  "regressionBeforeFix": {
+    "failed": true,
+    "expectedSessionReads": 2,
+    "actualSessionReads": 1,
+    "evidenceAttribution": "frontend worker synthetic regression using pre-fix effect behavior"
+  },
+  "targetedChecks": [
+    {
+      "scope": "new EventTarget lifecycle with real request controller",
+      "passed": 5
+    },
+    {
+      "scope": "existing controller/API/model regression file",
+      "passed": 12
+    },
+    {
+      "scope": "changed UI entry binding test only",
+      "passed": 1
+    }
+  ],
+  "combinedRun": {
+    "passed": false,
+    "result": "hung without final output; only owned test processes terminated; not a PASS",
+    "causeVerified": false
+  },
+  "independentReview": {
+    "reasoningEffort": "high",
+    "openP1P2": 0,
+    "readOnly": true
+  },
+  "preserved": [
+    "normal capability/API authorization",
+    "fresh session and revocation handling",
+    "closed/expired terminal state",
+    "pending operation ID and single submission",
+    "old async abortion/generation suppression",
+    "photo object URL revocation",
+    "existing design and authoritative catalogue data"
+  ],
+  "sourceCi": "pending at source preparation",
+  "package": "pending owner delivery",
+  "realBrowserBfcacheVerified": false,
+  "physicalMobileVerified": false,
+  "humanAccepted": false,
+  "crm06Closed": false,
+  "sharedRuntimeWritesByCrm": 0,
+  "credentialAttempts": 0,
+  "realMessages": 0,
+  "paidAiCalls": 0,
+  "liveDeployed": false,
+  "mainMerged": false
+}

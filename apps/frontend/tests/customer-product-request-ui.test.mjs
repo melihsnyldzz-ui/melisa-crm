@@ -24,5 +24,6 @@ test('customer entry remains a lazy independent route and core controls use auth
   assert.match(main,/React\.lazy\(\(\) => import\("\.\/customerProductRequest\/CustomerProductRequestPage\.jsx"\)\)/);assert.match(main,/return <App \/>/);
   for(const label of ['Ürün adı veya kodu','Listeye ekle','Seçtiklerimi incele','Talebi gönder','Kataloğa dön','Talebiniz alındı'])assert(page.includes(label));
   assert.match(page,/IntersectionObserver/);assert.match(page,/controller\?\.toggle\(product\)/);assert.match(page,/controller\?\.submit\(\)/);assert.match(page,/controller\?\.edit\(items\.filter/);
+  assert.match(page,/createCustomerRequestLifecycle\(\{target:window/);assert.match(page,/controllerRef\.current=controller;if\(controller\)setSearch\(''\);setPhotoLoader/);assert.match(page,/lifecycleRef\.current\?\.close\(\)/);assert.match(page,/lifecycle\.dispose\(\)/);
   assert.match(css,/grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);assert.match(css,/body\.customer-product-request-body/);assert.doesNotMatch(page,/M-101|M-102|0–2|1000|FedEx|wa\.me|sendMessage|submitOrder|localStorage|liveApi/);
 });
