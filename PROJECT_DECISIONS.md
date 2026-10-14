@@ -1,5 +1,19 @@
 # CRM karar merkezi
 
+### CRM-DEC-015 — 15 Ekim 2026 — Geniş izole TEST yetkisi ve sonuç odaklı yürütme
+
+**Kaynak:** kullanıcının 15 Ekim doğrudan talimatı; [CRM PR3 yorumu6179459282](https://github.com/melihsnyldzz-ui/melisa-crm/pull/3#issuecomment-6179459282) ve [ERP PR23 yorumu6179460000](https://github.com/melihsnyldzz-ui/melisa-erp-v2/pull/23#issuecomment-6179460000) okundu. Yorumlar İstanbul saatinde 15 Ekim kararını taşır. CRM-DEC-014 ve 14 Ekim çalışma sözleşmesi yalnız aşağıdaki yürütme/yetki noktalarında güncellenir; 55 ana ID/21 ortak sıra/25 CRM alt ID, özgün bitiş şartları ve önceki kabuller korunur. Yeni plan, pano, Goal veya tamamlanma sayısı oluşturulmaz.
+
+**Koşullu TEST yetkisi:** yalnız kimliği/yalıtımı kanıtlı DB02 veya ayrı izole TEST kopyası ve kanonik yetkili feature dalında geliştirme/refactor, hedefli test, sentetik veri/test talebi, mevcut normal rollerle gerekli dedicated TEST hesabı hazırlığı, sahipli TEST kurulum/restart/iyileştirme, sınırlı rollback/önce-sonra koruma ve commit/push/PR/teknik denetim için yeni rutin onay veya “devam” beklenmez. İşlem öncesi mevcut hedef/owner/koruma/rollback kilitleri uygulanır. Değişmez geçmiş, eski kabul örnekleri ve TEST125 korunur. ERP ortak DB02/runtime/native/config/store/servisin tek yazarı; CRM kaynak/UI/okuma-kabul sahibidir. Shared gerçek hesap reseti veya rol yükseltme yetkisi değildir.
+
+**CRM06:** kurulu b298 ve kalan normal müşteri → tek kalıcı talep → atanmış personel → reopen/mobil özgün hedefi korunur. CUA protected-credential transport UNSUPPORTED gerçek engeldir; aynı reader/import/login araştırması, shell/clipboard/HTTP sır köprüsü veya token/JWT/cookie injection tekrarlanmaz. Belgelenmiş güvenli giriş bileşeni yoksa çözüldü gösterilmez. Bağımsız API/iş kuralı/teknik açıklar tamamlanır, son normal ekran/fiziksel mobil kabulü hazırlanır. Yalnız gereken son kabul için ilgili personelin kendi mevcut yetkili hesabıyla yapacağı kısa akış istenebilir; parola veya secret sohbetten istenmez. Eski rutin tekrar giriş yasağı bu son insan kabulünü yasaklamaz. Teknik kanıt insan kabulü yerine geçirilmez.
+
+**ERP09 paralel teknik hazırlık istisnası:** CRM06 normal GUI/insan kabulü dış araç nedeniyle beklerken ERP sahibi, CRM06 bağımlılığını geciktirmeden ve shared runtime'ı bozmadan ERP09 bağımsız kod/offline/izole sentetik TEST hazırlığı yapabilir; kendi mevcut STATUS kaydında belirtir. ERP09'un işlevsel/insan kapanışı, gerçek satış veya CRM06 bitmeden başka ana başlığı kapatma yetkisi değildir. CRM kendi odağını ERP09'a taşımaz.
+
+**Değişmeyen sınırlar:** LIVE/Vega/gerçek T1 yazısı, gerçek ticari belge/tahsilat/stok etkisi, gerçek müşteri mesajı, ücretli API/servis, main merge/tag/yayın, toplu reset/restore, fiziksel cihaz veya mevcut kayıtları silme, auth kaldırma/yetki yükseltme, üretim parolası sıfırlama, retli yöntemi başka kanal/ajan/modelle aşma ve eski sistemi kapatma ayrıca açık onay olmadan yapılmaz. Sırlar/ham müşteri verisi GitHub, sohbet ve düz metin kayda girmez. Kaynak/CI, kurulu paket, teknik doğrulama ve insan kabulü ayrı tutulur; her ana iş çalışan ve kapsamı kanıtlı sonuçla kapanır.
+
+**Engel raporu:** son doğrulanmış çalışan sürüm, yapılamayan tek hareket/araç kanıtı, bağımsız en değerli tamamlanabilir halka ve tek son personel kabul hareketi belirtilir. Hazır yetkili adımda çalışmaya devam edilir; oturum durduğunda arka planda çalışma iddia edilmez. Ana sahipler ve alt ajan yönetimi korunur.
+
 ### CRM-DEC-014 — 13 Ekim 2026 — Ana teslim devamı ve ortak sıra
 
 Kullanıcı CRM duraklamasını kaldırdı ve kalanları birlikte bitirme talimatı verdi. Mevcut 55 sabit ana başlık/21 ortak sıra kullanılır; CRM ilk **sıra2/CRM06 ürün talebi** ardından kendi ilk yapılabilir bağımsız kalemiyle sürer. Kabul edilmiş işler tekrarlanmaz. CRM'nin 25 sabit alt ID'si ve insan kabulleri korunur. Kaynak/paket/test hazırlığı runtime/cihaz/insan kabulü değildir.

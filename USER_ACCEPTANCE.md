@@ -1,4 +1,14 @@
-## 14 Ekim — NEWTEST aktivasyonu, kabul bekliyor
+## CRM-UA11 — 15 Ekim — son normal ekran ve fiziksel mobil kabulü
+
+**BEKLİYOR; kişi/tarih/sonuç verilmedi.** CRM-DEC-015 kapsamında yalnız bu son kabul ilgili personelin kendi mevcut yetkili hesabıyla yapılır; şifre/secret sohbetten istenmez. TEST ADMIN normal personel kabulü değildir. Son kurulu [TEST](http://127.0.0.1:62700/): CRM sourceb2985d2295c022848c769ea5f494012c1eb3fa00 / manifest7b44, ERP/native7a41 / DB02/copye16b/T1false (14 Ekim owner kurulum kanıtı). BFCache düzeltmesi source/teknik doğrulama ve owner kurulumu sonrasında bu alan güncellenir; hazır paket gibi sunulmaz. Eski K01/K02/K03 medya/ürün/fiyat kabulleri tekrar istenmez.
+
+1. Yetkili normal yönetici aynı izinli7733 TEST konuşmasının **Ürün talepleri** bölümünden yeni müşteri kataloğunu açar. Link/fragment/kimlik bilgisi public kanıta taşınmaz; WhatsApp mesajı gönderilmez.
+2. Müşteri akışını fiziksel telefonda aç: gerçek8023 ve101 ürünlerini bul, seç/adet değiştir/çıkar/yeniden ekle; sayfayı yenile ve başka sayfadan Geri dön. Kaynak ürün/fotoğraf ve kaydedilmiş son adetler korunmalı; olmayan fiyat/yaş/MOQ uydurulmaz.
+3. **Talebi gönder** sonrası aynı başarı kaydını sayfayı yeniden açınca gör. Aynı talep kimliği/ürün/adet korunmalı; bu ürün ilgisidir, ERP satış/stok/fiş/ödeme değildir.
+4. Normal atanmış personel kendi hesabıyla aynı konuşmanın **Ürün talepleri** panelinde aynı ürün/adet kaydını açıp yeniden açılışta görür. Mevcut yanlış-personel403 teknik kanıtı REUSE; gerçek personel hesabına yeni yetki verilmez.
+5. Kabulü kişi/tarih/masaüstü+fizikseltelefon/sonuç ve kurulu source ile kaydet. ERP sahibi oluşan tek kaydın kalıcılık/çift kayıt/no-sale readback'ini bağımsız tamamlar. Sır/ham müşteri verisi paylaşılmaz. Hata olursa yalnız adım ve hata yazılır; otomatik test insan kabulü yerine geçmez.
+
+## Önceki checkpoint — 14 Ekim — NEWTEST aktivasyonu, kabul bekliyor
 
 **BEKLİYOR**. KalıcıCRMtalep/state kesinti sonrası öncekihashlerle korunmuş; newCRM5b6/ERP-native7a41 runtime kimliği teknik doğrulandı. Personel/mobil/insan veya yeniMANUALGUI taslak kabulü henüz yok. MevcutIABhata sayfasındaki browsersecuritypolicy engeli için kullanıcıdan yalnız normal62700HTTPsekmesini açması istendi; parola istenmedi ve alternatif yol denenmedi. Hazırlanan tek sentetikUSD/qty1draft gerçekUIquote/version→separateGET→refresh kapsamıdır; normalview-onlyactor writerPASSsayılmaz. AynıE02/öncekiUA kayıtları,25/12/13/0 korunur. [Kapsam ve kanıt](docs/evidence/crm/2026-10-14-power-recovery/README.md).
 

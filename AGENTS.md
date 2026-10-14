@@ -1,8 +1,16 @@
 # Melisa CRM — etkin çalışma talimatları
 
-## Kalıcı kullanıcı çalışma sözleşmesi — 14 Ekim 2026
+## Kalıcı kullanıcı çalışma sözleşmesi — 15 Ekim 2026
 
-**Sürüm: MELISA-WORKING-AGREEMENT-2026-10-14-v1.** Kaynak: kullanıcının 11, 13 ve 14 Ekim doğrudan kararları; CRM-DEC-011/013/014 ve ERP-DEC-047. Sistem ve araç güvenliği sınırları korunur. Bu dosya sohbet/özet/model değişiminde başvurulacak kalıcı repo talimatıdır; aktif turda değiştirilirse açıkça yeniden okunur. Sadece dosya yazımı mevcut model/ayarın kendiliğinden değiştiği kanıtı değildir.
+**Sürüm: MELISA-WORKING-AGREEMENT-2026-10-15-v2.** Kaynak: kullanıcının 11, 13, 14 ve 15 Ekim doğrudan kararları; CRM-DEC-011/013/014/015 ve karşı projenin kaynaklı 15 Ekim kararı. Önceki v1 yalnız aşağıdaki açık istisnalarla güncellenir. Sistem ve araç güvenliği sınırları korunur. Bu dosya sohbet/özet/model değişiminde başvurulacak kalıcı repo talimatıdır; aktif turda değiştirilirse açıkça yeniden okunur. Sadece dosya yazımı mevcut model/ayarın kendiliğinden değiştiği kanıtı değildir.
+
+### 15 Ekim — geniş izole TEST yetkisi / CRM-DEC-015
+
+[CRM PR3 kararı](https://github.com/melihsnyldzz-ui/melisa-crm/pull/3#issuecomment-6179459282) ve [ERP PR23 kararı](https://github.com/melihsnyldzz-ui/melisa-erp-v2/pull/23#issuecomment-6179460000) okundu; tam kaynak/kapsam PROJECT_DECISIONS.md içindedir. Kimliği/yalıtımı kanıtlı DB02 veya ayrı TEST kopyasında yetkili feature geliştirme/refactor, hedefli test/sentetik talep/veri, mevcut korumalarla dedicated normal TEST kimliği, sahipli kurulum/restart/hata düzeltme/sınırlı rollback/koruma ve GitHub teslimi rutin yeniden onay veya “devam” beklemeden yürür. Mevcut owner/koruma/rollback kilitleri uygulanır; shared DB02/runtime/config/native/store/servis tek yazarı ERP kalır. CRM kendi kaynak/UI/okuma-kabul halkasını sahiplenir; yetki sahipliği genişletmez.
+
+CRM06 ana hedefi ve kabul edilmiş kapsam korunur. Giriş engeline tekrar koşma; aynı unsupported reader/import/login yolu, process/clipboard/HTTP secret köprüsü veya JWT/cookie injection yok. Bağımsız API/iş kuralı/teknik halkaları tamamla. Yalnız gereken son normal ekran/fiziksel mobil kabulü için ilgili personelin kendi mevcut yetkili hesabıyla yapacağı kısa akışı hazırla ve iste; parola/secret isteme. Teknik hazırlık veya API sonucu normal ekran/insan PASS değildir. Aşağıdaki rutin tekrar giriş istememe kuralı bu hazırlanmış son personel kabulünü yasaklamaz.
+
+**Önceki “CRM06 kapanmadan ERP09 yok” kuralının dar istisnası:** GUI/insan kabulü dış araç nedeniyle beklerken ERP sahibi, shared ortamı bozmadan ve CRM06 önceliğini geciktirmeden bağımsız ERP09 kod/offline/izole sentetik TEST hazırlığını kendi mevcut STATUS kaydında paralel yürütebilir. CRM06 veya ERP09 ana kapanışı, gerçek satış yazısı ve CRM'nin bağımsız başka ana başlığa atlaması yetkisi değildir. LIVE/Vega/gerçek T1/ticari kayıt, müşteri mesajı, ücretli servis, main merge/tag/yayın, toplu reset/restore, cihaz/kayıt silme, auth/yetki zayıflatma, üretim parolası ve araç reddini dolanma sınırları korunur. Önceki kesin ERP09 cümleleri bu istisnayla okunur.
 
 **Durum: ana teslim devam ediyor. Tek odak CRM06 — Katalog ve müşteri ürün talebi (K01/K02/K03).** Önceki duraklatma, sıradaki bağımsız/kırmızı işe otomatik geçme, varsayılan ana ajan medium ve tarihsel 7733 gerçek gönderim hükümleri güncel değildir; Git geçmişinde korunur. Aşağıdaki sözleşme bunları supersede eder. Eski belge/runtime satırlarını güncel talimat veya gönderim yetkisi sayma.
 
