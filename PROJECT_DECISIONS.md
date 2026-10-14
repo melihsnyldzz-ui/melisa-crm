@@ -1,5 +1,26 @@
 # CRM karar merkezi
 
+### CRM-DEC-016 — 15 Ekim 2026 — Onaylı ana çalışma sözleşmesi
+
+**Sözleşme:** MELISA-WORKING-AGREEMENT-2026-10-15-v3; karşı proje ERP-DEC-058. **Kaynak:** [ERP CRM Görüntüleme Sorgusu](https://chatgpt.com/c/6acf870f-84b4-83eb-9449-8add81e3946e) sohbetindeki “Cevaplar geldikten sonra nasıl olucak?” yanıtı (`3b25c471-618a-442c-b452-e2aa137fbd1e`) ve kullanıcının “şimdi bu son mesajını bizim tek gerçeğimiz gibi çok önemli olucak şekilde kaydet” kararı. Kullanıcı bu kayıt görevinde ilgili yanıtın tam metnini doğrudan paylaşıp teyit etti; erişilemeyen referans kodundan içerik tahmin edilmedi. Bu yeni karar yalnız ana çalışma düzeninin kalıcı kaydıdır; CRM-DEC-015 kapsamındaki TEST yetkisini veya mevcut işletme kapsamını değiştirmez. Çelişen eski rutin yeniden görev/onay bekleme yorumu bu düzenle supersede edilir; eski karar metinleri, kabuller ve güvenlik sınırları korunur. Şirket geneli iş ve güvenlik ilkeleri için mevcut [Melisa OS](https://github.com/melihsnyldzz-ui/melisa-os) referansı sürer.
+
+1. **Başlangıç:** ERP ve CRM ana ajanlarının ilk cevapları planlama sohbetinde birlikte değerlendirilir; doğru görev, yetki ve birbirinin işine karışmayan sahiplik kontrol edilir. Kullanıcının ilk cevapları paylaşması bir başlangıç değerlendirmesidir; sürekli teknik rapor taşıma veya her rutin iş için yeniden izin kapısı değildir.
+2. **Yürütme:** Ana ajanlar mevcut bitiş planından işleri seçip kendi alt ajanlarına dağıtır. Kod, hedefli test, izinli TEST kurulumu ve GitHub kaydı ana ajanların işidir. Çalışma oturumu sürdükçe kullanıcıdan veya ChatGPT'den rutin yeni talimat/`devam` beklenmez. ERP ortak ortamın tek yazarı, CRM normal müşteri/personel/mobil akışının sahibidir. Projeler arası devir mevcut kayıt/PR kanıtından doğrulanır; sohbetler kendiliğinden haberleşiyor sayılmaz.
+3. **Bağımsız denetim:** Kullanıcı istediğinde ChatGPT GitHub değişikliklerini, gerçek testleri ve kurulum kanıtlarını inceler; çalışan sonuç arar. Denetim rapor hazırlanmış olmasına veya GitHub gönderimine bakılarak kabul vermez ve hazır yetkili çalışmayı bekleten yeni kapı oluşturmaz.
+4. **Kapanış ve devam:** CRM06 bütün özgün şartlarıyla gerçekten bitip gereken kullanıcı kabulü alındığında kapanır. ERP09'un bağımsız hazırlığı CRM-DEC-015 kapsamıyla bu sırada sürebilir. Sonrasında mevcut bitiş planındaki hazır ve onaylı işler sırayla ilerler. sabit55/ortak21/25 CRM alt ID, özgün işletme kapsamı ve kabul edilmiş işler korunur; ikinci takip sistemi/Goal kurulmaz, kapsam küçültülerek kapanış sayısı artırılmaz.
+
+| Durum | Kullanıcının rolü |
+| --- | --- |
+| Kod yazılıyor, test yapılıyor | Rutin işlem gerekmez; ajanlar yürütür. |
+| GitHub'a değişiklik gönderildi | İsterse bağımsız denetim isteyebilir; gönderim gerçek kabul değildir. |
+| Ajan aynı teknik engelde takıldı | Somut engel bildirilir; çözüm veya alternatif çalışma değerlendirilir. Bağımsız yetkili işler sürer, aynı başarısız yol tekrarlanmaz. |
+| Gerçek kullanıcı kabulü hazır | Kullanıcı veya ilgili personel hazırlanmış kısa normal akışı dener. |
+| Canlıya geçiş hazır | Son kararı kullanıcı verir; ayrıca açık onay gerekir. |
+
+**Oturum ve denetim sınırı:** Codex oturumu durduğunda sonsuza kadar kendiliğinden çalışmaz. Gerektiğinde kayıtlı yerden yeniden başlatılır; AGENTS ve CRM_STATUS.md içindeki tek etkin Sıradaki iş okunur, işler baştan anlatılmaz veya eski kabuller tekrarlanmaz. ChatGPT mesajlar arasında GitHub'ı otomatik izlemez. Bu karar yeni otomasyon kurmaz, açık başka oturumun bu talimatı okuduğunu kanıtlamaz. Teknik test/kurulum/GitHub teslimi ve insan kabulü ayrı kalır. TEST erişimi/parola/korumalı oturum kuralları ve LIVE/Vega/T1/main/gerçek ticari kayıt/gerçek müşteri mesajı/ücretli servis/eski sistemi kapatma sınırları aynen sürer.
+
+**Denetim ve amaç:** Kısa KULLANICI RAPORU, anlamlı teslim veya gerçek insan gerektiren engelde verilir. Denetçi sonucu yalnız **🟢 Devam etsinler — 🟡 Şu somut engeli çözelim — 🔴 Yanlış yönde ilerliyorlar, düzeltelim** yönlerinden biriyle somutlaştırır. Hedef çalışan ERP ve CRM'yi tamamlayıp Melisa Baby personeline teslim etmektir. Uygulama talimatı AGENTS'tadır; teknik kaldığı yer CRM_STATUS.md, insan sonucu USER_ACCEPTANCE, tam kapsam mevcut finish planında kalır.
+
 ### CRM-DEC-015 — 15 Ekim 2026 — Geniş izole TEST yetkisi ve sonuç odaklı yürütme
 
 **Kaynak:** kullanıcının 15 Ekim doğrudan talimatı; [CRM PR3 yorumu6179459282](https://github.com/melihsnyldzz-ui/melisa-crm/pull/3#issuecomment-6179459282) ve [ERP PR23 yorumu6179460000](https://github.com/melihsnyldzz-ui/melisa-erp-v2/pull/23#issuecomment-6179460000) okundu. Yorumlar İstanbul saatinde 15 Ekim kararını taşır. CRM-DEC-014 ve 14 Ekim çalışma sözleşmesi yalnız aşağıdaki yürütme/yetki noktalarında güncellenir; 55 ana ID/21 ortak sıra/25 CRM alt ID, özgün bitiş şartları ve önceki kabuller korunur. Yeni plan, pano, Goal veya tamamlanma sayısı oluşturulmaz.
