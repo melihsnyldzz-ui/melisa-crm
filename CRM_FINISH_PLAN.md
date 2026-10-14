@@ -1,3 +1,7 @@
+## 14 Ekim — erişim kararına uygun düzeltme
+
+CRM-DEC-011 / ERP-DEC-047 kullanıcıdan parola veya tekrar manuel TEST girişi istemeyi yasaklar. Gönderilen yeni manuel giriş sorusu geri çekildi; kullanıcıdan işlem beklenmiyor. Bağlı HTTP ekranı açıktır. Kalan tek erişim/kurulum engeli mevcut crm-patron/agent2 için desteklenen korumalı normal giriş tesliminin bulunmamasıdır; TEST ADMIN, view-only/prova personel veya iptal edilmiş Semih yardımcısı yerine geçirilmez. Bounded CRM runtime credential/dpapi dosya-adı araması yalnız diğer personel ve eski Semih kayıtlarını buldu; değerleri okunmadı/decrypt edilmedi. Korumalı issuer teslimi doğrulanmadan normal müşteri/personel/mobil kabulü ilerletilemedi. Reset/rol/allowlist genişletme ve yeni giriş denemesi yok; CRM06 açık kalır.
+
 ## 14 Ekim 13:51 — bağlı normal HTTP ekranı açıldı; yönetici girişi tamamlanmadı
 
 Kullanıcı “bu sefer senin tarayıcında açtım” sonrası bağlıIAB62700 gerçekCRM ekranı gözlendi; aşağıdaki error-protocol engeli artık tarihsel. MevcutTESTADMIN ile7733/SemihŞ konuşması açıldı. Gerçekroller girişformunun önceden dolu alanları değerleri okunmadan birkez gönderildi; “Kullanıcı adı veya parola hatalı” yanıtı geldi. Retry/reset/rol/grant/allowlist/proofauthority aktarımı yok. Normalissuer erişimi henüz başarılı değil; kullanıcı/personel/mobilCRM06 kabulü açık. [Güncel GUI checkpoint'i](docs/evidence/crm/2026-10-14-crm06-closure/README.md).
