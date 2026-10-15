@@ -174,3 +174,85 @@ test('busy and mutation guards still reject duplicate grant creation',async()=>{
     response.resolve(success(grant(1)));tree=await h.settle();assert(link(tree));assert.equal(issueButton(tree).props.disabled,false);assert.equal(copied(tree),false);
   },{issueResponse:()=>response.promise});
 });
+
+test('same-grant overlap: late first rejection cannot replace the latest copy success',async()=>{
+  await fixture(async h=>{
+    h.commit();await h.settle();await h.issue();const first=h.copy(),latest=h.copy();assert.equal(first.value,latest.value);
+    latest.resolve();let tree=await h.settle();assert(copied(tree));assert.equal(alert(tree),null);
+    first.reject(new Error('Synthetic first-copy failure'));tree=await h.settle();assert(copied(tree));assert.equal(alert(tree),null);
+  });
+});
+
+test('same-grant overlap: late first success cannot replace the latest copy failure',async()=>{
+  await fixture(async h=>{
+    h.commit();await h.settle();await h.issue();const first=h.copy(),latest=h.copy();
+    latest.reject(new Error('Synthetic latest-copy failure'));let tree=await h.settle();assert.equal(copied(tree),false);assert.match(text(alert(tree)),/kopyalayamadık/);const message=text(alert(tree));
+    first.resolve();tree=await h.settle();assert.equal(copied(tree),false);assert.equal(text(alert(tree)),message);
+  });
+});
+
+test('same-grant overlap: double click before render still accepts only the latest outcome',async()=>{
+  await fixture(async h=>{
+    h.commit();await h.settle();await h.issue();const button=copyButton(h.commit());button.props.onClick();button.props.onClick();
+    assert.equal(h.copies.length,2);const [first,latest]=h.copies;assert.equal(first.value,latest.value);
+    latest.resolve();let tree=await h.settle();assert(copied(tree));first.reject(new Error('Synthetic earlier click failure'));
+    tree=await h.settle();assert(copied(tree));assert.equal(alert(tree),null);assert.equal(h.calls.filter(call=>call.options.method==='POST').length,1);
+  });
+});
+
+for(const outcome of ['resolve','reject'])test(`same-grant overlap: old ${outcome} stays silent while the latest attempt is pending`,async()=>{
+  await fixture(async h=>{
+    h.commit();await h.settle();await h.issue();const first=h.copy(),latest=h.copy();first[outcome](new Error('Synthetic superseded-copy result'));
+    let tree=await h.settle();assert.equal(copied(tree),false);assert.equal(alert(tree),null);
+    latest.resolve();tree=await h.settle();assert(copied(tree));assert.equal(alert(tree),null);
+  });
+});
+
+test('same-grant overlap: a pending new attempt does not display an earlier successful result',async()=>{
+  await fixture(async h=>{
+    h.commit();await h.settle();await h.issue();h.copy().resolve();let tree=await h.settle();assert(copied(tree));
+    const latest=h.copy();tree=h.commit();assert.equal(copied(tree),false);assert.equal(alert(tree),null);
+    latest.resolve();tree=await h.settle();assert(copied(tree));assert.equal(alert(tree),null);
+  });
+});
+
+test('same-grant overlap: explicit retry recovers the latest failure while the first copy stays pending',async()=>{
+  await fixture(async h=>{
+    h.commit();await h.settle();await h.issue();const first=h.copy(),second=h.copy();second.reject(new Error('Synthetic second-copy failure'));
+    let tree=await h.settle();assert(alert(tree));const retry=h.copy();tree=h.commit();assert.equal(copied(tree),false);assert.equal(alert(tree),null);
+    retry.resolve();tree=await h.settle();assert(copied(tree));first.reject(new Error('Synthetic oldest-copy failure'));
+    tree=await h.settle();assert(copied(tree));assert.equal(alert(tree),null);assert.equal(h.copies.length,3);
+  });
+});
+
+test('same-grant overlap: refresh invalidates both pending attempts and allows a fresh explicit copy',async()=>{
+  await fixture(async h=>{
+    h.commit();await h.settle();await h.issue();const first=h.copy(),latest=h.copy();find(h.commit(),node=>node.type==='button'&&text(node)==='Yenile').props.onClick();h.commit();await h.settle();
+    latest.resolve();first.reject(new Error('Synthetic pre-refresh failure'));let tree=await h.settle();assert.equal(link(tree),null);assert.equal(alert(tree),null);
+    tree=await h.issue();assert.equal(copied(tree),false);h.copy().resolve();tree=await h.settle();assert(copied(tree));assert.equal(alert(tree),null);
+  });
+});
+
+test('same-grant overlap: a replacement grant keeps its own failure despite both old outcomes',async()=>{
+  await fixture(async h=>{
+    h.commit();await h.settle();const oldLink=link(await h.issue()).props.href,first=h.copy(),latest=h.copy();let tree=await h.issue();assert.notEqual(link(tree).props.href,oldLink);
+    h.copy().reject(new Error('Synthetic new-grant failure'));tree=await h.settle();const message=text(alert(tree));assert(message);
+    latest.resolve();first.reject(new Error('Synthetic old-grant failure'));tree=await h.settle();assert.equal(copied(tree),false);assert.equal(text(alert(tree)),message);
+  });
+});
+
+for(const change of ['token context','assignment remount'])test(`same-grant overlap: ${change} isolates two old pending outcomes`,async()=>{
+  await fixture(async h=>{
+    h.commit();await h.settle();await h.issue();const first=h.copy(),latest=h.copy();
+    if(change==='token context')h.state.liveKey='synthetic-new-copy-context';else h.state.selected={...h.state.selected,assignedUserId:3};
+    h.commit();await h.settle();await h.issue();h.copy().resolve();let tree=await h.settle();assert(copied(tree));
+    first.resolve();latest.reject(new Error('Synthetic old-context failure'));tree=await h.settle();assert(copied(tree));assert.equal(alert(tree),null);assert.equal(h.lateWrites(),0);assert.equal(h.expired.length,0);
+  });
+});
+
+test('same-grant overlap: unmount ignores both old outcomes without state writes',async()=>{
+  await fixture(async h=>{
+    h.commit();await h.settle();await h.issue();const first=h.copy(),latest=h.copy();h.dispose();latest.resolve();first.reject(new Error('Synthetic unmounted-copy failure'));await tick();
+    assert.equal(h.lateWrites(),0);assert.equal(h.expired.length,0);
+  });
+});
