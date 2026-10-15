@@ -6,8 +6,9 @@ import {createCustomerRequestLifecycle} from './lifecycle.js';
 import {consumeCapability,clearCustomerStorage,customerStorage,quantity} from './model.js';
 import './customerProductRequest.css';
 
-let initialCapability;
-function openingCapability(){if(initialCapability===undefined)initialCapability=consumeCapability({location:window.location,history:window.history});return initialCapability;}
+// Read without consuming the fragment during render: StrictMode may repeat the
+// initializer, including when browser storage is unavailable. The effect consumes it.
+function openingCapability(){return consumeCapability({location:window.location,storage:window.location.hash?null:customerStorage()});}
 
 export function ProductRequestPhoto({product,loadPhoto,compact=false}) {
   const element=useRef(null);const [source,setSource]=useState(''),[failed,setFailed]=useState(false);
@@ -21,12 +22,30 @@ function QuantityInput({item,disabled,onChange}) {
   return <label className="request-quantity">Adet<input aria-label={`${item.stockCode} adet`} type="number" inputMode="numeric" min="1" max="9999" step="1" value={value} disabled={disabled} onChange={event=>setValue(event.target.value)} onBlur={commit} onKeyDown={event=>{if(event.key==='Enter'){event.preventDefault();event.currentTarget.blur();}}}/>{error?<span role="alert">{error}</span>:null}</label>;
 }
 export default function CustomerProductRequestPage() {
-  const [capability]=useState(openingCapability),[view,setView]=useState({status:capability?'loading':'missing',session:null,products:[],busy:false,listBusy:false,error:'',step:'catalog'}),[search,setSearch]=useState('');
-  const controllerRef=useRef(null),lifecycleRef=useRef(null);const [photoLoader,setPhotoLoader]=useState(()=>()=>Promise.reject(Error('Not ready')));
+  const [capability,setCapability]=useState(openingCapability),[view,setView]=useState({status:capability?'loading':'missing',session:null,products:[],busy:false,listBusy:false,error:'',step:'catalog'}),[search,setSearch]=useState('');
+  const [linkRevision,setLinkRevision]=useState(0);
+  const capabilityRef=useRef(capability),controllerRef=useRef(null),lifecycleRef=useRef(null);const [photoLoader,setPhotoLoader]=useState(()=>()=>Promise.reject(Error('Not ready')));
   useEffect(()=>{document.body.classList.add('customer-product-request-body');return()=>document.body.classList.remove('customer-product-request-body');},[]);
-  useEffect(()=>{if(!capability)return;const lifecycle=createCustomerRequestLifecycle({target:window,createController:onChange=>createRequestController({api:createCustomerRequestApi(capability),storage:customerStorage(),onChange}),onChange:setView,onController:controller=>{controllerRef.current=controller;if(controller)setSearch('');setPhotoLoader(()=>controller?controller.photo:()=>Promise.reject(Error('Not ready')));}});lifecycleRef.current=lifecycle;return()=>{lifecycle.dispose();lifecycleRef.current=null;controllerRef.current=null;};},[capability]);
+  useEffect(()=>{
+    const changeLink=()=>{
+      // replaceState consumes the fragment without emitting its own hashchange;
+      // an already queued native event may arrive after that consumption.
+      if(!window.location.hash)return;
+      const next=consumeCapability({location:window.location,history:window.history});
+      if(next===capabilityRef.current)return;
+      capabilityRef.current=next;
+      lifecycleRef.current?.dispose();lifecycleRef.current=null;controllerRef.current=null;
+      setPhotoLoader(()=>()=>Promise.reject(Error('Not ready')));setSearch('');
+      setView({status:next?'loading':'missing',session:null,products:[],meta:null,busy:false,listBusy:false,error:'',uncertain:false,step:'catalog'});
+      setCapability(next);setLinkRevision(value=>value+1);
+    };
+    window.addEventListener('hashchange',changeLink);
+    if(window.location.hash)changeLink();
+    return()=>window.removeEventListener('hashchange',changeLink);
+  },[]);
+  useEffect(()=>{if(!capability||capabilityRef.current!==capability)return;const lifecycle=createCustomerRequestLifecycle({target:window,createController:onChange=>createRequestController({api:createCustomerRequestApi(capability),storage:customerStorage(),onChange}),onChange:setView,onController:controller=>{controllerRef.current=controller;if(controller)setSearch('');setPhotoLoader(()=>controller?controller.photo:()=>Promise.reject(Error('Not ready')));}});lifecycleRef.current=lifecycle;return()=>{lifecycle.dispose();lifecycleRef.current=null;controllerRef.current=null;};},[capability,linkRevision]);
   const controller=controllerRef.current,session=view.session,items=session?.draft.items||[],selected=new Set(items.map(item=>item.productId)),locked=view.busy||view.uncertain||Boolean(session?.request);
-  const close=()=>{lifecycleRef.current?.close();clearCustomerStorage();initialCapability='';setView({status:'closed',session:null,products:[],busy:false,error:''});};
+  const close=()=>{lifecycleRef.current?.close();clearCustomerStorage();capabilityRef.current='';setCapability('');setView({status:'closed',session:null,products:[],busy:false,error:''});};
   const updateQuantity=(id,value)=>void controller?.edit(items.map(item=>({productId:item.productId,quantity:item.productId===id?value:item.quantity})));
   const formSubmit=event=>{event.preventDefault();void controller?.search({...view.filters,search,page:1});};
   const filter=(key,value)=>void controller?.search({...view.filters,search,[key]:value,page:1});
