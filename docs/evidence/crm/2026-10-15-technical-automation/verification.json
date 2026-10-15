@@ -656,7 +656,15 @@
         "reason": "The ERP09 isolated synthetic rehearsal session is no longer accessible and its closing result is not yet verified. The owner is reading the existing fixed-identifier record before any further write; CRM installation waits for that ambiguity to be resolved.",
         "crmSharedWrites": 0,
         "crmGuiOrAuthFlow": 0,
-        "noAcceptedTestsOrCiRepeated": true
+        "noAcceptedTestsOrCiRepeated": true,
+        "resolution": {
+          "observedAt": "2026-10-15T06:28:55Z",
+          "source": "Explicit authorised ERP owner thread handoff",
+          "state": "REHEARSAL_CLOSED_INSTALLATION_PREPARATION",
+          "ownerReported": true,
+          "crmSqlRehearsalRepeated": false,
+          "detail": "ERP owner closed the fixed-identifier rehearsal; finalization did not commit and only its own draft was canceled with zero business effects. Existing bb896 installation is being prepared under sole owner control; no final activation receipt has yet been received."
+        }
       }
     },
     "package": {
@@ -685,6 +693,294 @@
       "activationVerifiedByCrm": false,
       "priorPackagesAndRollbackPreserved": true,
       "db01BuildFallbackChanged": false
+    }
+  },
+  "secondScheduledDevelopmentRun": {
+    "heartbeatAt": "2026-10-15T06:25:55.220Z",
+    "heartbeatAtIstanbul": "2026-10-15T09:25:55.220+03:00",
+    "firstClockObservedAt": "2026-10-15T06:28:55Z",
+    "automationId": "crm-2-saatlik-eri-im-denemesi",
+    "nativeRunId": null,
+    "nativeRunIdAvailable": false,
+    "canonicalRoot": "C:/Sirket/CRM/melisa-crm",
+    "originFetch": "https://github.com/melihsnyldzz-ui/melisa-crm.git",
+    "originPush": "https://github.com/melihsnyldzz-ui/melisa-crm.git",
+    "branch": "codex/crm-agents-on-completion-20261003",
+    "initialHead": "ac1465c3df8f01e9b81f6f6b56232a2452350740",
+    "initialClean": true,
+    "existingWorktrees": 8,
+    "newAgentsOrWorktreesCreated": 0,
+    "recordsRead": [
+      "AGENTS.md",
+      "PROJECT_DECISIONS.md CRM-DEC-018/017 and 15 October v3",
+      "CRM_STATUS.md single active next step",
+      "CRM_FINISH_PLAN.md",
+      "USER_ACCEPTANCE.md"
+    ],
+    "prerequisiteCheck": {
+      "oneInvocation": true,
+      "status": "CHECK_REQUIRED",
+      "exitCode": 1,
+      "changed": false,
+      "bothMainIds": "CRM06",
+      "runtimeAndNormalRole": "REUSE",
+      "normalUi": "PROOF_BLOCKED",
+      "wholeClosureGranted": false,
+      "acceptedTestsRepeated": false
+    },
+    "catalogReadAndMutation": {
+      "source": "07f1182a7f54e70bd0a395fbca464dfb6be684c4",
+      "mainId": "CRM06",
+      "finishIds": [
+        "U01",
+        "M01",
+        "C02"
+      ],
+      "files": [
+        "apps/frontend/src/customerProductRequest/controller.js",
+        "apps/frontend/tests/customer-product-request-concurrent-read.test.mjs"
+      ],
+      "problem": "A non-authorisation catalog-list error cleared busy and introduced uncertainty while a draft write or submit was still pending. Separately, an older same-context read denial could be hidden behind a newer successful read.",
+      "fix": "Non-authorisation read failure changes only listBusy/error. Same-active-epoch 401/403/410 closes the context independently of read sequence; stale ordinary errors and old/disposed epochs remain excluded.",
+      "initialRegression": {
+        "tests": 9,
+        "passed": 5,
+        "failed": 4
+      },
+      "firstReadOnlyErrorFix": {
+        "tests": 9,
+        "passed": 9,
+        "failed": 0
+      },
+      "addedStaleDenialRegression": {
+        "tests": 13,
+        "passed": 10,
+        "failed": 3
+      },
+      "finalTargeted": {
+        "tests": 13,
+        "passed": 13,
+        "failed": 0,
+        "skipped": 0
+      },
+      "command": "node --import ./tests/offline-test-guard.mjs --test apps/frontend/tests/customer-product-request-concurrent-read.test.mjs",
+      "harness": "Actual controller and request API with injected deferred fetch/Response and RAM operationStore. No real network, account, provider, SQL or customer write.",
+      "reviewer": "/root/az_independent_reviewer",
+      "reviewOpenP1P2": 0,
+      "authorityChecksRemoved": false,
+      "pendingOperationIdentityPreserved": true,
+      "oldSuccessfulTestsManuallyRepeated": false,
+      "exactCi": [
+        {
+          "id": 38693403035,
+          "event": "pull_request",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 38693398217,
+          "event": "push",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 38693403083,
+          "workflow": "AI Sales Agent - Offline",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    },
+    "staffAssignmentContext": {
+      "source": "957f98773695874ea3d101b7eb4816f9ea080880",
+      "mainId": "CRM06",
+      "finishIds": [
+        "C01",
+        "C02",
+        "U01",
+        "M01"
+      ],
+      "files": [
+        "apps/frontend/src/App.jsx",
+        "apps/frontend/tests/customer-product-request-staff-assignment.test.mjs"
+      ],
+      "problem": "Changing the assigned staff member in place left the prior staff request records, customer catalog link and pending issue/list callbacks attached to the same panel.",
+      "fix": "The existing staff panel key also includes the verified assignedUserId. Reassignment uses the existing unmount abort/mounted guards; unchanged assignment preserves the current panel. Existing role and crm.manage conditions are unchanged.",
+      "initialRegression": {
+        "tests": 6,
+        "passed": 2,
+        "failed": 4
+      },
+      "finalTargeted": {
+        "tests": 6,
+        "passed": 6,
+        "failed": 0,
+        "skipped": 0
+      },
+      "harness": "Exact production App staff JSX produces its real React element.key; transformed production Staff component, actual API and fake fetch run through controlled hook/key reconciliation. No full App, ReactDOM, browser, photograph rendering, clipboard, real account or network.",
+      "initialHarnessServiceWait": "An initial esbuild service build did not complete; only owned test node/esbuild processes were stopped. This was not counted as PASS. The final harness uses bounded entry-only transformSync.",
+      "reviewer": "/root/az_independent_reviewer",
+      "reviewOpenP1P2": 0,
+      "existingStaffComponentChanged": false,
+      "normalPersonnelIssuerAdded": false,
+      "oldSuccessfulTestsManuallyRepeated": false,
+      "exactCi": [
+        {
+          "id": 38693616257,
+          "event": "pull_request",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 38693610774,
+          "event": "push",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 38693616302,
+          "workflow": "AI Sales Agent - Offline",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ],
+      "reproductionCommand": "node --import ./tests/offline-test-guard.mjs --test --test-timeout=15000 apps/frontend/tests/customer-product-request-staff-assignment.test.mjs"
+    },
+    "delivery": {
+      "sourceCommits": [
+        "07f1182a7f54e70bd0a395fbca464dfb6be684c4",
+        "957f98773695874ea3d101b7eb4816f9ea080880"
+      ],
+      "finalSource": "957f98773695874ea3d101b7eb4816f9ea080880",
+      "targetedTests": 19,
+      "targetedPassed": 19,
+      "independentReviewsOpenP1P2": 0,
+      "sameRunNextIndependentWorkObserved": true,
+      "existingAgentsReused": [
+        "/root/audit_source_explorer",
+        "/root/assigned_staff_auth_tests",
+        "/root/backend_test_runtime",
+        "/root/az_independent_reviewer"
+      ],
+      "newAgentsCreated": 0,
+      "existingPr": "https://github.com/melihsnyldzz-ui/melisa-crm/pull/3",
+      "packagePrepared": true,
+      "sourceBatchFrozen": true,
+      "ownerHandoffSent": true,
+      "installed": false,
+      "finalSourceCi": "success",
+      "ownerHandoffBoundary": "Next inactive source batch only. Do not interrupt the existing sole-owner recovery/bb896 transition or replace its frozen package."
+    },
+    "package": {
+      "source": "957f98773695874ea3d101b7eb4816f9ea080880",
+      "sourceTree": "746b77c55c7e671599eb025377c5d01948699476",
+      "packageRoot": "C:/Sirket/CRM/releases/crm-shared-test-957f98773695874ea3d101b7eb4816f9ea080880",
+      "manifestSha256": "a93d2cdd14eafcb021091d98294c41d5e60d31bbc5842d31447f091a843a18af",
+      "indexSha256": "8cdf8904557755900d98769df26f6edcd6efa929bc400970b073b48e4d2d1ddd",
+      "sourceFiles": 185,
+      "payloadFiles": 2291,
+      "payloadBytes": 23935427,
+      "nodeVersion": "v24.15.0",
+      "platform": "win32",
+      "arch": "x64",
+      "dependencyInstall": "npm-ci-offline-ignore-scripts",
+      "isolatedPreparation": true,
+      "cleanCheckout": true,
+      "oneExistingBuilderInvocation": true,
+      "freshViteBuild": true,
+      "sealedManifestPayloadAndGitSourceVerifiedByBuilder": true,
+      "gatewayLockSha256": "c487dc65e3a107f5235408fad3523c8242a4c01b62c7475154ad4ae41a627b96",
+      "frontendLockSha256": "9064a36a0c86464db93cc261ffedbc92a87ea2092315e207301ca8a8aa6d4d24",
+      "gatewayAuthorityModuleHashesMatchedToInstalledBaseline": 10,
+      "wholeApplicationByteIdentical": false,
+      "ownerHandoffSent": true,
+      "activationVerifiedByCrm": false,
+      "priorBb896FrozenPackageAndAllRollbackPreserved": true,
+      "db01BuildFallbackChanged": false
+    },
+    "acceptance": {
+      "normalGui": "GUI DENENMEDİ",
+      "physicalPhone": false,
+      "actualWindowsRebootOrLogon": false,
+      "humanAccepted": false,
+      "existingUserResponse": "Henuz denemedim",
+      "finishCounts": {
+        "total": 25,
+        "complete": 12,
+        "partial": 13,
+        "red": 0
+      }
+    },
+    "boundaries": {
+      "crmSharedDbRuntimeConfigStoreOrServiceWrites": 0,
+      "crmLoginAttempts": 0,
+      "realCustomerMessages": 0,
+      "paidApiCalls": 0,
+      "liveOrVegaWrites": 0,
+      "mainMergeOrTag": false,
+      "priorBb896InstallationBatchChanged": false
+    },
+    "lastVerifiedInstalledRuntimeAtStart": {
+      "crmSource": "5bcd5ad136ff7ca35d623d436b8724cc491641be",
+      "supervisorSource": "455243d4f56b6a252d98cc638e0c3707acaf78da",
+      "erpSource": "7a41f6492273dd1ec0bcb086f820be5575372be8",
+      "database": "MELISA_ERP_CRM_SHARED_TEST_20261009_02",
+      "copyId": "e16b70f0-4057-428b-9abc-6bbcaf35fe82",
+      "actualT1": false,
+      "sourceCheckoutIsDeployment": false,
+      "verifiedAt": "2026-10-15T01:05:49.353Z",
+      "notFreshHealthProof": true
+    },
+    "currentRuntimeIncident": {
+      "ownerReportObservedAt": "2026-10-15T06:42:02Z",
+      "source": "Explicit authorised ERP owner thread handoff",
+      "reportedByOwnerOnly": true,
+      "directLiveHealthRetestByCrm": false,
+      "state": "EXISTING_TEST_DEGRADED_BB896_NOT_ACTIVATED",
+      "previousSupervisorSource": "455243d4f56b6a252d98cc638e0c3707acaf78da",
+      "previousSettingsSha256": "7182b8bab998851978c76f54b72fd6349d366e9f1497cb2e2b824ac86a4c4443",
+      "ownerReportedFailureIstanbulApproximate": "2026-10-15T09:23:00+03:00",
+      "causeObserved": "crmNativeOrder startup ETIMEOUT after10000ms, then process disappeared and OBSERVATION_QUARANTINED",
+      "exactUnderlyingCause": "UNCONFIRMED",
+      "ownerReportedRemainingProcesses": [
+        "ERP native",
+        "ERP API",
+        "Hub"
+      ],
+      "ownerReportedAbsentCrmPorts": 4,
+      "strictInspectMutated": false,
+      "newBb896RestartPerformed": false,
+      "newSource957f987Activated": false,
+      "recoveryOwner": "ERP sole shared runtime owner",
+      "recoveryState": "Known-partial exact owner/failure/heartbeat pinned cleanup-and-new-start protocol under independent review",
+      "crmRecoveryWrites": 0,
+      "guiAndHumanAcceptanceBlocked": true,
+      "priorAcceptedEvidenceIsNotCurrentAvailabilityProof": true,
+      "ownerReportedCoreStartedIstanbulApproximate": "2026-10-15T09:16:00+03:00",
+      "prerequisiteContextUpdated": {
+        "oldRuntime": "supervisor455243d-erp7a41-crm5bcd-20261015T010549353Z",
+        "currentRuntime": "supervisor455243d-erp7a41-crm5bcd-degraded-owner-20261015T0623Z",
+        "runtimeHealth": "blocked",
+        "normalRoleHistoricalEvidencePreserved": true,
+        "normalRoleRequiresNewOwnerReceiptMapping": true,
+        "notAnAuthRetest": true
+      }
+    },
+    "prerequisiteRecheckAfterRuntimeIncident": {
+      "reason": "The sole ERP owner reported an actual degraded TEST runtime; the previous healthy runtime fingerprint must not be reused as current health.",
+      "oneInvocationAfterContextChanged": true,
+      "status": "CHECK_REQUIRED",
+      "exitCode": 1,
+      "changed": true,
+      "cacheSaved": true,
+      "bothMainIds": "CRM06",
+      "crmRuntimeHealth": "PROOF_BLOCKED",
+      "crmNormalRole": "CONTEXT_CHANGED",
+      "crmNormalUi": "PROOF_BLOCKED",
+      "erpNormalUi": "PROOF_BLOCKED",
+      "wholeClosureGranted": false,
+      "repeatAcceptedTests": false,
+      "applicationOrAuthAcceptanceRepeated": false
     }
   }
 }
