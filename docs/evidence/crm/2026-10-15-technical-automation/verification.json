@@ -2478,5 +2478,226 @@
         "red": 0
       }
     }
+  },
+  "staffGrantCopyFeedback": {
+    "taskId": "DOT-CHAIN-20261015-04",
+    "date": "2026-10-16",
+    "mainId": "CRM06",
+    "finishId": "U01",
+    "humanAcceptanceId": "CRM-UA11",
+    "scope": "SOURCE/OFFLINE only; exact current catalog grant copy feedback",
+    "authoritativeHandoff": "https://github.com/melihsnyldzz-ui/melisa-erp-v2/pull/23#issuecomment-6190971998",
+    "observedHandoffState": "ACKED_RUNNING; single dispatch acknowledged by coordinator",
+    "initial": {
+      "sourceCommit": "bbe47e49d944aa943faceb3bc7475fefa8f37680",
+      "canonicalRootVerified": true,
+      "fetchAndPushOrigin": "https://github.com/melihsnyldzz-ui/melisa-crm.git",
+      "branch": "codex/crm-agents-on-completion-20261003",
+      "dirty": false,
+      "worktreesUnchanged": true
+    },
+    "sourceCommit": "1fb0f2574c6d5fe8d55fb07f5d0a0523f1e80955",
+    "files": [
+      "apps/frontend/src/customerProductRequest/StaffProductRequests.jsx",
+      "apps/frontend/tests/customer-product-request-staff-copy.test.mjs"
+    ],
+    "problem": "Copied state survived a replacement grant; delayed copy outcomes from grant A could alter feedback for grant B in the same conversation.",
+    "fix": [
+      "Reset copied only when a replacement grant is accepted.",
+      "Bind clipboard settlement to exact grant object, mounted panel and current context; invalidate immediately on refresh and new grant acceptance.",
+      "Successful retry clears only the copy error, preserving unrelated issue/list failures."
+    ],
+    "verification": {
+      "command": "node --test --test-timeout=15000 apps/frontend/tests/customer-product-request-staff-copy.test.mjs",
+      "guard": "tests/offline-test-guard.mjs",
+      "harness": "Actual Staff component, createStaffRequestApi and extracted actual App key/permission element; hook-render with mocked fetch/clipboard. Visual icons/photo entry only stubbed; no DOM/browser or actual OS clipboard.",
+      "before": {
+        "sourceCommit": "bbe47e49d944aa943faceb3bc7475fefa8f37680",
+        "tests": 13,
+        "pass": 5,
+        "fail": 8,
+        "exitCode": 1,
+        "durationMs": 989.7201
+      },
+      "reviewCorrection": {
+        "finding": "P2: unconditional success error reset hid a later failed issue operation.",
+        "before": {
+          "tests": 15,
+          "pass": 14,
+          "fail": 1,
+          "exitCode": 1,
+          "durationMs": 463.3921
+        },
+        "resolution": "Clear only copyFailureMessage; keep unrelated issue/list errors."
+      },
+      "final": {
+        "tests": 15,
+        "pass": 15,
+        "fail": 0,
+        "exitCode": 0,
+        "durationMs": 442.3927
+      },
+      "coverage": [
+        "copied A to fresh B; explicit B copy",
+        "late A success/rejection before or after B success/failure",
+        "B acceptance before next render",
+        "current B failure and successful retry",
+        "unrelated failed issue error preserved",
+        "token context, actual assignment-key remount and unmount",
+        "refresh invalidation, actual canIssue permission and busy/mutation guards"
+      ],
+      "independentReview": {
+        "reviewer": "existing source reviewer",
+        "scope": "read-only source and target test",
+        "openP1": 0,
+        "openP2": 0,
+        "testExecution": false
+      },
+      "ownedTemporaryFixturesRemoved": true,
+      "stagedSecretScan": "PASS; no leaks found",
+      "oldAcceptedSuitesManuallyRepeated": false,
+      "prerequisiteScript": {
+        "executed": false,
+        "reason": "Active source/offline handoff excludes external cache/config writes; historical preflight record preserved."
+      },
+      "metadataIntegrity": "PASS: previous evidence objects unchanged; one active status heading and one unchanged preflight block (LF/CRLF normalized).",
+      "metadataReview": {
+        "reviewer": "existing evidence reviewer",
+        "scope": "read-only final four-file diff",
+        "openP1": 0,
+        "openP2": 0,
+        "testOrGuiExecution": false
+      }
+    },
+    "unchanged": [
+      "Staff API and gateway",
+      "session/capability issuer and authorization/revoke behavior",
+      "role/assignment permissions and App key",
+      "dependency lockfiles",
+      "historical accepted tests and evidence"
+    ],
+    "delivery": {
+      "branch": "codex/crm-agents-on-completion-20261003",
+      "sourceCommit": "1fb0f2574c6d5fe8d55fb07f5d0a0523f1e80955",
+      "pr": "https://github.com/melihsnyldzz-ui/melisa-crm/pull/3",
+      "prState": "OPEN",
+      "base": "feature/crm-completion",
+      "exactSourceCiStatus": "SUCCESS",
+      "exactSourceCi": [
+        {
+          "conclusion": "success",
+          "databaseId": 38806790435,
+          "event": "pull_request",
+          "headSha": "1fb0f2574c6d5fe8d55fb07f5d0a0523f1e80955",
+          "status": "completed",
+          "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38806790435",
+          "workflowName": "AI Sales Agent - Offline",
+          "jobs": [
+            {
+              "name": "ai-sales-offline",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38806790435/job/116669594498"
+            }
+          ]
+        },
+        {
+          "conclusion": "success",
+          "databaseId": 38806790449,
+          "event": "pull_request",
+          "headSha": "1fb0f2574c6d5fe8d55fb07f5d0a0523f1e80955",
+          "status": "completed",
+          "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38806790449",
+          "workflowName": "CRM CI",
+          "jobs": [
+            {
+              "name": "quality-build-test",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38806790449/job/116669594809"
+            },
+            {
+              "name": "windows-startup-test",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38806790449/job/116669595097"
+            },
+            {
+              "name": "secret-scan",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38806790449/job/116669595100"
+            }
+          ]
+        },
+        {
+          "conclusion": "success",
+          "databaseId": 38806782360,
+          "event": "push",
+          "headSha": "1fb0f2574c6d5fe8d55fb07f5d0a0523f1e80955",
+          "status": "completed",
+          "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38806782360",
+          "workflowName": "CRM CI",
+          "jobs": [
+            {
+              "name": "quality-build-test",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38806782360/job/116669566854"
+            },
+            {
+              "name": "windows-startup-test",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38806782360/job/116669567407"
+            },
+            {
+              "name": "secret-scan",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38806782360/job/116669567429"
+            }
+          ]
+        }
+      ],
+      "metadataDelivery": "Separate docs-only follow-up with [skip ci]; source CI is not attributed to that metadata HEAD."
+    },
+    "runtime": {
+      "state": "SOURCE_UNAPPLIED",
+      "packagePrepared": false,
+      "installed": false,
+      "probed": false,
+      "modified": false
+    },
+    "acceptance": {
+      "normalGui": "GUI DENENMEDİ",
+      "realClipboard": "DENENMEDİ",
+      "physicalPhone": "BEKLİYOR",
+      "windowsRebootLogon": "BEKLİYOR",
+      "human": "BEKLİYOR",
+      "lastHumanReplyUnchanged": "Henüz denemedim.",
+      "crmCounts": {
+        "total": 25,
+        "green": 12,
+        "partial": 13,
+        "red": 0
+      },
+      "wholePlanTotal": 74
+    },
+    "boundaries": {
+      "sharedTestWrites": false,
+      "serviceRestart": false,
+      "configOrSqlWrites": false,
+      "newLoginOrCredentialAttempts": false,
+      "erpMessage": false,
+      "masterHandoffEdit": false,
+      "newPackage": false,
+      "liveOrVegaOrRealT1": false,
+      "customerOrProviderMessages": false,
+      "paidApi": false,
+      "mainMergeOrTag": false,
+      "newAgentGoalAutomationTracker": false,
+      "nextTask": "STOP; Dot selects the next task."
+    }
   }
 }
