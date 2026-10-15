@@ -648,7 +648,16 @@
         }
       ],
       "ownerHandoffSent": true,
-      "installationEvidence": "Awaiting sole ERP owner final actual activation/readback. installedRuntime above remains the last verified5bcd/455 checkpoint."
+      "installationEvidence": "Awaiting sole ERP owner final actual activation/readback. installedRuntime above remains the last verified5bcd/455 checkpoint.",
+      "ownerInstallationDependency": {
+        "observedAt": "2026-10-15T06:21:35Z",
+        "source": "Sole ERP owner latest thread status",
+        "state": "HOLD",
+        "reason": "The ERP09 isolated synthetic rehearsal session is no longer accessible and its closing result is not yet verified. The owner is reading the existing fixed-identifier record before any further write; CRM installation waits for that ambiguity to be resolved.",
+        "crmSharedWrites": 0,
+        "crmGuiOrAuthFlow": 0,
+        "noAcceptedTestsOrCiRepeated": true
+      }
     },
     "package": {
       "source": "bb8966c59a6cfbdc1cc83472cb331e48b720a173",
