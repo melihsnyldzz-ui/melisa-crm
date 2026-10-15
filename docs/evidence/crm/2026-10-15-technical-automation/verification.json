@@ -2929,5 +2929,204 @@
       "newAgentGoalAutomationTracker": false,
       "nextTask": "STOP after task05; Dot selects the next scope, no task06."
     }
+  },
+  "latestCopyFeedbackPackage": {
+    "taskId": "DOT-CHAIN-20261015-06",
+    "date": "2026-10-16",
+    "mainId": "CRM06",
+    "finishId": "R02",
+    "humanAcceptanceId": "CRM-UA11",
+    "scope": "Single inactive/offline immutable candidate; no activation",
+    "authoritativeHandoff": "https://github.com/melihsnyldzz-ui/melisa-erp-v2/pull/23#issuecomment-6190971998",
+    "initial": {
+      "checkoutHead": "46909d883dd134c98c143a23529907d3b7873c44",
+      "canonicalRootVerified": true,
+      "fetchAndPushOrigin": "https://github.com/melihsnyldzz-ui/melisa-crm.git",
+      "branch": "codex/crm-agents-on-completion-20261003",
+      "dirty": false,
+      "worktrees": 8,
+      "duplicateTask": false,
+      "existingSameSourcePackage": false,
+      "matchingStaging": false
+    },
+    "ack": "DOT-CHAIN-20261015-06: ALINDI",
+    "sourceTask": "DOT-CHAIN-20261015-05",
+    "sourceCommit": "a7243dedf9ca5d1ca1d5aa1cb3dffaee7c18a7e9",
+    "sourceTree": "96008f72aa44661b505fcd8ff44f864e65155fa3",
+    "preparation": {
+      "builder": "deploy/test-package.mjs",
+      "builderGitBlob": "2368679c40e412087d758370ec7f8f7ece54d950",
+      "method": "createTestPackage({commit:a7243dedf9ca5d1ca1d5aa1cb3dffaee7c18a7e9,isolatedPreparation:true})",
+      "existingBuilderInvocations": 1,
+      "startedAtUtc": "2026-10-15T21:28:35.544Z",
+      "completedAtUtc": "2026-10-15T21:29:51.161Z",
+      "completedAtIstanbul": "2026-10-16T00:29:51.161+03:00",
+      "checkoutOrBuilderChanged": false,
+      "metadataHeadUsedAsPackageSource": false,
+      "officialGitTreeAndBlobExport": true,
+      "offlineLockedIgnoreScriptsInstall": true,
+      "freshVite": true,
+      "secondBuild": false,
+      "sourceTestsOrCiRerun": false,
+      "newBranchWorktreeOrDependencyUpgrade": false,
+      "prerequisites": {
+        "diskCapacity": "PASS",
+        "releaseDestinationAbsent": true,
+        "ancestorRealpathLinkReparseChecks": "PASS",
+        "aclReadOnlyCheck": "PASS; existing rights, no ACL change",
+        "pinnedNodeNpm": "PASS",
+        "cachePrecheck": {
+          "readOnly": true,
+          "requiredUniqueTarballs": 224,
+          "verifiedTarballs": 224,
+          "verifiedBytes": 32658751,
+          "excludedOtherPlatformEntries": 50,
+          "missing": 0,
+          "networkUsed": false
+        },
+        "canonicalLocksUnchanged": true
+      },
+      "buildEnvironment": {
+        "sanitizedBy": "offlineBuildEnvironment",
+        "inheritedCredentialsDotenvAndViteInputs": false,
+        "inheritedNodeOptions": false,
+        "isolatedPreparation": true,
+        "existingBuildFallbackLiteralChanged": false,
+        "buildFallbackIsActualRuntimeDatabaseIdentity": false
+      },
+      "reproducibleProvenance": "Exact Git blobs, locked dependencies, pinned toolchain, sanitized environment and sealed payload recorded; no second build or independent bit-for-bit rebuild claim.",
+      "externalCacheWritingPreflightScriptExecuted": false
+    },
+    "package": {
+      "artifactRef": "crm-shared-test-a7243dedf9ca5d1ca1d5aa1cb3dffaee7c18a7e9",
+      "state": "READY_INACTIVE",
+      "manifestSha256": "82ec0b63849817b8d88fe74097a5a0820c118a78d631cf54cf649b90e1545236",
+      "manifestBytes": 475526,
+      "indexSha256": "6d67b7a335f490715e792a9940e9c1b97f745069cf4049fa5b1d4f597fa8a192",
+      "sourceFiles": 185,
+      "payloadFiles": 2291,
+      "payloadBytes": 23936372,
+      "sealedReadOnlyFiles": 2292,
+      "locks": {
+        "gateway": {
+          "path": "apps/gateway/package-lock.json",
+          "sha256": "c487dc65e3a107f5235408fad3523c8242a4c01b62c7475154ad4ae41a627b96"
+        },
+        "frontend": {
+          "path": "apps/frontend/package-lock.json",
+          "sha256": "9064a36a0c86464db93cc261ffedbc92a87ea2092315e207301ca8a8aa6d4d24"
+        }
+      },
+      "build": {
+        "viteCrmTest": true,
+        "isolatedPreparation": true,
+        "nodeVersion": "v24.15.0",
+        "platform": "win32",
+        "arch": "x64",
+        "dependencyInstall": "npm-ci-offline-ignore-scripts"
+      },
+      "toolchain": {
+        "nodeVersion": "v24.15.0",
+        "nodeExecutableSha256": "3331e1ffe19874215472217c5e94f5a0c6d8e18c4ac7111d3937aa0ad5e9b4a5",
+        "npmVersion": "11.12.1",
+        "npmCliSha256": "3ce7cba6f5128dd5f54c98b6a5036b0f850496878cc2e21044b675fe3c594e3e"
+      },
+      "entrypoints": {
+        "supervisor": "deploy/test-supervisor.mjs",
+        "server": "deploy/test-server.mjs"
+      },
+      "privateAbsoluteLocationPublished": false,
+      "blobPackageCommitted": false
+    },
+    "verification": {
+      "builderStagingAndFinalVerifyTestPackage": "PASS",
+      "manifestExportListMatchesExactGitTree": true,
+      "all185ActualSourceGitBlobsMatch": true,
+      "payloadManifestIndexLocksAndEntrypoints": "PASS",
+      "strictPublicByteAndPrivatePathGuards": "PASS via existing builder/verifier; no scanner rules changed",
+      "cleanCheckoutAfterPreparation": true,
+      "independentReview": {
+        "reviewer": "existing release inspector",
+        "verdict": "GO",
+        "openP1": 0,
+        "openP2": 0,
+        "readOnlyVerifyTestPackagePassed": true,
+        "exactGitExportAndBlobsPassed": true,
+        "all2292FilesReadOnly": true,
+        "reviewerBuiltInstalledWroteOrChmod": false
+      },
+      "tooling": {
+        "firstReadback": "Windows command length rejected before execution; no artifact mutation",
+        "completedReadback": "Short read-only query; 62 before/after snapshots compared in tool memory",
+        "secondBuild": false
+      },
+      "stagedSecretScan": "PASS; mandatory masked staged scan found no leaks. Final bytes scanned again immediately before docs commit.",
+      "metadataIntegrity": "PASS: historical evidence unchanged; one active status and one unchanged preflight block; no private operational path/config/callback in new public record.",
+      "metadataReview": {
+        "reviewer": "existing evidence reviewer",
+        "scope": "read-only four-file provenance/status/acceptance diff",
+        "openP1": 0,
+        "openP2": 0,
+        "testBuildGuiRuntimeExecution": false
+      }
+    },
+    "preservation": {
+      "oldPackageCount": 62,
+      "metadataFilesCompared": 124,
+      "manifestAndIndexBytesSizesMtimesModesEqual": true,
+      "publicSnapshotSha256": "c28e2f0ba92de1c7e1bf9f0c32309fb0e9031f3b320819a716eeb55e737e56e2",
+      "prior94f": {
+        "sourceCommit": "94f2a75322a3daa695d38010a6f2c8ef23f6c17b",
+        "manifestSha256": "16cb075a8734d56afd1f364999ab8f0707255be5c4a042a9c197ccf397eea556",
+        "indexSha256": "19624f5d0189c5750089b4c50779809f3a381e323ae59541daa5ee4c3efdf3a5"
+      },
+      "scope": "Manifest/index metadata only; not a fresh full old payload, runtime, rollback or accepted-use test.",
+      "oldPackagesModifiedOrRemoved": false,
+      "oldPayloadOrAcceptanceTestsRerun": false
+    },
+    "delivery": {
+      "branch": "codex/crm-agents-on-completion-20261003",
+      "pr": "https://github.com/melihsnyldzz-ui/melisa-crm/pull/3",
+      "prState": "OPEN",
+      "sourceCommit": "a7243dedf9ca5d1ca1d5aa1cb3dffaee7c18a7e9",
+      "sourceCi": "REUSE; exact a7243de PR38808525410/push38808515711/AIoffline38808525153 SUCCESS from task05",
+      "newSourceOrCiRequested": false,
+      "metadataDelivery": "Docs-only follow-up [skip ci]; prior source CI not attributed to metadata HEAD."
+    },
+    "runtime": {
+      "state": "SOURCE_UNAPPLIED",
+      "packagePrepared": true,
+      "installed": false,
+      "activated": false,
+      "probed": false,
+      "modified": false
+    },
+    "acceptance": {
+      "normalGui": "GUI DENENMEDİ",
+      "physicalPhone": "BEKLİYOR",
+      "windowsRebootLogon": "BEKLİYOR",
+      "human": "BEKLİYOR",
+      "lastHumanReplyUnchanged": "Henüz denemedim.",
+      "crmCounts": {
+        "total": 25,
+        "green": 12,
+        "partial": 13,
+        "red": 0
+      },
+      "wholePlanTotal": 74
+    },
+    "boundaries": {
+      "sharedTestSqlConfigDataWrites": false,
+      "serviceStartStopRestart": false,
+      "healthLoginCredentialRecoveryAttempt": false,
+      "erpMessage": false,
+      "masterHandoffEdit": false,
+      "liveVegaRealT1": false,
+      "customerProviderMessages": false,
+      "paidApi": false,
+      "mainMergeTagRelease": false,
+      "newAgentGoalAutomationTracker": false,
+      "nextTask": "STOP after task06; Dot selects next scope, no task07."
+    }
   }
 }
