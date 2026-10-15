@@ -2699,5 +2699,235 @@
       "newAgentGoalAutomationTracker": false,
       "nextTask": "STOP; Dot selects the next task."
     }
+  },
+  "sameGrantCopyAttempts": {
+    "taskId": "DOT-CHAIN-20261015-05",
+    "date": "2026-10-16",
+    "mainId": "CRM06",
+    "finishId": "U01",
+    "humanAcceptanceId": "CRM-UA11",
+    "scope": "SOURCE/OFFLINE only; latest copy attempt feedback on the same grant",
+    "authoritativeHandoff": "https://github.com/melihsnyldzz-ui/melisa-erp-v2/pull/23#issuecomment-6190971998",
+    "dispatch": {
+      "singleDispatch": true,
+      "duplicateEvidence": false,
+      "ack": "DOT-CHAIN-20261015-05: ALINDI",
+      "existingReviewersIdleBeforeDispatch": true
+    },
+    "initial": {
+      "sourceCommit": "e9c82e660bb84cf9a8c89362aba8abb9512aff05",
+      "canonicalRootVerified": true,
+      "fetchAndPushOrigin": "https://github.com/melihsnyldzz-ui/melisa-crm.git",
+      "branch": "codex/crm-agents-on-completion-20261003",
+      "dirty": false,
+      "worktreesUnchanged": true,
+      "dependencyLocksUnchanged": true
+    },
+    "sourceCommit": "a7243dedf9ca5d1ca1d5aa1cb3dffaee7c18a7e9",
+    "files": [
+      "apps/frontend/src/customerProductRequest/StaffProductRequests.jsx",
+      "apps/frontend/tests/customer-product-request-staff-copy.test.mjs"
+    ],
+    "productionDiff": {
+      "addedLines": 2,
+      "removedLines": 2
+    },
+    "problem": "Two in-flight copies for the same grant both passed the existing grant/context guard; an older result could replace a newer success or failure.",
+    "fix": {
+      "choice": "Latest attempt wins; multiple explicit copies remain possible without visual redesign.",
+      "behavior": [
+        "Each explicit copy stores a new local attempt identity before starting mocked/native clipboard work.",
+        "Settlement must match the latest attempt as well as existing mounted/context/exact-grant checks.",
+        "A new attempt clears only prior copy feedback; unrelated issue/list errors remain intact."
+      ],
+      "backendOrSecurityContractChanged": false
+    },
+    "verification": {
+      "guard": "tests/offline-test-guard.mjs",
+      "harness": "Existing actual Staff/createStaffRequestApi and actual App key/permission element; hook-render with synthetic fetch and deferred clipboard. No real OS clipboard/network/credential/grant.",
+      "before": {
+        "sourceCommit": "e9c82e660bb84cf9a8c89362aba8abb9512aff05",
+        "command": "node --test --test-timeout=15000 --test-name-pattern='same-grant overlap:' apps/frontend/tests/customer-product-request-staff-copy.test.mjs",
+        "newCases": 10,
+        "pass": 5,
+        "fail": 5,
+        "exitCode": 1,
+        "durationMs": 318.821
+      },
+      "after": {
+        "command": "node --test --test-timeout=15000 --test-name-pattern='same-grant overlap:|current B failure remains visible|a current A copy success cannot clear' apps/frontend/tests/customer-product-request-staff-copy.test.mjs",
+        "newCases": 12,
+        "affectedExistingCases": 2,
+        "total": 14,
+        "pass": 14,
+        "fail": 0,
+        "exitCode": 0,
+        "durationMs": 405.4453
+      },
+      "addedAfterInitialProof": "Two additional cases cover old resolve/reject while the latest attempt remains pending; no claim that all final 12 cases ran before the fix.",
+      "coverage": [
+        "old rejection after latest success",
+        "old success after latest failure",
+        "two clicks before render",
+        "old outcomes while latest attempt pending",
+        "pending result reset and explicit retry",
+        "overlap across refresh/new grant/token context/assignment remount/unmount",
+        "existing current retry and unrelated issue error regressions"
+      ],
+      "existing15CasesPreserved": true,
+      "wholeExisting15SuiteManuallyRepeated": false,
+      "previousAcceptanceReusedAsNewPass": false,
+      "independentReview": {
+        "reviewer": "existing source reviewer",
+        "scope": "read-only source and target tests",
+        "openP1": 0,
+        "openP2": 0,
+        "testBuildGuiRuntimeExecution": false
+      },
+      "ownedTemporaryFixturesRemoved": true,
+      "stagedSecretScan": "PASS; no leaks found",
+      "prerequisiteScript": {
+        "executed": false,
+        "reason": "Active source/offline handoff excludes external cache/config writes; historical preflight remains unchanged."
+      },
+      "metadataIntegrity": "PASS: previous evidence objects unchanged; one active status heading and one unchanged preflight block after LF/CRLF normalization.",
+      "metadataReview": {
+        "reviewer": "existing evidence reviewer",
+        "scope": "read-only final four-file diff",
+        "openP1": 0,
+        "openP2": 0,
+        "testBuildGuiRuntimeExecution": false
+      }
+    },
+    "unchanged": [
+      "Grant/context/refresh/unmount checks from task04",
+      "Unrelated issue/list error protection from task04",
+      "App assignment key and role permissions",
+      "Staff API, gateway and capability/session/revoke contracts",
+      "Dependency locks and earlier acceptance/evidence"
+    ],
+    "delivery": {
+      "branch": "codex/crm-agents-on-completion-20261003",
+      "sourceCommit": "a7243dedf9ca5d1ca1d5aa1cb3dffaee7c18a7e9",
+      "pr": "https://github.com/melihsnyldzz-ui/melisa-crm/pull/3",
+      "prState": "OPEN",
+      "base": "feature/crm-completion",
+      "exactSourceCiStatus": "SUCCESS",
+      "exactSourceCi": [
+        {
+          "conclusion": "success",
+          "databaseId": 38808525153,
+          "event": "pull_request",
+          "headSha": "a7243dedf9ca5d1ca1d5aa1cb3dffaee7c18a7e9",
+          "status": "completed",
+          "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38808525153",
+          "workflowName": "AI Sales Agent - Offline",
+          "jobs": [
+            {
+              "name": "ai-sales-offline",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38808525153/job/116675528217"
+            }
+          ]
+        },
+        {
+          "conclusion": "success",
+          "databaseId": 38808525410,
+          "event": "pull_request",
+          "headSha": "a7243dedf9ca5d1ca1d5aa1cb3dffaee7c18a7e9",
+          "status": "completed",
+          "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38808525410",
+          "workflowName": "CRM CI",
+          "jobs": [
+            {
+              "name": "secret-scan",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38808525410/job/116675529765"
+            },
+            {
+              "name": "windows-startup-test",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38808525410/job/116675530094"
+            },
+            {
+              "name": "quality-build-test",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38808525410/job/116675530126"
+            }
+          ]
+        },
+        {
+          "conclusion": "success",
+          "databaseId": 38808515711,
+          "event": "push",
+          "headSha": "a7243dedf9ca5d1ca1d5aa1cb3dffaee7c18a7e9",
+          "status": "completed",
+          "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38808515711",
+          "workflowName": "CRM CI",
+          "jobs": [
+            {
+              "name": "quality-build-test",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38808515711/job/116675498748"
+            },
+            {
+              "name": "windows-startup-test",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38808515711/job/116675499229"
+            },
+            {
+              "name": "secret-scan",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38808515711/job/116675499251"
+            }
+          ]
+        }
+      ],
+      "metadataDelivery": "Separate docs-only follow-up [skip ci]; source CI not attributed to metadata HEAD."
+    },
+    "runtime": {
+      "state": "SOURCE_UNAPPLIED",
+      "packagePrepared": false,
+      "installed": false,
+      "probed": false,
+      "modified": false
+    },
+    "acceptance": {
+      "normalGui": "GUI DENENMEDİ",
+      "realClipboard": "DENENMEDİ",
+      "physicalPhone": "BEKLİYOR",
+      "windowsRebootLogon": "BEKLİYOR",
+      "human": "BEKLİYOR",
+      "lastHumanReplyUnchanged": "Henüz denemedim.",
+      "crmCounts": {
+        "total": 25,
+        "green": 12,
+        "partial": 13,
+        "red": 0
+      },
+      "wholePlanTotal": 74
+    },
+    "boundaries": {
+      "sharedTestOrDataWrites": false,
+      "serviceRestart": false,
+      "configOrSqlWrites": false,
+      "newHealthLoginOrCredentialAttempts": false,
+      "erpMessage": false,
+      "masterHandoffEdit": false,
+      "newPackage": false,
+      "liveVegaRealT1": false,
+      "customerProviderMessages": false,
+      "paidApi": false,
+      "mainMergeTagRelease": false,
+      "newAgentGoalAutomationTracker": false,
+      "nextTask": "STOP after task05; Dot selects the next scope, no task06."
+    }
   }
 }
