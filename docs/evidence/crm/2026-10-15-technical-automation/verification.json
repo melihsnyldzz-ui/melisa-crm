@@ -126,14 +126,14 @@
     "gatewayLockSha256": "c487dc65e3a107f5235408fad3523c8242a4c01b62c7475154ad4ae41a627b96",
     "frontendLockSha256": "9064a36a0c86464db93cc261ffedbc92a87ea2092315e207301ca8a8aa6d4d24",
     "initialAttempt": "Existing builder completed once from a clean feature checkout; no repository change was made while the builder ran.",
-    "activated": null,
+    "activated": true,
     "ownerHandoffSent": true,
     "db01BuildFallbackChanged": false,
     "sourceBatchFrozen": true,
-    "installationState": "ERP owner reports actual final5bcd/supervisor5012 CORE6 transition, same DB02 and 37 preserved prior files, but simultaneous Hub task exited1 and Hub5234 is absent. Final source/settings/manifest/index/preservation and bounded recovery receipts remain pending CRM verification. da82/7fd is the prior verified checkpoint, not the current transitioning runtime.",
+    "installationState": "Installed final5bcd with supervisor455 receipt-wait. Pinned final owner readback and preservation byte hashes and whitelisted receipt metadata matched. Six CORE plus ERP/CRM/terminal Hub reachability verified by owner at the recorded time; GUI/physical mobile/reboot/human pending.",
     "priorCandidateFilesPreserved": true,
     "coreActivationReportedByOwner": true,
-    "activationVerifiedByCrm": false
+    "activationVerifiedByCrm": true
   },
   "acceptance": {
     "normalGui": "GUI DENENMEDİ",
@@ -253,14 +253,226 @@
     "sourceBatchRemainsFrozen": true,
     "newCrmAuthRequestSqlOrCustomerFlow": false,
     "realWindowsRebootOrLogon": false,
-    "humanAccepted": false
+    "humanAccepted": false,
+    "historicalCheckpoint": true,
+    "supersededBy": "installedRuntime"
   },
   "recordedPrerequisiteCheck": {
     "status": "CHECK_REQUIRED",
-    "changed": false,
-    "guiProofBlocked": true,
+    "exitCode": 1,
+    "changed": true,
+    "cacheSaved": true,
+    "afterFinalRuntimeMapping": true,
+    "mainIds": {
+      "ERP": "CRM06",
+      "CRM": "CRM06"
+    },
+    "runtimeHealth": "REUSE",
+    "normalRole": "REUSE",
+    "guiProof": "PROOF_BLOCKED",
+    "onlyNormalUiBlocked": true,
+    "recordInconsistency": false,
     "wholeClosureGranted": false,
     "repeatAcceptedTests": false,
-    "currentTransitionVerifiedByThisCheck": false
+    "currentTransitionVerifiedByThisCheck": false,
+    "scope": "Metadata prerequisite mapping only; not application, authenticated operation, GUI or human acceptance."
+  },
+  "installedRuntime": {
+    "observedAt": "2026-10-15T01:05:49.353Z",
+    "observedAtIstanbul": "2026-10-15T04:05:49.353+03:00",
+    "attribution": "ERP sole runtime owner performed the controlled two-task transition and readback. CRM checked exact final receipt/settings/supervisor-manifest byte hashes and whitelisted receipt metadata; no new live health/auth/API/SQL/restore acceptance was run.",
+    "ownerDelivery": "https://github.com/melihsnyldzz-ui/melisa-erp-v2/pull/23#issuecomment-6182089186",
+    "ownerDocumentationSource": "f5e2e9d908dacd96f30332615889a0e58f8f2f21",
+    "ownerReceipts": [
+      {
+        "name": "installed-readback.json",
+        "sha256": "4ff85ece9ad206ff64b4d24277ccb9ff4aedc0d7cbe33c2ffb6bb991ba6715d3",
+        "byteHashVerifiedByCrm": true
+      },
+      {
+        "name": "final-preservation.json",
+        "sha256": "8b0876edc1a40d55e211221f3036ec515d96d7346e46da14d6d11c8fa88a2afe",
+        "byteHashVerifiedByCrm": true
+      },
+      {
+        "name": "original-and-current-preservation-complete.json",
+        "sha256": "c0a4cfb1119286ba0323cfcef3be3148b9244f0fe51ddfb64a843602df13fea5",
+        "byteHashVerifiedByCrm": true
+      },
+      {
+        "name": "unchanged-authority-surface.json",
+        "sha256": "bc843ed5f7ce2974a8ed36fcee5b2592c977fd35d5a9960b560fc1d8c069bb25",
+        "byteHashVerifiedByCrm": true
+      }
+    ],
+    "installed": true,
+    "crmSource": "5bcd5ad136ff7ca35d623d436b8724cc491641be",
+    "crmManifest": "93cd90d678ca88bc8202a31f9461e678e448dfe927668f59b8644c0c708e6ce8",
+    "crmIndexSha256": "4915a7033d7753c442f2e89def90932e3d974c5fb281648b8cd79d33fc3ca03c",
+    "supervisorSource": "455243d4f56b6a252d98cc638e0c3707acaf78da",
+    "supervisorManifestSha256": "7256e6dc7149f91b19b32330915584f2e9f45beb44ae459fb81516d60dd6425d",
+    "supervisorManifestByteHashVerifiedByCrm": true,
+    "settingsSha256": "7182b8bab998851978c76f54b72fd6349d366e9f1497cb2e2b824ac86a4c4443",
+    "settingsByteHashVerifiedByCrm": true,
+    "actorRootOwnerReportedSha256": "125aaf6af46ee30723a93ce237063f342bae00c9a6d4dbed8afc70ceb3f9d252",
+    "actorRootDirectByteHashVerifiedByCrm": false,
+    "erpApplicationSource": "7a41f6492273dd1ec0bcb086f820be5575372be8",
+    "database": "MELISA_ERP_CRM_SHARED_TEST_20261009_02",
+    "copyId": "e16b70f0-4057-428b-9abc-6bbcaf35fe82",
+    "actualT1": false,
+    "coreProcessReceipts": [
+      {
+        "stage": "erpNative",
+        "pid": 18812,
+        "sourceCommit": "7a41f6492273dd1ec0bcb086f820be5575372be8",
+        "receiptAndObservedPidParentCreationCopyT1Matched": true
+      },
+      {
+        "stage": "erpApi",
+        "pid": 10132,
+        "sourceCommit": "7a41f6492273dd1ec0bcb086f820be5575372be8",
+        "receiptAndObservedPidParentCreationCopyT1Matched": true
+      },
+      {
+        "stage": "crmNativeOrder",
+        "pid": 46404,
+        "sourceCommit": "7a41f6492273dd1ec0bcb086f820be5575372be8",
+        "receiptAndObservedPidParentCreationCopyT1Matched": true
+      },
+      {
+        "stage": "crmCatalog",
+        "pid": 16244,
+        "sourceCommit": "5bcd5ad136ff7ca35d623d436b8724cc491641be",
+        "receiptAndObservedPidParentCreationCopyT1Matched": true
+      },
+      {
+        "stage": "crmOrders",
+        "pid": 46476,
+        "sourceCommit": "5bcd5ad136ff7ca35d623d436b8724cc491641be",
+        "receiptAndObservedPidParentCreationCopyT1Matched": true
+      },
+      {
+        "stage": "crmServer",
+        "pid": 46736,
+        "sourceCommit": "5bcd5ad136ff7ca35d623d436b8724cc491641be",
+        "receiptAndObservedPidParentCreationCopyT1Matched": true
+      }
+    ],
+    "heartbeat": {
+      "state": "running",
+      "supervisorPid": 17072,
+      "sourceCommit": "5bcd5ad136ff7ca35d623d436b8724cc491641be"
+    },
+    "hub": {
+      "pid": 46704,
+      "sourceCommit": "7a41f6492273dd1ec0bcb086f820be5575372be8",
+      "startedAt": "2026-10-15T01:04:27.6149581Z",
+      "port": 5234,
+      "services": {
+        "erp": "reachable",
+        "crm": "reachable",
+        "terminal": "reachable",
+        "training": "unknown",
+        "test125": "unreachable",
+        "live": "unknown"
+      }
+    },
+    "automaticHubCoordination": {
+      "passed": true,
+      "readyAt": "2026-10-15T01:04:13.225Z",
+      "hubPid": 46704,
+      "hubBornAfterPrerequisites": true,
+      "hubInitialAttempt": 0,
+      "manualHubStart": false,
+      "actualWindowsRebootOrLogon": false,
+      "barrierReceiptSha256": "67c238963afac563577d74ce27ba40f8a51ef7264f3aa4a630dc37c741b140f0",
+      "barrierDigestSource": "Embedded in hash-matched final readback; not independently rehashed by CRM"
+    },
+    "preservation": {
+      "observedAt": "2026-10-15T01:05:53.616Z",
+      "immutableBeforeFilesPreserved": 44,
+      "taskMetadataPreserved": true,
+      "currentActionsExact": true,
+      "twoTasksRunning": true,
+      "sqlAndTest125ProcessIdentitiesPreserved": true,
+      "rolesAndCredentialFilesUnchanged": true,
+      "applicationJournalsAndPriorRequestByteIdentical": true,
+      "newAuthOrInterestRequests": 0,
+      "freshStaffJournalPhysical": "READY",
+      "references": 15
+    },
+    "priorNormalRoleAndCustomerRequestEvidence": {
+      "oldSource": "da82fc6644c1d9dba0c10eaa861773534d43c288",
+      "newSource": "5bcd5ad136ff7ca35d623d436b8724cc491641be",
+      "unchangedModules": [
+        {
+          "path": "apps/gateway/src/routes/authRoutes.js",
+          "sha256": "56d81b44c8fbaa652b2144be56d3d1195000137eff37988305ff4c575b16bbe9"
+        },
+        {
+          "path": "apps/gateway/src/controllers/authController.js",
+          "sha256": "ff3d1743d8cb956bb02e1c0262f92769abf596818a50cb5b2bcfaf8c7ac4914b"
+        },
+        {
+          "path": "apps/gateway/src/middleware/auth.js",
+          "sha256": "b3d2dd1660f26482f111081901a56c4962d80e49c01c890d3c396b6b7520cda9"
+        },
+        {
+          "path": "apps/gateway/src/services/crmAuthService.js",
+          "sha256": "f4fffe649c504117fbe3c488f284cd15a76b73ce7d2ca1a47ee2db96d7254133"
+        },
+        {
+          "path": "apps/gateway/src/services/normalRefreshSession.mjs",
+          "sha256": "01d019ded9ecb17a27fef3d799eef785abf67e2db586a92e5e453e1f39ce69ef"
+        },
+        {
+          "path": "apps/gateway/src/services/assignedStaffRefreshSession.mjs",
+          "sha256": "994175d6020ff634f90f98a43cddc635f37427fc07461cc8b2eb3c75482d24be"
+        },
+        {
+          "path": "apps/gateway/src/services/customerRequestIssuerSession.mjs",
+          "sha256": "635386e51eef2ba9593c49ec8bbf892bb4d1d99ca12edcc80df934ec54aba736"
+        },
+        {
+          "path": "apps/gateway/src/services/customerProductRequest.mjs",
+          "sha256": "ef1c044e04bf6a312752c1fded9364af00af2b8fe57dadc2282460f5dc17efce"
+        },
+        {
+          "path": "apps/gateway/src/services/customerProductRequestIntegration.mjs",
+          "sha256": "3f3b498912daa6cef9f832b9d5a9145f6ccab1a497475f2625cfdbcc5bda8951"
+        },
+        {
+          "path": "apps/gateway/src/routes/customerProductRequestRoutes.mjs",
+          "sha256": "2d97e519a45068722f4eb651eab8d6506e4a9b744052375cf5c9aa0c049c36f6"
+        }
+      ],
+      "absentOptionalNotCounted": true,
+      "wholeApplicationByteIdentical": false,
+      "normalSendGuardChanged": true,
+      "normalSendRealTransportVerified": false,
+      "newAuthRequests": 0,
+      "newInterestRequests": 0,
+      "newBusinessSqlHashTests": 0,
+      "scope": "Only unchanged authority/session/customer-request modules plus preserved store bytes map prior normal-role, one-request, replay and bounded no-sale proof. The new application and normal-send transport are not reaccepted by this mapping."
+    },
+    "initial5012StartupHistory": {
+      "initialFailurePreserved": true,
+      "oneSupportedGuardedHubTaskRecovery": true,
+      "initialExactCause": "UNCONFIRMED",
+      "recovered5012BaseSettingsOwnerReportedSha256": "ee087bb416dbee7dfb66b3733c8ea529b51768566d2199d37a3e1478191447f3",
+      "latestGoodRollbackSeparateFromOriginal790": true
+    },
+    "sourceCiFromExistingOwnerEvidence": {
+      "supervisorSource": "455243d4f56b6a252d98cc638e0c3707acaf78da",
+      "prRun": 38662826807,
+      "pushRun": 38662821981,
+      "conclusion": "success",
+      "repeatedByCrm": false
+    },
+    "authenticatedOperationsVerified": false,
+    "normalGuiFirstLoginVerified": false,
+    "humanAccepted": false,
+    "commercialWrites": 0,
+    "controlledInstallationHoldReleased": true
   }
 }
