@@ -37,7 +37,8 @@ export function assertSalesProductCurrent(envelope, expected, now=Date.now()) {
   const row=envelope?.data, meta=envelope?.meta, fetched=Date.parse(meta?.fetchedAt);
   if(canonicalId(expected.id)){
     try{assertCanonicalMeta(meta);}catch{throw changed();}
-    const name=row?.productName??row?.safeCode??row?.stockCode;
+    const sourceName=row?.productName??row?.safeCode??row?.stockCode;
+    const name=typeof sourceName==='string'?sourceName.trim():null;
     const photoEligible=row?.photoStatus==='guarded-path'&&row.photo?.validationStatus==='CONFIRMED'&&row.photoPath===`/crm/catalog/products/${expected.id}/photo`;
     if(envelope.success!==true||row?.id!==expected.id||row.erpProductId!==expected.erpProductId||row.stockCode!==expected.stockCode||name!==expected.productName||row.revision!==expected.revision||row.salePrice!==expected.salePrice||row.currency!==expected.currency||row.priceExact!==expected.priceExact||(row.unit?.verified?row.unit.label:null)!==expected.unitLabel||photoEligible!==expected.photoEligible||row.hold?.blocked||row.status!=='active'||fetched>now+5000||now-fetched>SALES_CATALOG_MAX_AGE_MS)throw changed();
     return expected;
