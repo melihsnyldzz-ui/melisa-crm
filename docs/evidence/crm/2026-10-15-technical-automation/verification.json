@@ -555,7 +555,7 @@
         "U01",
         "M01"
       ],
-      "state": "Source committed and pushed; independent final delta review passed. Exact final-source CI and package preparation pending.",
+      "state": "Source committed and pushed; final independent review has no openP1/P2; exact final-source CI succeeded.",
       "firstFiveNewCasesBefore": {
         "failed": 5
       },
@@ -612,7 +612,7 @@
       ],
       "finalApplicationSource": "bb8966c59a6cfbdc1cc83472cb331e48b720a173",
       "pullRequest": "https://github.com/melihsnyldzz-ui/melisa-crm/pull/3",
-      "exactFinalSourceCiState": "PENDING",
+      "exactFinalSourceCiState": "SUCCESS",
       "targetedAfter": {
         "passed": 24,
         "failed": 0
@@ -625,20 +625,20 @@
       ],
       "sameRunNextIndependentWorkObserved": true,
       "sourceBatchFrozenForSinglePackage": true,
-      "packagePrepared": false,
+      "packagePrepared": true,
       "installed": false,
       "ci": [
         {
           "id": 38670744468,
           "event": "pull_request",
-          "status": "in_progress",
-          "conclusion": null
+          "status": "completed",
+          "conclusion": "success"
         },
         {
           "id": 38670739038,
           "event": "push",
-          "status": "in_progress",
-          "conclusion": null
+          "status": "completed",
+          "conclusion": "success"
         },
         {
           "id": 38670744580,
@@ -646,7 +646,36 @@
           "status": "completed",
           "conclusion": "success"
         }
-      ]
+      ],
+      "ownerHandoffSent": true,
+      "installationEvidence": "Awaiting sole ERP owner final actual activation/readback. installedRuntime above remains the last verified5bcd/455 checkpoint."
+    },
+    "package": {
+      "source": "bb8966c59a6cfbdc1cc83472cb331e48b720a173",
+      "sourceTree": "01e1ffd0101c4bb63c60d0e2fb0982c67f38ce92",
+      "packageRoot": "C:/Sirket/CRM/releases/crm-shared-test-bb8966c59a6cfbdc1cc83472cb331e48b720a173",
+      "manifestSha256": "6a9fe4f40c6e7b852ba62721a6f63dae1030321d9b9f46069405cbcd5d505d7c",
+      "indexSha256": "7ea43551750ead26b7bb166e6ccf35bd613e23a1ca888026352966d99cb289d1",
+      "sourceFiles": 185,
+      "payloadFiles": 2291,
+      "payloadBytes": 23935040,
+      "nodeVersion": "v24.15.0",
+      "platform": "win32",
+      "arch": "x64",
+      "dependencyInstall": "npm-ci-offline-ignore-scripts",
+      "isolatedPreparation": true,
+      "cleanCheckout": true,
+      "oneExistingBuilderInvocation": true,
+      "freshViteBuild": true,
+      "sealedManifestPayloadAndGitSourceVerifiedByBuilder": true,
+      "gatewayLockSha256": "c487dc65e3a107f5235408fad3523c8242a4c01b62c7475154ad4ae41a627b96",
+      "frontendLockSha256": "9064a36a0c86464db93cc261ffedbc92a87ea2092315e207301ca8a8aa6d4d24",
+      "gatewayAuthorityModuleHashesMatchedToInstalledBaseline": 10,
+      "wholeApplicationByteIdentical": false,
+      "ownerHandoffSent": true,
+      "activationVerifiedByCrm": false,
+      "priorPackagesAndRollbackPreserved": true,
+      "db01BuildFallbackChanged": false
     }
   }
 }
