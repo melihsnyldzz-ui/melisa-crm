@@ -2099,5 +2099,193 @@
       "newAgentsCreated": 0,
       "sourceBatchUnchanged": true
     }
+  },
+  "uncertainCatalogRecovery": {
+    "taskId": "DOT-CRM-CRM06-U01-UNCERTAIN-SEARCH-r1",
+    "mainId": "CRM06",
+    "finishId": "U01",
+    "humanAcceptanceId": "CRM-UA11",
+    "scope": "One frontend source/offline task; stop after delivery. Dot chooses any subsequent scope.",
+    "authoritativeHandoff": "https://github.com/melihsnyldzz-ui/melisa-erp-v2/pull/23#issuecomment-6190971998",
+    "handoffVersion": "DOT-PRIMARY-HANDOFF-20261015-v1",
+    "observedDispatchState": "ACKED_RUNNING",
+    "nativeTurnId": "01a13f90-7069-7761-bf9a-56de6b3f7130",
+    "ack": "DOT-CRM-CRM06-U01-UNCERTAIN-SEARCH-r1: ALINDI",
+    "ackVerifiedByCoordinator": true,
+    "ackMessageId": "msg_0de2626bf9ecb781016ad0c925f7dc87d2a2ca772ae39782a7",
+    "duplicateScopeCheck": {
+      "recentFiveNativeTurnsRead": true,
+      "priorTaskDeliveryFound": false,
+      "prior894QuantityTaskIsDistinct": true,
+      "repositoryRecordAndProductionNoticeChecked": true
+    },
+    "initial": {
+      "canonicalRoot": "C:/Sirket/CRM/melisa-crm",
+      "originFetch": "https://github.com/melihsnyldzz-ui/melisa-crm.git",
+      "originPush": "https://github.com/melihsnyldzz-ui/melisa-crm.git",
+      "branch": "codex/crm-agents-on-completion-20261003",
+      "head": "9a7bad35358d72c902bc8cc236d599678cd95a07",
+      "clean": true,
+      "worktrees": 8,
+      "erpMainThreadObserved": "idle/completed; ERP09 diagnostic task already delivered",
+      "otherVisibleSourceWritersObserved": false,
+      "existingFrontendAndReviewerInitiallyCompleted": true,
+      "recordsRead": [
+        "AGENTS.md",
+        "PROJECT_DECISIONS.md018/017/v3",
+        "DELIVERY_BOARD.md",
+        "CRM_STATUS.md active single step",
+        "CRM_FINISH_PLAN.md",
+        "USER_ACCEPTANCE.md"
+      ],
+      "schedulersPaused": "User decision and primary handoff record; no schedule changed by CRM",
+      "schedulerQueue": "UNKNOWN; not assumed empty"
+    },
+    "problem": "Failed draft edit leaves uncertainty. The actual Page search/filter/paging handlers trigger controller.search(), which clears error. The old error-only notice hid the only catalog recovery action while footer/selections stayed locked.",
+    "fix": "Only the ready-state Page notice condition now accepts error OR uncertainty; a human-readable fallback preserves the existing reconcile action when catalog reads clear error. The existing busy disabling and controller/operation/auth rules are untouched.",
+    "sourceCommit": "94f2a75322a3daa695d38010a6f2c8ef23f6c17b",
+    "files": [
+      "apps/frontend/src/customerProductRequest/CustomerProductRequestPage.jsx",
+      "apps/frontend/tests/customer-product-request-uncertain-search.test.mjs"
+    ],
+    "productionLinesChanged": 1,
+    "verification": {
+      "command": "node --test --test-timeout=15000 apps/frontend/tests/customer-product-request-uncertain-search.test.mjs",
+      "initialActualProductionRegression": {
+        "tests": 4,
+        "passed": 1,
+        "failed": 3,
+        "scope": "Initial fixture before the explicit enabled-state assertion was added."
+      },
+      "firstFixedResult": {
+        "tests": 4,
+        "passed": 4,
+        "failed": 0,
+        "skipped": 0
+      },
+      "strengthenedFinal": {
+        "tests": 4,
+        "passed": 4,
+        "failed": 0,
+        "skipped": 0,
+        "durationMs": 281,
+        "extraAssertion": "Recovery disabled equals Boolean(busy): false during listBusy-only and true during pending session readback.",
+        "productionRewrittenForAnotherOldBaselineRun": false
+      },
+      "covered": [
+        "Draft503 and409 uncertainty, actual Page pending search and failed filter, successful page2",
+        "Recovery remains visible and enabled with busyfalse/listBusytrue",
+        "Fresh session readback has busytrue/listBusyfalse and disables recovery",
+        "No edit/submit mock API call until authoritative session readback",
+        "Failed session readback preserves uncertainty after another successful list",
+        "Normal/busy, expired403 and submitted states do not expose false recovery"
+      ],
+      "harness": "Entry-only transformSync of the actual Page JSX with hook shim, actual lifecycle/controller/API normalization, RAM storage, injected fake fetch/Response and visual icon stubs. No ReactDOM/browser, physical device or human acceptance.",
+      "initialSilentFixture": "An initial icon-import fixture stalled. Only its owned test tree was stopped; that attempt was not counted as PASS. Final entry-only icon-stub target completed under the15000ms timeout.",
+      "fixtureCleanup": "Resolved absolute own apps/frontend workspace/.sites-runtime directory and uncertain-search prefix guards before removing only the owned temporary fixture.",
+      "independentReviewer": "/root/az_independent_reviewer",
+      "independentReadOnlySourceReviewOpenP1P2": 0,
+      "reviewerRanTests": false,
+      "previousAcceptedTestsManuallyRepeated": false
+    },
+    "unchanged": {
+      "controllerApiAndModelGitBlobsMatched": [
+        "apps/frontend/src/customerProductRequest/controller.js",
+        "apps/frontend/src/customerProductRequest/api.js",
+        "apps/frontend/src/customerProductRequest/model.js"
+      ],
+      "quantityInput894FunctionBytesMatched": true,
+      "reviewFooterAndPendingOperationIdentityUnchanged": true,
+      "backendAuthRolesAndBusinessRulesChanged": false
+    },
+    "delivery": {
+      "sourcePushed": true,
+      "sourceBatchFrozen": true,
+      "existingPr": "https://github.com/melihsnyldzz-ui/melisa-crm/pull/3",
+      "exactSourceCiState": "SUCCESS",
+      "exactCi": [
+        {
+          "id": 38737137795,
+          "workflow": "CRM CI",
+          "event": "pull_request",
+          "headSha": "94f2a75322a3daa695d38010a6f2c8ef23f6c17b",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38737137795"
+        },
+        {
+          "id": 38737130312,
+          "workflow": "CRM CI",
+          "event": "push",
+          "headSha": "94f2a75322a3daa695d38010a6f2c8ef23f6c17b",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38737130312"
+        },
+        {
+          "id": 38737137833,
+          "workflow": "AI Sales Agent - Offline",
+          "event": "pull_request",
+          "headSha": "94f2a75322a3daa695d38010a6f2c8ef23f6c17b",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38737137833"
+        }
+      ],
+      "packagePrepared": false,
+      "installedToTest": false,
+      "gui": "GUI DENENMEDİ",
+      "humanAccepted": false,
+      "existingAgentsReused": [
+        "/root/crm06_remaining_frontend",
+        "/root/az_independent_reviewer"
+      ],
+      "newAgentsCreated": 0,
+      "exactSourceCiObservedAt": "2026-10-15T12:48:02Z",
+      "sourceCiHeadAndWorkflowResultsReadByRoot": true,
+      "status": "TECH_DONE_SOURCE_OFFLINE; authoritative handoff closure remains with Dot",
+      "metadataReview": {
+        "state": "COMPLETE",
+        "agent": "/root/audit_evidence_reviewer",
+        "readOnly": true,
+        "openP1P2": 0,
+        "scope": "Four existing metadata files, exact94f sourceCI vs dated894 installed baseline, no package/installation, single active record/preflight, unchanged acceptance counts and stop-after-task boundary."
+      },
+      "docsOnlyCiRerunRequested": false
+    },
+    "runtime": {
+      "lastVerifiedInstalledSource": "89427492f27caf72c511a27262b55e73d782c407",
+      "lastVerifiedSupervisor": "cac08eaed0c4419550ecdaf6fdf4976252b83fa7",
+      "lastVerifiedObservedAt": "2026-10-15T10:32:13.068Z",
+      "freshRuntimeProbePerformed": false,
+      "newSourceIsDeployment": false,
+      "oldRuntimeAndRollbackReceiptsUnchanged": true
+    },
+    "acceptance": {
+      "normalGui": "GUI DENENMEDİ",
+      "physicalMobile": false,
+      "actualWindowsRebootOrLogon": false,
+      "humanAccepted": false,
+      "existingUserResponse": "Henüz denemedim",
+      "finishCounts": {
+        "total": 25,
+        "complete": 12,
+        "partial": 13,
+        "red": 0
+      }
+    },
+    "boundaries": {
+      "erpRepositoryWrites": 0,
+      "sharedDbSqlRuntimeConfigStoreServiceOrRestartWrites": 0,
+      "newTestOrCommercialDataWrites": 0,
+      "realProviderCustomerOrPaidApiCalls": 0,
+      "loginOrCredentialAttempts": 0,
+      "erpMessagesOrNewTasksSent": 0,
+      "mainMergeTagLiveOrVegaWrites": 0,
+      "automationOrNewTrackingSystemCreated": false,
+      "extraIndependentTaskStarted": false,
+      "cacheWritingPreflightScriptExecuted": false,
+      "preflightReason": "This specific handoff allows source/offline and existing evidence docs only; the usual preflight writes an out-of-repo runtime cache, so it was not executed in this task. Existing dated runtime/role/UI proof was not rerun or elevated."
+    }
   }
 }
