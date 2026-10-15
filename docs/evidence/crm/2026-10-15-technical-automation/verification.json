@@ -126,12 +126,14 @@
     "gatewayLockSha256": "c487dc65e3a107f5235408fad3523c8242a4c01b62c7475154ad4ae41a627b96",
     "frontendLockSha256": "9064a36a0c86464db93cc261ffedbc92a87ea2092315e207301ca8a8aa6d4d24",
     "initialAttempt": "Existing builder completed once from a clean feature checkout; no repository change was made while the builder ran.",
-    "activated": false,
+    "activated": null,
     "ownerHandoffSent": true,
     "db01BuildFallbackChanged": false,
     "sourceBatchFrozen": true,
-    "installationState": "Pending sole ERP owner installation and actual readback. Current installed baseline remains da82/7fd until a new verified receipt exists.",
-    "priorCandidateFilesPreserved": true
+    "installationState": "ERP owner reports actual final5bcd/supervisor5012 CORE6 transition, same DB02 and 37 preserved prior files, but simultaneous Hub task exited1 and Hub5234 is absent. Final source/settings/manifest/index/preservation and bounded recovery receipts remain pending CRM verification. da82/7fd is the prior verified checkpoint, not the current transitioning runtime.",
+    "priorCandidateFilesPreserved": true,
+    "coreActivationReportedByOwner": true,
+    "activationVerifiedByCrm": false
   },
   "acceptance": {
     "normalGui": "GUI DENENMEDİ",
@@ -232,5 +234,33 @@
       "failed": 0
     },
     "preparationAndInstalledAndHumanAcceptanceSeparate": true
+  },
+  "installationTransition": {
+    "recordedAtIstanbul": "2026-10-15T03:46:24+03:00",
+    "evidenceState": "ERP owner intermediate report; final byte-hash and identity receipts pending",
+    "crmSourceReported": "5bcd5ad136ff7ca35d623d436b8724cc491641be",
+    "supervisorSourcePrefixReported": "5012",
+    "coreProcessesRunningReported": 6,
+    "sameDb02Reported": true,
+    "priorFilesPreservedReported": 37,
+    "initialSimultaneousHubTaskExitCodeReported": 1,
+    "hubAvailableReported": false,
+    "fullInstallationHealthVerified": false,
+    "firstAttemptAutostartPassed": false,
+    "recoveryResult": "Pending bounded sole ERP owner investigation and supported guarded Hub-task recovery",
+    "finalReceiptVerifiedByCrm": false,
+    "previousVerifiedRuntimeIsHistoricalCheckpoint": true,
+    "sourceBatchRemainsFrozen": true,
+    "newCrmAuthRequestSqlOrCustomerFlow": false,
+    "realWindowsRebootOrLogon": false,
+    "humanAccepted": false
+  },
+  "recordedPrerequisiteCheck": {
+    "status": "CHECK_REQUIRED",
+    "changed": false,
+    "guiProofBlocked": true,
+    "wholeClosureGranted": false,
+    "repeatAcceptedTests": false,
+    "currentTransitionVerifiedByThisCheck": false
   }
 }
