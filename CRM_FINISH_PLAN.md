@@ -87,6 +87,8 @@ Güncel ana hedef: **5 Ekim 2026 — günlük CRM + mobil + ERP + insan denetiml
 
 ## Tek finish tree
 
+**15 Ekim CRM-DEC-018 teknik teslimi:** C02/I01 normal gönderim öncesi güncel yetki/atama kontrolü535e9ad ve M01/I01/E02 HTTP-LAN güvenli UUID/pending ERP kimliği5ce452b tamamlandı; önce hatayı üreten dar regresyonlar sonra25backend+6frontendPASS, iki bağımsız kaynak incelemesinde açıkP1/P2=0. Exact iki source PR/push/AI-offline CI SUCCESS. Değişmez5ce paketi hazır ve ERP tek sahibine devredildi; bu kayıt anında aktive edilmedi. [İlk geliştirme çalışması kanıtı](docs/evidence/crm/2026-10-15-technical-automation/verification.json). GUI DENENMEDİ / fiziksel mobil ve insan kabulü BEKLİYOR; aşağıdaki25/12/13/0 sayımı ve eski kabuller değişmez. Teknik hazır başka bağımsız işler CRM-DEC-018'e göre sürer.
+
 **6 Ekim Goal5 güncellemesi:** ERP terminali→Müşterilerim→yalnız atanmış sohbet/çeviri→ortak gerçek katalog/paylaşım→native TEST taslak/readback teknik tamamlandı. Source4eadb51 exact CI SUCCESS; çalışan immutable paket ve son gerçek ekran kanıtı [Goal5 kayıtlarında](docs/evidence/crm/2026-10-06-goal5/README.md). M01🟡, insan/fiziksel personel CRM-UA05 **bekliyor**. Toplam25/12tamam/13kısmi/0kırmızı ve kalan13 aynı. Goal5 sonrası durulur; Goal6/7 yeni talimat olmadan başlamaz. Üstteki Goal4 ve alttaki önceki kabuller tarihsel kapsamlarıyla korunur.
 
 | Kimlik | Modül / iş | Durum | Doğrulanmış sonuç ve kalan bitiş ölçütü |
