@@ -19,8 +19,13 @@
     "existingSubagentsOnly": true,
     "erpSoleSharedRuntimeWriter": true,
     "humanAcceptancePending": true,
-    "scheduledDevelopmentRunObserved": false,
-    "twoHourPeriodicRepeatObserved": false
+    "scheduledDevelopmentRunObserved": true,
+    "twoHourPeriodicRepeatObserved": false,
+    "firstScheduledDevelopmentHeartbeatAt": "2026-10-15T02:05:43.103Z",
+    "firstScheduledDevelopmentHeartbeatAtIstanbul": "2026-10-15T05:05:43.103+03:00",
+    "nativeDevelopmentRunId": null,
+    "nativeDevelopmentRunIdAvailable": false,
+    "scheduledExecutionEvidence": "The same-thread heartbeat payload named this automation and triggered actual source changes, new failing-before/passing-after isolated regressions and GitHub delivery in this turn. A separately exposed scheduler run UUID is unavailable."
   },
   "baseline": {
     "source": "29d37596519759d4d7c40a710a9955bd158bad97",
@@ -474,5 +479,174 @@
     "humanAccepted": false,
     "commercialWrites": 0,
     "controlledInstallationHoldReleased": true
+  },
+  "firstScheduledDevelopmentRun": {
+    "automationId": "crm-2-saatlik-eri-im-denemesi",
+    "trigger": "same-thread scheduled heartbeat",
+    "heartbeatAt": "2026-10-15T02:05:43.103Z",
+    "firstClockReadAt": "2026-10-15T02:11:11Z",
+    "repository": "C:/Sirket/CRM/melisa-crm",
+    "fetchAndPushOrigin": "https://github.com/melihsnyldzz-ui/melisa-crm.git",
+    "branch": "codex/crm-agents-on-completion-20261003",
+    "initialHead": "245bad0e9999de08d57ca0656a072d74afd1c7cb",
+    "initialWorktreeClean": true,
+    "worktreeInventoryRead": true,
+    "worktreeCount": 8,
+    "otherWorktreesUnchanged": true,
+    "recordsRead": [
+      "AGENTS.md",
+      "PROJECT_DECISIONS.md",
+      "CRM_STATUS.md",
+      "CRM_FINISH_PLAN.md",
+      "USER_ACCEPTANCE.md"
+    ],
+    "recordedPrerequisites": {
+      "status": "CHECK_REQUIRED",
+      "exitCode": 1,
+      "changed": false,
+      "bothMainIds": "CRM06",
+      "runtimeAndNormalRole": "REUSE",
+      "normalUi": "PROOF_BLOCKED",
+      "wholeClosureGranted": false,
+      "oldAcceptanceRepeated": false
+    },
+    "authorizationResponse": {
+      "ids": [
+        "CRM06",
+        "C02",
+        "U01"
+      ],
+      "source": "08fa4c9b5e5a710a48369568f0b6eb80d6529651",
+      "before": {
+        "passed": 4,
+        "failed": 12
+      },
+      "after": {
+        "passed": 16,
+        "failed": 0
+      },
+      "testCommand": "node --import ./tests/offline-test-guard.mjs --test --test-timeout=20000 apps/frontend/tests/customer-product-request-auth-status.test.mjs",
+      "actualChangedBehavior": "Empty, HTML or broken JSON 401/403/410 retains the HTTP authorization denial, clears the customer session/products/photo URLs and blocks later edit/submit/search/reconcile transports. Normal staff list keeps401 status.",
+      "preserved": "Cancellation/deadline AbortError priority, malformed2xx contract rejection, normal server refresh, request validation, no-store, credentials:omit, redirect:error and bearer header scope.",
+      "testBoundary": "Actual customer API, controller and photo cache with injected fakefetch/Response/RAM storage; no real network, normal GUI, credentials, customer request or business write.",
+      "fixtureCorrection": "The new test initially counted an implicit photo GET as a write. Only the counter default was corrected to method||GET; all assertions stayed. Corrected fixture reproduced12FAIL/4PASS on the old parse-catch then16PASS on the fixed source.",
+      "independentReadOnlyReviewOpenP1P2": 0,
+      "ci": [
+        {
+          "id": 38669998587,
+          "event": "pull_request",
+          "conclusion": "success"
+        },
+        {
+          "id": 38669994064,
+          "event": "push",
+          "conclusion": "success"
+        },
+        {
+          "id": 38669998576,
+          "workflow": "AI Sales Agent - Offline",
+          "conclusion": "success"
+        }
+      ]
+    },
+    "sameDocumentLink": {
+      "ids": [
+        "CRM06",
+        "U01",
+        "M01"
+      ],
+      "state": "Source committed and pushed; independent final delta review passed. Exact final-source CI and package preparation pending.",
+      "firstFiveNewCasesBefore": {
+        "failed": 5
+      },
+      "initialLocalAfter": {
+        "passed": 7,
+        "failed": 0
+      },
+      "reviewOpenP2": 0,
+      "reviewFinding": "A queued second hashchange after consuming the current fragment must not fall back to denied storage and close a valid memory-only catalog.",
+      "normalGui": false,
+      "source": "bb8966c59a6cfbdc1cc83472cb331e48b720a173",
+      "files": [
+        "apps/frontend/src/customerProductRequest/CustomerProductRequestPage.jsx",
+        "apps/frontend/tests/customer-product-request-link-change.test.mjs"
+      ],
+      "independentReadOnlyReviewOpenP1P2": 0,
+      "reviewFindingResolved": true,
+      "queuedEventRegressionBefore": {
+        "passed": 7,
+        "failed": 1
+      },
+      "targetedAfter": {
+        "passed": 8,
+        "failed": 0
+      },
+      "testCommand": "node --test --test-timeout=15000 apps/frontend/tests/customer-product-request-link-change.test.mjs",
+      "actualChangedBehavior": "A distinct or invalid same-document catalog fragment disposes/aborts the old controller, revokes its photos and clears rendered state before fresh session access. Same capability retains controller and pending operation. Empty queued events after fragment consumption do not clear a valid memory-only session.",
+      "preserved": "Initial storage fallback, same-capability operation identity, invalid nonempty-link fail-closed handling, old callback suppression, close/remount, StrictMode and rapid batched link changes; lifecycle/model/controller/API implementation was not changed by this part.",
+      "harness": "Actual Page JSX transformed then evaluated with a controlled hook scheduler; unchanged production lifecycle/controller/model and real API normalization with injected fakefetch. This is not a React renderer, normal GUI, native browser/BFCache, physical phone or human acceptance.",
+      "initialAsyncBundle": "Hung; not PASS. Only owned test processes were stopped. Final transformSync entry-only harness completed with bounded test timeout."
+    },
+    "installedBaseline": "installedRuntime above remains the pinned5bcd/supervisor455/ERP7a/DB02 checkpoint. New source is not deployment.",
+    "humanAcceptance": "BEKLİYOR",
+    "realNormalGui": "GUI DENENMEDİ",
+    "physicalMobile": false,
+    "realWindowsRebootOrLogon": false,
+    "newCrmSharedRuntimeWrites": 0,
+    "newCrmSqlWrites": 0,
+    "realCustomerMessages": 0,
+    "paidApiCalls": 0,
+    "newAgentsGoalsOrAutomations": 0,
+    "mainMerged": false,
+    "liveDeployed": false,
+    "finishCountsUnchanged": {
+      "total": 25,
+      "complete": 12,
+      "partial": 13,
+      "open": 0
+    },
+    "delivery": {
+      "sourceCommits": [
+        "08fa4c9b5e5a710a48369568f0b6eb80d6529651",
+        "bb8966c59a6cfbdc1cc83472cb331e48b720a173"
+      ],
+      "finalApplicationSource": "bb8966c59a6cfbdc1cc83472cb331e48b720a173",
+      "pullRequest": "https://github.com/melihsnyldzz-ui/melisa-crm/pull/3",
+      "exactFinalSourceCiState": "PENDING",
+      "targetedAfter": {
+        "passed": 24,
+        "failed": 0
+      },
+      "existingSubagentsReused": [
+        "/root/audit_source_explorer",
+        "/root/backend_test_runtime",
+        "/root/crm06_remaining_frontend",
+        "/root/az_independent_reviewer"
+      ],
+      "sameRunNextIndependentWorkObserved": true,
+      "sourceBatchFrozenForSinglePackage": true,
+      "packagePrepared": false,
+      "installed": false,
+      "ci": [
+        {
+          "id": 38670744468,
+          "event": "pull_request",
+          "status": "in_progress",
+          "conclusion": null
+        },
+        {
+          "id": 38670739038,
+          "event": "push",
+          "status": "in_progress",
+          "conclusion": null
+        },
+        {
+          "id": 38670744580,
+          "workflow": "AI Sales Agent - Offline",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    }
   }
 }
