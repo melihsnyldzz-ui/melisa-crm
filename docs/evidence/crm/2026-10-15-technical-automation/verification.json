@@ -2232,7 +2232,7 @@
           "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38737137833"
         }
       ],
-      "packagePrepared": false,
+      "packagePrepared": true,
       "installedToTest": false,
       "gui": "GUI DENENMEDİ",
       "humanAccepted": false,
@@ -2251,7 +2251,9 @@
         "openP1P2": 0,
         "scope": "Four existing metadata files, exact94f sourceCI vs dated894 installed baseline, no package/installation, single active record/preflight, unchanged acceptance counts and stop-after-task boundary."
       },
-      "docsOnlyCiRerunRequested": false
+      "docsOnlyCiRerunRequested": false,
+      "originalSourceTaskPreparedPackage": false,
+      "packagePreparedByLaterTaskRef": "uncertainCatalogRecoveryPackage"
     },
     "runtime": {
       "lastVerifiedInstalledSource": "89427492f27caf72c511a27262b55e73d782c407",
@@ -2286,6 +2288,195 @@
       "extraIndependentTaskStarted": false,
       "cacheWritingPreflightScriptExecuted": false,
       "preflightReason": "This specific handoff allows source/offline and existing evidence docs only; the usual preflight writes an out-of-repo runtime cache, so it was not executed in this task. Existing dated runtime/role/UI proof was not rerun or elevated."
+    }
+  },
+  "uncertainCatalogRecoveryPackage": {
+    "taskId": "DOT-CRM-CRM06-R02-PACKAGE-94f2a75-r1",
+    "mainId": "CRM06",
+    "finishId": "R02",
+    "sourceTaskId": "DOT-CRM-CRM06-U01-UNCERTAIN-SEARCH-r1",
+    "scope": "Only the missing immutable inactive package for the already delivered94f source, existing evidence docs and PR3 receipt. Stop after this task; Dot chooses any later installation scope.",
+    "authoritativeHandoff": "https://github.com/melihsnyldzz-ui/melisa-erp-v2/pull/23#issuecomment-6190971998",
+    "observedHandoffState": "ACKED_RUNNING",
+    "nativeTurnId": "01a13fa7-b793-7191-99f6-8578359d2c21",
+    "ack": "DOT-CRM-CRM06-R02-PACKAGE-94f2a75-r1: ALINDI",
+    "ackVerifiedByCoordinator": true,
+    "ackMessageId": "msg_0de2626bf9ecb781016ad0cefcab0887d2a89487bf9de10929",
+    "initial": {
+      "canonicalRoot": "C:/Sirket/CRM/melisa-crm",
+      "originFetch": "https://github.com/melihsnyldzz-ui/melisa-crm.git",
+      "originPush": "https://github.com/melihsnyldzz-ui/melisa-crm.git",
+      "branch": "codex/crm-agents-on-completion-20261003",
+      "head": "3013e345c440e163d58f53a2c9c280701922ec9f",
+      "clean": true,
+      "worktrees": 8,
+      "recordsRead": [
+        "AGENTS.md",
+        "PROJECT_DECISIONS.md018/017/v3",
+        "DELIVERY_BOARD.md",
+        "CRM_STATUS.md",
+        "CRM_FINISH_PLAN.md",
+        "USER_ACCEPTANCE.md"
+      ],
+      "recentThreeNativeTurnsRead": true,
+      "priorSamePackageTaskFound": false,
+      "exact94fPackageExisted": false,
+      "erpMainThreadObserved": "idle/completed",
+      "visibleExistingSubagentsObserved": "completed/idle; no other writer observed",
+      "schedulerQueue": "UNKNOWN; not assumed empty",
+      "automationChanged": false
+    },
+    "preparedObservedAt": "2026-10-15T13:07:27Z",
+    "preparedObservedAtIstanbul": "2026-10-15T16:07:27+03:00",
+    "package": {
+      "sourceCommit": "94f2a75322a3daa695d38010a6f2c8ef23f6c17b",
+      "sourceTree": "c98dd26ca6250a8626ac2d34d1ee225d4bada0d4",
+      "repository": "https://github.com/melihsnyldzz-ui/melisa-crm.git",
+      "packageRoot": "C:/Sirket/CRM/releases/crm-shared-test-94f2a75322a3daa695d38010a6f2c8ef23f6c17b",
+      "manifestFile": "release-manifest.json",
+      "manifestSha256": "16cb075a8734d56afd1f364999ab8f0707255be5c4a042a9c197ccf397eea556",
+      "indexPath": "apps/frontend/dist/client/index.html",
+      "indexSha256": "19624f5d0189c5750089b4c50779809f3a381e323ae59541daa5ee4c3efdf3a5",
+      "sourceFiles": 185,
+      "sourceBlobInventoryRef": "release-manifest.json#sourceFiles",
+      "sourceBlobInventorySha256": "6d9bc49c7bb8e31a6037c93ae2e4ea64186aa428bc99992e41624bcbd4cd7b71",
+      "sourceBlobScope": "All185selected allowed Git source blobs from exact94f, including required frontend/gateway/deploy/adapter paths. Tests/docs/private config are excluded by the unchanged builder policy. Full selected inventory is cryptographically bound by the sealed manifest.",
+      "payloadFiles": 2291,
+      "payloadBytes": 23935639,
+      "locks": {
+        "gateway": {
+          "path": "apps/gateway/package-lock.json",
+          "sha256": "c487dc65e3a107f5235408fad3523c8242a4c01b62c7475154ad4ae41a627b96"
+        },
+        "frontend": {
+          "path": "apps/frontend/package-lock.json",
+          "sha256": "9064a36a0c86464db93cc261ffedbc92a87ea2092315e207301ca8a8aa6d4d24"
+        }
+      },
+      "build": {
+        "viteCrmTest": true,
+        "isolatedPreparation": true,
+        "nodeVersion": "v24.15.0",
+        "platform": "win32",
+        "arch": "x64",
+        "dependencyInstall": "npm-ci-offline-ignore-scripts"
+      },
+      "prepared": true,
+      "inactive": true,
+      "installedToTest": false
+    },
+    "preparation": {
+      "builder": "deploy/test-package.mjs",
+      "builderGitBlob": "2368679c40e412087d758370ec7f8f7ece54d950",
+      "method": "createTestPackage({commit:94f2a75322a3daa695d38010a6f2c8ef23f6c17b,isolatedPreparation:true})",
+      "existingBuilderInvocations": 1,
+      "newBranchOrWorktreeCreated": false,
+      "checkoutResetOrSwitched": false,
+      "sourceExtractedFromGitBlobs": true,
+      "metadataHeadUsedAsPackageSource": false,
+      "cleanCheckoutBeforeAndAfter": true,
+      "lockedOfflineIgnoreScripts": true,
+      "onlineDependencyFallbackUsed": false,
+      "freshViteBuild": true,
+      "stagingAndFinalSealedManifestPayloadAndSourceVerification": true,
+      "selectedSourceBlobsValidated": 185,
+      "dependencyVersionsAndBuilderPolicyChanged": false,
+      "canonicalRawLockBytesBeforeAfterUnchanged": true,
+      "lockByteExplanation": "Package lock hashes are exact Git-blob LF bytes; canonical Windows working-tree CRLF raw hashes differ and were separately compared before/after without editing either lock.",
+      "isolatedBuildDatabaseFallback": "MELISA_ERP_CRM_SHARED_TEST_20261009_01",
+      "buildFallbackLiteralChanged": false,
+      "buildFallbackIsRuntimeDb02Identity": false,
+      "sourceOrAcceptanceTestsRerun": false,
+      "newApplicationCiRequested": false,
+      "cacheWritingPreflightScriptExecuted": false,
+      "preflightReason": "Current narrow task permits only the new artifact, owned preparation and existing evidence docs. The usual out-of-repo runtime-cache writer was not run."
+    },
+    "verification": {
+      "builderFinalReturnEnvironment": "TEST",
+      "builderFinalReturnSource": "94f2a75322a3daa695d38010a6f2c8ef23f6c17b",
+      "rootManifestIndexAndLocksMatched": true,
+      "independentReviewer": "/root/audit_release_inspector",
+      "independentReadOnlyPackageVerdict": "GO",
+      "independentPackageOpenP1P2": 0,
+      "independentVerifyTestPackagePassed": true,
+      "independentAll185SourceBlobsMatchedExactGitCommit": true,
+      "reviewerBuiltOrWroteAnything": false,
+      "authorityComparison": {
+        "reference": "installedRuntime.priorNormalRoleAndCustomerRequestEvidence.unchangedModules",
+        "baselinePackageSource": "89427492f27caf72c511a27262b55e73d782c407",
+        "modulesCompared": 10,
+        "actualNewAndBaselineByteHashesMatchedExistingProof": true,
+        "wholeApplicationByteIdentical": false,
+        "newAuthNativeGuiOrHumanAcceptanceClaimed": false
+      }
+    },
+    "preservation": {
+      "oldPackages": [
+        {
+          "source": "89427492f27caf72c511a27262b55e73d782c407",
+          "manifestSha256": "b4f593eb736820577b19a489f104e599be6e3749e3f31db759898733c73ef3a7",
+          "indexSha256": "3bb1ec44de971549f95cb858bb315cdf101d83b3381321c53c2ef477e95a96a6"
+        },
+        {
+          "source": "957f98773695874ea3d101b7eb4816f9ea080880",
+          "manifestSha256": "a93d2cdd14eafcb021091d98294c41d5e60d31bbc5842d31447f091a843a18af",
+          "indexSha256": "8cdf8904557755900d98769df26f6edcd6efa929bc400970b073b48e4d2d1ddd"
+        }
+      ],
+      "oldManifestAndIndexBeforeAfterEqual": true,
+      "oldPackagesOrRollbackWritten": false,
+      "oldPayloadAcceptedTestsRerun": false,
+      "scope": "Before/after comparison covers the two old manifests and two old indexes, not a new full verification of the old payloads. Builder wrote only its new94f staging/destination."
+    },
+    "delivery": {
+      "existingPr": "https://github.com/melihsnyldzz-ui/melisa-crm/pull/3",
+      "sourceCommit": "94f2a75322a3daa695d38010a6f2c8ef23f6c17b",
+      "sourceCiRef": "uncertainCatalogRecovery.delivery.exactCi",
+      "sourceCiReuse": "Three completedSUCCESS exact94f runs from the preceding accepted source delivery; no new test/CI invocation.",
+      "packagePrepared": true,
+      "installedToTest": false,
+      "gui": "GUI DENENMEDİ",
+      "physicalPhone": false,
+      "actualWindowsRebootOrLogon": false,
+      "humanAccepted": false,
+      "metadataOnlyCommit": true,
+      "metadataHeadSourceCiAttribution": false,
+      "metadataReview": {
+        "state": "COMPLETE",
+        "agent": "/root/audit_evidence_reviewer",
+        "readOnly": true,
+        "openP1P2": 0,
+        "scope": "Four existing metadata files, inactive94f package vs installed894 baseline, dated package-not-prepared history, exact sourceCI vs docs-onlyHEAD, unchanged acceptance/counts and no visible secret."
+      },
+      "newAgentsCreated": 0,
+      "existingAgentsReused": [
+        "/root/audit_release_inspector",
+        "/root/audit_evidence_reviewer"
+      ]
+    },
+    "boundaries": {
+      "activeRuntimePrivateConfigStoreCredentialSessionOrTaskWrites": 0,
+      "erpRepositoryWrites": 0,
+      "erpMessagesOrTasksSent": 0,
+      "sharedDbSqlSchemaDataOrServiceRestartWrites": 0,
+      "installationOrActivationPerformed": false,
+      "realProviderCustomerOrPaidApiCalls": 0,
+      "liveVegaT1MainMergeTagOrPublication": 0,
+      "priorPackagesOverwrittenOrDeleted": false,
+      "secondTaskStarted": false
+    },
+    "acceptance": {
+      "normalGui": "GUI DENENMEDİ",
+      "physicalMobile": false,
+      "actualWindowsRebootOrLogon": false,
+      "humanAccepted": false,
+      "existingHumanAcceptanceId": "CRM-UA11",
+      "finishCounts": {
+        "total": 25,
+        "complete": 12,
+        "partial": 13,
+        "red": 0
+      }
     }
   }
 }
