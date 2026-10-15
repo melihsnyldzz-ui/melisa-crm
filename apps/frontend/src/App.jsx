@@ -18,6 +18,7 @@ import { POLL_INTERVAL, queueForegroundRead, finishForegroundRead, chatPollingPa
 import { ATTACHMENT_ACCEPT, prepareAttachment, validateSendPayload, classifySendFailure, outboundRecoveryState, selectedConversation, attachmentStatusText, attachmentMediaLabel, createSendSessionScope, interruptedSendStates } from "./outboundMedia.js";
 
 import { createPreviewLedger, upsertDraftProduct } from "./orderPreview.js";
+import { newRequestId } from "./lib/requestId.js";
 import { nextIncomingTranslation } from "./automaticTranslation.js";
 import { selectedSaleLines, selectionMessage } from "./catalog/productActions.js";
 import ERPOrderDialog from "./ERPOrderDialog.jsx";
@@ -1314,9 +1315,9 @@ export function App() {
     const productLines = pendingProducts.map((product) => `${product.name} · ${product.id} · ${product.price} · ${product.quantity} adet`).join("\n");
     const catalogLines = pendingCatalogs.map((catalog) => `${catalog.title}: ${catalog.link}`).join("\n");
     const content = [draft.trim(), productLines, catalogLines].filter(Boolean).join("\n\n");
-    const clientRequestId = window.crypto.randomUUID();
+    let clientRequestId;
     const media = selectedMedia ? { dataUrl: selectedMedia.dataUrl, fileName: selectedMedia.fileName, mimeType: selectedMedia.mimeType, mediaType: selectedMedia.mediaType } : null;
-    try { validateSendPayload({ text: content, media, clientRequestId }); }
+    try { clientRequestId = newRequestId(window.crypto); validateSendPayload({ text: content, media, clientRequestId }); }
     catch (error) { setSendStates((items) => ({ ...items, [conversationId]: { state: "failed", text: error.message } })); return; }
     if (liveSession) {
       if (!liveSession.liveSendEnabled) { refreshLivePermissions().catch(() => {}); return flash("Hesabın güncel gönderim izni kontrol ediliyor. Taslağınız korunuyor."); }
