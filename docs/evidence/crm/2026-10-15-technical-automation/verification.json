@@ -283,75 +283,85 @@
     "scope": "Metadata prerequisite mapping only; not application, authenticated operation, GUI or human acceptance."
   },
   "installedRuntime": {
-    "observedAt": "2026-10-15T08:36:47.677Z",
-    "observedAtIstanbul": "2026-10-15T11:36:47.677+03:00",
-    "attribution": "ERP sole owner completed one controlled two-task transition from healthy bb896/76d1. CRM matched ten pinned receipt/metadata/barrier byte hashes and whitelisted process/source/preservation metadata. This is a dated installation checkpoint, not a new GUI/auth/API/SQL/restore acceptance or fresh health observation during the next transition.",
-    "ownerDelivery": "https://github.com/melihsnyldzz-ui/melisa-erp-v2/blob/b6cbcbeeee330b168fab54ab21a4922ec3af4f4d/docs/evidence/erp/2026-10-15-isolated-test/README.md",
+    "observedAt": "2026-10-15T10:32:13.068Z",
+    "observedAtIstanbul": "2026-10-15T13:32:13.068+03:00",
+    "attribution": "ERP sole owner installed the frozen894 package in one controlled two-task transition. CRM independently matched12pinned receipt/artifact/config/barrier hashes and whitelisted six-core PID/parent/finite creation/source/copy/T1 metadata. No new GUI/auth/API/SQL/provider or restore acceptance was run by CRM.",
+    "ownerDelivery": "https://github.com/melihsnyldzz-ui/melisa-erp-v2/pull/23#issuecomment-6190044036",
     "ownerReceipts": [
       {
         "name": "installed-readback.json",
-        "sha256": "b8bba71c27db9fa4df49cf3226996f0b5a9aa8808fa444f93631970478c4f86f",
+        "sha256": "e6dedf2f9a29e2a6b2b449c2f2c8311a6190c048d4155f5f1ed4b1d2143ec0d8",
         "byteHashVerifiedByCrm": true
       },
       {
         "name": "final-preservation.json",
-        "sha256": "14daef4c8105fd366c45962c56a5f5f7c2459ccb2ade0986e452e70682653603",
-        "byteHashVerifiedByCrm": true
-      },
-      {
-        "name": "transition-before.json",
-        "sha256": "6b2392e0bfb005d1d76d4f3a180596838193ebf3ea22c0be1622a94f6ff43a47",
-        "byteHashVerifiedByCrm": true
-      },
-      {
-        "name": "transition-started.json",
-        "sha256": "506801104089913bc1dec120921424ace4ac39cc1acc83e351215ae3ba5bbc82",
-        "byteHashVerifiedByCrm": true
-      },
-      {
-        "name": "release-manifest.json",
-        "sha256": "bfc152eb3335e1dfe294a2014ef7796bec00feb2bf7d825da7a6c66659da028f",
-        "byteHashVerifiedByCrm": true
-      },
-      {
-        "name": "settings-crm06-staff-957f98773695.json",
-        "sha256": "5cdfa444233780cf8d00b6933b207fec4641d40ec02830e96e5dd45d2fd14846",
-        "byteHashVerifiedByCrm": true
-      },
-      {
-        "name": "staff-refresh-successor-957f98773695.json",
-        "sha256": "ce5ab1078cfee970bf94e3f46ef46cb3d7d5d3c997ab05cd824a1b2ff38b9e22",
-        "byteHashVerifiedByCrm": true
-      },
-      {
-        "name": "crm-957f98773695-dependency-lock.json",
-        "sha256": "7a84d3e6e5ded9819a65ef08de989637e95a636b6e35c2608c85265b9eafc90e",
+        "sha256": "c3919dc4e435883fb3d841200413e4755bfbb0053347d66503596dafba695f66",
         "byteHashVerifiedByCrm": true
       },
       {
         "name": "original-and-current-preservation-complete.json",
-        "sha256": "331633aab302e7736d9c564614df74a4fd2cc5f0fab519e155e49529a904982e",
+        "sha256": "2b59640c425d7c2455e7c1a911de21203599baad0065c71377d751164f9c00a5",
         "byteHashVerifiedByCrm": true
       },
       {
-        "name": "erp-prerequisites-c1ecf840c29f495dbf7b837c7607f655.json",
-        "sha256": "ca88a30f5b6b5d3f6059d246525c608f70727b1c49e2b239e24766f4423cc2e4",
+        "name": "transition-before.json",
+        "sha256": "e453a811ea991ac7e61117a233537c354a402ff2ee5ad95759887aed734a3279",
+        "byteHashVerifiedByCrm": true
+      },
+      {
+        "name": "transition-started.json",
+        "sha256": "fb5da3e8d0555450c62fa2d86208556e73ccf66fc0e917a9e9f00dedf475c289",
+        "byteHashVerifiedByCrm": true
+      },
+      {
+        "name": "candidate-verify.json",
+        "sha256": "8e89b7a09523c30b521a44e8bdfd33eb07cf96a6d9b1696ccd5c901e5ac16615",
+        "byteHashVerifiedByCrm": true
+      },
+      {
+        "name": "crm-package-pin.json",
+        "sha256": "d5598659bffe9162e28f3bb8d2a1b2056e6876dacb2bb62062d460d8364c051e",
+        "byteHashVerifiedByCrm": true
+      },
+      {
+        "name": "heartbeat-dispatch.json",
+        "sha256": "37d2633e0505b1d07aa78a638b0f7d2e8a8c6707862810ca11640e40f44a106a",
+        "byteHashVerifiedByCrm": true
+      },
+      {
+        "name": "release-manifest.json",
+        "sha256": "3d9db24cd42a44161c2ae874adda05ce54ff8f205c5fc6f1512aa6bb19848190",
+        "byteHashVerifiedByCrm": true
+      },
+      {
+        "name": "settings-crm06-staff-89427492f27c.json",
+        "sha256": "12fe75519fe0780c587e6404de6077331697391a76c2bd0ae9ab12d8fe5991ac",
+        "byteHashVerifiedByCrm": true
+      },
+      {
+        "name": "staff-refresh-successor-89427492f27c.json",
+        "sha256": "8f5932003d5ce204eeaf2c59ca1eb5e9eef8cae95f2308ede806f1ce88702f62",
+        "byteHashVerifiedByCrm": true
+      },
+      {
+        "name": "erp-prerequisites-3ec5eb4fa9294b09b3ec79821378e850.json",
+        "sha256": "d9868e5fe9a6dd8145495b7e01649633690a61121ba6b7bdda24d05963d001d5",
         "byteHashVerifiedByCrm": true
       }
     ],
     "installed": true,
-    "crmSource": "957f98773695874ea3d101b7eb4816f9ea080880",
-    "crmManifest": "a93d2cdd14eafcb021091d98294c41d5e60d31bbc5842d31447f091a843a18af",
-    "crmIndexSha256": "8cdf8904557755900d98769df26f6edcd6efa929bc400970b073b48e4d2d1ddd",
-    "supervisorSource": "d469f192b315fcd322e3e85815cb5f257947532b",
-    "supervisorManifestSha256": "bfc152eb3335e1dfe294a2014ef7796bec00feb2bf7d825da7a6c66659da028f",
+    "crmSource": "89427492f27caf72c511a27262b55e73d782c407",
+    "crmManifest": "b4f593eb736820577b19a489f104e599be6e3749e3f31db759898733c73ef3a7",
+    "crmIndexSha256": "3bb1ec44de971549f95cb858bb315cdf101d83b3381321c53c2ef477e95a96a6",
+    "supervisorSource": "cac08eaed0c4419550ecdaf6fdf4976252b83fa7",
+    "supervisorManifestSha256": "3d9db24cd42a44161c2ae874adda05ce54ff8f205c5fc6f1512aa6bb19848190",
     "supervisorManifestByteHashVerifiedByCrm": true,
-    "settingsSha256": "5cdfa444233780cf8d00b6933b207fec4641d40ec02830e96e5dd45d2fd14846",
+    "settingsSha256": "12fe75519fe0780c587e6404de6077331697391a76c2bd0ae9ab12d8fe5991ac",
     "settingsByteHashVerifiedByCrm": true,
-    "successorSha256": "ce5ab1078cfee970bf94e3f46ef46cb3d7d5d3c997ab05cd824a1b2ff38b9e22",
+    "successorSha256": "8f5932003d5ce204eeaf2c59ca1eb5e9eef8cae95f2308ede806f1ce88702f62",
     "successorByteHashVerifiedByCrm": true,
-    "dependencyLockSha256": "7a84d3e6e5ded9819a65ef08de989637e95a636b6e35c2608c85265b9eafc90e",
-    "dependencyLockByteHashVerifiedByCrm": true,
+    "dependencyLockSha256": "6da08982571a874874644444dc2581aa627f74e6385411bb674d804016ccf760",
+    "dependencyLockByteHashVerifiedByCrm": false,
     "privateConfigurationValuesPublished": false,
     "erpApplicationSource": "7a41f6492273dd1ec0bcb086f820be5575372be8",
     "database": "MELISA_ERP_CRM_SHARED_TEST_20261009_02",
@@ -360,51 +370,51 @@
     "coreProcessReceipts": [
       {
         "stage": "erpNative",
-        "pid": 32840,
+        "pid": 20236,
         "sourceCommit": "7a41f6492273dd1ec0bcb086f820be5575372be8",
         "receiptAndObservedPidParentCreationCopyT1Matched": true
       },
       {
         "stage": "erpApi",
-        "pid": 36572,
+        "pid": 42224,
         "sourceCommit": "7a41f6492273dd1ec0bcb086f820be5575372be8",
         "receiptAndObservedPidParentCreationCopyT1Matched": true
       },
       {
         "stage": "crmNativeOrder",
-        "pid": 34940,
+        "pid": 42184,
         "sourceCommit": "7a41f6492273dd1ec0bcb086f820be5575372be8",
         "receiptAndObservedPidParentCreationCopyT1Matched": true
       },
       {
         "stage": "crmCatalog",
-        "pid": 31748,
-        "sourceCommit": "957f98773695874ea3d101b7eb4816f9ea080880",
+        "pid": 13508,
+        "sourceCommit": "89427492f27caf72c511a27262b55e73d782c407",
         "receiptAndObservedPidParentCreationCopyT1Matched": true
       },
       {
         "stage": "crmOrders",
-        "pid": 17528,
-        "sourceCommit": "957f98773695874ea3d101b7eb4816f9ea080880",
+        "pid": 39088,
+        "sourceCommit": "89427492f27caf72c511a27262b55e73d782c407",
         "receiptAndObservedPidParentCreationCopyT1Matched": true
       },
       {
         "stage": "crmServer",
-        "pid": 33408,
-        "sourceCommit": "957f98773695874ea3d101b7eb4816f9ea080880",
+        "pid": 16600,
+        "sourceCommit": "89427492f27caf72c511a27262b55e73d782c407",
         "receiptAndObservedPidParentCreationCopyT1Matched": true
       }
     ],
     "heartbeat": {
       "state": "running",
-      "supervisorPid": 17284,
-      "sourceCommit": "957f98773695874ea3d101b7eb4816f9ea080880",
-      "observedAt": "2026-10-15T08:36:40.638Z"
+      "supervisorPid": 39236,
+      "sourceCommit": "89427492f27caf72c511a27262b55e73d782c407",
+      "observedAt": "2026-10-15T10:32:09.316Z"
     },
     "hub": {
-      "pid": 22508,
+      "pid": 17136,
       "sourceCommit": "7a41f6492273dd1ec0bcb086f820be5575372be8",
-      "startedAt": "2026-10-15T08:36:27.3080102Z",
+      "startedAt": "2026-10-15T10:31:33.6746839Z",
       "port": 5234,
       "services": {
         "erp": "reachable",
@@ -417,21 +427,21 @@
     },
     "automaticHubCoordination": {
       "passed": true,
-      "barrierReceiptSha256": "ca88a30f5b6b5d3f6059d246525c608f70727b1c49e2b239e24766f4423cc2e4",
-      "readyAt": "2026-10-15T08:35:52.932Z",
-      "coreSupervisorPid": 17284,
-      "wrapperPid": 31828,
-      "hubPid": 22508,
+      "barrierReceiptSha256": "d9868e5fe9a6dd8145495b7e01649633690a61121ba6b7bdda24d05963d001d5",
+      "readyAt": "2026-10-15T10:31:14.975Z",
+      "coreSupervisorPid": 39236,
+      "wrapperPid": 5080,
+      "hubPid": 17136,
       "hubBornAfterPrerequisites": true,
       "hubInitialAttempt": 0,
       "manualHubStart": false,
       "actualWindowsRebootOrLogon": false,
       "barrierReceiptByteHashVerifiedByCrm": true,
-      "barrierDigestSource": "Direct byte hash of the exact owner barrier file matched the pinned final readback digest."
+      "barrierDigestSource": "Direct byte hash of exact owner barrier file matched pinned installed readback."
     },
     "preservation": {
-      "observedAt": "2026-10-15T08:36:51.185Z",
-      "immutableBeforeFilesPreserved": 58,
+      "observedAt": "2026-10-15T10:32:17.800Z",
+      "immutableBeforeFilesPreserved": 65,
       "taskMetadataPreserved": true,
       "currentActionsExact": true,
       "twoTasksRunning": true,
@@ -440,12 +450,12 @@
       "applicationJournalsAndPriorRequestByteIdentical": true,
       "newAuthOrInterestRequests": 0,
       "freshStaffJournalPhysical": "READY",
-      "references": 17
+      "references": 18
     },
     "priorNormalRoleAndCustomerRequestEvidence": {
       "proofSource": "da82fc6644c1d9dba0c10eaa861773534d43c288",
-      "lastMappedRuntimeSource": "bb8966c59a6cfbdc1cc83472cb331e48b720a173",
-      "newSource": "957f98773695874ea3d101b7eb4816f9ea080880",
+      "lastMappedRuntimeSource": "957f98773695874ea3d101b7eb4816f9ea080880",
+      "newSource": "89427492f27caf72c511a27262b55e73d782c407",
       "unchangedModules": [
         {
           "path": "apps/gateway/src/routes/authRoutes.js",
@@ -499,9 +509,9 @@
       "normalGuiVerified": false
     },
     "transition": {
-      "previousCrmSource": "bb8966c59a6cfbdc1cc83472cb331e48b720a173",
-      "previousSupervisorSource": "76d1e5916d355592bcde96e51889a7536084fe91",
-      "previousSettingsSha256": "e3dee7bb10f13e7ce8e0d06cf74522721ba5f70ca3dc8b7e6fa16701aa07a371",
+      "previousCrmSource": "957f98773695874ea3d101b7eb4816f9ea080880",
+      "previousSupervisorSource": "d469f192b315fcd322e3e85815cb5f257947532b",
+      "previousSettingsSha256": "5cdfa444233780cf8d00b6933b207fec4641d40ec02830e96e5dd45d2fd14846",
       "healthyBaseline": true,
       "oneControlledTwoTaskTransition": true,
       "partialRecoveryRequired": false,
@@ -509,21 +519,25 @@
       "previousIncidentHistoryRef": "previousInstalledRuntimeCheckpoints"
     },
     "sourceCi": {
-      "supervisorSource": "d469f192b315fcd322e3e85815cb5f257947532b",
-      "prRun": 38705965431,
-      "pushRun": 38705956977,
+      "supervisorSource": "cac08eaed0c4419550ecdaf6fdf4976252b83fa7",
+      "prRun": 38720005028,
+      "pushRun": 38719997556,
       "conclusion": "success",
       "exactHeadAndResultsReadByCrm": true,
-      "testsRerunByCrm": false
+      "testsRerunByCrm": false,
+      "ownerReportedNewTargetedTests": 6,
+      "ownerReportedIndependentSourceAndPrivateHelperReview": "GO"
     },
     "authenticatedOperationsVerified": false,
     "normalGuiFirstLoginVerified": false,
     "humanAccepted": false,
     "commercialWrites": 0,
     "controlledInstallationHoldReleased": true,
-    "nextSource89427492Installed": false,
-    "ownerDocumentationSource": "b6cbcbeeee330b168fab54ab21a4922ec3af4f4d",
-    "ownerPublicEvidence": "https://github.com/melihsnyldzz-ui/melisa-erp-v2/blob/b6cbcbeeee330b168fab54ab21a4922ec3af4f4d/docs/evidence/erp/2026-10-15-isolated-test/README.md"
+    "ownerDocumentationSource": "436df4bfb49e4149553d8a6ad83f74289742b1e0",
+    "ownerPublicEvidence": "https://github.com/melihsnyldzz-ui/melisa-erp-v2/blob/436df4bfb49e4149553d8a6ad83f74289742b1e0/docs/evidence/erp/2026-10-15-isolated-test/README.md",
+    "dependencyLockByteHashComputedByCrm": true,
+    "dependencyLockExpectedOwnerDigestProvided": false,
+    "dependencyLockOwnerCandidatePinsAndDiskFilesVerified": true
   },
   "firstScheduledDevelopmentRun": {
     "automationId": "crm-2-saatlik-eri-im-denemesi",
@@ -1483,6 +1497,249 @@
       "nextSource957f987Installed": false,
       "ownerDocumentationSource": "a440e25dc85f07c60296d3c95b8190e246d93886",
       "ownerPublicEvidence": "https://github.com/melihsnyldzz-ui/melisa-erp-v2/blob/a440e25dc85f07c60296d3c95b8190e246d93886/docs/evidence/erp/2026-10-15-isolated-test/README.md"
+    },
+    {
+      "observedAt": "2026-10-15T08:36:47.677Z",
+      "observedAtIstanbul": "2026-10-15T11:36:47.677+03:00",
+      "attribution": "ERP sole owner completed one controlled two-task transition from healthy bb896/76d1. CRM matched ten pinned receipt/metadata/barrier byte hashes and whitelisted process/source/preservation metadata. This is a dated installation checkpoint, not a new GUI/auth/API/SQL/restore acceptance or fresh health observation during the next transition.",
+      "ownerDelivery": "https://github.com/melihsnyldzz-ui/melisa-erp-v2/blob/b6cbcbeeee330b168fab54ab21a4922ec3af4f4d/docs/evidence/erp/2026-10-15-isolated-test/README.md",
+      "ownerReceipts": [
+        {
+          "name": "installed-readback.json",
+          "sha256": "b8bba71c27db9fa4df49cf3226996f0b5a9aa8808fa444f93631970478c4f86f",
+          "byteHashVerifiedByCrm": true
+        },
+        {
+          "name": "final-preservation.json",
+          "sha256": "14daef4c8105fd366c45962c56a5f5f7c2459ccb2ade0986e452e70682653603",
+          "byteHashVerifiedByCrm": true
+        },
+        {
+          "name": "transition-before.json",
+          "sha256": "6b2392e0bfb005d1d76d4f3a180596838193ebf3ea22c0be1622a94f6ff43a47",
+          "byteHashVerifiedByCrm": true
+        },
+        {
+          "name": "transition-started.json",
+          "sha256": "506801104089913bc1dec120921424ace4ac39cc1acc83e351215ae3ba5bbc82",
+          "byteHashVerifiedByCrm": true
+        },
+        {
+          "name": "release-manifest.json",
+          "sha256": "bfc152eb3335e1dfe294a2014ef7796bec00feb2bf7d825da7a6c66659da028f",
+          "byteHashVerifiedByCrm": true
+        },
+        {
+          "name": "settings-crm06-staff-957f98773695.json",
+          "sha256": "5cdfa444233780cf8d00b6933b207fec4641d40ec02830e96e5dd45d2fd14846",
+          "byteHashVerifiedByCrm": true
+        },
+        {
+          "name": "staff-refresh-successor-957f98773695.json",
+          "sha256": "ce5ab1078cfee970bf94e3f46ef46cb3d7d5d3c997ab05cd824a1b2ff38b9e22",
+          "byteHashVerifiedByCrm": true
+        },
+        {
+          "name": "crm-957f98773695-dependency-lock.json",
+          "sha256": "7a84d3e6e5ded9819a65ef08de989637e95a636b6e35c2608c85265b9eafc90e",
+          "byteHashVerifiedByCrm": true
+        },
+        {
+          "name": "original-and-current-preservation-complete.json",
+          "sha256": "331633aab302e7736d9c564614df74a4fd2cc5f0fab519e155e49529a904982e",
+          "byteHashVerifiedByCrm": true
+        },
+        {
+          "name": "erp-prerequisites-c1ecf840c29f495dbf7b837c7607f655.json",
+          "sha256": "ca88a30f5b6b5d3f6059d246525c608f70727b1c49e2b239e24766f4423cc2e4",
+          "byteHashVerifiedByCrm": true
+        }
+      ],
+      "installed": true,
+      "crmSource": "957f98773695874ea3d101b7eb4816f9ea080880",
+      "crmManifest": "a93d2cdd14eafcb021091d98294c41d5e60d31bbc5842d31447f091a843a18af",
+      "crmIndexSha256": "8cdf8904557755900d98769df26f6edcd6efa929bc400970b073b48e4d2d1ddd",
+      "supervisorSource": "d469f192b315fcd322e3e85815cb5f257947532b",
+      "supervisorManifestSha256": "bfc152eb3335e1dfe294a2014ef7796bec00feb2bf7d825da7a6c66659da028f",
+      "supervisorManifestByteHashVerifiedByCrm": true,
+      "settingsSha256": "5cdfa444233780cf8d00b6933b207fec4641d40ec02830e96e5dd45d2fd14846",
+      "settingsByteHashVerifiedByCrm": true,
+      "successorSha256": "ce5ab1078cfee970bf94e3f46ef46cb3d7d5d3c997ab05cd824a1b2ff38b9e22",
+      "successorByteHashVerifiedByCrm": true,
+      "dependencyLockSha256": "7a84d3e6e5ded9819a65ef08de989637e95a636b6e35c2608c85265b9eafc90e",
+      "dependencyLockByteHashVerifiedByCrm": true,
+      "privateConfigurationValuesPublished": false,
+      "erpApplicationSource": "7a41f6492273dd1ec0bcb086f820be5575372be8",
+      "database": "MELISA_ERP_CRM_SHARED_TEST_20261009_02",
+      "copyId": "e16b70f0-4057-428b-9abc-6bbcaf35fe82",
+      "actualT1": false,
+      "coreProcessReceipts": [
+        {
+          "stage": "erpNative",
+          "pid": 32840,
+          "sourceCommit": "7a41f6492273dd1ec0bcb086f820be5575372be8",
+          "receiptAndObservedPidParentCreationCopyT1Matched": true
+        },
+        {
+          "stage": "erpApi",
+          "pid": 36572,
+          "sourceCommit": "7a41f6492273dd1ec0bcb086f820be5575372be8",
+          "receiptAndObservedPidParentCreationCopyT1Matched": true
+        },
+        {
+          "stage": "crmNativeOrder",
+          "pid": 34940,
+          "sourceCommit": "7a41f6492273dd1ec0bcb086f820be5575372be8",
+          "receiptAndObservedPidParentCreationCopyT1Matched": true
+        },
+        {
+          "stage": "crmCatalog",
+          "pid": 31748,
+          "sourceCommit": "957f98773695874ea3d101b7eb4816f9ea080880",
+          "receiptAndObservedPidParentCreationCopyT1Matched": true
+        },
+        {
+          "stage": "crmOrders",
+          "pid": 17528,
+          "sourceCommit": "957f98773695874ea3d101b7eb4816f9ea080880",
+          "receiptAndObservedPidParentCreationCopyT1Matched": true
+        },
+        {
+          "stage": "crmServer",
+          "pid": 33408,
+          "sourceCommit": "957f98773695874ea3d101b7eb4816f9ea080880",
+          "receiptAndObservedPidParentCreationCopyT1Matched": true
+        }
+      ],
+      "heartbeat": {
+        "state": "running",
+        "supervisorPid": 17284,
+        "sourceCommit": "957f98773695874ea3d101b7eb4816f9ea080880",
+        "observedAt": "2026-10-15T08:36:40.638Z"
+      },
+      "hub": {
+        "pid": 22508,
+        "sourceCommit": "7a41f6492273dd1ec0bcb086f820be5575372be8",
+        "startedAt": "2026-10-15T08:36:27.3080102Z",
+        "port": 5234,
+        "services": {
+          "erp": "reachable",
+          "crm": "reachable",
+          "terminal": "reachable",
+          "training": "unknown",
+          "test125": "unreachable",
+          "live": "unknown"
+        }
+      },
+      "automaticHubCoordination": {
+        "passed": true,
+        "barrierReceiptSha256": "ca88a30f5b6b5d3f6059d246525c608f70727b1c49e2b239e24766f4423cc2e4",
+        "readyAt": "2026-10-15T08:35:52.932Z",
+        "coreSupervisorPid": 17284,
+        "wrapperPid": 31828,
+        "hubPid": 22508,
+        "hubBornAfterPrerequisites": true,
+        "hubInitialAttempt": 0,
+        "manualHubStart": false,
+        "actualWindowsRebootOrLogon": false,
+        "barrierReceiptByteHashVerifiedByCrm": true,
+        "barrierDigestSource": "Direct byte hash of the exact owner barrier file matched the pinned final readback digest."
+      },
+      "preservation": {
+        "observedAt": "2026-10-15T08:36:51.185Z",
+        "immutableBeforeFilesPreserved": 58,
+        "taskMetadataPreserved": true,
+        "currentActionsExact": true,
+        "twoTasksRunning": true,
+        "sqlAndTest125ProcessIdentitiesPreserved": true,
+        "rolesAndCredentialFilesUnchanged": true,
+        "applicationJournalsAndPriorRequestByteIdentical": true,
+        "newAuthOrInterestRequests": 0,
+        "freshStaffJournalPhysical": "READY",
+        "references": 17
+      },
+      "priorNormalRoleAndCustomerRequestEvidence": {
+        "proofSource": "da82fc6644c1d9dba0c10eaa861773534d43c288",
+        "lastMappedRuntimeSource": "bb8966c59a6cfbdc1cc83472cb331e48b720a173",
+        "newSource": "957f98773695874ea3d101b7eb4816f9ea080880",
+        "unchangedModules": [
+          {
+            "path": "apps/gateway/src/routes/authRoutes.js",
+            "sha256": "56d81b44c8fbaa652b2144be56d3d1195000137eff37988305ff4c575b16bbe9"
+          },
+          {
+            "path": "apps/gateway/src/controllers/authController.js",
+            "sha256": "ff3d1743d8cb956bb02e1c0262f92769abf596818a50cb5b2bcfaf8c7ac4914b"
+          },
+          {
+            "path": "apps/gateway/src/middleware/auth.js",
+            "sha256": "b3d2dd1660f26482f111081901a56c4962d80e49c01c890d3c396b6b7520cda9"
+          },
+          {
+            "path": "apps/gateway/src/services/crmAuthService.js",
+            "sha256": "f4fffe649c504117fbe3c488f284cd15a76b73ce7d2ca1a47ee2db96d7254133"
+          },
+          {
+            "path": "apps/gateway/src/services/normalRefreshSession.mjs",
+            "sha256": "01d019ded9ecb17a27fef3d799eef785abf67e2db586a92e5e453e1f39ce69ef"
+          },
+          {
+            "path": "apps/gateway/src/services/assignedStaffRefreshSession.mjs",
+            "sha256": "994175d6020ff634f90f98a43cddc635f37427fc07461cc8b2eb3c75482d24be"
+          },
+          {
+            "path": "apps/gateway/src/services/customerRequestIssuerSession.mjs",
+            "sha256": "635386e51eef2ba9593c49ec8bbf892bb4d1d99ca12edcc80df934ec54aba736"
+          },
+          {
+            "path": "apps/gateway/src/services/customerProductRequest.mjs",
+            "sha256": "ef1c044e04bf6a312752c1fded9364af00af2b8fe57dadc2282460f5dc17efce"
+          },
+          {
+            "path": "apps/gateway/src/services/customerProductRequestIntegration.mjs",
+            "sha256": "3f3b498912daa6cef9f832b9d5a9145f6ccab1a497475f2625cfdbcc5bda8951"
+          },
+          {
+            "path": "apps/gateway/src/routes/customerProductRequestRoutes.mjs",
+            "sha256": "2d97e519a45068722f4eb651eab8d6506e4a9b744052375cf5c9aa0c049c36f6"
+          }
+        ],
+        "unchangedGatewayModuleHashes": 10,
+        "wholeApplicationByteIdentical": false,
+        "packageByteHashesPreviouslyChecked": true,
+        "oldStoresAndRolesMappedThroughPinnedFinalPreservation": true,
+        "scope": "Only the same10authority/session/customer-request modules and preserved role/journal/request bytes map prior normal-role, one-request, replay and bounded no-sale proof. New frontend behavior and real send transport are not accepted by this mapping.",
+        "newAuthRequests": 0,
+        "newInterestRequests": 0,
+        "newBusinessSqlHashTests": 0,
+        "normalGuiVerified": false
+      },
+      "transition": {
+        "previousCrmSource": "bb8966c59a6cfbdc1cc83472cb331e48b720a173",
+        "previousSupervisorSource": "76d1e5916d355592bcde96e51889a7536084fe91",
+        "previousSettingsSha256": "e3dee7bb10f13e7ce8e0d06cf74522721ba5f70ca3dc8b7e6fa16701aa07a371",
+        "healthyBaseline": true,
+        "oneControlledTwoTaskTransition": true,
+        "partialRecoveryRequired": false,
+        "previousRollbackAndOriginal790AncestorPreservedSeparately": true,
+        "previousIncidentHistoryRef": "previousInstalledRuntimeCheckpoints"
+      },
+      "sourceCi": {
+        "supervisorSource": "d469f192b315fcd322e3e85815cb5f257947532b",
+        "prRun": 38705965431,
+        "pushRun": 38705956977,
+        "conclusion": "success",
+        "exactHeadAndResultsReadByCrm": true,
+        "testsRerunByCrm": false
+      },
+      "authenticatedOperationsVerified": false,
+      "normalGuiFirstLoginVerified": false,
+      "humanAccepted": false,
+      "commercialWrites": 0,
+      "controlledInstallationHoldReleased": true,
+      "nextSource89427492Installed": false,
+      "ownerDocumentationSource": "b6cbcbeeee330b168fab54ab21a4922ec3af4f4d",
+      "ownerPublicEvidence": "https://github.com/melihsnyldzz-ui/melisa-erp-v2/blob/b6cbcbeeee330b168fab54ab21a4922ec3af4f4d/docs/evidence/erp/2026-10-15-isolated-test/README.md"
     }
   ],
   "thirdScheduledDevelopmentRun": {
@@ -1601,8 +1858,9 @@
       "packagePrepared": true,
       "sourceBatchFrozen": true,
       "ownerHandoffSent": true,
-      "installed": false,
-      "immediateSecondTransitionRequested": false
+      "installed": true,
+      "immediateSecondTransitionRequested": false,
+      "activatedAfterOriginalScheduledRun": true
     },
     "package": {
       "source": "89427492f27caf72c511a27262b55e73d782c407",
@@ -1627,9 +1885,10 @@
       "gatewayAuthorityModuleHashesMatchedToInstalledBaseline": 10,
       "wholeApplicationByteIdentical": false,
       "ownerHandoffSent": true,
-      "activationVerifiedByCrm": false,
+      "activationVerifiedByCrm": true,
       "prior957PackageAndAllRollbackPreserved": true,
-      "db01BuildFallbackChanged": false
+      "db01BuildFallbackChanged": false,
+      "activationObservedAt": "2026-10-15T10:32:13.068Z"
     },
     "previousPreparedSource957OwnerTransition": {
       "requestedByCrmThisRun": true,
@@ -1641,7 +1900,7 @@
       "sourceCheckoutIsDeployment": false,
       "authorityOrInterestOrCommercialApiRepeatedByCrm": false,
       "finalObservedAt": "2026-10-15T08:36:47.677Z",
-      "installedRuntimeEvidenceRef": "installedRuntime"
+      "installedRuntimeEvidenceRef": "previousInstalledRuntimeCheckpoints[2]"
     },
     "acceptance": {
       "normalGui": "GUI DENENMEDİ",
@@ -1709,7 +1968,7 @@
       "acceptedTestsRepeated": false
     },
     "prior957ReceiptMetadataMatched": true,
-    "current894OwnerControlledTransition": "IN_PROGRESS; awaiting final owner receipt; no CRM shared writes",
+    "current894OwnerControlledTransition": "COMPLETE; final owner readback hashes and process/preservation metadata matched by CRM",
     "newSourceChangesThisRun": 0,
     "previousQuantityTestsRepeated": false,
     "acceptance": {
@@ -1770,6 +2029,75 @@
       "readOnly": true,
       "openP1P2": 0,
       "scope": "Four changed metadata files;894 source/CI/package vs in-progress owner installation vs last verified957/d469, single active record/preflight, bounded10module REUSE, unchanged acceptance counts and secret exposure."
+    },
+    "installedRuntimeEvidenceRef": "installedRuntime",
+    "ownerInstallationWindowClosedHealthy": true,
+    "normalGuiAndHumanAcceptanceStillPending": true,
+    "periodicTimingProvenByThisEvent": false,
+    "erpOwnerAutomationDispatch": {
+      "dispatchRecordSha256": "37d2633e0505b1d07aa78a638b0f7d2e8a8c6707862810ca11640e40f44a106a",
+      "recordByteHashVerifiedByCrm": true,
+      "mechanism": "automation_heartbeat_run_now",
+      "scope": "ERP owner current13:16TR dispatch; not evidence of CRM native dispatch mechanism or normal periodic timing",
+      "normalPeriodicTimerPass": false
+    },
+    "crossRecordPrerequisiteCheck": {
+      "owner": "ERP",
+      "attribution": "Sole owner ran the existing offline record checker after CRM894 and ERP contexts matched; CRM did not duplicate it.",
+      "initial": {
+        "status": "CHECK_REQUIRED",
+        "code": "PROJECT_CLOSURE_GATE_REQUIRED",
+        "at": "ERP.next",
+        "cause": "The concise ERP current step omitted the existing explicit full-closure sentence; this was a record issue, not an application test failure."
+      },
+      "correction": {
+        "metadataOnly": true,
+        "source": "bb6662f60acf47a699dea10c5c3ac644debd0613",
+        "preservedRule": "CRM06 original conditions and required human acceptance precede ERP09 main closure; independent technical preparation may continue under ERP-DEC-060.",
+        "checkerOrSafetyRuleChanged": false
+      },
+      "final": {
+        "status": "CHECK_REQUIRED",
+        "exitCode": 1,
+        "changed": true,
+        "cacheSaved": true,
+        "bothMainIds": "CRM06",
+        "onlyIssueCode": "PROOF_BLOCKED",
+        "issueLocations": [
+          "ERP.preflight.required[2]",
+          "CRM.preflight.required[2]"
+        ],
+        "runtimeAndNormalRoleBothProjects": "REUSE",
+        "normalUiBothProjects": "BLOCKED",
+        "wholeClosureGranted": false,
+        "repeatAcceptedTests": false,
+        "inconsistency": false
+      },
+      "isApplicationOrHumanAcceptance": false,
+      "duplicateCheckerRunByCrm": false
+    },
+    "finalInstalledMetadataReview": {
+      "state": "COMPLETE",
+      "agent": "/root/audit_evidence_reviewer",
+      "readOnly": true,
+      "openP1P2": 0,
+      "scope": "Four final metadata files,894/cac installation/hash/history/preflight, dependency-lock computed-vs-pinned distinction, CI/owner/human separation, no visible credential exposure."
+    },
+    "delivery": {
+      "sourceCommit": "89427492f27caf72c511a27262b55e73d782c407",
+      "previousMetadataCommit": "408aefc63a05d9dfc28c6391ec5a0657aa151954",
+      "installedRuntime": "89427492f27caf72c511a27262b55e73d782c407",
+      "supervisor": "cac08eaed0c4419550ecdaf6fdf4976252b83fa7",
+      "targetedTestsRerunByCrmThisRun": 0,
+      "sourceCiExactPriorRun": "success",
+      "newApplicationCiRequestedForDocs": false,
+      "existingPr": "https://github.com/melihsnyldzz-ui/melisa-crm/pull/3",
+      "existingAgentsReused": [
+        "/root/audit_source_explorer",
+        "/root/audit_evidence_reviewer"
+      ],
+      "newAgentsCreated": 0,
+      "sourceBatchUnchanged": true
     }
   }
 }
