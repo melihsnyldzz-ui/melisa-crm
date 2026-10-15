@@ -10,6 +10,7 @@ export function createRequestController({api,storage,uuid=newOperationId,onChang
   const photos=createCatalogPhotoCache({fetchPhoto:(id,options)=>api.photo(id,options),isCurrent:()=>active});
   const controllerFor=()=>{const controller=new AbortController();aborts.add(controller);return controller;};
   function fail(error,submitting=false){if([401,403,410].includes(error?.status)){epoch++;clearTimeout(expiryTimer);for(const controller of aborts)controller.abort();photos.clear();emit({status:'expired',busy:false,listBusy:false,error:customerError(error),products:[],session:null});}else emit({busy:false,listBusy:false,error:customerError(error,submitting),uncertain:submitting||state.uncertain||state.busy});}
+  function failList(error){if([401,403,410].includes(error?.status))fail(error);else emit({listBusy:false,error:customerError(error)});}
   function acceptSession(session){
     if(state.session&&state.session.sessionId!==session.sessionId)throw Object.assign(Error('Customer context changed'),{status:403});
     if(Date.parse(session.expiresAt)<=Date.now())throw Object.assign(Error('Session expired'),{status:410});
@@ -28,7 +29,7 @@ export function createRequestController({api,storage,uuid=newOperationId,onChang
   const result={
     getState:()=>state,
     async open(){const session=await run(signal=>api.session({signal}));if(session&&!session.request)await result.search(state.filters);return session;},
-    async search(filters){if(!active||state.status!=='ready')return;const own=epoch,sequence=++readSequence,controller=controllerFor();emit({listBusy:true,error:'',filters:{...state.filters,...filters}});try{const value=await api.products(state.filters,{signal:controller.signal});if(current(own)&&sequence===readSequence)emit({...value,listBusy:false});}catch(error){if(current(own)&&sequence===readSequence)fail(error);}finally{aborts.delete(controller);}},
+    async search(filters){if(!active||state.status!=='ready')return;const own=epoch,sequence=++readSequence,controller=controllerFor();emit({listBusy:true,error:'',filters:{...state.filters,...filters}});try{const value=await api.products(state.filters,{signal:controller.signal});if(current(own)&&sequence===readSequence)emit({...value,listBusy:false});}catch(error){if(current(own)&&([401,403,410].includes(error?.status)||sequence===readSequence))failList(error);}finally{aborts.delete(controller);}},
     review(){if(!state.busy&&!state.listBusy&&state.session?.draft.items.length)emit({step:'review',error:''});},
     browse(){if(!state.busy&&!state.uncertain&&!state.session?.request)emit({step:'catalog',error:''});},
     async edit(items){if(!state.session||state.session.request||state.busy||state.uncertain)return null;let normalized;try{normalized=draftItems(items);}catch(error){emit({error:error.message});return null;}return run(signal=>api.updateDraft(state.session.draft.revision,normalized,{signal}));},
