@@ -51,7 +51,12 @@ async function request(fetcher, root, token, path, {method='GET',body,signal}={}
   try {
     const response = await fetcher(`${root}${path}`, {method,headers,cache:'no-store',redirect:'error',credentials:'omit',signal:bounded.signal,...(body===undefined?{}:{body:JSON.stringify(body)})});
     let payload;
-    try { payload=await response.json(); } catch { if(bounded.signal.aborted)throw new DOMException('Cancelled','AbortError');throw contractError(); }
+    try { payload=await response.json(); } catch {
+      if(bounded.signal.aborted)throw new DOMException('Cancelled','AbortError');
+      // A missing/malformed error body must not hide an HTTP authorization denial.
+      if(!response.ok)throw Object.assign(new Error('İşlem tamamlanamadı.'),{status:response.status,code:''});
+      throw contractError();
+    }
     if (!response.ok) throw Object.assign(new Error('İşlem tamamlanamadı.'),{status:response.status,code:typeof payload?.error?.code==='string'?payload.error.code:''});
     if (payload?.success !== true || !Object.hasOwn(payload,'data')) throw contractError();
     if (bounded.signal.aborted) throw new DOMException('Cancelled','AbortError');
