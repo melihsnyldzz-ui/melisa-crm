@@ -17,7 +17,7 @@ export function ProductRequestPhoto({product,loadPhoto,compact=false}) {
 }
 function QuantityInput({item,disabled,onChange}) {
   const [value,setValue]=useState(String(item.quantity));const [error,setError]=useState('');
-  useEffect(()=>{setValue(String(item.quantity));setError('');},[item.quantity]);
+  useEffect(()=>{setValue(String(item.quantity));setError('');},[item,item.quantity]);
   const commit=()=>{try{const parsed=quantity(value);setError('');if(parsed!==item.quantity)onChange(parsed);}catch{setError('1–9999 arası adet girin.');setValue(String(item.quantity));}};
   return <label className="request-quantity">Adet<input aria-label={`${item.stockCode} adet`} type="number" inputMode="numeric" min="1" max="9999" step="1" value={value} disabled={disabled} onChange={event=>setValue(event.target.value)} onBlur={commit} onKeyDown={event=>{if(event.key==='Enter'){event.preventDefault();event.currentTarget.blur();}}}/>{error?<span role="alert">{error}</span>:null}</label>;
 }
