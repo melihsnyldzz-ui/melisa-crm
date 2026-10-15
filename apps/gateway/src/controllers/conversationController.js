@@ -95,16 +95,48 @@ export async function getConversationDetail(req, res, next) {
   }
 }
 
-export async function postConversationMessage(req, res, next) {
+export function createConversationSendGuard(req, {
+  verify = verifyCrmAccessToken, readAccess = getChatwootConversationAccess,
+} = {}) {
+  const header = req.get('authorization') || '';
+  const original = normalSessionFingerprint(req.user);
+  const scope = user => JSON.stringify([user?.testAdmin === true, user?.testPersonnel === true]);
+  const originalScope = scope(req.user);
+  const current = () => {
+    if (!/^Bearer [^\s]+$/.test(header)) throw Object.assign(Error('Oturum doğrulanamadı.'), {code:'AUTH_TOKEN_INVALID',statusCode:401});
+    // The official verifier also validates a protected SID when the JWT has one;
+    // legacy normal JWTs retain their existing verification contract.
+    const {user, expiresAt} = verify(header.slice(7), {includeContext:true});
+    if (!user?.active || !['patron','mudur','personel'].includes(user.role)
+      || !Number.isFinite(expiresAt) || expiresAt <= Date.now()
+      || normalSessionFingerprint(user) !== original || scope(user) !== originalScope)
+      throw Object.assign(Error('Oturum değişti.'), {code:'AUTH_TOKEN_INVALID',statusCode:401});
+    assertCrmPermission(user, 'crm.send');
+    return user;
+  };
+  return async () => {
+    await readAccess({conversationId:req.params.conversationId, user:current()});
+    current();
+  };
+}
+
+export function createConversationMessageController({
+  readConversation = getChatwootConversationDetail, sendMessage = sendCrmTextMessage,
+  verify = verifyCrmAccessToken, readAccess = getChatwootConversationAccess,
+} = {}) {
+ return async function postConversationMessage(req, res, next) {
   try {
-    const guard = createTestPersonnelRequestGuard(req);
-    const conversation = await getChatwootConversationDetail({
+    const guard = createTestPersonnelRequestGuard(req, {verify, readAccess});
+    const sendGuard = guard
+      ? () => guard({permission:'crm.send',conversationId:req.params.conversationId})
+      : createConversationSendGuard(req, {verify, readAccess});
+    const conversation = await readConversation({
       conversationId: req.params.conversationId,
       user: req.user,
     });
-    const beforeProviderSend = guard ? () => guard({permission:'crm.send',conversationId:req.params.conversationId}) : undefined;
-    await beforeProviderSend?.();
-    const result = await sendCrmTextMessage({
+    const beforeProviderSend = sendGuard;
+    await beforeProviderSend();
+    const result = await sendMessage({
       conversationId: String(conversation.id),
       phone: conversation.phone,
       remoteJid: conversation.remoteJid,
@@ -117,7 +149,9 @@ export async function postConversationMessage(req, res, next) {
       clientRequestId: req.body?.clientRequestId,
       actorId: req.user.id,
     }, beforeProviderSend ? {beforeProviderSend} : {});
-    await beforeProviderSend?.();
+    // Preserve the rehearsal's final check. For normal sends, a later revoke
+    // cannot undo an already confirmed transport or turn it into an auth error.
+    await guard?.({permission:'crm.send',conversationId:req.params.conversationId});
     return res.status(201).json({
       success: true,
       data: result,
@@ -126,7 +160,9 @@ export async function postConversationMessage(req, res, next) {
   } catch (error) {
     return next(error);
   }
+ };
 }
+export const postConversationMessage = createConversationMessageController();
 
 export function createOutboundStatusRequestGuard(req, verify = verifyCrmAccessToken) {
   const header = req.get('authorization') || '';
