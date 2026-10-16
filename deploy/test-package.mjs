@@ -18,6 +18,17 @@ const runtimeFiles = ['package.json','apps/gateway/package.json','apps/gateway/p
 const stockPoolPath='packages/erp-adapter/services/crmStockWorkerPool.mjs';
 const canonicalCatalogPaths=['packages/erp-adapter/services/canonicalCatalog.mjs','packages/erp-adapter/services/canonicalCatalogReader.mjs'];
 const buildFiles = ['apps/frontend/index.html','apps/frontend/vite.config.mjs','apps/frontend/scripts/prepare-sites-build.mjs','apps/frontend/worker/index.js','apps/frontend/.openai/hosting.json'];
+// This is one approved source/toolchain tuple, not a general alternate root.
+const crm18Node2419=Object.freeze({
+  profile:'crm18-node-v24.19.0',
+  commit:'439b63db8376a6b9d3ac8baa625ed98367022623',
+  tree:'0e58a21cdb2f20015ee8ac5db4ddb285bb3f3f5e',
+  repoRoot:'C:\\Sirket\\CRM\\melisa-crm',
+  releasesRoot:'C:\\Sirket\\CRM\\releases\\node-v24.19.0',
+  executable:'C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe',
+  nodeSha256:'3602f2bb1a10f2cbab4c36886218a33c1ab3db87290e73b033c46c77147d0237',
+  locks:Object.freeze({gateway:'c487dc65e3a107f5235408fad3523c8242a4c01b62c7475154ad4ae41a627b96',frontend:'9064a36a0c86464db93cc261ffedbc92a87ea2092315e207301ca8a8aa6d4d24'}),
+});
 
 export function safePackagePath(value) {
   return typeof value==='string' && value.length>0 && value.length<=500 && !value.includes('\\') && !/[<>:"|?*]/.test(value) && !value.startsWith('/')
@@ -223,10 +234,27 @@ function npmCi(directory,{production=false,env}){
   try{execFileSync(process.execPath,[npmPath,'ci','--offline','--ignore-scripts','--no-audit','--no-fund','--bin-links=false',...(production?['--omit=dev']:['--include=dev'])],{cwd:directory,env,stdio:['ignore','pipe','pipe'],windowsHide:true,maxBuffer:16*1024*1024});}
   catch{failure('PACKAGE_OFFLINE_DEPENDENCY_INSTALL_FAILED');}
 }
-export function createTestPackage({repoRoot=canonicalRoot,commit,releasesRoot=path.join(path.dirname(path.resolve(repoRoot)),'releases'),isolatedPreparation=false}){
-  if(typeof isolatedPreparation!=='boolean')failure('PACKAGE_BUILD_PROFILE_REJECTED');
+function node2419ReleaseRoot({repoRoot,commit,tree,releasesRoot,isolatedPreparation}){
+  const pin=crm18Node2419;
+  if(process.platform!=='win32'||process.arch!=='x64'||process.version!=='v24.19.0'
+    ||!samePath(repoRoot,pin.repoRoot)||commit!==pin.commit||tree!==pin.tree||isolatedPreparation!==true
+    ||releasesRoot!==undefined&&(typeof releasesRoot!=='string'||!samePath(releasesRoot,pin.releasesRoot))
+    ||!samePath(process.execPath,pin.executable))failure('PACKAGE_NODE2419_PROFILE_REJECTED');
+  assertPathAncestors(path.dirname(process.execPath));
+  const stat=fs.lstatSync(process.execPath);
+  if(!stat.isFile()||stat.isSymbolicLink()||stat.nlink!==1||!samePath(fs.realpathSync.native(process.execPath),process.execPath)
+    ||hash(fs.readFileSync(process.execPath))!==pin.nodeSha256)failure('PACKAGE_NODE2419_PROFILE_REJECTED');
+  for(const target of ['gateway','frontend'])if(hash(git(repoRoot,['show',`${commit}:apps/${target}/package-lock.json`]))!==pin.locks[target])failure('PACKAGE_NODE2419_PROFILE_REJECTED');
+  return pin.releasesRoot;
+}
+export function createTestPackage({repoRoot=canonicalRoot,commit,releasesRoot,isolatedPreparation=false,preparationProfile}){
+  if(typeof isolatedPreparation!=='boolean'||preparationProfile!==undefined&&preparationProfile!==crm18Node2419.profile)failure('PACKAGE_BUILD_PROFILE_REJECTED');
   const tree=verifyGitPackageSource(repoRoot,commit);
-  if(!path.isAbsolute(releasesRoot)||!samePath(releasesRoot,path.join(path.dirname(path.resolve(repoRoot)),'releases'))||within(repoRoot,releasesRoot))failure('PACKAGE_RELEASE_ROOT_REJECTED');
+  if(preparationProfile===crm18Node2419.profile)releasesRoot=node2419ReleaseRoot({repoRoot,commit,tree,releasesRoot,isolatedPreparation});
+  else{
+    if(releasesRoot===undefined)releasesRoot=path.join(path.dirname(path.resolve(repoRoot)),'releases');
+    if(typeof releasesRoot!=='string'||!path.isAbsolute(releasesRoot)||!samePath(releasesRoot,path.join(path.dirname(path.resolve(repoRoot)),'releases'))||within(repoRoot,releasesRoot))failure('PACKAGE_RELEASE_ROOT_REJECTED');
+  }
   assertPathAncestors(path.dirname(releasesRoot));fs.mkdirSync(releasesRoot,{recursive:true});assertPathAncestors(releasesRoot);
   const packageName=`crm-${isolatedPreparation?'shared-':''}test-${commit}`;
   const destination=path.join(releasesRoot,packageName),staging=path.join(releasesRoot,`.${packageName}-${crypto.randomUUID()}.tmp`);
