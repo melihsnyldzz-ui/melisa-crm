@@ -3324,4 +3324,174 @@
       "sourceFreeze": "Clean52f107b maintained during actual owner build; only docs resumed after completed preparation receipt and owner build-complete commentary were read; application/builder/test unchanged."
     }
   }
+,
+  "crm18SharedTestInstallation": {
+    "date": "2026-10-17",
+    "timezone": "Europe/Istanbul",
+    "scope": "Docs-only CRM06/E02/R02 update from ERP owner completed shared TEST receipts; no second technical task",
+    "ownerCompletedAt": "2026-10-16T23:12:27.529Z",
+    "ownerFinalReadbackAt": "2026-10-16T23:10:36.810Z",
+    "provenance": {
+      "owner": "ERP main owner; sole shared TEST writer",
+      "ownerDocumentationCommit": "93a072f137728435f21037e70e9cf074fa6a3fb3",
+      "publicEvidence": "https://github.com/melihsnyldzz-ui/melisa-erp-v2/blob/93a072f137728435f21037e70e9cf074fa6a3fb3/docs/evidence/erp/2026-10-16-joint-test-candidate/README.md",
+      "existingJointReport": "https://github.com/melihsnyldzz-ui/melisa-erp-v2/pull/23#issuecomment-6222599673",
+      "privateReceiptHashes": {
+        "installed-readback.json": "0ee343b1ba9b840801e82405e8b16e33b612b899f3fdec6f4a8c0b4f075d81be",
+        "installed-readback-final.json": "a4499de54219b3f42873191962491e382b0c752c6ef330476281cd46da87e4b0",
+        "stability.json": "7240bcdb14ec0879290b7645c6d55b8043a408c9b7ff4d1ffde9306c9b71c915",
+        "technical-completion.json": "13609dd104585def2a2c5edde968a53fbd19a4f6b40d01ef5d0218f05812e232",
+        "normal-screen-evidence.json": "744228f45c5a55926db1cb26c9c1c1a1f8fc01d0862fb00f5cd458d4233d676c"
+      },
+      "rawPrivateReceiptsOrScreensPublished": false
+    },
+    "readOnlyMatching": {
+      "firstFinalAndStabilityRefsMatchCompletionHashes": true,
+      "actualSettingsFileHashMatchesCompletionAndReadbacks": true,
+      "normalScreenSettingsMatch": true,
+      "normalScreenReadbackRef": "first installed-readback.json; final snapshot identity/settings matched separately",
+      "sixCoreFirstFinalPidBirthArgvMatch": true,
+      "hubFirstFinalPidBirthArgvMatch": true,
+      "coreStages": [
+        "erpNative",
+        "erpApi",
+        "crmNativeOrder",
+        "crmCatalog",
+        "crmOrders",
+        "crmServer"
+      ],
+      "sameDatabaseAndCopy": true,
+      "rawBeforeImageBackupFilesPresent": 5,
+      "newApplicationTestOrRuntimeProbe": false,
+      "underlyingSqlOrTest125Queries": false,
+      "protectedFilesOrTasksReplayed": false
+    },
+    "installed": {
+      "verified": true,
+      "crm": {
+        "source": "439b63db8376a6b9d3ac8baa625ed98367022623",
+        "manifestSha256": "e85ce261ece92201e24c86ea52e4df7e95b022b0ae6835e80c9b99e5abaec938",
+        "indexSha256": "0fcb6b27d9cac1aefa186a41b60962cf18be06154b27b171bb65df99a4dfc5af",
+        "nodeVersion": "v24.19.0"
+      },
+      "erpApplicationSource": "f5f672c439972b287f77ddd2c7750fa0c6369e87",
+      "supervisorSource": "2bf0f7554c5b1984e2baf0e9afc121967d2485e8",
+      "ownerReportedSupervisorManifestPrefix": "fac585",
+      "settingsSha256": "be8ee1864339d487506558335f382d9369a2c51b51703ccb4501afd48e4bcb96",
+      "databaseFamily": "DB02",
+      "copyLabel": "copy-e16b",
+      "actualT1": false,
+      "sourceCheckoutUsedAsDeploymentProof": false
+    },
+    "stability": {
+      "ownerStatus": "OBSERVED_STABLE_TEN_MINUTES",
+      "elapsedMs": 600419,
+      "samples": 21,
+      "allSamplesSameSupervisorAndPublicReady": true,
+      "automaticRestartObserved": false,
+      "actualWindowsRebootOrLogon": false,
+      "proofScope": "Recorded owner interval; no fresh health or service calls by CRM"
+    },
+    "ownerPreservation": {
+      "files": 100,
+      "protectedProcessesUnchanged": true,
+      "sourceAccountsAndRolesUnchanged": true,
+      "originalFilesPreserved": true,
+      "sqlTest125TaskMetadata": "Owner-reported preserved; CRM did not query or replay",
+      "operationLocksClosed": 5,
+      "rawBeforeImageCount": 5,
+      "rootClosedLocksOrMutatedSharedFiles": false
+    },
+    "normalScreens": {
+      "ownerObservedAt": "2026-10-16T23:03:09.308Z",
+      "erpOwnerObserved": {
+        "normalGreenScreenRendered": true,
+        "actualCatalogRowsLoaded": true,
+        "pageSize": 50,
+        "search": true,
+        "productCard": true,
+        "photo": true,
+        "barcode": true,
+        "stock": true,
+        "priceAndCurrency": true,
+        "privateScreensPublished": false
+      },
+      "crmOwnerObserved": {
+        "normalGuiVerified": false,
+        "blocker": "ERR_BLOCKED_BY_CLIENT",
+        "supportedFreshTab": true,
+        "httpIndexAndProcessIdentityVerified": true
+      },
+      "hubOwnerJointReport": {
+        "normalGuiVerified": false,
+        "blocker": "403 Forbidden",
+        "source": "Existing joint report6222599673; not a new CRM browser run"
+      },
+      "crmPerformedNewBrowserOrLoginAttempt": false
+    },
+    "closure": {
+      "jointP033": "GREEN - technical source/package/shared TEST installation",
+      "jointP02": "YELLOW/OPEN",
+      "jointP022": "YELLOW/OPEN",
+      "jointP022c": "YELLOW/OPEN - technical stability done; combined normal GUI open",
+      "jointP023": "YELLOW/OPEN",
+      "originalCrm06E02OrWholeProjectClosed": false,
+      "crmCounts": {
+        "total": 25,
+        "green": 12,
+        "partial": 13,
+        "red": 0
+      },
+      "wholePlanTotal": 74
+    },
+    "acceptance": {
+      "authenticatedOperationsVerified": false,
+      "normalGuiFirstLoginVerified": false,
+      "human": "BEKLİYOR",
+      "humanAccepted": false,
+      "physicalPhoneOrZebra": "BEKLİYOR",
+      "windowsRebootLogon": "BEKLİYOR",
+      "lastHumanReplyUnchanged": "Henüz denemedim.",
+      "originalAcceptanceStepsPreserved": true
+    },
+    "ci": {
+      "erpSupervisorExactSource": "2bf0f7554c5b1984e2baf0e9afc121967d2485e8",
+      "pullRequest": {
+        "id": 38977022199,
+        "state": "SUCCESS"
+      },
+      "push": {
+        "id": 38977018199,
+        "state": "SUCCESS"
+      },
+      "crmSourceCb7060a": "REUSE prior exact-source SUCCESS; not rerun",
+      "docsOnlyDelivery": "Existing feature branch / PR3 with [skip ci]; source CI not assigned to docs HEAD",
+      "rerunRequested": false
+    },
+    "boundaries": {
+      "applicationCodeOrTestsChanged": false,
+      "buildInstallRestart": false,
+      "sharedRuntimeConfigStoreSqlWrite": false,
+      "applicationHttpHealthOrLogin": false,
+      "unsupportedCredentialTransport": false,
+      "privateSettingsScreensCommercialDetailsPublished": false,
+      "newDatabaseMigrationOrCommercialOperation": false,
+      "realCustomerMessages": false,
+      "paidApi": false,
+      "liveVegaRealT1": false,
+      "mainMergeTag": false,
+      "newAgentGoalAutomationTracker": false,
+      "preflightCacheScriptExecuted": false,
+      "nextWorkOpened": false
+    },
+    "documentationReview": {
+      "reviewer": "existing evidence reviewer",
+      "scope": "read-only four-file diff",
+      "openP1": 0,
+      "openP2": 0,
+      "applicationTestOrRuntimeExecution": false
+    },
+    "metadataIntegrity": "PASS: historical JSON unchanged; single active Sıradaki iş; one unchanged historical preflight block; source/runtime/GUI/human states separate",
+    "stagedSecretScan": "Mandatory redacted staged scan required immediately before docs commit; no application tests or CI rerun requested"
+  }
 }
