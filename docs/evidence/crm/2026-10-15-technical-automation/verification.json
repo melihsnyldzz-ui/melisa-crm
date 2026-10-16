@@ -3262,12 +3262,38 @@
       "ownerReportedBlocker": "crmServer PACKAGE_TOOLCHAIN_MISMATCH after Node24.19 transition",
       "currentHealthIndependentlyProbed": false,
       "actualNodeDistributionOrBuild": false,
-      "packagePrepared": false,
+      "packagePrepared": true,
       "installed": false,
       "activated": false,
       "sourceCheckoutIsDeployment": false,
       "responsibleOwner": "ERP main owner",
-      "nextDependency": "Owner distributes exact Node/npm,builds immutable439b63 variant,prepares ERP profile,performs shared TEST transition,provides identity/rollback/readback receipts"
+      "nextDependency": "ERP owner shared TEST transition and source/manifest/index,protection/rollback,normal GUI/readback receipts",
+      "preparedBy": "ERP main owner",
+      "preparedAt": "2026-10-16T21:39:27.983Z",
+      "installedRuntimeReceiptMatched": false,
+      "installedFieldScope": "Owner preparation receipt snapshot only; later shared transition not independently verified",
+      "ownerPreparation": {
+        "receiptName": "crm18-node24-package.json",
+        "receiptSha256": "0b8b275496e8d35145916c8497071d2f81cf82fdd55667f8cbd73028adcd25e7",
+        "equivalenceName": "crm18-node24-equivalence.json",
+        "equivalenceSha256": "fa34a00414d5b2dc17f45d3afcc96d79ba5040a39a9627e4de5fd5ffc9154924",
+        "actualManifestSha256": "e85ce261ece92201e24c86ea52e4df7e95b022b0ae6835e80c9b99e5abaec938",
+        "ownerReportedIndexSha256": "0fcb6b27d9cac1aefa186a41b60962cf18be06154b27b171bb65df99a4dfc5af",
+        "sourceFiles": 186,
+        "payloadFiles": 2292,
+        "ownerOriginalPackageVerifierPassed": true,
+        "rootReadOnlyManifestAndSourceTreeLocksBuildCountsMatched": true,
+        "rootExecutedBuildOrVerifierOrRuntime": false,
+        "ownerReportedSourceLocksPayloadRowsIdentical": true,
+        "ownerReportedOldPackageModified": false,
+        "metadataReview": {
+          "reviewer": "existing evidence reviewer",
+          "scope": "read-only four-file owner preparation checkpoint",
+          "openP1": 0,
+          "openP2": 0
+        }
+      },
+      "actualNodeDistributionOrBuildScope": "CRM execution only; actual owner preparation is separately recorded below"
     },
     "acceptance": {
       "normalLocalGui": "GUI DENENMEDİ",
@@ -3294,7 +3320,8 @@
       "newAgentGoalAutomationTracker": false,
       "oldPackagesModified": false,
       "preflightScriptExecuted": false,
-      "ownerCoordination": "Existing user-authorized ERP TEST-install coordination; source recipe delivered, four docs dirty before owner requested build freeze; owner warned to wait for clean docs checkpoint."
+      "ownerCoordination": "Existing user-authorized ERP TEST-install coordination; source recipe delivered, four docs dirty before owner requested build freeze; owner warned to wait for clean docs checkpoint.",
+      "sourceFreeze": "Clean52f107b maintained during actual owner build; only docs resumed after completed preparation receipt and owner build-complete commentary were read; application/builder/test unchanged."
     }
   }
 }
