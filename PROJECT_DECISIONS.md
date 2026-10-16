@@ -1,5 +1,20 @@
 # CRM karar merkezi
 
+### CRM-DEC-020 — 16 Ekim 2026 — Ana ajanlar özerk yürütür, Dot denetler (karşı ERP-DEC-062)
+
+**Durum: Kullanıcı tarafından onaylandı.** Kaynak: Kullanıcının iki Codex ajanının, Dot bir görev göndermese bile, kendi mevcut bitiş planlarından güvenli işleri seçerek çalışmasına ve Dot'un üst koordinatör olmasına verdiği **"yapalım"** onayı. Bu karar, CRM-DEC-019 ve 15 Ekim tarihli tek-Dot-görev-devri hükümlerinin **görevi yalnız Dot seçer / ajan her işten sonra durur** bölümünü **supersede eder**. Önceki teknik izinler, özgün 49+25 gereksinim, kararlar ve kanıtlar korunur.
+
+**Yürütme ve devam:** Mevcut ERP ve CRM ana Codex konuşmalarının her biri kendi `ERP_FINISH_PLAN.md` / `CRM_FINISH_PLAN.md`, `STATUS.md` / `CRM_STATUS.md`, ilgili PR ve kabul kayıtlarını okuyarak **bağımlılığı hazır bir sonraki yetkili teknik işi bizzat seçebilir**. Aynı mevcut zamanlanmış tur boyunca işini kod + hedefli test + bağımsız inceleme + feature dalına commit/push/CI ile teslim ettikten sonra çalışma süresi elverdiği ölçüde sıradaki güvenli bağımsız işe geçebilir; her küçük iş için yeni Dot veya kullanıcı "devam" mesajı gerekmez. Önceden bitmiş işi tekrarlamaz, `task_id`/kapsam/kanıt kontrolünü yapar, kalite veya yetki engeli varsa onu raporlayıp ayrı uygun işe geçer. Codex çalışmayan bir turu kendiliğinden başlatmış sayılmaz; **mevcut native ERP ve CRM geliştirme zamanlamalarının tekrar etkinleştirilmesi gereklidir**. Bu belge otomasyonu açmaz.
+
+**Dot'un rolü:** Birincil **bağımsız koordinatör, denetçi ve ortak risk/engel yöneticisi** olur; normal rutin kaynak işlerinin vazgeçilmez başlatıcısı olmaz. Her teslimin gerçek kaynak SHA/CI/test/readback ayrımını doğrular, bitiş ağacı ve iki repo arasındaki bağımlılıkları gözetir, aynı scope'un iki kere yürümemesini denetler. Her iki mevcut Codex geliştirme zamanlaması çalışır haldeyken Dot rutin işleri ikinci kez göndermez. **Yalnız** yerel native scheduled run'ın kaçırıldığı ve ana thread'in idle/queue boş olduğu kanıtlanırsa, ya da yetkili tek ortak kurtarma/koordinasyon işi gerekiyorsa, önceden yetkili güvenli kapsamda müdahale edebilir. Dot'un mevcut iki saatlik denetimi yedek/bağımsız audit olarak korunur; yeni ajan/Goal/tracker/otomasyon açılmaz. Bir ajan çalışıyor veya kuyruğu bilinmiyorsa ikinci iş gönderilmez.
+
+**Paralel ama izole:** ERP ve CRM'nin **ayrı kaynak dalı / worktree** üzerinde bağımsız kod/test çalışmaları aynı zamanda yapılabilir; eski "ikisi toplam en çok bir görev" limiti yalnız Dot tek-görev pilotunun tarihsel kuralıdır, yeni geliştirme düzenine uygulanmaz. **Ortak izole TEST DB02/SQL/config/runtime/servis/kurulumun tek yazarı ERP ana ajanıdır**; CRM shared ortama yazmaz. Taze owner/lock/kimlik, before-image, gerçek rollback ve son readback doğrulanmadan hiçbir ortak TEST geçişi yapılmaz. Mevcut `STOP_CAPTURED` / iki watcher durmuş kurtarma engeli çözülmüş kabul edilmez; tekrar deneme, zorla stop, bypass veya kontrolsüz restart YOK. Bu engel bağımsız source/offline/CI çalışmalarını durdurmaz.
+
+**Öncelik:** Asıl ERP/CRM bitiş ağacı ve çalışır güvenli TEST kurtarması, yeni Hub paneli/görsel rapor işinden **önde**. Yeni panel ana ajanları meşgul ederek asli bitişi geciktirmez. Gerçek normal GUI, fiziksel telefon/terminal, gerçek reboot/logon ve personel kabulü sonunda özgün kabul ID'lerinde BEKLİYOR; CI/kurulum bunların yerine geçmez.
+
+**Korumalı sınırlar:** LIVE/Vega/gerçek T1/gerçek ticari veri, tahsilat/fatura/stok/cari gerçek yazısı, gerçek müşteri veya WhatsApp mesajı, ücretli API, main merge/release, erişim/rol/DPAPI/kimlik bypass, toplu silme/reset ve yeni işletme/ürün kararı **ayrı kullanıcı onayı gerektirir**. Platformun native güvenlik izinleri bu kayıtla ortadan kalkmaz. Özellikle kod çalışmadıysa, native zamanlama henüz etkin değilse, veya TEST recovery geçilmediyse "çalışıyor / kuruldu" denmez.
+
+
 ### CRM-DEC-019 — 15 Ekim 2026 — Dot kalıcı teknik yetki ve kontrollü TEST özerkliği (karşı ERP-DEC-061)
 
 **Durum: Onaylı kullanıcı kararı.** Kaynak: Kullanıcının “Bu kalıcı yetki düzenini ... onaylıyor musun?” sorusuna “onaylıyorum” açık yanıtı. Kod/TEST tamamlandı veya anlık koordinasyon başladı anlamına gelmez.
