@@ -7,4 +7,5 @@ runtime/
 *.tap
 uploads/
 coverage/
+work/
 apps/frontend/.sites-runtime/

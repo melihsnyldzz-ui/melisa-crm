@@ -1,0 +1,74 @@
+{
+  "date": "2026-10-16",
+  "sourceCommit": "ccc5c937a0b7087623f443c1a2414d5169779eab",
+  "pr": "https://github.com/melihsnyldzz-ui/melisa-crm/pull/17",
+  "environment": "synthetic-cloud-loopback-only",
+  "browser": {
+    "status": "PASS",
+    "scenarios": 12,
+    "orderPostCount": 1,
+    "orderGetCount": 3,
+    "customerSubmitCount": 1,
+    "pageErrors": 0,
+    "consoleErrors": 0,
+    "normalHttpErrors": 0,
+    "outsideOriginRequests": 0
+  },
+  "offlineRegression": {
+    "frontend": {
+      "pass": 573,
+      "skip": 0,
+      "fail": 0
+    },
+    "gateway": {
+      "pass": 583,
+      "skip": 3,
+      "fail": 0
+    },
+    "contractsAndCi": {
+      "pass": 124,
+      "skip": 48,
+      "fail": 0
+    },
+    "totalPass": 1280,
+    "totalSkip": 51,
+    "totalFail": 0
+  },
+  "newChecks": {
+    "history": 3,
+    "syntheticHttpAndGuard": 3,
+    "targetedHistoryAndDialog": 7,
+    "note": "The targeted seven include four dialog cases also present in the full regression; do not add overlapping checks."
+  },
+  "build": "PASS",
+  "syntax": {
+    "status": "PASS",
+    "trackedJsModules": 343
+  },
+  "secrets": {
+    "historyFindings": 0,
+    "stagedFindings": 0
+  },
+  "review": {
+    "openP1": 0,
+    "openP2": 0,
+    "scope": "independent read-only source review; mobile correction additionally verified in Chromium"
+  },
+  "runtime": {
+    "origin": "http://127.0.0.1:34157",
+    "pid": 9030,
+    "owner": "agent",
+    "entry": "scripts/cloud-test/server.mjs",
+    "databaseConnection": false,
+    "outbound": "blocked",
+    "commercialEffects": false
+  },
+  "realUserAcceptance": "BEKLIYOR",
+  "installedWindowsTestCommit": "Durum doğrulanmadı",
+  "liveCommit": "Durum doğrulanmadı",
+  "limitations": [
+    "Orders view is the latest recovery journal per authorized conversation in the same browser session, not a server archive or cross-device list.",
+    "ERP and Chatwoot boundaries use fictional fixtures; no native ERP/SQL/Vega acceptance is claimed.",
+    "390px viewport is not physical mobile or employee acceptance."
+  ]
+}

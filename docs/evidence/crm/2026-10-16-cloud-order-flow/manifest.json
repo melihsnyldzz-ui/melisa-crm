@@ -1,0 +1,75 @@
+{
+  "sourceCommit": "ccc5c937a0b7087623f443c1a2414d5169779eab",
+  "files": [
+    {
+      "file": "01-customer-selected.png",
+      "bytes": 257858,
+      "sha256": "e74087f74a4e7e76e86b25584b9d5c14cf7c88bc10fb8b2989438cc63870cacb"
+    },
+    {
+      "file": "02-catalog-two-products.png",
+      "bytes": 213717,
+      "sha256": "328800e3753773f5d3a04e85e181d7a6e1ab04cb251081989caa8139266d7213"
+    },
+    {
+      "file": "03-order-customer-quantities.png",
+      "bytes": 244136,
+      "sha256": "d8810a62ae78284f28adeb327f19318a31d5c1030bac84501d8ae74969040b2d"
+    },
+    {
+      "file": "04-order-saved-readback.png",
+      "bytes": 257590,
+      "sha256": "6612e5be762bcd6e0c3681738b929327909e8eb997b45fa4c3e44a065e6f0650"
+    },
+    {
+      "file": "05-saved-orders-list.png",
+      "bytes": 67434,
+      "sha256": "7a369f575c8d51d4d246b73b5fae3bb2a639030d81bb2c93aacfe01b306000f1"
+    },
+    {
+      "file": "06-order-reopened-after-refresh.png",
+      "bytes": 164730,
+      "sha256": "af69542e107f06449d312b978f8bd46c15eebc59b08685db061f095377d73ba7"
+    },
+    {
+      "file": "07-order-mobile-viewport.png",
+      "bytes": 81786,
+      "sha256": "cb898aafac0f41375615356705a3e270bc53bd316acd1a7e3ed2c8e5ab0fc55e"
+    },
+    {
+      "file": "08-customer-request-review.png",
+      "bytes": 56171,
+      "sha256": "3dc0ec1b35e48dc7ede6edf6428cb91c4007b22add71c132719c0f5ab5658cca"
+    },
+    {
+      "file": "09-customer-request-submitted.png",
+      "bytes": 52581,
+      "sha256": "10f8e27d424ae287f786dc1d3bc76044233a6fd0b893cde4af2e1303f1264308"
+    },
+    {
+      "file": "10-staff-request-visible.png",
+      "bytes": 189547,
+      "sha256": "b1852914631b35f76f7691ac6a203c9eb226c23a740ccede201687a35a95f577"
+    },
+    {
+      "file": "11-assigned-staff-request.png",
+      "bytes": 163717,
+      "sha256": "ec5c18f9f9b552f2a3fcf710805cda1b3f7bad2c184009d7146114a5d83416b1"
+    },
+    {
+      "file": "12-unrelated-staff-no-customer.png",
+      "bytes": 39829,
+      "sha256": "0cc04f6be3e660a391b4bbf38beca0226a4f7913a05372ebd543c2453ae99182"
+    },
+    {
+      "file": "browser-result.json",
+      "bytes": 18036,
+      "sha256": "096b9a04ba74903e7fef0c1798adc8e1534eed81df6e50eaab96abecf3777731"
+    },
+    {
+      "file": "test-results.json",
+      "bytes": 2043,
+      "sha256": "aade192694d168916c08c0d6a16b78b30708acd6480b519d435a516b1c2d67bf"
+    }
+  ]
+}

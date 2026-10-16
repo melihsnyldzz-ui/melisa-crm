@@ -849,6 +849,12 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
 .erp-order-dialog input,.erp-order-dialog select { min-height:44px; max-width:100%; border:1px solid #d5e1dc; border-radius:8px; padding:10px; background:white; }
 .erp-order-dialog form { margin:14px 0; }
 .erp-order-dialog [role=alert] { color:#9b302c; }
+.erp-draft-reference,.order-id small { overflow-wrap:anywhere; }
+@media(max-width:760px) { .backoffice-page .order-grid { grid-template-columns:1fr; } .order-card footer button { min-height:44px; font-size:12px; } }
 .catalog-action-buttons { flex-wrap:wrap; }
-@media(max-width:760px) { .erp-order-dialog { width:calc(100vw - 20px); max-height:94dvh; } .catalog-action-buttons button { min-height:44px; } }
+@media(max-width:760px) {
+ .erp-order-backdrop { padding:10px; grid-template-columns:minmax(0,1fr); }
+ .erp-order-backdrop > .erp-order-dialog { width:100%; min-width:0; max-width:100%; max-height:calc(100dvh - 20px); }
+ .catalog-action-buttons button { min-height:44px; }
+}
 .test-environment-label{padding:5px 12px;background:#fff4d6;color:#715000;font-size:12px;font-weight:700}
