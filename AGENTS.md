@@ -1,5 +1,18 @@
 # Melisa CRM — etkin çalışma talimatları
 
+## EN YÜKSEK ÖNCELİK — 16 Ekim 2026 / CRM-DEC-021: Büyük iş akışını tamamla, sonra panel
+
+Kullanıcı **önce ERP/CRM'deki orijinal bitiş gereksinimlerinin büyük dikey akışlarını** ilerletmeyi, yüzde/performans panelini **sonra** geliştirmeyi açıkça seçti. Bağlayıcı kalıcı karar [PROJECT_DECISIONS.md](PROJECT_DECISIONS.md) **CRM-DEC-021**; karşı repo **ERP-DEC-063**. Bu öncelik, önceki mini Cloud bug-fix görev seçimini günceller; eski teslimlerin teknik kanıtı korunur.
+
+**İlk iş seçimi:** Mevcut 49/25 bitiş yapraklarından bir özgün kabul ID'si ve teknik parçaları bitirilebilir akış seç. CRM tarafı için öncelikli aday CRM06 müşteri/katalog/ürün/adet/tek talep/saklama/yeniden açma/atanmış ve yanlış personel; ERP tarafı için ERP09 satış/tahsilat/açık hesap **sentetik domain/API kontratı ve GUI** (gerçek SQL ve ticari veri yok). Önce PR13/14 CRM ile PR32/33 ERP ve güncel ana branch kapsam/çakışmalarını kontrol et. Bir akış birkaç güvenli feature PR'ına bölünürse her parça aynı gereksinime ve kabul senaryosuna bağlansın; görev kapanışı için gerçek Cloud uçtan uca smoke sonucu sunulsun. Sadece bir UI satırını düzeltmek, çoğu iş akışını kapatmış sayılmaz.
+
+**Cloud TEST:** Kullanıcının yayımladığı mevcut ERP ve CRM Codex Cloud ortamında **sentetik örnek müşteri, ürün, sipariş ve çevrimdışı/yerel mock servis** ile frontend+API kontratı+negatif durumlar+tarayıcı akışı çalıştırılabilir. Cloud çalışma alanını ortak sürekli TEST sunucusu ilan etme. Uygun kalıcı ortak bulut staging hosting/DB ancak ayrı teknik tasarım ve gerekli erişim/maliyet onayları sonrası kurulur; yeni hosting, genel internet portu, gerçek JWT/credential veya Vega/SQL bağlantısını icat etme. Dot'un task bilgisayarı da kalıcı Windows/Vega/SQL/terminal TEST değildir.
+
+**Yerel TEST ayrı:** ERP'nin tek shared DB02, SQL, Windows servis, watcher, Hub ve kurulum sahibi olma kuralı değişmez. Mevcut `STOP_CAPTURED` / iki watcher durmuş ortamda güvenli sahiplik-kurtarma kanıtı olmadan ikinci stop/restart/kurulum yok. Yerel TEST ve gerçek cihaz kabulünü Cloud sentetik PASS yerine sayma.
+
+**Çalışma:** Dot Cloud uygun iş akışlarını koordine/denetlesin; mevcut Cloud/yerel ana ajanlar çakışmasız kapsamda çalışsın. İş seçimi tek bir rastgele mikro düzeltme değil, **kullanılabilir bütün akış için tanımlı kabul sonucuna yaklaşma** olsun. Gerektiğinde 2-4 bağlantılı küçük PR değerlendirilebilir; her PR exact CI/review ile sunulsun ama tamamlanma sayıları yalnız özgün insan/teknik kapanış şartlarıyla değişsin. Mevcut doğrudan onay/scheduler/yerel-Codex sınırları korunur; GitHub dosya değişikliği görev başlatmaz. LIVE/Vega/gerçek T1/ticari işlem/müşteri mesajı, güvenlik bypass, main merge veya ücretli servis yetkisi verilmedi.
+
+
 ## ÖNCELİKLİ ÇALIŞMA KURALI — 16 Ekim 2026 / CRM-DEC-020
 
 **YENİ KULLANICI KARARI (önceki yalnız-Dot devri kuralını günceller):** Mevcut CRM ana ajanı `AGENTS.md`, `PROJECT_DECISIONS.md`, kendi `*_FINISH_PLAN.md`, `STATUS/CRM_STATUS` ve ilgili feature-PR son kaynak/teslim kayıtlarını okuyarak **kendi iş sırasını seçebilir ve güvenli teknik işleri kendi native Codex zamanlanmış çalışma turu içinde arka arkaya ilerletebilir.** Dot'un her mikro görevi göndermesini veya kullanıcıdan her turda "devam" beklemesini şart koşma. Eski "Dot verir, sen bitince DUR" ifadesi tarihsel tek-görev pilotlarının kuralıdır ve bu devam döngüsünü artık engellemez. Tam sözleşme [PROJECT_DECISIONS.md](PROJECT_DECISIONS.md) **CRM-DEC-020** (karşı **ERP-DEC-062**) kararında; 49 ERP + 25 CRM yaprağı korunur.
