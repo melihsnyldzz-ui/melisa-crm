@@ -3129,4 +3129,172 @@
       "nextTask": "STOP after task06; Dot selects next scope, no task07."
     }
   }
+,
+  "crm18Node2419Profile": {
+    "date": "2026-10-17",
+    "scope": "CRM06/E02/R02 existing combined candidate runtime-toolchain preparation unblock; source only",
+    "source": {
+      "commit": "cb7060a524a26d2c5bbd05b85aada896fef7d5fc",
+      "branch": "codex/crm-agents-on-completion-20261003",
+      "files": [
+        "deploy/test-package.mjs",
+        "tests/test-package-node2419.test.mjs"
+      ],
+      "pr": "https://github.com/melihsnyldzz-ui/melisa-crm/pull/3",
+      "receipt": "https://github.com/melihsnyldzz-ui/melisa-crm/pull/3#issuecomment-6225153364"
+    },
+    "approvedTuple": {
+      "profile": "crm18-node-v24.19.0",
+      "commit": "439b63db8376a6b9d3ac8baa625ed98367022623",
+      "tree": "0e58a21cdb2f20015ee8ac5db4ddb285bb3f3f5e",
+      "platform": "win32",
+      "arch": "x64",
+      "nodeVersion": "v24.19.0",
+      "nodeSha256": "3602f2bb1a10f2cbab4c36886218a33c1ab3db87290e73b033c46c77147d0237",
+      "isolatedPreparation": true,
+      "locks": {
+        "gateway": "c487dc65e3a107f5235408fad3523c8242a4c01b62c7475154ad4ae41a627b96",
+        "frontend": "9064a36a0c86464db93cc261ffedbc92a87ea2092315e207301ca8a8aa6d4d24"
+      },
+      "releaseVariant": "node-v24.19.0",
+      "basename": "crm-shared-test-439b63db8376a6b9d3ac8baa625ed98367022623",
+      "exactCanonicalExecutableAndRootPinnedInSource": true
+    },
+    "behavior": {
+      "new": "One closed preparation tuple checked before mkdir; no caller process/hash observation overrides",
+      "preserved": [
+        "legacy root and basename",
+        "origin/clean Git checks",
+        "link/hardlink/ancestor and overwrite guards",
+        "locked offline ignore-scripts dependency installation",
+        "manifest actual Node version validation",
+        "old packages untouched"
+      ],
+      "generalAlternateRootOrSuffix": false,
+      "manifestVerifierRelaxed": false
+    },
+    "targetedVerification": {
+      "command": "node --test --test-timeout=20000 tests/test-package-node2419.test.mjs",
+      "before": {
+        "pass": 2,
+        "fail": 21,
+        "durationMs": 364.3856
+      },
+      "after": {
+        "pass": 23,
+        "fail": 0,
+        "durationMs": 366.5914
+      },
+      "actualReproduction": "Approved variant rejected PACKAGE_RELEASE_ROOT_REJECTED before fix",
+      "negativeBeforeInterpretation": "Most negative before failures are new error-code expectations; not evidence old code accepted unsafe inputs",
+      "fixtureBoundary": "Actual builder evaluated with synthetic VM process/Git/fs/digests only to staging; not real binary/build/runtime proof",
+      "affectedPackageRegression": {
+        "command": "node --import ./tests/offline-test-guard.mjs --test --test-timeout=20000 tests/test-package.test.mjs",
+        "pass": 17,
+        "fail": 0,
+        "durationMs": 21698.5563
+      },
+      "actualVerifierWrongNodeRejected": true,
+      "independentSourceReview": {
+        "reviewer": "existing az independent reviewer",
+        "openP1": 0,
+        "openP2": 0,
+        "readOnly": true
+      },
+      "diffCheck": "PASS",
+      "stagedSecretScan": "PASS; no leaks",
+      "metadataReview": {
+        "reviewer": "existing evidence reviewer",
+        "scope": "read-only four-file diff",
+        "openP1": 0,
+        "openP2": 0,
+        "sourcePackageRuntimeAndHumanSeparation": true
+      },
+      "metadataIntegrity": "PASS: historical JSON unchanged; one active Sıradaki iş; one unchanged preflight block; counters and human acceptance unchanged"
+    },
+    "ci": {
+      "scope": "exact cb7060a source; all jobs and three workflows completed SUCCESS",
+      "pullRequest": {
+        "id": 38970314160,
+        "state": "SUCCESS",
+        "jobs": [
+          "quality-build-test SUCCESS",
+          "windows-startup-test SUCCESS",
+          "secret-scan SUCCESS"
+        ]
+      },
+      "push": {
+        "id": 38970309602,
+        "state": "SUCCESS",
+        "jobs": [
+          "quality-build-test SUCCESS",
+          "windows-startup-test SUCCESS",
+          "secret-scan SUCCESS"
+        ]
+      },
+      "aiOffline": {
+        "id": 38970314336,
+        "state": "SUCCESS"
+      },
+      "metadataHeadInheritsSourceCi": false
+    },
+    "existingFlowEvidence": {
+      "source": "439b63db8376a6b9d3ac8baa625ed98367022623",
+      "pr": 18,
+      "directory": "docs/evidence/crm/2026-10-16-combined-candidate",
+      "chromiumMain": 12,
+      "chromiumAdditional": 4,
+      "creationPosts": 1,
+      "sameUuidGets": 3,
+      "products": 2,
+      "quantities": [
+        3,
+        2
+      ],
+      "total": "759 TRY",
+      "readOnlyReview": "Existing evidence reviewer inspected reopened draft,390px dialog,assigned staff screenshots and JSON",
+      "rerunThisTurn": false,
+      "realSqlOrErpPersistenceClaim": false,
+      "recoveryLimit": "Same browser session; last saved draft per conversation; no cross-device order archive"
+    },
+    "runtime": {
+      "ownerReportedAt": "2026-10-17T00:12:22+03:00",
+      "ownerReportedBlocker": "crmServer PACKAGE_TOOLCHAIN_MISMATCH after Node24.19 transition",
+      "currentHealthIndependentlyProbed": false,
+      "actualNodeDistributionOrBuild": false,
+      "packagePrepared": false,
+      "installed": false,
+      "activated": false,
+      "sourceCheckoutIsDeployment": false,
+      "responsibleOwner": "ERP main owner",
+      "nextDependency": "Owner distributes exact Node/npm,builds immutable439b63 variant,prepares ERP profile,performs shared TEST transition,provides identity/rollback/readback receipts"
+    },
+    "acceptance": {
+      "normalLocalGui": "GUI DENENMEDİ",
+      "physicalPhone": "BEKLİYOR",
+      "windowsRebootLogon": "BEKLİYOR",
+      "human": "BEKLİYOR",
+      "lastHumanReplyUnchanged": "Henüz denemedim.",
+      "crmCounts": {
+        "total": 25,
+        "green": 12,
+        "partial": 13,
+        "red": 0
+      },
+      "wholePlanTotal": 74
+    },
+    "boundaries": {
+      "sharedTestRuntimeConfigStoreSqlWrite": false,
+      "serviceStartStopRestart": false,
+      "healthLoginCredentialAttempt": false,
+      "realCustomerMessages": false,
+      "liveVegaRealT1OrCommercialRecords": false,
+      "paidApi": false,
+      "mainMergeTag": false,
+      "newAgentGoalAutomationTracker": false,
+      "oldPackagesModified": false,
+      "preflightScriptExecuted": false,
+      "ownerCoordination": "Existing user-authorized ERP TEST-install coordination; source recipe delivered, four docs dirty before owner requested build freeze; owner warned to wait for clean docs checkpoint."
+    }
+  }
 }
