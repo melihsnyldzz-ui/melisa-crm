@@ -157,6 +157,8 @@ Güncel ana hedef: **5 Ekim 2026 — günlük CRM + mobil + ERP + insan denetiml
 | R03 | Kabul edilmiş sürümü main/tag/release'e almak | 🟡 kısmi / kullanıcı kabulü bekliyor | Uygulama PR3 feature/crm-completion tabanında; main otomatik merge edilmez. Açık kritik işler/kabul ve exact CI bittikten sonra somut PR/commit için kullanıcı onayı gerekir. |
 | R04 | Kontrollü LIVE geçiş ve gerçek rollback kabulü | 🟡 kısmi / kullanıcı kabulü bekliyor | LIVE değişmedi. Kabul edilmiş paket, önceki paket/config/kimlik ve bakım kapsamı hazırlanıp kullanıcı onayı sonrası uygulanır; yapılmadan BİTTİ denmez. |
 
+**16 Ekim — C01/U01 Cloud dar kaynak düzeltmesi:** [Taslak PR14](https://github.com/melihsnyldzz-ui/melisa-crm/pull/14), source **dd6c00300ff5510c8ad508b0e6e31bb322980483**, müşteri telefon panelinde eski clipboard sonucunu yeni müşteriden/son denemeden ve kapanmış bileşenden ayırır. İlk16offline senaryo14FAIL/2PASS→16PASS; ek2pending ve mevcut5kimlik kontrolüyle23benzersiz hedef/build/bağımsızsource review/secret taraması PASS. Exact-source dd6c003 PR38876615407/push38876574038 CI SUCCESS (6/6job); son belgeHEAD CI ayrıca CRM_STATUS/PR Checks üzerinden doğrulanır. SOURCE_UNAPPLIED/TEST'e kurulmadı; normalGUI/fizikselcihaz ve özgün insan kabulü en son topluca BEKLİYOR. Mevcut25/12/13/0 ve49+25=74 korunur; yeni yaprak/kapanış yok, PR13 değiştirilmedi.
+
 ## Güncel dallar ve teslim sırası
 
 **Güncel Goal5 kapanışı:** Kullanıcının CRM-DEC-005 kapsamı teknik tamamlandı; CRM uygulama/paket4eadb51 ve ERP TEST74 gerçek terminal kanıtlı. CRM-UA05 fiziksel/personel kabulü bekler, M01 sarıdır. Aynı aktif dal/PR3 üzerinden yalnız bu kayıtların teslimi tamamlanır; Goal6/7 kendiliğinden başlamaz. Aşağıdaki Goal4 sıra kaydı önceki turun tarihsel sınırıdır.
