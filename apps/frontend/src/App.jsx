@@ -543,12 +543,14 @@ export function App() {
   const effectiveSummary = useMemo(() => effectiveInboxSummary(summary, conversations), [summary, conversations]);
   const inboxView = activeView === "Gelen Kutusu" || activeView === "Konuşmalar";
   const selectedSendUncertain = Boolean(uncertainSends[selected.id]);
-  salesDraftContextRef.current = { blocked: liveBusy || selectedSendUncertain, testOnly: import.meta.env?.VITE_CRM_TEST === '1' };
+  const selectedErpOrderContext = erpOrderContext?.recipientId === String(selectedIdRef.current) && erpOrderContext.current() ? erpOrderContext : null;
+  salesDraftContextRef.current = { blocked: liveBusy || selectedSendUncertain, testOnly: import.meta.env?.VITE_CRM_TEST === '1',
+    draftContext:selectedErpOrderContext?{items:selectedErpOrderContext.items.map(line=>({erpProductId:line.productId,stockCode:line.stockCode,quantity:line.quantity||1}))}:erpDraftContexts[String(selectedIdRef.current)]||null };
   const currentSalesContext = () => ({ ...salesDraftContextRef.current,
     token: liveKeyRef.current, identity: sessionIdentityRef.current, epoch: sendScopeRef.current.capture(), uiEpoch: uiOperationEpochRef.current,
     canSend: liveSessionRef.current?.canSend === true, blocked: salesDraftContextRef.current.blocked || sendInFlightRef.current,
     conversation: selectedConversation(conversationsRef.current, selectedIdRef.current),
-    currentComposer:draftRef.current,draftContext:erpOrderContext?{items:erpOrderContext.items.map(line=>({erpProductId:line.productId,stockCode:line.stockCode,quantity:line.quantity||1}))}:erpDraftContexts[String(selectedIdRef.current)]||null,
+    currentComposer:draftRef.current,
   });
   const currentSalesRulesContext = () => ({token:liveKeyRef.current,identity:sessionIdentityRef.current,epoch:sendScopeRef.current.capture(),role:liveSessionRef.current?.role});
   if (!salesDraftFlowRef.current) salesDraftFlowRef.current = createSalesDraftFlow({ getContext: currentSalesContext, generate: (...args) => liveApi.salesDraft(...args), readProduct: (...args)=>liveApi.canonicalCatalogProduct(...args),readPolicy:(...args)=>liveApi.salesRules(...args),getDraft:()=>draftRef.current,onChange: setSalesSuggestion });
