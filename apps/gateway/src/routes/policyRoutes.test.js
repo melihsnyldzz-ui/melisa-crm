@@ -7,7 +7,7 @@ import { createApp } from '../app.js';
 import { env } from '../config/env.js';
 import { authenticateCrmUser, createPasswordHash } from '../services/crmAuthService.js';
 import { createSalesPolicyStore } from '../services/salesAgent/policyStore.mjs';
-import { editablePolicy } from '../services/salesAgent/policy.mjs';
+import { APPROVED_BUSINESS_RULES, editablePolicy } from '../services/salesAgent/policy.mjs';
 
 const defaultPolicy = () => editablePolicy();
 const code = value => error => error.code === value;
@@ -29,7 +29,7 @@ test('sales policy store atomically replaces a valid policy and generates its ow
     const store = createSalesPolicyStore({ getPath: () => f.path });
     const before = await store.read();
     assert.equal(before.configured, true); assert.match(before.revision, /^[a-f0-9]{64}$/);
-    assert.deepEqual(Object.keys(before).sort(), ['configured', 'policy', 'revision']);
+    assert.deepEqual(Object.keys(before).sort(), ['businessRules', 'configured', 'policy', 'revision']);
     const changed = { ...before.policy, version: 'client-cannot-name-active-version', minimumOrderMode: 'none', salesNotes: 'Personel inceler.' };
     const saved = await store.write({ policy: changed, revision: before.revision });
     assert.match(saved.policy.version, /^owner-/); assert.notEqual(saved.policy.version, changed.version);
@@ -145,6 +145,7 @@ test('real HTTP policy routes allow all CRM readers, only patron edits, and neve
         const result = await request({ role });
         assert.equal(result.status, 200); assert.equal(result.body.data.writable, role === 'patron');
         assert.equal(result.body.data.policy.minimumOrderMode, 'unconfigured');
+        assert.deepEqual(result.body.data.businessRules, APPROVED_BUSINESS_RULES);
         assert.match(result.body.data.revision, /^[a-f0-9]{64}$/);
       }
       assert.equal((await request({ authorization: '' })).status, 401);
@@ -168,6 +169,16 @@ test('real HTTP policy routes allow all CRM readers, only patron edits, and neve
         { policy: null, revision: current.revision },
       ]) assert.equal((await request({ method: 'PUT', body })).status, 400);
       assert.equal(await readFile(f.path, 'utf8'), original);
+    });
+    await t.test('even a patron cannot override the sourced fixed rules through the editable policy', async () => {
+      const current = (await request()).body.data, original = await readFile(f.path, 'utf8');
+      for (const override of [{ businessRules: { shippingPayer: 'seller' } }, { wholesaleOnly: false },
+        { breakSeries: true }, { shippingPayer: 'seller' }]) {
+        const rejected = await request({ method: 'PUT', body: { policy: { ...current.policy, ...override }, revision: current.revision } });
+        assert.equal(rejected.status, 400); assert.equal(rejected.body.error.code, 'AI_POLICY_INVALID');
+      }
+      assert.equal(await readFile(f.path, 'utf8'), original);
+      assert.deepEqual((await request()).body.data.businessRules, APPROVED_BUSINESS_RULES);
     });
     await t.test('no configured file returns unknown facts and cannot create or edit a file', async () => {
       const original = await readFile(f.path, 'utf8');

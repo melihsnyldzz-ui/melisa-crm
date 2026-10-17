@@ -1,6 +1,5 @@
 import { conversationSnapshot, prepareSalesDraft } from './agent.mjs';
-import { createHash } from 'node:crypto';
-import { editablePolicy, salesError, validatePolicy } from './policy.mjs';
+import { editablePolicy, policyRevision, salesError, validatePolicy } from './policy.mjs';
 import { searchSchema, validateCatalogSearch, validateSearchPlan } from './recordedCatalog.mjs';
 import {staffSalesContext} from './staffContext.mjs';
 
@@ -53,7 +52,7 @@ export function createSalesPreview({ getMode, loadPolicy, readConversation, gene
       const wrapped = loaded && Object.hasOwn(loaded, 'policy') && Object.hasOwn(loaded, 'revision');
       const policy = wrapped ? loaded.policy : loaded;
       const normalized = editablePolicy(policy);
-      const revision = wrapped ? loaded.revision : createHash('sha256').update(JSON.stringify(normalized)).digest('hex');
+      const revision = wrapped ? loaded.revision : policyRevision(normalized);
       if (typeof revision !== 'string' || !/^[a-f0-9]{64}$/.test(revision)) throw salesError('AI_POLICY_INVALID');
       return { policy, revision };
     };

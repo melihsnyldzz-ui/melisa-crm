@@ -1,3 +1,16 @@
+import { createHash } from 'node:crypto';
+
+/** The user's approved rules are source-owned, never editable policy-file facts. */
+export const APPROVED_BUSINESS_RULES = Object.freeze({
+  wholesaleOnly: true,
+  breakSeries: false,
+  shippingPayer: 'recipient',
+  sources: Object.freeze([
+    'https://github.com/melihsnyldzz-ui/melisa-erp-v2/pull/23#issuecomment-6232818354',
+    'https://github.com/melihsnyldzz-ui/melisa-erp-v2/pull/23#issuecomment-6222599673',
+  ]),
+});
+
 /** Trusted server-side rules and ERP/Vega snapshots only. Never pass request.body here. */
 export function salesError(code, statusCode = 400) {
   return Object.assign(new Error(code), { code, statusCode });
@@ -60,8 +73,9 @@ export function validatePolicy(input = {}) {
     countryRules: Object.freeze(countryRules),
     shippingTerms: policyText(input.shippingTerms),
     salesNotes: policyText(input.salesNotes),
-    wholesaleOnly: true,
-    breakSeries: false,
+    wholesaleOnly: APPROVED_BUSINESS_RULES.wholesaleOnly,
+    breakSeries: APPROVED_BUSINESS_RULES.breakSeries,
+    businessRules: APPROVED_BUSINESS_RULES,
     discountAllowed: false,
     inventShippingCostOrDate: false,
     autoSend: false,
@@ -76,10 +90,17 @@ export function editablePolicy(input = {}) {
     'countryRules', 'shippingTerms', 'salesNotes'].map(key => [key, policy[key]])));
 }
 
+/** A source-owned rule change also invalidates suggestions made with an unchanged file. */
+export function policyRevision(input = {}) {
+  return createHash('sha256').update(JSON.stringify({ policy: editablePolicy(input),
+    businessRules: APPROVED_BUSINESS_RULES })).digest('hex');
+}
+
 export function policyFacts(policy) {
   return { ...editablePolicy(policyToInput(policy)), countrySelection: 'unverified', shippingConfirmation: 'staff',
     requiresStaffConfirmation: policy.minimumOrderMode === 'unconfigured' || policy.countryRules.length > 0 || !policy.shippingTerms,
-    discountAllowed: false, breakSeries: false, autoSend: false, writeErp: false };
+    businessRules: APPROVED_BUSINESS_RULES,
+    discountAllowed: false, breakSeries: APPROVED_BUSINESS_RULES.breakSeries, autoSend: false, writeErp: false };
 }
 
 function policyToInput(policy) {
@@ -96,7 +117,8 @@ export function modelPolicy(policy) {
     countryRules: policy.countryRules.map(({ country, minimumOrderMode, minimumOrder, notes }) => ({ country,
       minimumOrderMode, minimumAvailable: minimumOrderMode !== 'unconfigured', minimumCurrency: minimumOrder?.currency ?? null,
       notes: note(notes) })), shippingTerms: note(policy.shippingTerms), shippingConfirmation: 'staff',
-    salesNotes: note(policy.salesNotes), wholesaleOnly: true, breakSeries: false, discountAllowed: false,
+    salesNotes: note(policy.salesNotes), businessRules: APPROVED_BUSINESS_RULES,
+    wholesaleOnly: APPROVED_BUSINESS_RULES.wholesaleOnly, breakSeries: APPROVED_BUSINESS_RULES.breakSeries, discountAllowed: false,
     inventShippingCostOrDate: false, autoSend: false, writeErp: false };
 }
 

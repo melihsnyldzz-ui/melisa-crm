@@ -1,15 +1,15 @@
-import { createHash, randomUUID } from 'node:crypto';
+import { randomUUID } from 'node:crypto';
 import { lstat, open, realpath, rename, unlink } from 'node:fs/promises';
 import { isAbsolute, basename, dirname, join, relative, sep, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { editablePolicy, salesError } from './policy.mjs';
+import { APPROVED_BUSINESS_RULES, editablePolicy, policyRevision, salesError } from './policy.mjs';
 
 const repositoryRoot = resolve(fileURLToPath(new URL('../../../../../', import.meta.url)));
 const MAX_BYTES = 16_384;
 const locks = new Map();
-const hash = value => createHash('sha256').update(value).digest('hex');
 const identity = metadata => `${metadata.dev}:${metadata.ino}:${metadata.size}:${metadata.mtimeMs}:${metadata.ctimeMs}`;
-const revisionOf = policy => hash(JSON.stringify(policy));
+const recordOf = (policy, configured) => ({ policy, businessRules: APPROVED_BUSINESS_RULES,
+  revision: policyRevision(policy), configured });
 
 function trustedPath(value) {
   if (!value) return null;
@@ -23,7 +23,7 @@ function trustedPath(value) {
 
 async function readSnapshot(path, assertAccess = () => {}) {
   assertAccess();
-  if (!path) { const policy = editablePolicy(); return { policy, revision: revisionOf(policy), configured: false }; }
+  if (!path) return recordOf(editablePolicy(), false);
   // A configured parent junction must not redirect a source-external setting into Git.
   const parent = await realpath(dirname(path));
   assertAccess();
@@ -32,7 +32,7 @@ async function readSnapshot(path, assertAccess = () => {}) {
   try { metadata = await lstat(path); }
   catch (error) {
     assertAccess();
-    if (error.code === 'ENOENT') { const policy = editablePolicy(); return { policy, revision: revisionOf(policy), configured: false }; }
+    if (error.code === 'ENOENT') return recordOf(editablePolicy(), false);
     throw error;
   }
   assertAccess();
@@ -52,7 +52,7 @@ async function readSnapshot(path, assertAccess = () => {}) {
     assertAccess();
     if (identity(after) !== identity(metadata)) throw salesError('AI_POLICY_CHANGED', 409);
     const policy = editablePolicy(JSON.parse(bytes.toString('utf8')));
-    return { policy, revision: revisionOf(policy), configured: true, fileIdentity: identity(metadata) };
+    return { ...recordOf(policy, true), fileIdentity: identity(metadata) };
   } finally { await handle.close(); assertAccess(); }
 }
 

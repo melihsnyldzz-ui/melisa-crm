@@ -2,6 +2,20 @@ const modes = ['unconfigured', 'none', 'amount'];
 const currencies = ['TRY', 'USD', 'EUR'];
 const fail = () => { throw Object.assign(new Error('Satış kuralları doğrulanamadı.'), {code:'AI_POLICY_INVALID'}); };
 const plain = value => value && typeof value === 'object' && !Array.isArray(value);
+const approvedRuleSources = [
+  'https://github.com/melihsnyldzz-ui/melisa-erp-v2/pull/23#issuecomment-6232818354',
+  'https://github.com/melihsnyldzz-ui/melisa-erp-v2/pull/23#issuecomment-6222599673',
+];
+export function normalizeSalesBusinessRules(value) {
+  // Missing legacy data is unknown. Only explicit complete server facts are verified.
+  if (value === undefined || value === null) return null;
+  if (!plain(value) || Object.keys(value).sort().join(',') !== 'breakSeries,shippingPayer,sources,wholesaleOnly'
+      || value.wholesaleOnly !== true || value.breakSeries !== false || value.shippingPayer !== 'recipient'
+      || !Array.isArray(value.sources) || value.sources.length !== approvedRuleSources.length
+      || value.sources.some((source,index) => source !== approvedRuleSources[index])) fail();
+  return { wholesaleOnly: value.wholesaleOnly, breakSeries: value.breakSeries,
+    shippingPayer: value.shippingPayer, sources: [...value.sources] };
+}
 function text(value, limit) {
   if (typeof value !== 'string' || value.length > limit || /[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/.test(value)) fail();
   return value.trim();
@@ -32,12 +46,12 @@ export function normalizeSalesPolicy(value) {
 }
 export function normalizeSalesRules(value) {
   if (!plain(value) || !/^[a-f0-9]{64}$/.test(value.revision||'') || typeof value.configured !== 'boolean' || typeof value.writable !== 'boolean') fail();
-  return {policy:normalizeSalesPolicy(value.policy),revision:value.revision,configured:value.configured,writable:value.writable};
+  return {policy:normalizeSalesPolicy(value.policy),businessRules:normalizeSalesBusinessRules(value.businessRules),revision:value.revision,configured:value.configured,writable:value.writable};
 }
 export function normalizeSalesPolicyFacts(value) {
   if (!plain(value) || !/^[a-f0-9]{64}$/.test(value.revision||'') || typeof value.requiresStaffConfirmation !== 'boolean') fail();
   if(value.countrySelection!=='unverified'||value.shippingConfirmation!=='staff'||['discountAllowed','breakSeries','autoSend','writeErp'].some(key=>value[key]!==false))fail();
-  return {...normalizeSalesPolicy(value),revision:value.revision,requiresStaffConfirmation:value.requiresStaffConfirmation};
+  return {...normalizeSalesPolicy(value),businessRules:normalizeSalesBusinessRules(value.businessRules),revision:value.revision,requiresStaffConfirmation:value.requiresStaffConfirmation};
 }
 export function minimumLabel(rule) {
   if (rule.minimumOrderMode === 'none') return 'Minimum sipariş tutarı yok';

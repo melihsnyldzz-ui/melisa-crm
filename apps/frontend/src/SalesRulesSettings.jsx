@@ -1,6 +1,6 @@
 import {useEffect,useRef,useState} from 'react';
 import {liveApi} from './liveApi.js';
-import {createSalesRulesEditor,minimumLabel,salesRulesContextKey} from './lib/salesRules.js';
+import {createSalesRulesEditor,minimumLabel,normalizeSalesBusinessRules,salesRulesContextKey} from './lib/salesRules.js';
 import './salesRulesSettings.css';
 
 function MinimumFields({rule,onChange,disabled,label}) {
@@ -9,10 +9,20 @@ function MinimumFields({rule,onChange,disabled,label}) {
   </div>;
 }
 
+export function SalesBusinessRules({rules}) {
+  const verified=normalizeSalesBusinessRules(rules);
+  if(!verified)return <p>Onaylı sabit işletme kuralları bu yanıtta doğrulanmadı.</p>;
+  return <section aria-label="Onaylı sabit işletme kuralları">
+    <p><strong>Yalnız toptan · Seri bölünmez · Kargo alıcıya ait</strong></p>
+    <p>Bu kurallar notlarla değiştirilemez. Kargo ücreti ve teslimat koşulları ayrıca doğrulanır.</p>
+    <details><summary>Karar kaynakları</summary><ul>{verified.sources.map((source,index)=><li key={source}><a href={source} target="_blank" rel="noopener noreferrer">{index===0?'Onaylı hedef · P10.1':'Onaylı ortak rapor'}</a></li>)}</ul></details>
+  </section>;
+}
+
 export function SalesPolicySummary({policy}) {
-  return <div className="sales-rules-summary"><p><strong>Genel minimum:</strong> {minimumLabel(policy)}</p>
+  return <div className="sales-rules-summary"><SalesBusinessRules rules={policy.businessRules}/><p><strong>Genel minimum:</strong> {minimumLabel(policy)}</p>
     {policy.countryRules.length?<><strong>Ülkeye özel kurallar</strong><ul>{policy.countryRules.map(rule=><li key={rule.country}><strong>{rule.country}:</strong> {minimumLabel(rule)}{rule.notes?<p>{rule.notes}</p>:null}</li>)}</ul><p>Teslimat ülkesini müşteriyle doğrulayın. Telefon numarası veya mesaj dili teslimat ülkesini belirlemez.</p></>:null}
-    <p><strong>Kargo koşulları:</strong> {policy.shippingTerms||'Henüz belirlenmedi'}</p><p><strong>Satış notları:</strong> {policy.salesNotes||'Henüz belirlenmedi'}</p>
+    <p><strong>Ek kargo notları:</strong> {policy.shippingTerms||'Henüz belirlenmedi'}</p><p><strong>Satış notları:</strong> {policy.salesNotes||'Henüz belirlenmedi'}</p>
     {policy.telegramUrl?<p><strong>Telegram:</strong> {policy.telegramUrl}</p>:null}
   </div>;
 }
@@ -32,7 +42,8 @@ export default function SalesRulesSettings({getContext}) {
     <p>Bu bilgiler satış önerisinde gösterilir. Mesaj göndermek veya ERP siparişi oluşturmak için ayrıca işlem yapmanız gerekir.</p>
     {state.error?<p role="alert" className="sales-rules-error">{state.error}</p>:null}{state.success?<p role="status" className="sales-rules-success">{state.success}</p>:null}
     {state.busy?<p role="status">Satış kuralları kontrol ediliyor…</p>:null}
-    {state.record&&!editable?<><p>{context.role==='patron'?'Satış kuralları şu anda düzenlemeye açık değil.':'Satış kurallarını yalnız patron değiştirebilir.'}</p><SalesPolicySummary policy={state.record.policy}/></>:null}
+    {state.record&&!editable?<><p>{context.role==='patron'?'Satış kuralları şu anda düzenlemeye açık değil.':'Satış kurallarını yalnız patron değiştirebilir.'}</p><SalesPolicySummary policy={{...state.record.policy,businessRules:state.record.businessRules}}/></>:null}
+    {state.record&&editable?<SalesBusinessRules rules={state.record.businessRules}/>:null}
     {form&&editable?<form onSubmit={event=>{event.preventDefault();void editorRef.current.save();}}>
       <MinimumFields label="Genel minimum sipariş" rule={form} disabled={disabled} onChange={edit}/>
       <fieldset disabled={disabled}><legend>Ülkeye özel kurallar</legend><p>Teslimat ülkesini müşteriyle doğrulayın. Numara veya dil üzerinden otomatik ülke seçilmez.</p>
@@ -44,7 +55,7 @@ export default function SalesRulesSettings({getContext}) {
         </div>)}
         <button type="button" disabled={disabled||form.countryRules.length>=12} onClick={()=>edit({...form,countryRules:[...form.countryRules,{country:'',minimumOrderMode:'unconfigured',minimumOrder:null,amount:'',currency:'',notes:''}]})}>Ülke kuralı ekle</button>
       </fieldset>
-      <label>Kargo koşulları<textarea value={form.shippingTerms} maxLength={2000} rows={3} disabled={disabled} onChange={event=>edit({...form,shippingTerms:event.target.value})} placeholder="Kargo ücretini, ödeme ve teslimat koşullarını yazın"/></label>
+      <label>Ek kargo notları (sabit kuralları değiştirmez)<textarea value={form.shippingTerms} maxLength={2000} rows={3} disabled={disabled} onChange={event=>edit({...form,shippingTerms:event.target.value})} placeholder="Personelin doğrulayacağı ek bilgileri yazın"/></label>
       <label>Satış notları<textarea value={form.salesNotes} maxLength={2000} rows={3} disabled={disabled} onChange={event=>edit({...form,salesNotes:event.target.value})}/></label>
       <label>Telegram adresi (isteğe bağlı)<input type="url" value={form.telegramUrl} maxLength={45} disabled={disabled} placeholder="https://t.me/…" onChange={event=>edit({...form,telegramUrl:event.target.value})}/></label>
       <p>İndirim, seri bölme ve doğrulanmamış kargo ücreti veya teslim tarihi satış önerisinde otomatik uygulanmaz.</p>
