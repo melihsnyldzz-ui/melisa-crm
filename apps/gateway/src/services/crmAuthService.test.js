@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import jwt from 'jsonwebtoken';
 import { env } from '../config/env.js';
 import {
   assertConversationAccess,
@@ -73,4 +74,19 @@ test('personnel send permission is controlled by configuration', () => {
     const staff = verifyCrmAccessToken(authenticateCrmUser({ username: 'personel', password }).accessToken);
     assert.equal(staff.permissions.includes('crm.send'), true);
   });
+});
+test('the dedicated Semih actor cannot login or verify even a signed grantless JWT when TEST helper is default/off/LIVE',()=>{
+ withAuthConfig(({password})=>{
+  const keys=['CRM_SEMIH_TEST_CONTINUE_ENABLED','CRM_NORMAL_REFRESH_ENABLED','CRM_NORMAL_REFRESH_USER_ID','CRM_ISOLATED_PREPARATION','CRM_TEST_EXPECTED_DATABASE'];
+  const before=Object.fromEntries(keys.map(key=>[key,process.env[key]]));
+  const semih={...env.auth.users[0],id:'crm-semih-test-20261012',username:'crm-semih-test',displayName:'Semih TEST'};env.auth.users.push(semih);
+  const token=jwt.sign({username:semih.username,role:semih.role},env.auth.jwtSecret,{subject:semih.id,issuer:env.auth.issuer,audience:env.auth.audience,expiresIn:'5m'});
+  try{
+   for(const config of [{},{CRM_SEMIH_TEST_CONTINUE_ENABLED:'false'},{CRM_SEMIH_TEST_CONTINUE_ENABLED:'true',CRM_ISOLATED_PREPARATION:'false',CRM_TEST_EXPECTED_DATABASE:'LIVE'}]){
+    for(const key of keys)delete process.env[key];Object.assign(process.env,config);
+    assert.throws(()=>authenticateCrmUser({username:semih.username,password}),{statusCode:401});assert.throws(()=>verifyCrmAccessToken(token),{statusCode:401});
+    const normal=authenticateCrmUser({username:'patron',password});assert.equal(verifyCrmAccessToken(normal.accessToken).id,'owner-1');
+   }
+  }finally{for(const key of keys){if(before[key]===undefined)delete process.env[key];else process.env[key]=before[key];}}
+ });
 });

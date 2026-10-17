@@ -1,0 +1,79 @@
+{
+  "schemaVersion": "crm06-installed-runtime-public-summary.v1",
+  "observedAt": "2026-10-14T16:05:15.542Z",
+  "evidenceAttribution": "ERP owner installed and tested runtime; CRM verified receipt hashes and read visible normal-form booleans only",
+  "ownerReceipts": [
+    {
+      "name": "installed-readback.json",
+      "sha256": "220cf2cd69bc73c7ce73fad54c7a5bdd3869c0bcce44d363c56ab1f452eaabf6"
+    },
+    {
+      "name": "staff-auth-proof.json",
+      "sha256": "ece3652fd63c2afb69828613dbbf1c911baf48c946602358e7811594d30d7259"
+    }
+  ],
+  "installed": true,
+  "crmSource": "b2985d2295c022848c769ea5f494012c1eb3fa00",
+  "crmManifestSha256": "7b44c381975fa54fad1a45dcbd4105ee31df836714ba34afba2f11fac29c01eb",
+  "crmIndexSha256": "3b672c12ed534c2bd3f30e02990a686afef1cef8f36c11af42a6159bd86cceb1",
+  "supervisorSource": "1440007392df803ec7d0843de4d584c5ab4f51a8",
+  "settingsSha256": "3010bb512ac13bd9158d72449510077cbd37554bc56b5adf714b9b36d9ac36f4",
+  "erpApplicationSource": "7a41f6492273dd1ec0bcb086f820be5575372be8",
+  "database": "MELISA_ERP_CRM_SHARED_TEST_20261009_02",
+  "copyId": "e16b70f0-4057-428b-9abc-6bbcaf35fe82",
+  "actualT1": false,
+  "testUrl": "http://127.0.0.1:62700/",
+  "sourceAccountsAndRolesUnchanged": true,
+  "originalFilesPreserved": true,
+  "ownerRuntimeChecks": {
+    "processGuards": 6,
+    "effectiveServiceReachabilityPassed": true,
+    "hubPid": 44808,
+    "windowsRebootOrLogonHumanAccepted": false
+  },
+  "authenticatedOperationsVerified": false,
+  "assignedStaffApi": {
+    "observedAt": "2026-10-14T16:05:24.763Z",
+    "passed": true,
+    "officialNormalStaffLogin": true,
+    "role": "personel",
+    "chatwootAgentId": 2,
+    "permissions": [
+      "crm.view"
+    ],
+    "issuer": false,
+    "sidPresent": true,
+    "refreshSameSid": true,
+    "ownLogout": true,
+    "revokedMeStatus": 401,
+    "normalGuiFirstLoginVerified": false,
+    "humanAccepted": false
+  },
+  "crmVisibleNormalForm": {
+    "normalLoginFormVisible": true,
+    "usernameFilled": true,
+    "passwordFilled": false,
+    "usernameMatchesDedicatedManager": false,
+    "usernameMatchesDedicatedStaff": false,
+    "submitted": false,
+    "valuesExported": false
+  },
+  "normalGuiFirstLoginVerified": false,
+  "humanAccepted": false,
+  "crm06Closed": false,
+  "blocker": "CUA_PROTECTED_CREDENTIAL_TRANSPORT_UNSUPPORTED",
+  "issuerRoleScope": "Previous manager API proof remains tied to previous runtime; new staff API is not an issuer or GUI proof.",
+  "crmActions": {
+    "sharedRuntimeWrites": 0,
+    "newAuthCalls": 0,
+    "newHealthCalls": 0,
+    "newCiRunsRequested": 0,
+    "newCustomerSessions": 0,
+    "newCustomerInterests": 0
+  },
+  "commercialWrites": 0,
+  "realMessages": 0,
+  "paidAiCalls": 0,
+  "mainMerged": false,
+  "liveDeployed": false
+}

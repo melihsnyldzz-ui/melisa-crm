@@ -1,0 +1,20 @@
+.sales-rules-settings {min-width:0;padding:20px;overflow-wrap:anywhere;}
+.sales-rules-settings .data-card-heading {padding:0 0 12px;}
+.sales-rules-settings form {display:grid;gap:16px;min-width:0;}
+.sales-rules-settings label {display:grid;gap:7px;min-width:0;font-weight:600;font-size:14px;}
+.sales-rules-settings input,.sales-rules-settings select,.sales-rules-settings textarea {width:100%;min-width:0;max-width:100%;box-sizing:border-box;min-height:44px;padding:10px;border:1px solid #ccd6d2;border-radius:8px;background:#fff;color:#20352d;font:inherit;}
+.sales-rules-settings textarea {resize:vertical;}
+.sales-rules-settings button {min-height:44px;padding:10px 14px;border:1px solid #c5d3cc;border-radius:8px;background:#edf4ef;color:#1b4833;font:inherit;cursor:pointer;white-space:normal;}
+.sales-rules-settings button:disabled {opacity:.55;cursor:default;}
+.sales-rules-settings :is(button,input,textarea,select):focus-visible {outline:3px solid #419c73;outline-offset:2px;}
+.sales-rules-minimum {display:grid;grid-template-columns:minmax(180px,2fr) minmax(100px,1fr) minmax(135px,1fr);gap:12px;}
+.sales-rules-settings fieldset {min-width:0;margin:0;padding:14px;border:1px solid #d5e0d9;border-radius:10px;}
+.sales-rules-settings legend {font-weight:700;padding:0 6px;}
+.sales-rules-country {display:grid;gap:12px;min-width:0;padding:14px 0;border-top:1px solid #dce5df;margin-bottom:12px;}
+.sales-rules-settings p,.sales-rules-summary {font-size:14px;line-height:1.55;white-space:pre-wrap;}
+.sales-rules-summary ul {padding-left:20px;}
+.sales-rules-error {color:#a32d34;}
+.sales-rules-success {color:#176542;}
+.sales-rules-actions {display:flex;gap:12px;flex-wrap:wrap;}
+@media(max-width:1100px){.sales-rules-minimum{grid-template-columns:minmax(0,1fr);} .sales-rules-settings{padding:16px;}}
+@media(max-width:480px){.sales-rules-actions{display:grid;} .sales-rules-settings fieldset{padding:10px;}}

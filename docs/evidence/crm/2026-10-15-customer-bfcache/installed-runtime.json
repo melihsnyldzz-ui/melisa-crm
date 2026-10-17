@@ -1,0 +1,110 @@
+{
+  "schemaVersion": "crm06-installed-and-api-public-summary.v1",
+  "observedAt": "2026-10-14T22:43:17.357Z",
+  "localDate": "2026-10-15",
+  "attribution": "ERP sole runtime writer performed installation, official API flow and preservation reads; CRM verified exact receipt hashes and whitelisted metadata.",
+  "ownerDelivery": "https://github.com/melihsnyldzz-ui/melisa-erp-v2/pull/23#issuecomment-6180213812",
+  "ownerReceipts": [
+    {
+      "name": "installed-readback.json",
+      "sha256": "e11738f1f68858e5715ff556eff5c48b54eaf1783be1edb0ace9a245b5476dcb"
+    },
+    {
+      "name": "api-interest-proof.json",
+      "sha256": "23dc8e5f20739ce41c6607a03d0358c73ce34ef8d4f59156f8c6e36ff5ae9069"
+    },
+    {
+      "name": "after-business-preservation.json",
+      "sha256": "f2b09b93937b43a0aa2407907297517c501718b91f8203854de17025039ec493"
+    },
+    {
+      "name": "after-account-effects-preservation.json",
+      "sha256": "81662805291946bffe47db0a2a84e45710bdbffdc1d72e3e80c720fa618a206e"
+    },
+    {
+      "name": "final-preservation.json",
+      "sha256": "a5756d3d7f7e632c3ec82de8306c1b79ec1940118cf383b21468a766a66c9766"
+    }
+  ],
+  "installed": {
+    "installed": true,
+    "settingsSha256": "020b3bdba7e15f9884ff41891baf79999dddffb4d5c355f8b78531d15f2cbc24",
+    "supervisorSource": "2662f3e934f4e409a7f4a45f4106cb887fb80223",
+    "crmSource": "da82fc6644c1d9dba0c10eaa861773534d43c288",
+    "crmManifest": "9c6f013599dea1c6d7062ce9179d5d115c6022d3f95296a7be3276d3bdc900a2",
+    "crmIndexSha256": "e23229de145ca53f5e2f4b662530431ac101737640b0c043dcd35b7bd4dbfdf4",
+    "erpApplicationSource": "7a41f6492273dd1ec0bcb086f820be5575372be8",
+    "database": "MELISA_ERP_CRM_SHARED_TEST_20261009_02",
+    "copyId": "e16b70f0-4057-428b-9abc-6bbcaf35fe82",
+    "actualT1": false,
+    "originalFilesPreserved": true,
+    "sourceAccountsAndRolesUnchanged": true,
+    "authenticatedOperationsVerified": false,
+    "normalGuiFirstLoginVerified": false,
+    "humanAccepted": false,
+    "commercialWrites": 0
+  },
+  "processReceipts": 6,
+  "heartbeatState": "running",
+  "supervisorPid": 30864,
+  "hubPid": 17704,
+  "api": {
+    "observedAt": "2026-10-14T22:43:48.357Z",
+    "passed": true,
+    "officialIssuer": true,
+    "customerCatalog": true,
+    "guardedPhoto": true,
+    "selectQuantityRemove": true,
+    "refreshDraftPreserved": true,
+    "sameBodyReplaySameRequest": true,
+    "assignedNormalStaffSameRecord": true,
+    "oldRequestRecordsPreserved": true,
+    "oldSessionRecordsPreserved": true,
+    "ownLogoutVerified": true,
+    "requestDelta": 1,
+    "wrongStaffNewCase": "NOT_RUN_PREVIOUS_UNCHANGED_EVIDENCE_SEPARATE",
+    "normalGUI": false,
+    "humanAccepted": false,
+    "realMessages": 0,
+    "paidAiCalls": 0,
+    "businessWrites": 0
+  },
+  "preservation": {
+    "actualFullRowHashTablesUnchanged": 14,
+    "optionalAbsentTablesNotCounted": 4,
+    "comparison": "bounded sequential, not atomic whole-database snapshot",
+    "sqlDml": 0,
+    "immutableFilesPreserved": 17,
+    "taskMetadataPreserved": true,
+    "currentActionsExact": true,
+    "twoTasksRunning": true,
+    "sqlAndTest125ProcessIdentitiesPreserved": true,
+    "rolesAndCredentialFilesUnchanged": true,
+    "officialSessionJournalsAndSingleSyntheticRequestAreAllowedChanges": true
+  },
+  "recovery": {
+    "initialObservation": "PARENT_OWNER:ObjectNotFound; quarantine/degraded",
+    "finalReadbackPassed": true,
+    "coreOnlyOwnedRecovery": true,
+    "guardsRelaxed": false,
+    "coldRebootLogonAccepted": false,
+    "training": "unknown"
+  },
+  "acceptance": {
+    "normalGuiFirstLoginVerified": false,
+    "realBrowserBfcacheVerified": false,
+    "physicalMobileVerified": false,
+    "humanAccepted": false,
+    "crm06Closed": false,
+    "automatedGuiBlocker": "CUA_PROTECTED_CREDENTIAL_TRANSPORT_UNSUPPORTED",
+    "next": "Prepared normal personnel and physical mobile CRM-UA11 acceptance in USER_ACCEPTANCE.md"
+  },
+  "urls": {
+    "desktop": "http://127.0.0.1:62700/",
+    "sameLanMobile": "http://192.168.1.46:62700/"
+  },
+  "crmSharedRuntimeWrites": 0,
+  "crmNewCredentialAttempts": 0,
+  "liveDeployed": false,
+  "mainMerged": false
+}

@@ -1,0 +1,116 @@
+{
+  "version": 1,
+  "checkedAt": "2026-10-12T01:42:55.745Z",
+  "runtimeSource": "fb34c293fa58154e00b132d13b8246939ce8cbbb",
+  "requestReferenceSha256": "6ab9c8afc3e511d1c47533fd141c08b1a619e9c959d56caf7e3608f35cced2a6",
+  "sessionRequestEquality": true,
+  "operationReplaySameRequest": true,
+  "customerReadbackSameRequest": true,
+  "exactSessionRequestCount": 1,
+  "totalSessions": 2,
+  "totalRequests": 1,
+  "revision": 7,
+  "modelCount": 2,
+  "quantityTotal": 5,
+  "items": [
+    {
+      "productId": "erp-36724",
+      "stockCode": "8023 CONCEPT",
+      "productName": "TAKIM",
+      "quantity": 3
+    },
+    {
+      "productId": "erp-30740",
+      "stockCode": "101 BEBESSİ",
+      "productName": "BEBEK AYI KADİFE SET BATTANİYE",
+      "quantity": 2
+    }
+  ],
+  "normalActor": {
+    "role": "personel",
+    "chatwootAgentId": 2,
+    "permissions": [
+      "crm.view"
+    ]
+  },
+  "assignedPersonelSameRequest": true,
+  "assignedPersonelListContainsSameRequest": true,
+  "foreignScopeReturnsNoData": true,
+  "wrongAssigneeAgent3Actual": "pending-existing-protected-credential-unavailable",
+  "cases": [
+    {
+      "name": "customer-session-before-replay",
+      "status": 200,
+      "code": null
+    },
+    {
+      "name": "same-operation-submit-replay",
+      "status": 200,
+      "code": null
+    },
+    {
+      "name": "customer-session-after-replay",
+      "status": 200,
+      "code": null
+    },
+    {
+      "name": "ordinary-personel-login",
+      "status": 200,
+      "code": null
+    },
+    {
+      "name": "ordinary-personel-current-identity",
+      "status": 200,
+      "code": null
+    },
+    {
+      "name": "assigned-personel-list",
+      "status": 200,
+      "code": null
+    },
+    {
+      "name": "assigned-personel-detail",
+      "status": 200,
+      "code": null
+    },
+    {
+      "name": "view-only-personel-cannot-issue",
+      "status": 401,
+      "code": "CUSTOMER_REQUEST_NORMAL_SESSION_REQUIRED"
+    },
+    {
+      "name": "foreign-conversation-scope",
+      "status": 403,
+      "code": "WHATSAPP_CRM_CONVERSATION_FORBIDDEN"
+    },
+    {
+      "name": "customer-capability-cannot-be-staff",
+      "status": 401,
+      "code": "AUTH_TOKEN_INVALID"
+    },
+    {
+      "name": "staff-jwt-cannot-be-customer",
+      "status": 401,
+      "code": "CUSTOMER_REQUEST_SESSION_INVALID"
+    },
+    {
+      "name": "unauthenticated-staff-denied",
+      "status": 401,
+      "code": "WHATSAPP_CRM_AUTH_REQUIRED"
+    },
+    {
+      "name": "same-operation-replay-exact-session-dto",
+      "status": 200,
+      "code": null
+    },
+    {
+      "name": "issuer-proof-logout-closes-old-customer-capability",
+      "status": 401,
+      "code": "CUSTOMER_REQUEST_SESSION_INVALID"
+    }
+  ],
+  "operationReplaySameSession": true,
+  "operationReplaySameItems": true,
+  "replayCheckedAt": "2026-10-12T01:43:43.017Z",
+  "issuerLogoutClosesCustomerCapability": true
+}

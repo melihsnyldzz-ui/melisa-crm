@@ -1,0 +1,3782 @@
+{
+  "schemaVersion": "crm-dec018-first-development.v1",
+  "date": "2026-10-15",
+  "decision": "CRM-DEC-018",
+  "firstDevelopmentTrigger": "Direct user authorization in the existing CRM thread; not claimed as a scheduled development run.",
+  "automation": {
+    "id": "crm-2-saatlik-eri-im-denemesi",
+    "kind": "heartbeat",
+    "status": "ACTIVE",
+    "intervalHours": 2,
+    "sameCrmThreadVerified": true,
+    "createdAtEpochMs": 1792022724168,
+    "updatedAtEpochMs": 1792023268265,
+    "nativeUpdateConfirmed": true,
+    "persistedPromptReadBack": true,
+    "technicalDevelopment": true,
+    "readOnlyPhaseRemoved": true,
+    "nextIndependentWorkWithinSameRun": true,
+    "existingSubagentsOnly": true,
+    "erpSoleSharedRuntimeWriter": true,
+    "humanAcceptancePending": true,
+    "scheduledDevelopmentRunObserved": true,
+    "twoHourPeriodicRepeatObserved": false,
+    "firstScheduledDevelopmentHeartbeatAt": "2026-10-15T02:05:43.103Z",
+    "firstScheduledDevelopmentHeartbeatAtIstanbul": "2026-10-15T05:05:43.103+03:00",
+    "nativeDevelopmentRunId": null,
+    "nativeDevelopmentRunIdAvailable": false,
+    "scheduledExecutionEvidence": "The same-thread heartbeat payload named this automation and triggered actual source changes, new failing-before/passing-after isolated regressions and GitHub delivery in this turn. A separately exposed scheduler run UUID is unavailable."
+  },
+  "baseline": {
+    "source": "29d37596519759d4d7c40a710a9955bd158bad97",
+    "installedCrmSource": "da82fc6644c1d9dba0c10eaa861773534d43c288",
+    "installedSupervisorSource": "7fd5c0b7d253fd72f5d0c475adfccf301893f51d",
+    "installedErpSource": "7a41f6492273dd1ec0bcb086f820be5575372be8",
+    "evidenceRef": "docs/evidence/crm/2026-10-15-customer-bfcache/startup-runtime.json"
+  },
+  "backend": {
+    "ids": [
+      "C02",
+      "I01"
+    ],
+    "source": "535e9adfa6251fb76115c20138266b09a311a185",
+    "before": "Normal controller did not bind the pretransport authority check; bridge wait could outlive assignment or session authority.",
+    "after": "Official normal verifier, expiry, fingerprint, role scope, crm.send and fresh conversation access run at the existing pretransport boundary. Rehearsal guard and confirmed/uncertain replay semantics remain separate.",
+    "regressionBefore": {
+      "passed": 0,
+      "failed": 2
+    },
+    "targetedAfter": {
+      "passed": 25,
+      "failed": 0
+    },
+    "testCommand": "node --import ./tests/offline-test-guard.mjs --test apps/gateway/src/controllers/normalSendGuard.test.js apps/gateway/src/controllers/testPersonnelRequestGuard.test.js apps/gateway/src/services/sendPersonnelGuard.test.js",
+    "testBoundary": "Actual controller and sendService with RAM journal, injected verifier/access and fake bridge/provider. Not a new real JWT/SID, provider or GUI acceptance.",
+    "independentReadOnlyReviewOpenP1P2": 0,
+    "ci": [
+      {
+        "id": 38659384179,
+        "event": "pull_request",
+        "conclusion": "success"
+      },
+      {
+        "id": 38659378816,
+        "event": "push",
+        "conclusion": "success"
+      },
+      {
+        "id": 38659384113,
+        "workflow": "AI Sales Agent - Offline",
+        "conclusion": "success"
+      }
+    ]
+  },
+  "frontend": {
+    "ids": [
+      "M01",
+      "I01",
+      "E02"
+    ],
+    "source": "5ce452b01ef20fc84a09c52b78311db8eb1dd1d8",
+    "before": "Composer and new ERP dialog called randomUUID directly; HTTP LAN without that API threw before controlled handling.",
+    "after": "Shared cryptographic UUIDv4 producer supports getRandomValues and the strong randomUUID alternative; unavailable entropy yields a visible controlled error. Pending ID/replay survives without a new RNG call; new-intent entropy failure preserves the existing receipt/store.",
+    "regressionBefore": {
+      "composerFailed": 2,
+      "erpDialogFailed": 2
+    },
+    "targetedAfter": {
+      "passed": 6,
+      "failed": 0
+    },
+    "testCommand": "node --test tests/request-id-composer.test.mjs tests/request-id-dialog.test.mjs",
+    "testWorkingDirectory": "apps/frontend",
+    "testBoundary": "Actual App UUID/payload preflight source and instrumented actual ERP dialog hook/render with fake API and one mock write; not normal GUI, real React effects or physical mobile acceptance.",
+    "fullAppHarness": "Hung in esbuild; not PASS. Only its owned test process tree was stopped; the attempted broad-harness changes were removed.",
+    "independentReadOnlyReviewOpenP1P2": 0,
+    "ci": [
+      {
+        "id": 38659640729,
+        "event": "pull_request",
+        "conclusion": "success"
+      },
+      {
+        "id": 38659634706,
+        "event": "push",
+        "conclusion": "success"
+      },
+      {
+        "id": 38659640734,
+        "workflow": "AI Sales Agent - Offline",
+        "conclusion": "success"
+      }
+    ],
+    "reference": "https://developer.mozilla.org/en-US/docs/Web/API/Crypto/getRandomValues"
+  },
+  "package": {
+    "source": "5bcd5ad136ff7ca35d623d436b8724cc491641be",
+    "sourceTree": "4f9b74fe3dd5b76e107defbacb648150b4ec50a0",
+    "packageRoot": "C:/Sirket/CRM/releases/crm-shared-test-5bcd5ad136ff7ca35d623d436b8724cc491641be",
+    "manifestSha256": "93cd90d678ca88bc8202a31f9461e678e448dfe927668f59b8644c0c708e6ce8",
+    "indexSha256": "4915a7033d7753c442f2e89def90932e3d974c5fb281648b8cd79d33fc3ca03c",
+    "sourceFiles": 185,
+    "payloadFiles": 2291,
+    "payloadBytes": 23932856,
+    "nodeVersion": "v24.15.0",
+    "platform": "win32",
+    "arch": "x64",
+    "isolatedPreparation": true,
+    "dependencyInstall": "npm-ci-offline-ignore-scripts",
+    "freshViteBuild": true,
+    "sealedManifestPayloadAndGitSourceVerifiedByBuilder": true,
+    "gatewayLockSha256": "c487dc65e3a107f5235408fad3523c8242a4c01b62c7475154ad4ae41a627b96",
+    "frontendLockSha256": "9064a36a0c86464db93cc261ffedbc92a87ea2092315e207301ca8a8aa6d4d24",
+    "initialAttempt": "Existing builder completed once from a clean feature checkout; no repository change was made while the builder ran.",
+    "activated": true,
+    "ownerHandoffSent": true,
+    "db01BuildFallbackChanged": false,
+    "sourceBatchFrozen": true,
+    "installationState": "Installed final5bcd with supervisor455 receipt-wait. Pinned final owner readback and preservation byte hashes and whitelisted receipt metadata matched. Six CORE plus ERP/CRM/terminal Hub reachability verified by owner at the recorded time; GUI/physical mobile/reboot/human pending.",
+    "priorCandidateFilesPreserved": true,
+    "coreActivationReportedByOwner": true,
+    "activationVerifiedByCrm": true
+  },
+  "acceptance": {
+    "normalGui": "GUI DENENMEDİ",
+    "physicalMobile": false,
+    "realWindowsRebootOrLogon": false,
+    "humanAccepted": false,
+    "crm06Closed": false,
+    "userAcceptanceRef": "USER_ACCEPTANCE.md",
+    "treeCountsUnchanged": {
+      "total": 25,
+      "complete": 12,
+      "partial": 13,
+      "open": 0
+    }
+  },
+  "boundaries": {
+    "crmSharedRuntimeWrites": 0,
+    "crmSqlWrites": 0,
+    "realCustomerMessages": 0,
+    "paidApiCalls": 0,
+    "credentialOperations": 0,
+    "newAgentsOrGoalsOrAutomations": 0,
+    "mainMerged": false,
+    "liveDeployed": false,
+    "oldAcceptanceOrRestoreRepeated": false
+  },
+  "previousPreparedPackage": {
+    "source": "5ce452b01ef20fc84a09c52b78311db8eb1dd1d8",
+    "sourceTree": "9baba7b78d7b2eef3470ef45a32c657019120fca",
+    "packageRoot": "C:/Sirket/CRM/releases/crm-shared-test-5ce452b01ef20fc84a09c52b78311db8eb1dd1d8",
+    "manifestSha256": "4bb2717c2466ad4996161c2bbaf34e79d18620a84c0ee47e1cb8c62870922010",
+    "indexSha256": "174f622b693cc2626a9c24956ea001b4d5e5e3cf458dc575d0abde00057a73a5",
+    "sourceFiles": 185,
+    "payloadFiles": 2291,
+    "payloadBytes": 23932747,
+    "nodeVersion": "v24.15.0",
+    "platform": "win32",
+    "arch": "x64",
+    "isolatedPreparation": true,
+    "dependencyInstall": "npm-ci-offline-ignore-scripts",
+    "freshViteBuild": true,
+    "sealedManifestPayloadAndGitSourceVerifiedByBuilder": true,
+    "gatewayLockSha256": "c487dc65e3a107f5235408fad3523c8242a4c01b62c7475154ad4ae41a627b96",
+    "frontendLockSha256": "9064a36a0c86464db93cc261ffedbc92a87ea2092315e207301ca8a8aa6d4d24",
+    "initialAttempt": "Rejected dirty checkout before staging; owned STATUS changes were committed, then the same existing builder succeeded from a clean feature checkout.",
+    "activated": false,
+    "ownerHandoffSent": true,
+    "db01BuildFallbackChanged": false,
+    "supersededForInstallation": true,
+    "immutableFilesPreserved": true
+  },
+  "aiProductReadback": {
+    "ids": [
+      "A04"
+    ],
+    "source": "5bcd5ad136ff7ca35d623d436b8724cc491641be",
+    "before": "Canonical adapter preserves valid padded names; recorded product names trim the same selected productName/safeCode/stockCode value. Fresh frontend readback did not trim and rejected the unchanged actual product as AI_PRODUCT_CHANGED.",
+    "after": "Frontend normalization trims only the selected string name consistently with recordedCatalog. Real name/interior-whitespace, revision, priceExact, price, currency, IDs, unit, quarantine and status changes remain rejected.",
+    "regressionBefore": {
+      "passed": 1,
+      "failed": 3
+    },
+    "targetedAfter": {
+      "passed": 4,
+      "failed": 0
+    },
+    "testCommand": "node --test apps/frontend/tests/sales-products-canonical-name.test.mjs",
+    "testBoundary": "Actual canonical adapter to recorded-product to frontend normalize/assert chain; no model, paid provider, customer or normal GUI call.",
+    "independentReadOnlyReviewOpenP1P2": 0,
+    "ci": [
+      {
+        "id": 38660531362,
+        "event": "pull_request",
+        "conclusion": "success"
+      },
+      {
+        "id": 38660524726,
+        "event": "push",
+        "conclusion": "success"
+      },
+      {
+        "id": 38660531363,
+        "workflow": "AI Sales Agent - Offline",
+        "conclusion": "success"
+      }
+    ]
+  },
+  "delivery": {
+    "branch": "codex/crm-agents-on-completion-20261003",
+    "pullRequest": "https://github.com/melihsnyldzz-ui/melisa-crm/pull/3",
+    "finalApplicationSource": "5bcd5ad136ff7ca35d623d436b8724cc491641be",
+    "finalSourceRemoteAndPrHeadMatched": true,
+    "exactFinalSourceCiSuccess": true,
+    "followingMetadataCommitIsNotTheSourceCiHead": true,
+    "sameWorkPeriodIndependentTechnicalFixes": 3,
+    "targetedTests": {
+      "passed": 35,
+      "failed": 0
+    },
+    "preparationAndInstalledAndHumanAcceptanceSeparate": true
+  },
+  "installationTransition": {
+    "recordedAtIstanbul": "2026-10-15T03:46:24+03:00",
+    "evidenceState": "ERP owner intermediate report; final byte-hash and identity receipts pending",
+    "crmSourceReported": "5bcd5ad136ff7ca35d623d436b8724cc491641be",
+    "supervisorSourcePrefixReported": "5012",
+    "coreProcessesRunningReported": 6,
+    "sameDb02Reported": true,
+    "priorFilesPreservedReported": 37,
+    "initialSimultaneousHubTaskExitCodeReported": 1,
+    "hubAvailableReported": false,
+    "fullInstallationHealthVerified": false,
+    "firstAttemptAutostartPassed": false,
+    "recoveryResult": "Pending bounded sole ERP owner investigation and supported guarded Hub-task recovery",
+    "finalReceiptVerifiedByCrm": false,
+    "previousVerifiedRuntimeIsHistoricalCheckpoint": true,
+    "sourceBatchRemainsFrozen": true,
+    "newCrmAuthRequestSqlOrCustomerFlow": false,
+    "realWindowsRebootOrLogon": false,
+    "humanAccepted": false,
+    "historicalCheckpoint": true,
+    "supersededBy": "installedRuntime"
+  },
+  "recordedPrerequisiteCheck": {
+    "status": "CHECK_REQUIRED",
+    "exitCode": 1,
+    "changed": true,
+    "cacheSaved": true,
+    "afterFinalRuntimeMapping": true,
+    "mainIds": {
+      "ERP": "CRM06",
+      "CRM": "CRM06"
+    },
+    "runtimeHealth": "REUSE",
+    "normalRole": "REUSE",
+    "guiProof": "PROOF_BLOCKED",
+    "onlyNormalUiBlocked": true,
+    "recordInconsistency": false,
+    "wholeClosureGranted": false,
+    "repeatAcceptedTests": false,
+    "currentTransitionVerifiedByThisCheck": false,
+    "scope": "Metadata prerequisite mapping only; not application, authenticated operation, GUI or human acceptance."
+  },
+  "installedRuntime": {
+    "observedAt": "2026-10-15T10:32:13.068Z",
+    "observedAtIstanbul": "2026-10-15T13:32:13.068+03:00",
+    "attribution": "ERP sole owner installed the frozen894 package in one controlled two-task transition. CRM independently matched12pinned receipt/artifact/config/barrier hashes and whitelisted six-core PID/parent/finite creation/source/copy/T1 metadata. No new GUI/auth/API/SQL/provider or restore acceptance was run by CRM.",
+    "ownerDelivery": "https://github.com/melihsnyldzz-ui/melisa-erp-v2/pull/23#issuecomment-6190044036",
+    "ownerReceipts": [
+      {
+        "name": "installed-readback.json",
+        "sha256": "e6dedf2f9a29e2a6b2b449c2f2c8311a6190c048d4155f5f1ed4b1d2143ec0d8",
+        "byteHashVerifiedByCrm": true
+      },
+      {
+        "name": "final-preservation.json",
+        "sha256": "c3919dc4e435883fb3d841200413e4755bfbb0053347d66503596dafba695f66",
+        "byteHashVerifiedByCrm": true
+      },
+      {
+        "name": "original-and-current-preservation-complete.json",
+        "sha256": "2b59640c425d7c2455e7c1a911de21203599baad0065c71377d751164f9c00a5",
+        "byteHashVerifiedByCrm": true
+      },
+      {
+        "name": "transition-before.json",
+        "sha256": "e453a811ea991ac7e61117a233537c354a402ff2ee5ad95759887aed734a3279",
+        "byteHashVerifiedByCrm": true
+      },
+      {
+        "name": "transition-started.json",
+        "sha256": "fb5da3e8d0555450c62fa2d86208556e73ccf66fc0e917a9e9f00dedf475c289",
+        "byteHashVerifiedByCrm": true
+      },
+      {
+        "name": "candidate-verify.json",
+        "sha256": "8e89b7a09523c30b521a44e8bdfd33eb07cf96a6d9b1696ccd5c901e5ac16615",
+        "byteHashVerifiedByCrm": true
+      },
+      {
+        "name": "crm-package-pin.json",
+        "sha256": "d5598659bffe9162e28f3bb8d2a1b2056e6876dacb2bb62062d460d8364c051e",
+        "byteHashVerifiedByCrm": true
+      },
+      {
+        "name": "heartbeat-dispatch.json",
+        "sha256": "37d2633e0505b1d07aa78a638b0f7d2e8a8c6707862810ca11640e40f44a106a",
+        "byteHashVerifiedByCrm": true
+      },
+      {
+        "name": "release-manifest.json",
+        "sha256": "3d9db24cd42a44161c2ae874adda05ce54ff8f205c5fc6f1512aa6bb19848190",
+        "byteHashVerifiedByCrm": true
+      },
+      {
+        "name": "settings-crm06-staff-89427492f27c.json",
+        "sha256": "12fe75519fe0780c587e6404de6077331697391a76c2bd0ae9ab12d8fe5991ac",
+        "byteHashVerifiedByCrm": true
+      },
+      {
+        "name": "staff-refresh-successor-89427492f27c.json",
+        "sha256": "8f5932003d5ce204eeaf2c59ca1eb5e9eef8cae95f2308ede806f1ce88702f62",
+        "byteHashVerifiedByCrm": true
+      },
+      {
+        "name": "erp-prerequisites-3ec5eb4fa9294b09b3ec79821378e850.json",
+        "sha256": "d9868e5fe9a6dd8145495b7e01649633690a61121ba6b7bdda24d05963d001d5",
+        "byteHashVerifiedByCrm": true
+      }
+    ],
+    "installed": true,
+    "crmSource": "89427492f27caf72c511a27262b55e73d782c407",
+    "crmManifest": "b4f593eb736820577b19a489f104e599be6e3749e3f31db759898733c73ef3a7",
+    "crmIndexSha256": "3bb1ec44de971549f95cb858bb315cdf101d83b3381321c53c2ef477e95a96a6",
+    "supervisorSource": "cac08eaed0c4419550ecdaf6fdf4976252b83fa7",
+    "supervisorManifestSha256": "3d9db24cd42a44161c2ae874adda05ce54ff8f205c5fc6f1512aa6bb19848190",
+    "supervisorManifestByteHashVerifiedByCrm": true,
+    "settingsSha256": "12fe75519fe0780c587e6404de6077331697391a76c2bd0ae9ab12d8fe5991ac",
+    "settingsByteHashVerifiedByCrm": true,
+    "successorSha256": "8f5932003d5ce204eeaf2c59ca1eb5e9eef8cae95f2308ede806f1ce88702f62",
+    "successorByteHashVerifiedByCrm": true,
+    "dependencyLockSha256": "6da08982571a874874644444dc2581aa627f74e6385411bb674d804016ccf760",
+    "dependencyLockByteHashVerifiedByCrm": false,
+    "privateConfigurationValuesPublished": false,
+    "erpApplicationSource": "7a41f6492273dd1ec0bcb086f820be5575372be8",
+    "database": "MELISA_ERP_CRM_SHARED_TEST_20261009_02",
+    "copyId": "e16b70f0-4057-428b-9abc-6bbcaf35fe82",
+    "actualT1": false,
+    "coreProcessReceipts": [
+      {
+        "stage": "erpNative",
+        "pid": 20236,
+        "sourceCommit": "7a41f6492273dd1ec0bcb086f820be5575372be8",
+        "receiptAndObservedPidParentCreationCopyT1Matched": true
+      },
+      {
+        "stage": "erpApi",
+        "pid": 42224,
+        "sourceCommit": "7a41f6492273dd1ec0bcb086f820be5575372be8",
+        "receiptAndObservedPidParentCreationCopyT1Matched": true
+      },
+      {
+        "stage": "crmNativeOrder",
+        "pid": 42184,
+        "sourceCommit": "7a41f6492273dd1ec0bcb086f820be5575372be8",
+        "receiptAndObservedPidParentCreationCopyT1Matched": true
+      },
+      {
+        "stage": "crmCatalog",
+        "pid": 13508,
+        "sourceCommit": "89427492f27caf72c511a27262b55e73d782c407",
+        "receiptAndObservedPidParentCreationCopyT1Matched": true
+      },
+      {
+        "stage": "crmOrders",
+        "pid": 39088,
+        "sourceCommit": "89427492f27caf72c511a27262b55e73d782c407",
+        "receiptAndObservedPidParentCreationCopyT1Matched": true
+      },
+      {
+        "stage": "crmServer",
+        "pid": 16600,
+        "sourceCommit": "89427492f27caf72c511a27262b55e73d782c407",
+        "receiptAndObservedPidParentCreationCopyT1Matched": true
+      }
+    ],
+    "heartbeat": {
+      "state": "running",
+      "supervisorPid": 39236,
+      "sourceCommit": "89427492f27caf72c511a27262b55e73d782c407",
+      "observedAt": "2026-10-15T10:32:09.316Z"
+    },
+    "hub": {
+      "pid": 17136,
+      "sourceCommit": "7a41f6492273dd1ec0bcb086f820be5575372be8",
+      "startedAt": "2026-10-15T10:31:33.6746839Z",
+      "port": 5234,
+      "services": {
+        "erp": "reachable",
+        "crm": "reachable",
+        "terminal": "reachable",
+        "training": "unknown",
+        "test125": "unreachable",
+        "live": "unknown"
+      }
+    },
+    "automaticHubCoordination": {
+      "passed": true,
+      "barrierReceiptSha256": "d9868e5fe9a6dd8145495b7e01649633690a61121ba6b7bdda24d05963d001d5",
+      "readyAt": "2026-10-15T10:31:14.975Z",
+      "coreSupervisorPid": 39236,
+      "wrapperPid": 5080,
+      "hubPid": 17136,
+      "hubBornAfterPrerequisites": true,
+      "hubInitialAttempt": 0,
+      "manualHubStart": false,
+      "actualWindowsRebootOrLogon": false,
+      "barrierReceiptByteHashVerifiedByCrm": true,
+      "barrierDigestSource": "Direct byte hash of exact owner barrier file matched pinned installed readback."
+    },
+    "preservation": {
+      "observedAt": "2026-10-15T10:32:17.800Z",
+      "immutableBeforeFilesPreserved": 65,
+      "taskMetadataPreserved": true,
+      "currentActionsExact": true,
+      "twoTasksRunning": true,
+      "sqlAndTest125ProcessIdentitiesPreserved": true,
+      "rolesAndCredentialFilesUnchanged": true,
+      "applicationJournalsAndPriorRequestByteIdentical": true,
+      "newAuthOrInterestRequests": 0,
+      "freshStaffJournalPhysical": "READY",
+      "references": 18
+    },
+    "priorNormalRoleAndCustomerRequestEvidence": {
+      "proofSource": "da82fc6644c1d9dba0c10eaa861773534d43c288",
+      "lastMappedRuntimeSource": "957f98773695874ea3d101b7eb4816f9ea080880",
+      "newSource": "89427492f27caf72c511a27262b55e73d782c407",
+      "unchangedModules": [
+        {
+          "path": "apps/gateway/src/routes/authRoutes.js",
+          "sha256": "56d81b44c8fbaa652b2144be56d3d1195000137eff37988305ff4c575b16bbe9"
+        },
+        {
+          "path": "apps/gateway/src/controllers/authController.js",
+          "sha256": "ff3d1743d8cb956bb02e1c0262f92769abf596818a50cb5b2bcfaf8c7ac4914b"
+        },
+        {
+          "path": "apps/gateway/src/middleware/auth.js",
+          "sha256": "b3d2dd1660f26482f111081901a56c4962d80e49c01c890d3c396b6b7520cda9"
+        },
+        {
+          "path": "apps/gateway/src/services/crmAuthService.js",
+          "sha256": "f4fffe649c504117fbe3c488f284cd15a76b73ce7d2ca1a47ee2db96d7254133"
+        },
+        {
+          "path": "apps/gateway/src/services/normalRefreshSession.mjs",
+          "sha256": "01d019ded9ecb17a27fef3d799eef785abf67e2db586a92e5e453e1f39ce69ef"
+        },
+        {
+          "path": "apps/gateway/src/services/assignedStaffRefreshSession.mjs",
+          "sha256": "994175d6020ff634f90f98a43cddc635f37427fc07461cc8b2eb3c75482d24be"
+        },
+        {
+          "path": "apps/gateway/src/services/customerRequestIssuerSession.mjs",
+          "sha256": "635386e51eef2ba9593c49ec8bbf892bb4d1d99ca12edcc80df934ec54aba736"
+        },
+        {
+          "path": "apps/gateway/src/services/customerProductRequest.mjs",
+          "sha256": "ef1c044e04bf6a312752c1fded9364af00af2b8fe57dadc2282460f5dc17efce"
+        },
+        {
+          "path": "apps/gateway/src/services/customerProductRequestIntegration.mjs",
+          "sha256": "3f3b498912daa6cef9f832b9d5a9145f6ccab1a497475f2625cfdbcc5bda8951"
+        },
+        {
+          "path": "apps/gateway/src/routes/customerProductRequestRoutes.mjs",
+          "sha256": "2d97e519a45068722f4eb651eab8d6506e4a9b744052375cf5c9aa0c049c36f6"
+        }
+      ],
+      "unchangedGatewayModuleHashes": 10,
+      "wholeApplicationByteIdentical": false,
+      "packageByteHashesPreviouslyChecked": true,
+      "oldStoresAndRolesMappedThroughPinnedFinalPreservation": true,
+      "scope": "Only the same10authority/session/customer-request modules and preserved role/journal/request bytes map prior normal-role, one-request, replay and bounded no-sale proof. New frontend behavior and real send transport are not accepted by this mapping.",
+      "newAuthRequests": 0,
+      "newInterestRequests": 0,
+      "newBusinessSqlHashTests": 0,
+      "normalGuiVerified": false
+    },
+    "transition": {
+      "previousCrmSource": "957f98773695874ea3d101b7eb4816f9ea080880",
+      "previousSupervisorSource": "d469f192b315fcd322e3e85815cb5f257947532b",
+      "previousSettingsSha256": "5cdfa444233780cf8d00b6933b207fec4641d40ec02830e96e5dd45d2fd14846",
+      "healthyBaseline": true,
+      "oneControlledTwoTaskTransition": true,
+      "partialRecoveryRequired": false,
+      "previousRollbackAndOriginal790AncestorPreservedSeparately": true,
+      "previousIncidentHistoryRef": "previousInstalledRuntimeCheckpoints"
+    },
+    "sourceCi": {
+      "supervisorSource": "cac08eaed0c4419550ecdaf6fdf4976252b83fa7",
+      "prRun": 38720005028,
+      "pushRun": 38719997556,
+      "conclusion": "success",
+      "exactHeadAndResultsReadByCrm": true,
+      "testsRerunByCrm": false,
+      "ownerReportedNewTargetedTests": 6,
+      "ownerReportedIndependentSourceAndPrivateHelperReview": "GO"
+    },
+    "authenticatedOperationsVerified": false,
+    "normalGuiFirstLoginVerified": false,
+    "humanAccepted": false,
+    "commercialWrites": 0,
+    "controlledInstallationHoldReleased": true,
+    "ownerDocumentationSource": "436df4bfb49e4149553d8a6ad83f74289742b1e0",
+    "ownerPublicEvidence": "https://github.com/melihsnyldzz-ui/melisa-erp-v2/blob/436df4bfb49e4149553d8a6ad83f74289742b1e0/docs/evidence/erp/2026-10-15-isolated-test/README.md",
+    "dependencyLockByteHashComputedByCrm": true,
+    "dependencyLockExpectedOwnerDigestProvided": false,
+    "dependencyLockOwnerCandidatePinsAndDiskFilesVerified": true
+  },
+  "firstScheduledDevelopmentRun": {
+    "automationId": "crm-2-saatlik-eri-im-denemesi",
+    "trigger": "same-thread scheduled heartbeat",
+    "heartbeatAt": "2026-10-15T02:05:43.103Z",
+    "firstClockReadAt": "2026-10-15T02:11:11Z",
+    "repository": "C:/Sirket/CRM/melisa-crm",
+    "fetchAndPushOrigin": "https://github.com/melihsnyldzz-ui/melisa-crm.git",
+    "branch": "codex/crm-agents-on-completion-20261003",
+    "initialHead": "245bad0e9999de08d57ca0656a072d74afd1c7cb",
+    "initialWorktreeClean": true,
+    "worktreeInventoryRead": true,
+    "worktreeCount": 8,
+    "otherWorktreesUnchanged": true,
+    "recordsRead": [
+      "AGENTS.md",
+      "PROJECT_DECISIONS.md",
+      "CRM_STATUS.md",
+      "CRM_FINISH_PLAN.md",
+      "USER_ACCEPTANCE.md"
+    ],
+    "recordedPrerequisites": {
+      "status": "CHECK_REQUIRED",
+      "exitCode": 1,
+      "changed": false,
+      "bothMainIds": "CRM06",
+      "runtimeAndNormalRole": "REUSE",
+      "normalUi": "PROOF_BLOCKED",
+      "wholeClosureGranted": false,
+      "oldAcceptanceRepeated": false
+    },
+    "authorizationResponse": {
+      "ids": [
+        "CRM06",
+        "C02",
+        "U01"
+      ],
+      "source": "08fa4c9b5e5a710a48369568f0b6eb80d6529651",
+      "before": {
+        "passed": 4,
+        "failed": 12
+      },
+      "after": {
+        "passed": 16,
+        "failed": 0
+      },
+      "testCommand": "node --import ./tests/offline-test-guard.mjs --test --test-timeout=20000 apps/frontend/tests/customer-product-request-auth-status.test.mjs",
+      "actualChangedBehavior": "Empty, HTML or broken JSON 401/403/410 retains the HTTP authorization denial, clears the customer session/products/photo URLs and blocks later edit/submit/search/reconcile transports. Normal staff list keeps401 status.",
+      "preserved": "Cancellation/deadline AbortError priority, malformed2xx contract rejection, normal server refresh, request validation, no-store, credentials:omit, redirect:error and bearer header scope.",
+      "testBoundary": "Actual customer API, controller and photo cache with injected fakefetch/Response/RAM storage; no real network, normal GUI, credentials, customer request or business write.",
+      "fixtureCorrection": "The new test initially counted an implicit photo GET as a write. Only the counter default was corrected to method||GET; all assertions stayed. Corrected fixture reproduced12FAIL/4PASS on the old parse-catch then16PASS on the fixed source.",
+      "independentReadOnlyReviewOpenP1P2": 0,
+      "ci": [
+        {
+          "id": 38669998587,
+          "event": "pull_request",
+          "conclusion": "success"
+        },
+        {
+          "id": 38669994064,
+          "event": "push",
+          "conclusion": "success"
+        },
+        {
+          "id": 38669998576,
+          "workflow": "AI Sales Agent - Offline",
+          "conclusion": "success"
+        }
+      ]
+    },
+    "sameDocumentLink": {
+      "ids": [
+        "CRM06",
+        "U01",
+        "M01"
+      ],
+      "state": "Source committed and pushed; final independent review has no openP1/P2; exact final-source CI succeeded.",
+      "firstFiveNewCasesBefore": {
+        "failed": 5
+      },
+      "initialLocalAfter": {
+        "passed": 7,
+        "failed": 0
+      },
+      "reviewOpenP2": 0,
+      "reviewFinding": "A queued second hashchange after consuming the current fragment must not fall back to denied storage and close a valid memory-only catalog.",
+      "normalGui": false,
+      "source": "bb8966c59a6cfbdc1cc83472cb331e48b720a173",
+      "files": [
+        "apps/frontend/src/customerProductRequest/CustomerProductRequestPage.jsx",
+        "apps/frontend/tests/customer-product-request-link-change.test.mjs"
+      ],
+      "independentReadOnlyReviewOpenP1P2": 0,
+      "reviewFindingResolved": true,
+      "queuedEventRegressionBefore": {
+        "passed": 7,
+        "failed": 1
+      },
+      "targetedAfter": {
+        "passed": 8,
+        "failed": 0
+      },
+      "testCommand": "node --test --test-timeout=15000 apps/frontend/tests/customer-product-request-link-change.test.mjs",
+      "actualChangedBehavior": "A distinct or invalid same-document catalog fragment disposes/aborts the old controller, revokes its photos and clears rendered state before fresh session access. Same capability retains controller and pending operation. Empty queued events after fragment consumption do not clear a valid memory-only session.",
+      "preserved": "Initial storage fallback, same-capability operation identity, invalid nonempty-link fail-closed handling, old callback suppression, close/remount, StrictMode and rapid batched link changes; lifecycle/model/controller/API implementation was not changed by this part.",
+      "harness": "Actual Page JSX transformed then evaluated with a controlled hook scheduler; unchanged production lifecycle/controller/model and real API normalization with injected fakefetch. This is not a React renderer, normal GUI, native browser/BFCache, physical phone or human acceptance.",
+      "initialAsyncBundle": "Hung; not PASS. Only owned test processes were stopped. Final transformSync entry-only harness completed with bounded test timeout."
+    },
+    "installedBaseline": "installedRuntime above remains the pinned5bcd/supervisor455/ERP7a/DB02 checkpoint. New source is not deployment.",
+    "humanAcceptance": "BEKLİYOR",
+    "realNormalGui": "GUI DENENMEDİ",
+    "physicalMobile": false,
+    "realWindowsRebootOrLogon": false,
+    "newCrmSharedRuntimeWrites": 0,
+    "newCrmSqlWrites": 0,
+    "realCustomerMessages": 0,
+    "paidApiCalls": 0,
+    "newAgentsGoalsOrAutomations": 0,
+    "mainMerged": false,
+    "liveDeployed": false,
+    "finishCountsUnchanged": {
+      "total": 25,
+      "complete": 12,
+      "partial": 13,
+      "open": 0
+    },
+    "delivery": {
+      "sourceCommits": [
+        "08fa4c9b5e5a710a48369568f0b6eb80d6529651",
+        "bb8966c59a6cfbdc1cc83472cb331e48b720a173"
+      ],
+      "finalApplicationSource": "bb8966c59a6cfbdc1cc83472cb331e48b720a173",
+      "pullRequest": "https://github.com/melihsnyldzz-ui/melisa-crm/pull/3",
+      "exactFinalSourceCiState": "SUCCESS",
+      "targetedAfter": {
+        "passed": 24,
+        "failed": 0
+      },
+      "existingSubagentsReused": [
+        "/root/audit_source_explorer",
+        "/root/backend_test_runtime",
+        "/root/crm06_remaining_frontend",
+        "/root/az_independent_reviewer"
+      ],
+      "sameRunNextIndependentWorkObserved": true,
+      "sourceBatchFrozenForSinglePackage": true,
+      "packagePrepared": true,
+      "installed": true,
+      "ci": [
+        {
+          "id": 38670744468,
+          "event": "pull_request",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 38670739038,
+          "event": "push",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 38670744580,
+          "workflow": "AI Sales Agent - Offline",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ],
+      "ownerHandoffSent": true,
+      "installationEvidence": "Activated and mapped during the second scheduled run at2026-10-15T06:47:26.073Z; see installedRuntime. This is not acceptance during the original05:05run.",
+      "ownerInstallationDependency": {
+        "observedAt": "2026-10-15T06:21:35Z",
+        "source": "Sole ERP owner latest thread status",
+        "state": "HOLD",
+        "reason": "The ERP09 isolated synthetic rehearsal session is no longer accessible and its closing result is not yet verified. The owner is reading the existing fixed-identifier record before any further write; CRM installation waits for that ambiguity to be resolved.",
+        "crmSharedWrites": 0,
+        "crmGuiOrAuthFlow": 0,
+        "noAcceptedTestsOrCiRepeated": true,
+        "resolution": {
+          "observedAt": "2026-10-15T06:28:55Z",
+          "source": "Explicit authorised ERP owner thread handoff",
+          "state": "REHEARSAL_CLOSED_INSTALLATION_PREPARATION",
+          "ownerReported": true,
+          "crmSqlRehearsalRepeated": false,
+          "detail": "ERP owner closed the fixed-identifier rehearsal; finalization did not commit and only its own draft was canceled with zero business effects. Existing bb896 installation is being prepared under sole owner control; no final activation receipt has yet been received."
+        },
+        "finalResolution": {
+          "state": "INSTALLED",
+          "observedAt": "2026-10-15T06:47:26.073Z",
+          "crmSource": "bb8966c59a6cfbdc1cc83472cb331e48b720a173",
+          "supervisorSource": "76d1e5916d355592bcde96e51889a7536084fe91"
+        }
+      }
+    },
+    "package": {
+      "source": "bb8966c59a6cfbdc1cc83472cb331e48b720a173",
+      "sourceTree": "01e1ffd0101c4bb63c60d0e2fb0982c67f38ce92",
+      "packageRoot": "C:/Sirket/CRM/releases/crm-shared-test-bb8966c59a6cfbdc1cc83472cb331e48b720a173",
+      "manifestSha256": "6a9fe4f40c6e7b852ba62721a6f63dae1030321d9b9f46069405cbcd5d505d7c",
+      "indexSha256": "7ea43551750ead26b7bb166e6ccf35bd613e23a1ca888026352966d99cb289d1",
+      "sourceFiles": 185,
+      "payloadFiles": 2291,
+      "payloadBytes": 23935040,
+      "nodeVersion": "v24.15.0",
+      "platform": "win32",
+      "arch": "x64",
+      "dependencyInstall": "npm-ci-offline-ignore-scripts",
+      "isolatedPreparation": true,
+      "cleanCheckout": true,
+      "oneExistingBuilderInvocation": true,
+      "freshViteBuild": true,
+      "sealedManifestPayloadAndGitSourceVerifiedByBuilder": true,
+      "gatewayLockSha256": "c487dc65e3a107f5235408fad3523c8242a4c01b62c7475154ad4ae41a627b96",
+      "frontendLockSha256": "9064a36a0c86464db93cc261ffedbc92a87ea2092315e207301ca8a8aa6d4d24",
+      "gatewayAuthorityModuleHashesMatchedToInstalledBaseline": 10,
+      "wholeApplicationByteIdentical": false,
+      "ownerHandoffSent": true,
+      "activationVerifiedByCrm": true,
+      "priorPackagesAndRollbackPreserved": true,
+      "db01BuildFallbackChanged": false,
+      "activationObservedAt": "2026-10-15T06:47:26.073Z",
+      "activatedAfterOriginalRun": true
+    }
+  },
+  "secondScheduledDevelopmentRun": {
+    "heartbeatAt": "2026-10-15T06:25:55.220Z",
+    "heartbeatAtIstanbul": "2026-10-15T09:25:55.220+03:00",
+    "firstClockObservedAt": "2026-10-15T06:28:55Z",
+    "automationId": "crm-2-saatlik-eri-im-denemesi",
+    "nativeRunId": null,
+    "nativeRunIdAvailable": false,
+    "canonicalRoot": "C:/Sirket/CRM/melisa-crm",
+    "originFetch": "https://github.com/melihsnyldzz-ui/melisa-crm.git",
+    "originPush": "https://github.com/melihsnyldzz-ui/melisa-crm.git",
+    "branch": "codex/crm-agents-on-completion-20261003",
+    "initialHead": "ac1465c3df8f01e9b81f6f6b56232a2452350740",
+    "initialClean": true,
+    "existingWorktrees": 8,
+    "newAgentsOrWorktreesCreated": 0,
+    "recordsRead": [
+      "AGENTS.md",
+      "PROJECT_DECISIONS.md CRM-DEC-018/017 and 15 October v3",
+      "CRM_STATUS.md single active next step",
+      "CRM_FINISH_PLAN.md",
+      "USER_ACCEPTANCE.md"
+    ],
+    "prerequisiteCheck": {
+      "oneInvocation": true,
+      "status": "CHECK_REQUIRED",
+      "exitCode": 1,
+      "changed": false,
+      "bothMainIds": "CRM06",
+      "runtimeAndNormalRole": "REUSE",
+      "normalUi": "PROOF_BLOCKED",
+      "wholeClosureGranted": false,
+      "acceptedTestsRepeated": false
+    },
+    "catalogReadAndMutation": {
+      "source": "07f1182a7f54e70bd0a395fbca464dfb6be684c4",
+      "mainId": "CRM06",
+      "finishIds": [
+        "U01",
+        "M01",
+        "C02"
+      ],
+      "files": [
+        "apps/frontend/src/customerProductRequest/controller.js",
+        "apps/frontend/tests/customer-product-request-concurrent-read.test.mjs"
+      ],
+      "problem": "A non-authorisation catalog-list error cleared busy and introduced uncertainty while a draft write or submit was still pending. Separately, an older same-context read denial could be hidden behind a newer successful read.",
+      "fix": "Non-authorisation read failure changes only listBusy/error. Same-active-epoch 401/403/410 closes the context independently of read sequence; stale ordinary errors and old/disposed epochs remain excluded.",
+      "initialRegression": {
+        "tests": 9,
+        "passed": 5,
+        "failed": 4
+      },
+      "firstReadOnlyErrorFix": {
+        "tests": 9,
+        "passed": 9,
+        "failed": 0
+      },
+      "addedStaleDenialRegression": {
+        "tests": 13,
+        "passed": 10,
+        "failed": 3
+      },
+      "finalTargeted": {
+        "tests": 13,
+        "passed": 13,
+        "failed": 0,
+        "skipped": 0
+      },
+      "command": "node --import ./tests/offline-test-guard.mjs --test apps/frontend/tests/customer-product-request-concurrent-read.test.mjs",
+      "harness": "Actual controller and request API with injected deferred fetch/Response and RAM operationStore. No real network, account, provider, SQL or customer write.",
+      "reviewer": "/root/az_independent_reviewer",
+      "reviewOpenP1P2": 0,
+      "authorityChecksRemoved": false,
+      "pendingOperationIdentityPreserved": true,
+      "oldSuccessfulTestsManuallyRepeated": false,
+      "exactCi": [
+        {
+          "id": 38693403035,
+          "event": "pull_request",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 38693398217,
+          "event": "push",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 38693403083,
+          "workflow": "AI Sales Agent - Offline",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    },
+    "staffAssignmentContext": {
+      "source": "957f98773695874ea3d101b7eb4816f9ea080880",
+      "mainId": "CRM06",
+      "finishIds": [
+        "C01",
+        "C02",
+        "U01",
+        "M01"
+      ],
+      "files": [
+        "apps/frontend/src/App.jsx",
+        "apps/frontend/tests/customer-product-request-staff-assignment.test.mjs"
+      ],
+      "problem": "Changing the assigned staff member in place left the prior staff request records, customer catalog link and pending issue/list callbacks attached to the same panel.",
+      "fix": "The existing staff panel key also includes the verified assignedUserId. Reassignment uses the existing unmount abort/mounted guards; unchanged assignment preserves the current panel. Existing role and crm.manage conditions are unchanged.",
+      "initialRegression": {
+        "tests": 6,
+        "passed": 2,
+        "failed": 4
+      },
+      "finalTargeted": {
+        "tests": 6,
+        "passed": 6,
+        "failed": 0,
+        "skipped": 0
+      },
+      "harness": "Exact production App staff JSX produces its real React element.key; transformed production Staff component, actual API and fake fetch run through controlled hook/key reconciliation. No full App, ReactDOM, browser, photograph rendering, clipboard, real account or network.",
+      "initialHarnessServiceWait": "An initial esbuild service build did not complete; only owned test node/esbuild processes were stopped. This was not counted as PASS. The final harness uses bounded entry-only transformSync.",
+      "reviewer": "/root/az_independent_reviewer",
+      "reviewOpenP1P2": 0,
+      "existingStaffComponentChanged": false,
+      "normalPersonnelIssuerAdded": false,
+      "oldSuccessfulTestsManuallyRepeated": false,
+      "exactCi": [
+        {
+          "id": 38693616257,
+          "event": "pull_request",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 38693610774,
+          "event": "push",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 38693616302,
+          "workflow": "AI Sales Agent - Offline",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ],
+      "reproductionCommand": "node --import ./tests/offline-test-guard.mjs --test --test-timeout=15000 apps/frontend/tests/customer-product-request-staff-assignment.test.mjs"
+    },
+    "delivery": {
+      "sourceCommits": [
+        "07f1182a7f54e70bd0a395fbca464dfb6be684c4",
+        "957f98773695874ea3d101b7eb4816f9ea080880"
+      ],
+      "finalSource": "957f98773695874ea3d101b7eb4816f9ea080880",
+      "targetedTests": 19,
+      "targetedPassed": 19,
+      "independentReviewsOpenP1P2": 0,
+      "sameRunNextIndependentWorkObserved": true,
+      "existingAgentsReused": [
+        "/root/audit_source_explorer",
+        "/root/assigned_staff_auth_tests",
+        "/root/backend_test_runtime",
+        "/root/az_independent_reviewer"
+      ],
+      "newAgentsCreated": 0,
+      "existingPr": "https://github.com/melihsnyldzz-ui/melisa-crm/pull/3",
+      "packagePrepared": true,
+      "sourceBatchFrozen": true,
+      "ownerHandoffSent": true,
+      "installed": true,
+      "finalSourceCi": "success",
+      "ownerHandoffBoundary": "Next inactive source batch only. Do not interrupt the existing sole-owner recovery/bb896 transition or replace its frozen package.",
+      "activatedAfterOriginalScheduledRun": true
+    },
+    "package": {
+      "source": "957f98773695874ea3d101b7eb4816f9ea080880",
+      "sourceTree": "746b77c55c7e671599eb025377c5d01948699476",
+      "packageRoot": "C:/Sirket/CRM/releases/crm-shared-test-957f98773695874ea3d101b7eb4816f9ea080880",
+      "manifestSha256": "a93d2cdd14eafcb021091d98294c41d5e60d31bbc5842d31447f091a843a18af",
+      "indexSha256": "8cdf8904557755900d98769df26f6edcd6efa929bc400970b073b48e4d2d1ddd",
+      "sourceFiles": 185,
+      "payloadFiles": 2291,
+      "payloadBytes": 23935427,
+      "nodeVersion": "v24.15.0",
+      "platform": "win32",
+      "arch": "x64",
+      "dependencyInstall": "npm-ci-offline-ignore-scripts",
+      "isolatedPreparation": true,
+      "cleanCheckout": true,
+      "oneExistingBuilderInvocation": true,
+      "freshViteBuild": true,
+      "sealedManifestPayloadAndGitSourceVerifiedByBuilder": true,
+      "gatewayLockSha256": "c487dc65e3a107f5235408fad3523c8242a4c01b62c7475154ad4ae41a627b96",
+      "frontendLockSha256": "9064a36a0c86464db93cc261ffedbc92a87ea2092315e207301ca8a8aa6d4d24",
+      "gatewayAuthorityModuleHashesMatchedToInstalledBaseline": 10,
+      "wholeApplicationByteIdentical": false,
+      "ownerHandoffSent": true,
+      "activationVerifiedByCrm": true,
+      "priorBb896FrozenPackageAndAllRollbackPreserved": true,
+      "db01BuildFallbackChanged": false,
+      "activationObservedAt": "2026-10-15T08:36:47.677Z"
+    },
+    "acceptance": {
+      "normalGui": "GUI DENENMEDİ",
+      "physicalPhone": false,
+      "actualWindowsRebootOrLogon": false,
+      "humanAccepted": false,
+      "existingUserResponse": "Henuz denemedim",
+      "finishCounts": {
+        "total": 25,
+        "complete": 12,
+        "partial": 13,
+        "red": 0
+      }
+    },
+    "boundaries": {
+      "crmSharedDbRuntimeConfigStoreOrServiceWrites": 0,
+      "crmLoginAttempts": 0,
+      "realCustomerMessages": 0,
+      "paidApiCalls": 0,
+      "liveOrVegaWrites": 0,
+      "mainMergeOrTag": false,
+      "priorBb896InstallationBatchChanged": false
+    },
+    "lastVerifiedInstalledRuntimeAtStart": {
+      "crmSource": "5bcd5ad136ff7ca35d623d436b8724cc491641be",
+      "supervisorSource": "455243d4f56b6a252d98cc638e0c3707acaf78da",
+      "erpSource": "7a41f6492273dd1ec0bcb086f820be5575372be8",
+      "database": "MELISA_ERP_CRM_SHARED_TEST_20261009_02",
+      "copyId": "e16b70f0-4057-428b-9abc-6bbcaf35fe82",
+      "actualT1": false,
+      "sourceCheckoutIsDeployment": false,
+      "verifiedAt": "2026-10-15T01:05:49.353Z",
+      "notFreshHealthProof": true
+    },
+    "currentRuntimeIncident": {
+      "ownerReportObservedAt": "2026-10-15T06:42:02Z",
+      "source": "Explicit authorised ERP owner thread handoff",
+      "reportedByOwnerOnly": true,
+      "directLiveHealthRetestByCrm": false,
+      "state": "EXISTING_TEST_DEGRADED_BB896_NOT_ACTIVATED",
+      "previousSupervisorSource": "455243d4f56b6a252d98cc638e0c3707acaf78da",
+      "previousSettingsSha256": "7182b8bab998851978c76f54b72fd6349d366e9f1497cb2e2b824ac86a4c4443",
+      "ownerReportedFailureIstanbulApproximate": "2026-10-15T09:23:00+03:00",
+      "causeObserved": "crmNativeOrder startup ETIMEOUT after10000ms, then process disappeared and OBSERVATION_QUARANTINED",
+      "exactUnderlyingCause": "UNCONFIRMED",
+      "ownerReportedRemainingProcesses": [
+        "ERP native",
+        "ERP API",
+        "Hub"
+      ],
+      "ownerReportedAbsentCrmPorts": 4,
+      "strictInspectMutated": false,
+      "newBb896RestartPerformed": false,
+      "newSource957f987Activated": false,
+      "recoveryOwner": "ERP sole shared runtime owner",
+      "recoveryState": "Known-partial exact owner/failure/heartbeat pinned cleanup-and-new-start protocol under independent review",
+      "crmRecoveryWrites": 0,
+      "guiAndHumanAcceptanceBlocked": true,
+      "priorAcceptedEvidenceIsNotCurrentAvailabilityProof": true,
+      "ownerReportedCoreStartedIstanbulApproximate": "2026-10-15T09:16:00+03:00",
+      "prerequisiteContextUpdated": {
+        "oldRuntime": "supervisor455243d-erp7a41-crm5bcd-20261015T010549353Z",
+        "currentRuntime": "supervisor455243d-erp7a41-crm5bcd-degraded-owner-20261015T0623Z",
+        "runtimeHealth": "blocked",
+        "normalRoleHistoricalEvidencePreserved": true,
+        "normalRoleRequiresNewOwnerReceiptMapping": true,
+        "notAnAuthRetest": true
+      },
+      "historical": true,
+      "resolution": {
+        "observedAt": "2026-10-15T06:47:26.073Z",
+        "state": "RECOVERED_AND_BB896_INSTALLED",
+        "ownerReceiptSha256": "6c065a9a49b69e440e75830106a016ffbed0f224a869c6c09f4b70eb7ed70ea4",
+        "finalPreservationSha256": "cbb6368a7fd3ad37586b8e040f8c6026d6c5a4cf419a3572c2628648a20ea0fa",
+        "crmSource": "bb8966c59a6cfbdc1cc83472cb331e48b720a173",
+        "supervisorSource": "76d1e5916d355592bcde96e51889a7536084fe91",
+        "byteHashAndWhitelistedMetadataMatchedByCrm": true,
+        "newAuthOrInterestRequests": 0,
+        "normalGuiOrHumanAccepted": false
+      }
+    },
+    "prerequisiteRecheckAfterRuntimeIncident": {
+      "reason": "The sole ERP owner reported an actual degraded TEST runtime; the previous healthy runtime fingerprint must not be reused as current health.",
+      "oneInvocationAfterContextChanged": true,
+      "status": "CHECK_REQUIRED",
+      "exitCode": 1,
+      "changed": true,
+      "cacheSaved": true,
+      "bothMainIds": "CRM06",
+      "crmRuntimeHealth": "PROOF_BLOCKED",
+      "crmNormalRole": "CONTEXT_CHANGED",
+      "crmNormalUi": "PROOF_BLOCKED",
+      "erpNormalUi": "PROOF_BLOCKED",
+      "wholeClosureGranted": false,
+      "repeatAcceptedTests": false,
+      "applicationOrAuthAcceptanceRepeated": false
+    },
+    "installedRuntimeAtEnd": {
+      "evidenceRef": "verification.json#/installedRuntime",
+      "crmSource": "bb8966c59a6cfbdc1cc83472cb331e48b720a173",
+      "supervisorSource": "76d1e5916d355592bcde96e51889a7536084fe91",
+      "observedAt": "2026-10-15T06:47:26.073Z",
+      "ownNewSource957f987Installed": false
+    },
+    "finalPrerequisiteCheck": {
+      "reason": "Actual bb896/76d1 installation and preserved authority/store receipts changed the runtime context after the earlier outage.",
+      "currentRuntime": "supervisor76d1e59-erp7a41-crmbb896-20261015T064726Z",
+      "oneInvocationAfterActualInstallation": true,
+      "status": "CHECK_REQUIRED",
+      "exitCode": 1,
+      "changed": true,
+      "cacheSaved": true,
+      "bothMainIds": "CRM06",
+      "erpRuntimeAndNormalRole": "REUSE",
+      "crmRuntimeAndNormalRole": "REUSE",
+      "normalUiBothProjects": "PROOF_BLOCKED",
+      "wholeClosureGranted": false,
+      "repeatAcceptedTests": false,
+      "newHealthAuthApiOrSqlAcceptanceRequests": 0
+    }
+  },
+  "previousInstalledRuntimeCheckpoints": [
+    {
+      "observedAt": "2026-10-15T01:05:49.353Z",
+      "observedAtIstanbul": "2026-10-15T04:05:49.353+03:00",
+      "attribution": "ERP sole runtime owner performed the controlled two-task transition and readback. CRM checked exact final receipt/settings/supervisor-manifest byte hashes and whitelisted receipt metadata; no new live health/auth/API/SQL/restore acceptance was run.",
+      "ownerDelivery": "https://github.com/melihsnyldzz-ui/melisa-erp-v2/pull/23#issuecomment-6182089186",
+      "ownerDocumentationSource": "f5e2e9d908dacd96f30332615889a0e58f8f2f21",
+      "ownerReceipts": [
+        {
+          "name": "installed-readback.json",
+          "sha256": "4ff85ece9ad206ff64b4d24277ccb9ff4aedc0d7cbe33c2ffb6bb991ba6715d3",
+          "byteHashVerifiedByCrm": true
+        },
+        {
+          "name": "final-preservation.json",
+          "sha256": "8b0876edc1a40d55e211221f3036ec515d96d7346e46da14d6d11c8fa88a2afe",
+          "byteHashVerifiedByCrm": true
+        },
+        {
+          "name": "original-and-current-preservation-complete.json",
+          "sha256": "c0a4cfb1119286ba0323cfcef3be3148b9244f0fe51ddfb64a843602df13fea5",
+          "byteHashVerifiedByCrm": true
+        },
+        {
+          "name": "unchanged-authority-surface.json",
+          "sha256": "bc843ed5f7ce2974a8ed36fcee5b2592c977fd35d5a9960b560fc1d8c069bb25",
+          "byteHashVerifiedByCrm": true
+        }
+      ],
+      "installed": true,
+      "crmSource": "5bcd5ad136ff7ca35d623d436b8724cc491641be",
+      "crmManifest": "93cd90d678ca88bc8202a31f9461e678e448dfe927668f59b8644c0c708e6ce8",
+      "crmIndexSha256": "4915a7033d7753c442f2e89def90932e3d974c5fb281648b8cd79d33fc3ca03c",
+      "supervisorSource": "455243d4f56b6a252d98cc638e0c3707acaf78da",
+      "supervisorManifestSha256": "7256e6dc7149f91b19b32330915584f2e9f45beb44ae459fb81516d60dd6425d",
+      "supervisorManifestByteHashVerifiedByCrm": true,
+      "settingsSha256": "7182b8bab998851978c76f54b72fd6349d366e9f1497cb2e2b824ac86a4c4443",
+      "settingsByteHashVerifiedByCrm": true,
+      "actorRootOwnerReportedSha256": "125aaf6af46ee30723a93ce237063f342bae00c9a6d4dbed8afc70ceb3f9d252",
+      "actorRootDirectByteHashVerifiedByCrm": false,
+      "erpApplicationSource": "7a41f6492273dd1ec0bcb086f820be5575372be8",
+      "database": "MELISA_ERP_CRM_SHARED_TEST_20261009_02",
+      "copyId": "e16b70f0-4057-428b-9abc-6bbcaf35fe82",
+      "actualT1": false,
+      "coreProcessReceipts": [
+        {
+          "stage": "erpNative",
+          "pid": 18812,
+          "sourceCommit": "7a41f6492273dd1ec0bcb086f820be5575372be8",
+          "receiptAndObservedPidParentCreationCopyT1Matched": true
+        },
+        {
+          "stage": "erpApi",
+          "pid": 10132,
+          "sourceCommit": "7a41f6492273dd1ec0bcb086f820be5575372be8",
+          "receiptAndObservedPidParentCreationCopyT1Matched": true
+        },
+        {
+          "stage": "crmNativeOrder",
+          "pid": 46404,
+          "sourceCommit": "7a41f6492273dd1ec0bcb086f820be5575372be8",
+          "receiptAndObservedPidParentCreationCopyT1Matched": true
+        },
+        {
+          "stage": "crmCatalog",
+          "pid": 16244,
+          "sourceCommit": "5bcd5ad136ff7ca35d623d436b8724cc491641be",
+          "receiptAndObservedPidParentCreationCopyT1Matched": true
+        },
+        {
+          "stage": "crmOrders",
+          "pid": 46476,
+          "sourceCommit": "5bcd5ad136ff7ca35d623d436b8724cc491641be",
+          "receiptAndObservedPidParentCreationCopyT1Matched": true
+        },
+        {
+          "stage": "crmServer",
+          "pid": 46736,
+          "sourceCommit": "5bcd5ad136ff7ca35d623d436b8724cc491641be",
+          "receiptAndObservedPidParentCreationCopyT1Matched": true
+        }
+      ],
+      "heartbeat": {
+        "state": "running",
+        "supervisorPid": 17072,
+        "sourceCommit": "5bcd5ad136ff7ca35d623d436b8724cc491641be"
+      },
+      "hub": {
+        "pid": 46704,
+        "sourceCommit": "7a41f6492273dd1ec0bcb086f820be5575372be8",
+        "startedAt": "2026-10-15T01:04:27.6149581Z",
+        "port": 5234,
+        "services": {
+          "erp": "reachable",
+          "crm": "reachable",
+          "terminal": "reachable",
+          "training": "unknown",
+          "test125": "unreachable",
+          "live": "unknown"
+        }
+      },
+      "automaticHubCoordination": {
+        "passed": true,
+        "readyAt": "2026-10-15T01:04:13.225Z",
+        "hubPid": 46704,
+        "hubBornAfterPrerequisites": true,
+        "hubInitialAttempt": 0,
+        "manualHubStart": false,
+        "actualWindowsRebootOrLogon": false,
+        "barrierReceiptSha256": "67c238963afac563577d74ce27ba40f8a51ef7264f3aa4a630dc37c741b140f0",
+        "barrierDigestSource": "Embedded in hash-matched final readback; not independently rehashed by CRM"
+      },
+      "preservation": {
+        "observedAt": "2026-10-15T01:05:53.616Z",
+        "immutableBeforeFilesPreserved": 44,
+        "taskMetadataPreserved": true,
+        "currentActionsExact": true,
+        "twoTasksRunning": true,
+        "sqlAndTest125ProcessIdentitiesPreserved": true,
+        "rolesAndCredentialFilesUnchanged": true,
+        "applicationJournalsAndPriorRequestByteIdentical": true,
+        "newAuthOrInterestRequests": 0,
+        "freshStaffJournalPhysical": "READY",
+        "references": 15
+      },
+      "priorNormalRoleAndCustomerRequestEvidence": {
+        "oldSource": "da82fc6644c1d9dba0c10eaa861773534d43c288",
+        "newSource": "5bcd5ad136ff7ca35d623d436b8724cc491641be",
+        "unchangedModules": [
+          {
+            "path": "apps/gateway/src/routes/authRoutes.js",
+            "sha256": "56d81b44c8fbaa652b2144be56d3d1195000137eff37988305ff4c575b16bbe9"
+          },
+          {
+            "path": "apps/gateway/src/controllers/authController.js",
+            "sha256": "ff3d1743d8cb956bb02e1c0262f92769abf596818a50cb5b2bcfaf8c7ac4914b"
+          },
+          {
+            "path": "apps/gateway/src/middleware/auth.js",
+            "sha256": "b3d2dd1660f26482f111081901a56c4962d80e49c01c890d3c396b6b7520cda9"
+          },
+          {
+            "path": "apps/gateway/src/services/crmAuthService.js",
+            "sha256": "f4fffe649c504117fbe3c488f284cd15a76b73ce7d2ca1a47ee2db96d7254133"
+          },
+          {
+            "path": "apps/gateway/src/services/normalRefreshSession.mjs",
+            "sha256": "01d019ded9ecb17a27fef3d799eef785abf67e2db586a92e5e453e1f39ce69ef"
+          },
+          {
+            "path": "apps/gateway/src/services/assignedStaffRefreshSession.mjs",
+            "sha256": "994175d6020ff634f90f98a43cddc635f37427fc07461cc8b2eb3c75482d24be"
+          },
+          {
+            "path": "apps/gateway/src/services/customerRequestIssuerSession.mjs",
+            "sha256": "635386e51eef2ba9593c49ec8bbf892bb4d1d99ca12edcc80df934ec54aba736"
+          },
+          {
+            "path": "apps/gateway/src/services/customerProductRequest.mjs",
+            "sha256": "ef1c044e04bf6a312752c1fded9364af00af2b8fe57dadc2282460f5dc17efce"
+          },
+          {
+            "path": "apps/gateway/src/services/customerProductRequestIntegration.mjs",
+            "sha256": "3f3b498912daa6cef9f832b9d5a9145f6ccab1a497475f2625cfdbcc5bda8951"
+          },
+          {
+            "path": "apps/gateway/src/routes/customerProductRequestRoutes.mjs",
+            "sha256": "2d97e519a45068722f4eb651eab8d6506e4a9b744052375cf5c9aa0c049c36f6"
+          }
+        ],
+        "absentOptionalNotCounted": true,
+        "wholeApplicationByteIdentical": false,
+        "normalSendGuardChanged": true,
+        "normalSendRealTransportVerified": false,
+        "newAuthRequests": 0,
+        "newInterestRequests": 0,
+        "newBusinessSqlHashTests": 0,
+        "scope": "Only unchanged authority/session/customer-request modules plus preserved store bytes map prior normal-role, one-request, replay and bounded no-sale proof. The new application and normal-send transport are not reaccepted by this mapping."
+      },
+      "initial5012StartupHistory": {
+        "initialFailurePreserved": true,
+        "oneSupportedGuardedHubTaskRecovery": true,
+        "initialExactCause": "UNCONFIRMED",
+        "recovered5012BaseSettingsOwnerReportedSha256": "ee087bb416dbee7dfb66b3733c8ea529b51768566d2199d37a3e1478191447f3",
+        "latestGoodRollbackSeparateFromOriginal790": true
+      },
+      "sourceCiFromExistingOwnerEvidence": {
+        "supervisorSource": "455243d4f56b6a252d98cc638e0c3707acaf78da",
+        "prRun": 38662826807,
+        "pushRun": 38662821981,
+        "conclusion": "success",
+        "repeatedByCrm": false
+      },
+      "authenticatedOperationsVerified": false,
+      "normalGuiFirstLoginVerified": false,
+      "humanAccepted": false,
+      "commercialWrites": 0,
+      "controlledInstallationHoldReleased": true
+    },
+    {
+      "observedAt": "2026-10-15T06:47:26.073Z",
+      "observedAtIstanbul": "2026-10-15T09:47:26.073+03:00",
+      "attribution": "ERP sole owner completed the exact known-partial recovery and controlled two-task transition. CRM compared final receipt byte hashes, four exact metadata file hashes, and whitelisted process/source/preservation metadata. No new live health/auth/API/SQL/restore acceptance was run by CRM.",
+      "ownerDelivery": "https://github.com/melihsnyldzz-ui/melisa-erp-v2/pull/23#issuecomment-6186284687",
+      "ownerReceipts": [
+        {
+          "name": "installed-readback.json",
+          "sha256": "6c065a9a49b69e440e75830106a016ffbed0f224a869c6c09f4b70eb7ed70ea4",
+          "byteHashVerifiedByCrm": true
+        },
+        {
+          "name": "final-preservation.json",
+          "sha256": "cbb6368a7fd3ad37586b8e040f8c6026d6c5a4cf419a3572c2628648a20ea0fa",
+          "byteHashVerifiedByCrm": true
+        },
+        {
+          "name": "original-and-current-preservation-complete51.json",
+          "sha256": "a7c94a47c38c559a088df5894797113620b90ca2d41f1c4cb258f6d5854cf3f1",
+          "byteHashComputedByCrm": true,
+          "expectedOwnerDigestProvided": true,
+          "byteHashVerifiedByCrm": true,
+          "digestReference": "https://github.com/melihsnyldzz-ui/melisa-erp-v2/blob/a440e25dc85f07c60296d3c95b8190e246d93886/docs/evidence/erp/2026-10-15-isolated-test/README.md",
+          "digestMatchObservedAfterInitialHashRead": true
+        }
+      ],
+      "installed": true,
+      "crmSource": "bb8966c59a6cfbdc1cc83472cb331e48b720a173",
+      "crmManifest": "6a9fe4f40c6e7b852ba62721a6f63dae1030321d9b9f46069405cbcd5d505d7c",
+      "crmIndexSha256": "7ea43551750ead26b7bb166e6ccf35bd613e23a1ca888026352966d99cb289d1",
+      "supervisorSource": "76d1e5916d355592bcde96e51889a7536084fe91",
+      "supervisorManifestSha256": "81435e5a1ea02d51ccfd5ad4c58cb49cc3ebc3550ed6f38ff3ae76aead9a31b9",
+      "supervisorManifestByteHashVerifiedByCrm": true,
+      "settingsSha256": "e3dee7bb10f13e7ce8e0d06cf74522721ba5f70ca3dc8b7e6fa16701aa07a371",
+      "settingsByteHashVerifiedByCrm": true,
+      "successorSha256": "3c4a23eb4dc77435c2c0fc680c80e79721719aee1f452f7118cacc868c189f82",
+      "successorByteHashVerifiedByCrm": true,
+      "dependencyLockSha256": "cfc23e859c741f840bc6a2b77e772f113a12b0c1043dbed4e33ee953645efdba",
+      "dependencyLockByteHashVerifiedByCrm": true,
+      "privateConfigurationValuesPublished": false,
+      "erpApplicationSource": "7a41f6492273dd1ec0bcb086f820be5575372be8",
+      "database": "MELISA_ERP_CRM_SHARED_TEST_20261009_02",
+      "copyId": "e16b70f0-4057-428b-9abc-6bbcaf35fe82",
+      "actualT1": false,
+      "coreProcessReceipts": [
+        {
+          "stage": "erpNative",
+          "pid": 38416,
+          "sourceCommit": "7a41f6492273dd1ec0bcb086f820be5575372be8",
+          "receiptAndObservedPidParentCreationCopyT1Matched": true
+        },
+        {
+          "stage": "erpApi",
+          "pid": 7328,
+          "sourceCommit": "7a41f6492273dd1ec0bcb086f820be5575372be8",
+          "receiptAndObservedPidParentCreationCopyT1Matched": true
+        },
+        {
+          "stage": "crmNativeOrder",
+          "pid": 39916,
+          "sourceCommit": "7a41f6492273dd1ec0bcb086f820be5575372be8",
+          "receiptAndObservedPidParentCreationCopyT1Matched": true
+        },
+        {
+          "stage": "crmCatalog",
+          "pid": 36416,
+          "sourceCommit": "bb8966c59a6cfbdc1cc83472cb331e48b720a173",
+          "receiptAndObservedPidParentCreationCopyT1Matched": true
+        },
+        {
+          "stage": "crmOrders",
+          "pid": 28240,
+          "sourceCommit": "bb8966c59a6cfbdc1cc83472cb331e48b720a173",
+          "receiptAndObservedPidParentCreationCopyT1Matched": true
+        },
+        {
+          "stage": "crmServer",
+          "pid": 15596,
+          "sourceCommit": "bb8966c59a6cfbdc1cc83472cb331e48b720a173",
+          "receiptAndObservedPidParentCreationCopyT1Matched": true
+        }
+      ],
+      "heartbeat": {
+        "state": "running",
+        "supervisorPid": 29080,
+        "sourceCommit": "bb8966c59a6cfbdc1cc83472cb331e48b720a173",
+        "observedAt": "2026-10-15T06:47:24.176Z"
+      },
+      "hub": {
+        "pid": 16316,
+        "sourceCommit": "7a41f6492273dd1ec0bcb086f820be5575372be8",
+        "startedAt": "2026-10-15T06:46:39.8064913Z",
+        "port": 5234,
+        "services": {
+          "erp": "reachable",
+          "crm": "reachable",
+          "terminal": "reachable",
+          "training": "unknown",
+          "test125": "unreachable",
+          "live": "unknown"
+        }
+      },
+      "automaticHubCoordination": {
+        "passed": true,
+        "readyAt": "2026-10-15T06:46:27.584Z",
+        "hubPid": 16316,
+        "hubBornAfterPrerequisites": true,
+        "hubInitialAttempt": 0,
+        "manualHubStart": false,
+        "actualWindowsRebootOrLogon": false,
+        "barrierReceiptSha256": "b2ca6d48e88d213962f73081a265881cc4d9dde2cba1ce3ffad696d538814e3a",
+        "barrierDigestSource": "Embedded in hash-matched final readback; not independently rehashed by CRM"
+      },
+      "preservation": {
+        "observedAt": "2026-10-15T06:47:29.238Z",
+        "immutableBeforeFilesPreserved": 51,
+        "taskMetadataPreserved": true,
+        "currentActionsExact": true,
+        "twoTasksRunning": true,
+        "sqlAndTest125ProcessIdentitiesPreserved": true,
+        "rolesAndCredentialFilesUnchanged": true,
+        "applicationJournalsAndPriorRequestByteIdentical": true,
+        "newAuthOrInterestRequests": 0,
+        "freshStaffJournalPhysical": "READY",
+        "references": 16
+      },
+      "priorNormalRoleAndCustomerRequestEvidence": {
+        "proofSource": "da82fc6644c1d9dba0c10eaa861773534d43c288",
+        "lastMappedRuntimeSource": "5bcd5ad136ff7ca35d623d436b8724cc491641be",
+        "newSource": "bb8966c59a6cfbdc1cc83472cb331e48b720a173",
+        "unchangedModules": [
+          {
+            "path": "apps/gateway/src/routes/authRoutes.js",
+            "sha256": "56d81b44c8fbaa652b2144be56d3d1195000137eff37988305ff4c575b16bbe9"
+          },
+          {
+            "path": "apps/gateway/src/controllers/authController.js",
+            "sha256": "ff3d1743d8cb956bb02e1c0262f92769abf596818a50cb5b2bcfaf8c7ac4914b"
+          },
+          {
+            "path": "apps/gateway/src/middleware/auth.js",
+            "sha256": "b3d2dd1660f26482f111081901a56c4962d80e49c01c890d3c396b6b7520cda9"
+          },
+          {
+            "path": "apps/gateway/src/services/crmAuthService.js",
+            "sha256": "f4fffe649c504117fbe3c488f284cd15a76b73ce7d2ca1a47ee2db96d7254133"
+          },
+          {
+            "path": "apps/gateway/src/services/normalRefreshSession.mjs",
+            "sha256": "01d019ded9ecb17a27fef3d799eef785abf67e2db586a92e5e453e1f39ce69ef"
+          },
+          {
+            "path": "apps/gateway/src/services/assignedStaffRefreshSession.mjs",
+            "sha256": "994175d6020ff634f90f98a43cddc635f37427fc07461cc8b2eb3c75482d24be"
+          },
+          {
+            "path": "apps/gateway/src/services/customerRequestIssuerSession.mjs",
+            "sha256": "635386e51eef2ba9593c49ec8bbf892bb4d1d99ca12edcc80df934ec54aba736"
+          },
+          {
+            "path": "apps/gateway/src/services/customerProductRequest.mjs",
+            "sha256": "ef1c044e04bf6a312752c1fded9364af00af2b8fe57dadc2282460f5dc17efce"
+          },
+          {
+            "path": "apps/gateway/src/services/customerProductRequestIntegration.mjs",
+            "sha256": "3f3b498912daa6cef9f832b9d5a9145f6ccab1a497475f2625cfdbcc5bda8951"
+          },
+          {
+            "path": "apps/gateway/src/routes/customerProductRequestRoutes.mjs",
+            "sha256": "2d97e519a45068722f4eb651eab8d6506e4a9b744052375cf5c9aa0c049c36f6"
+          }
+        ],
+        "unchangedGatewayModuleHashes": 10,
+        "wholeApplicationByteIdentical": false,
+        "packageByteHashesPreviouslyChecked": true,
+        "oldStoresAndRolesMappedThroughPinnedFinalPreservation": true,
+        "scope": "Only the same10authority/session/customer-request modules and preserved role/journal/request bytes map prior normal-role, one-request, replay and bounded no-sale proof. New frontend behavior and real send transport are not accepted by this mapping.",
+        "newAuthRequests": 0,
+        "newInterestRequests": 0,
+        "newBusinessSqlHashTests": 0,
+        "normalGuiVerified": false
+      },
+      "recoveryHistory": {
+        "priorSupervisor": "455243d4f56b6a252d98cc638e0c3707acaf78da",
+        "priorSettingsSha256": "7182b8bab998851978c76f54b72fd6349d366e9f1497cb2e2b824ac86a4c4443",
+        "priorProfileWasDegraded": true,
+        "incidentEvidenceRef": "secondScheduledDevelopmentRun.currentRuntimeIncident",
+        "strictInspectMutated": false,
+        "ownerReportedExactOwnedPartialProcessesRecovered": 3,
+        "ownerReportedOneControlledTwoTaskTransition": true,
+        "missingOldCrmProcessReceiptsAdopted": false,
+        "initialExactTimeoutCause": "UNCONFIRMED",
+        "original790AncestorDistinctFromPrevious455Profile": true,
+        "oldPartialAndRollbackEvidencePreserved": true
+      },
+      "sourceCi": {
+        "supervisorSource": "76d1e5916d355592bcde96e51889a7536084fe91",
+        "prRun": 38693505519,
+        "pushRun": 38693498882,
+        "conclusion": "success",
+        "exactHeadAndResultsReadByCrm": true,
+        "testsRerunByCrm": false
+      },
+      "authenticatedOperationsVerified": false,
+      "normalGuiFirstLoginVerified": false,
+      "humanAccepted": false,
+      "commercialWrites": 0,
+      "controlledInstallationHoldReleased": true,
+      "nextSource957f987Installed": false,
+      "ownerDocumentationSource": "a440e25dc85f07c60296d3c95b8190e246d93886",
+      "ownerPublicEvidence": "https://github.com/melihsnyldzz-ui/melisa-erp-v2/blob/a440e25dc85f07c60296d3c95b8190e246d93886/docs/evidence/erp/2026-10-15-isolated-test/README.md"
+    },
+    {
+      "observedAt": "2026-10-15T08:36:47.677Z",
+      "observedAtIstanbul": "2026-10-15T11:36:47.677+03:00",
+      "attribution": "ERP sole owner completed one controlled two-task transition from healthy bb896/76d1. CRM matched ten pinned receipt/metadata/barrier byte hashes and whitelisted process/source/preservation metadata. This is a dated installation checkpoint, not a new GUI/auth/API/SQL/restore acceptance or fresh health observation during the next transition.",
+      "ownerDelivery": "https://github.com/melihsnyldzz-ui/melisa-erp-v2/blob/b6cbcbeeee330b168fab54ab21a4922ec3af4f4d/docs/evidence/erp/2026-10-15-isolated-test/README.md",
+      "ownerReceipts": [
+        {
+          "name": "installed-readback.json",
+          "sha256": "b8bba71c27db9fa4df49cf3226996f0b5a9aa8808fa444f93631970478c4f86f",
+          "byteHashVerifiedByCrm": true
+        },
+        {
+          "name": "final-preservation.json",
+          "sha256": "14daef4c8105fd366c45962c56a5f5f7c2459ccb2ade0986e452e70682653603",
+          "byteHashVerifiedByCrm": true
+        },
+        {
+          "name": "transition-before.json",
+          "sha256": "6b2392e0bfb005d1d76d4f3a180596838193ebf3ea22c0be1622a94f6ff43a47",
+          "byteHashVerifiedByCrm": true
+        },
+        {
+          "name": "transition-started.json",
+          "sha256": "506801104089913bc1dec120921424ace4ac39cc1acc83e351215ae3ba5bbc82",
+          "byteHashVerifiedByCrm": true
+        },
+        {
+          "name": "release-manifest.json",
+          "sha256": "bfc152eb3335e1dfe294a2014ef7796bec00feb2bf7d825da7a6c66659da028f",
+          "byteHashVerifiedByCrm": true
+        },
+        {
+          "name": "settings-crm06-staff-957f98773695.json",
+          "sha256": "5cdfa444233780cf8d00b6933b207fec4641d40ec02830e96e5dd45d2fd14846",
+          "byteHashVerifiedByCrm": true
+        },
+        {
+          "name": "staff-refresh-successor-957f98773695.json",
+          "sha256": "ce5ab1078cfee970bf94e3f46ef46cb3d7d5d3c997ab05cd824a1b2ff38b9e22",
+          "byteHashVerifiedByCrm": true
+        },
+        {
+          "name": "crm-957f98773695-dependency-lock.json",
+          "sha256": "7a84d3e6e5ded9819a65ef08de989637e95a636b6e35c2608c85265b9eafc90e",
+          "byteHashVerifiedByCrm": true
+        },
+        {
+          "name": "original-and-current-preservation-complete.json",
+          "sha256": "331633aab302e7736d9c564614df74a4fd2cc5f0fab519e155e49529a904982e",
+          "byteHashVerifiedByCrm": true
+        },
+        {
+          "name": "erp-prerequisites-c1ecf840c29f495dbf7b837c7607f655.json",
+          "sha256": "ca88a30f5b6b5d3f6059d246525c608f70727b1c49e2b239e24766f4423cc2e4",
+          "byteHashVerifiedByCrm": true
+        }
+      ],
+      "installed": true,
+      "crmSource": "957f98773695874ea3d101b7eb4816f9ea080880",
+      "crmManifest": "a93d2cdd14eafcb021091d98294c41d5e60d31bbc5842d31447f091a843a18af",
+      "crmIndexSha256": "8cdf8904557755900d98769df26f6edcd6efa929bc400970b073b48e4d2d1ddd",
+      "supervisorSource": "d469f192b315fcd322e3e85815cb5f257947532b",
+      "supervisorManifestSha256": "bfc152eb3335e1dfe294a2014ef7796bec00feb2bf7d825da7a6c66659da028f",
+      "supervisorManifestByteHashVerifiedByCrm": true,
+      "settingsSha256": "5cdfa444233780cf8d00b6933b207fec4641d40ec02830e96e5dd45d2fd14846",
+      "settingsByteHashVerifiedByCrm": true,
+      "successorSha256": "ce5ab1078cfee970bf94e3f46ef46cb3d7d5d3c997ab05cd824a1b2ff38b9e22",
+      "successorByteHashVerifiedByCrm": true,
+      "dependencyLockSha256": "7a84d3e6e5ded9819a65ef08de989637e95a636b6e35c2608c85265b9eafc90e",
+      "dependencyLockByteHashVerifiedByCrm": true,
+      "privateConfigurationValuesPublished": false,
+      "erpApplicationSource": "7a41f6492273dd1ec0bcb086f820be5575372be8",
+      "database": "MELISA_ERP_CRM_SHARED_TEST_20261009_02",
+      "copyId": "e16b70f0-4057-428b-9abc-6bbcaf35fe82",
+      "actualT1": false,
+      "coreProcessReceipts": [
+        {
+          "stage": "erpNative",
+          "pid": 32840,
+          "sourceCommit": "7a41f6492273dd1ec0bcb086f820be5575372be8",
+          "receiptAndObservedPidParentCreationCopyT1Matched": true
+        },
+        {
+          "stage": "erpApi",
+          "pid": 36572,
+          "sourceCommit": "7a41f6492273dd1ec0bcb086f820be5575372be8",
+          "receiptAndObservedPidParentCreationCopyT1Matched": true
+        },
+        {
+          "stage": "crmNativeOrder",
+          "pid": 34940,
+          "sourceCommit": "7a41f6492273dd1ec0bcb086f820be5575372be8",
+          "receiptAndObservedPidParentCreationCopyT1Matched": true
+        },
+        {
+          "stage": "crmCatalog",
+          "pid": 31748,
+          "sourceCommit": "957f98773695874ea3d101b7eb4816f9ea080880",
+          "receiptAndObservedPidParentCreationCopyT1Matched": true
+        },
+        {
+          "stage": "crmOrders",
+          "pid": 17528,
+          "sourceCommit": "957f98773695874ea3d101b7eb4816f9ea080880",
+          "receiptAndObservedPidParentCreationCopyT1Matched": true
+        },
+        {
+          "stage": "crmServer",
+          "pid": 33408,
+          "sourceCommit": "957f98773695874ea3d101b7eb4816f9ea080880",
+          "receiptAndObservedPidParentCreationCopyT1Matched": true
+        }
+      ],
+      "heartbeat": {
+        "state": "running",
+        "supervisorPid": 17284,
+        "sourceCommit": "957f98773695874ea3d101b7eb4816f9ea080880",
+        "observedAt": "2026-10-15T08:36:40.638Z"
+      },
+      "hub": {
+        "pid": 22508,
+        "sourceCommit": "7a41f6492273dd1ec0bcb086f820be5575372be8",
+        "startedAt": "2026-10-15T08:36:27.3080102Z",
+        "port": 5234,
+        "services": {
+          "erp": "reachable",
+          "crm": "reachable",
+          "terminal": "reachable",
+          "training": "unknown",
+          "test125": "unreachable",
+          "live": "unknown"
+        }
+      },
+      "automaticHubCoordination": {
+        "passed": true,
+        "barrierReceiptSha256": "ca88a30f5b6b5d3f6059d246525c608f70727b1c49e2b239e24766f4423cc2e4",
+        "readyAt": "2026-10-15T08:35:52.932Z",
+        "coreSupervisorPid": 17284,
+        "wrapperPid": 31828,
+        "hubPid": 22508,
+        "hubBornAfterPrerequisites": true,
+        "hubInitialAttempt": 0,
+        "manualHubStart": false,
+        "actualWindowsRebootOrLogon": false,
+        "barrierReceiptByteHashVerifiedByCrm": true,
+        "barrierDigestSource": "Direct byte hash of the exact owner barrier file matched the pinned final readback digest."
+      },
+      "preservation": {
+        "observedAt": "2026-10-15T08:36:51.185Z",
+        "immutableBeforeFilesPreserved": 58,
+        "taskMetadataPreserved": true,
+        "currentActionsExact": true,
+        "twoTasksRunning": true,
+        "sqlAndTest125ProcessIdentitiesPreserved": true,
+        "rolesAndCredentialFilesUnchanged": true,
+        "applicationJournalsAndPriorRequestByteIdentical": true,
+        "newAuthOrInterestRequests": 0,
+        "freshStaffJournalPhysical": "READY",
+        "references": 17
+      },
+      "priorNormalRoleAndCustomerRequestEvidence": {
+        "proofSource": "da82fc6644c1d9dba0c10eaa861773534d43c288",
+        "lastMappedRuntimeSource": "bb8966c59a6cfbdc1cc83472cb331e48b720a173",
+        "newSource": "957f98773695874ea3d101b7eb4816f9ea080880",
+        "unchangedModules": [
+          {
+            "path": "apps/gateway/src/routes/authRoutes.js",
+            "sha256": "56d81b44c8fbaa652b2144be56d3d1195000137eff37988305ff4c575b16bbe9"
+          },
+          {
+            "path": "apps/gateway/src/controllers/authController.js",
+            "sha256": "ff3d1743d8cb956bb02e1c0262f92769abf596818a50cb5b2bcfaf8c7ac4914b"
+          },
+          {
+            "path": "apps/gateway/src/middleware/auth.js",
+            "sha256": "b3d2dd1660f26482f111081901a56c4962d80e49c01c890d3c396b6b7520cda9"
+          },
+          {
+            "path": "apps/gateway/src/services/crmAuthService.js",
+            "sha256": "f4fffe649c504117fbe3c488f284cd15a76b73ce7d2ca1a47ee2db96d7254133"
+          },
+          {
+            "path": "apps/gateway/src/services/normalRefreshSession.mjs",
+            "sha256": "01d019ded9ecb17a27fef3d799eef785abf67e2db586a92e5e453e1f39ce69ef"
+          },
+          {
+            "path": "apps/gateway/src/services/assignedStaffRefreshSession.mjs",
+            "sha256": "994175d6020ff634f90f98a43cddc635f37427fc07461cc8b2eb3c75482d24be"
+          },
+          {
+            "path": "apps/gateway/src/services/customerRequestIssuerSession.mjs",
+            "sha256": "635386e51eef2ba9593c49ec8bbf892bb4d1d99ca12edcc80df934ec54aba736"
+          },
+          {
+            "path": "apps/gateway/src/services/customerProductRequest.mjs",
+            "sha256": "ef1c044e04bf6a312752c1fded9364af00af2b8fe57dadc2282460f5dc17efce"
+          },
+          {
+            "path": "apps/gateway/src/services/customerProductRequestIntegration.mjs",
+            "sha256": "3f3b498912daa6cef9f832b9d5a9145f6ccab1a497475f2625cfdbcc5bda8951"
+          },
+          {
+            "path": "apps/gateway/src/routes/customerProductRequestRoutes.mjs",
+            "sha256": "2d97e519a45068722f4eb651eab8d6506e4a9b744052375cf5c9aa0c049c36f6"
+          }
+        ],
+        "unchangedGatewayModuleHashes": 10,
+        "wholeApplicationByteIdentical": false,
+        "packageByteHashesPreviouslyChecked": true,
+        "oldStoresAndRolesMappedThroughPinnedFinalPreservation": true,
+        "scope": "Only the same10authority/session/customer-request modules and preserved role/journal/request bytes map prior normal-role, one-request, replay and bounded no-sale proof. New frontend behavior and real send transport are not accepted by this mapping.",
+        "newAuthRequests": 0,
+        "newInterestRequests": 0,
+        "newBusinessSqlHashTests": 0,
+        "normalGuiVerified": false
+      },
+      "transition": {
+        "previousCrmSource": "bb8966c59a6cfbdc1cc83472cb331e48b720a173",
+        "previousSupervisorSource": "76d1e5916d355592bcde96e51889a7536084fe91",
+        "previousSettingsSha256": "e3dee7bb10f13e7ce8e0d06cf74522721ba5f70ca3dc8b7e6fa16701aa07a371",
+        "healthyBaseline": true,
+        "oneControlledTwoTaskTransition": true,
+        "partialRecoveryRequired": false,
+        "previousRollbackAndOriginal790AncestorPreservedSeparately": true,
+        "previousIncidentHistoryRef": "previousInstalledRuntimeCheckpoints"
+      },
+      "sourceCi": {
+        "supervisorSource": "d469f192b315fcd322e3e85815cb5f257947532b",
+        "prRun": 38705965431,
+        "pushRun": 38705956977,
+        "conclusion": "success",
+        "exactHeadAndResultsReadByCrm": true,
+        "testsRerunByCrm": false
+      },
+      "authenticatedOperationsVerified": false,
+      "normalGuiFirstLoginVerified": false,
+      "humanAccepted": false,
+      "commercialWrites": 0,
+      "controlledInstallationHoldReleased": true,
+      "nextSource89427492Installed": false,
+      "ownerDocumentationSource": "b6cbcbeeee330b168fab54ab21a4922ec3af4f4d",
+      "ownerPublicEvidence": "https://github.com/melihsnyldzz-ui/melisa-erp-v2/blob/b6cbcbeeee330b168fab54ab21a4922ec3af4f4d/docs/evidence/erp/2026-10-15-isolated-test/README.md"
+    }
+  ],
+  "thirdScheduledDevelopmentRun": {
+    "heartbeatAt": "2026-10-15T08:23:58.550Z",
+    "heartbeatAtIstanbul": "2026-10-15T11:23:58.550+03:00",
+    "firstClockObservedAt": "2026-10-15T08:24:31Z",
+    "automationId": "crm-2-saatlik-eri-im-denemesi",
+    "nativeRunId": null,
+    "nativeRunIdAvailable": false,
+    "canonicalRoot": "C:/Sirket/CRM/melisa-crm",
+    "originFetch": "https://github.com/melihsnyldzz-ui/melisa-crm.git",
+    "originPush": "https://github.com/melihsnyldzz-ui/melisa-crm.git",
+    "branch": "codex/crm-agents-on-completion-20261003",
+    "initialHead": "1c6b43187318ff0f224b5f49540e7b30c07cc35f",
+    "initialClean": true,
+    "existingWorktrees": 8,
+    "newAgentsOrWorktreesCreated": 0,
+    "recordsRead": [
+      "AGENTS.md",
+      "PROJECT_DECISIONS.md CRM-DEC-018/017 and 15 October v3",
+      "CRM_STATUS.md single active next step",
+      "CRM_FINISH_PLAN.md",
+      "USER_ACCEPTANCE.md"
+    ],
+    "prerequisiteCheck": {
+      "oneInitialInvocation": true,
+      "status": "CHECK_REQUIRED",
+      "exitCode": 1,
+      "changed": false,
+      "bothMainIds": "CRM06",
+      "runtimeAndNormalRoleBothProjects": "REUSE",
+      "normalUiBothProjects": "PROOF_BLOCKED",
+      "wholeClosureGranted": false,
+      "acceptedTestsRepeated": false
+    },
+    "lastVerifiedInstalledRuntimeAtStart": {
+      "crmSource": "bb8966c59a6cfbdc1cc83472cb331e48b720a173",
+      "supervisorSource": "76d1e5916d355592bcde96e51889a7536084fe91",
+      "verifiedAt": "2026-10-15T06:47:26.073Z",
+      "notFreshHealthProof": true
+    },
+    "quantityReadback": {
+      "source": "89427492f27caf72c511a27262b55e73d782c407",
+      "mainId": "CRM06",
+      "finishIds": [
+        "U01",
+        "M01"
+      ],
+      "files": [
+        "apps/frontend/src/customerProductRequest/CustomerProductRequestPage.jsx",
+        "apps/frontend/tests/customer-product-request-quantity-readback.test.mjs"
+      ],
+      "problem": "After editing quantity1 to7 and a failed write, a fresh authoritative readback of1 kept the local input7 because its effect depended only on the unchanged numeric quantity. The controller and later request still used1.",
+      "fix": "QuantityInput also observes the authoritative item snapshot identity. Fresh same-value snapshots reset local text and validation; ordinary same-item renders, busy/error states and independent list reads preserve typing.",
+      "productionChangedLines": 1,
+      "initialHarnessWiringFailure": "The first fixture hook-import wiring issue was corrected before any production failure counts were recorded. It was not counted as an application bug.",
+      "initialProductionRegression": {
+        "tests": 4,
+        "passed": 1,
+        "failed": 3
+      },
+      "strengthenedFixture": "503 preserves server quantity1/revision1;409 returns the same quantity1/revision2. The submit uses the corresponding confirmed revision, without inventing a client item count in the submit body.",
+      "correctedProductionRegression": {
+        "tests": 4,
+        "passed": 1,
+        "failed": 3
+      },
+      "finalTargeted": {
+        "tests": 4,
+        "passed": 4,
+        "failed": 0,
+        "skipped": 0
+      },
+      "command": "node --test --test-timeout=15000 apps/frontend/tests/customer-product-request-quantity-readback.test.mjs",
+      "harness": "Exact production QuantityInput JSX extraction with entry-only transformSync, actual controller/API normalization, injected fake fetch/Response and RAM storage. The visible input and controller draft/request counts are checked; the full Page/footer DOM, ReactDOM, browser, focus, physical phone and real account are not run.",
+      "temporaryCleanup": "Resolved absolute workspace/sites-runtime path and own quantity-readback prefix checked before deleting only the owned temporary fixture directory.",
+      "reviewer": "/root/az_independent_reviewer",
+      "independentSourceReviewOpenP1P2": 0,
+      "rootFixtureReview": "Strengthened unchanged revision503 and advanced revision409 cases before delivery; no assertions were relaxed.",
+      "backendAuthContractQuantityValidationAndOperationIdentityChanged": false,
+      "existingSuccessfulTestsManuallyRepeated": false,
+      "exactCi": [
+        {
+          "id": 38706497947,
+          "event": "pull_request",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 38706490537,
+          "event": "push",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 38706497693,
+          "workflow": "AI Sales Agent - Offline",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    },
+    "delivery": {
+      "sourceCommit": "89427492f27caf72c511a27262b55e73d782c407",
+      "targetedTests": 4,
+      "targetedPassed": 4,
+      "independentSourceReviewOpenP1P2": 0,
+      "existingAgentsReused": [
+        "/root/audit_source_explorer",
+        "/root/crm06_remaining_frontend",
+        "/root/az_independent_reviewer"
+      ],
+      "newAgentsCreated": 0,
+      "existingPr": "https://github.com/melihsnyldzz-ui/melisa-crm/pull/3",
+      "exactSourceCi": "success",
+      "packagePrepared": true,
+      "sourceBatchFrozen": true,
+      "ownerHandoffSent": true,
+      "installed": true,
+      "immediateSecondTransitionRequested": false,
+      "activatedAfterOriginalScheduledRun": true
+    },
+    "package": {
+      "source": "89427492f27caf72c511a27262b55e73d782c407",
+      "sourceTree": "3a2813921eec77f541be2797090952be92ccca14",
+      "packageRoot": "C:/Sirket/CRM/releases/crm-shared-test-89427492f27caf72c511a27262b55e73d782c407",
+      "manifestSha256": "b4f593eb736820577b19a489f104e599be6e3749e3f31db759898733c73ef3a7",
+      "indexSha256": "3bb1ec44de971549f95cb858bb315cdf101d83b3381321c53c2ef477e95a96a6",
+      "sourceFiles": 185,
+      "payloadFiles": 2291,
+      "payloadBytes": 23935434,
+      "nodeVersion": "v24.15.0",
+      "platform": "win32",
+      "arch": "x64",
+      "dependencyInstall": "npm-ci-offline-ignore-scripts",
+      "isolatedPreparation": true,
+      "cleanCheckout": true,
+      "oneExistingBuilderInvocation": true,
+      "freshViteBuild": true,
+      "sealedManifestPayloadAndGitSourceVerifiedByBuilder": true,
+      "gatewayLockSha256": "c487dc65e3a107f5235408fad3523c8242a4c01b62c7475154ad4ae41a627b96",
+      "frontendLockSha256": "9064a36a0c86464db93cc261ffedbc92a87ea2092315e207301ca8a8aa6d4d24",
+      "gatewayAuthorityModuleHashesMatchedToInstalledBaseline": 10,
+      "wholeApplicationByteIdentical": false,
+      "ownerHandoffSent": true,
+      "activationVerifiedByCrm": true,
+      "prior957PackageAndAllRollbackPreserved": true,
+      "db01BuildFallbackChanged": false,
+      "activationObservedAt": "2026-10-15T10:32:13.068Z"
+    },
+    "previousPreparedSource957OwnerTransition": {
+      "requestedByCrmThisRun": true,
+      "ownerStarted": true,
+      "ownerReportedTwoTaskStartIstanbul": "2026-10-15T11:32:43+03:00",
+      "targetCrmSource": "957f98773695874ea3d101b7eb4816f9ea080880",
+      "targetSupervisorSource": "d469f192b315fcd322e3e85815cb5f257947532b",
+      "finalReceiptMapped": true,
+      "sourceCheckoutIsDeployment": false,
+      "authorityOrInterestOrCommercialApiRepeatedByCrm": false,
+      "finalObservedAt": "2026-10-15T08:36:47.677Z",
+      "installedRuntimeEvidenceRef": "previousInstalledRuntimeCheckpoints[2]"
+    },
+    "acceptance": {
+      "normalGui": "GUI DENENMEDİ",
+      "fullPageOrFooterDom": false,
+      "physicalPhone": false,
+      "actualWindowsRebootOrLogon": false,
+      "humanAccepted": false,
+      "existingUserResponse": "Henuz denemedim",
+      "finishCounts": {
+        "total": 25,
+        "complete": 12,
+        "partial": 13,
+        "red": 0
+      }
+    },
+    "boundaries": {
+      "crmSharedDbRuntimeConfigStoreOrServiceWrites": 0,
+      "crmLoginAttempts": 0,
+      "realCustomerMessages": 0,
+      "paidApiCalls": 0,
+      "liveOrVegaWrites": 0,
+      "mainMergeOrTag": false,
+      "prior957InstallationBatchChanged": false
+    },
+    "independentFollowUpScope": "Read-only discovery found this one dependency-ready UI defect. Clearing an ERP frozen request after a generic409/GET404 was not treated as a safe independent fix without a definitive non-persistence contract. No UUID or native business rule was changed.",
+    "interruptedMetadataCompletion": {
+      "reason": "Direct user connection-only ping interrupted the prior turn after source delivery and private receipt checks. No development continued during that ping.",
+      "resumedByHeartbeat": "2026-10-15T10:16:31.486Z",
+      "source894AlreadyPushed": true
+    }
+  },
+  "fourthScheduledDevelopmentRun": {
+    "heartbeatAt": "2026-10-15T10:16:31.486Z",
+    "heartbeatAtIstanbul": "2026-10-15T13:16:31.486+03:00",
+    "firstClockObservedAt": "2026-10-15T10:17:11Z",
+    "automationId": "crm-2-saatlik-eri-im-denemesi",
+    "nativeRunId": null,
+    "nativeRunIdAvailable": false,
+    "canonicalRoot": "C:/Sirket/CRM/melisa-crm",
+    "originFetch": "https://github.com/melihsnyldzz-ui/melisa-crm.git",
+    "originPush": "https://github.com/melihsnyldzz-ui/melisa-crm.git",
+    "branch": "codex/crm-agents-on-completion-20261003",
+    "initialHead": "89427492f27caf72c511a27262b55e73d782c407",
+    "initialDirty": [
+      "docs/evidence/crm/2026-10-15-technical-automation/verification.json"
+    ],
+    "initialDirtyPreserved": true,
+    "existingWorktrees": 8,
+    "newAgentsOrWorktreesCreated": 0,
+    "recordsRead": [
+      "AGENTS.md",
+      "PROJECT_DECISIONS.md CRM-DEC-018/017 and 15 October v3",
+      "CRM_STATUS.md single active next step",
+      "CRM_FINISH_PLAN.md",
+      "USER_ACCEPTANCE.md"
+    ],
+    "prerequisiteCheck": {
+      "oneInitialInvocation": true,
+      "status": "CHECK_REQUIRED",
+      "exitCode": 1,
+      "changed": true,
+      "runtimeAndNormalRoleBothProjects": "REUSE",
+      "normalUiBothProjects": "PROOF_BLOCKED",
+      "wholeClosureGranted": false,
+      "acceptedTestsRepeated": false
+    },
+    "prior957ReceiptMetadataMatched": true,
+    "current894OwnerControlledTransition": "COMPLETE; final owner readback hashes and process/preservation metadata matched by CRM",
+    "newSourceChangesThisRun": 0,
+    "previousQuantityTestsRepeated": false,
+    "acceptance": {
+      "normalGui": "GUI DENENMEDİ",
+      "fullPageOrFooterDom": false,
+      "physicalPhone": false,
+      "actualWindowsRebootOrLogon": false,
+      "humanAccepted": false,
+      "existingUserResponse": "Henuz denemedim",
+      "finishCounts": {
+        "total": 25,
+        "complete": 12,
+        "partial": 13,
+        "red": 0
+      }
+    },
+    "boundaries": {
+      "crmSharedDbRuntimeConfigStoreOrServiceWrites": 0,
+      "crmLoginAttempts": 0,
+      "realCustomerMessages": 0,
+      "paidApiCalls": 0,
+      "liveOrVegaWrites": 0,
+      "mainMergeOrTag": false,
+      "prior957InstallationBatchChanged": false
+    },
+    "prerequisiteRecheckAfter957MetadataMapping": {
+      "reason": "Recorded runtime/role context changed from dated bb/76 to the pinned957/d469 installation checkpoint; no application test or live health/auth request",
+      "status": "CHECK_REQUIRED",
+      "exitCode": 1,
+      "changed": true,
+      "runtimeAndNormalRoleBothProjects": "REUSE",
+      "normalUiBothProjects": "PROOF_BLOCKED",
+      "wholeClosureGranted": false
+    },
+    "independentReadyWorkDiscovery": {
+      "agent": "/root/audit_source_explorer",
+      "readOnly": true,
+      "additionalDependencyReadySourceChangeConfirmed": false,
+      "scope": "Existing finish/status/acceptance records after894; not an assertion that all technical work is complete.",
+      "remaining": [
+        {
+          "id": "CRM06/K01/C01/C02/U01/M01",
+          "missing": "Supported normal GUI first-login component and physical staff/phone acceptance; new package does not provide human acceptance."
+        },
+        {
+          "id": "E02",
+          "missing": "Prepared MANUAL quote/version separate GET/refresh normal-screen scenario; supported session and owner installed native contract."
+        },
+        {
+          "id": "A02",
+          "missing": "Real country/MOQ/shipping business values; examples cannot be invented as actual rules."
+        }
+      ],
+      "generic409To404FrozenIntentCleared": false
+    },
+    "independentMetadataReview": {
+      "agent": "/root/audit_evidence_reviewer",
+      "readOnly": true,
+      "openP1P2": 0,
+      "scope": "Four changed metadata files;894 source/CI/package vs in-progress owner installation vs last verified957/d469, single active record/preflight, bounded10module REUSE, unchanged acceptance counts and secret exposure."
+    },
+    "installedRuntimeEvidenceRef": "installedRuntime",
+    "ownerInstallationWindowClosedHealthy": true,
+    "normalGuiAndHumanAcceptanceStillPending": true,
+    "periodicTimingProvenByThisEvent": false,
+    "erpOwnerAutomationDispatch": {
+      "dispatchRecordSha256": "37d2633e0505b1d07aa78a638b0f7d2e8a8c6707862810ca11640e40f44a106a",
+      "recordByteHashVerifiedByCrm": true,
+      "mechanism": "automation_heartbeat_run_now",
+      "scope": "ERP owner current13:16TR dispatch; not evidence of CRM native dispatch mechanism or normal periodic timing",
+      "normalPeriodicTimerPass": false
+    },
+    "crossRecordPrerequisiteCheck": {
+      "owner": "ERP",
+      "attribution": "Sole owner ran the existing offline record checker after CRM894 and ERP contexts matched; CRM did not duplicate it.",
+      "initial": {
+        "status": "CHECK_REQUIRED",
+        "code": "PROJECT_CLOSURE_GATE_REQUIRED",
+        "at": "ERP.next",
+        "cause": "The concise ERP current step omitted the existing explicit full-closure sentence; this was a record issue, not an application test failure."
+      },
+      "correction": {
+        "metadataOnly": true,
+        "source": "bb6662f60acf47a699dea10c5c3ac644debd0613",
+        "preservedRule": "CRM06 original conditions and required human acceptance precede ERP09 main closure; independent technical preparation may continue under ERP-DEC-060.",
+        "checkerOrSafetyRuleChanged": false
+      },
+      "final": {
+        "status": "CHECK_REQUIRED",
+        "exitCode": 1,
+        "changed": true,
+        "cacheSaved": true,
+        "bothMainIds": "CRM06",
+        "onlyIssueCode": "PROOF_BLOCKED",
+        "issueLocations": [
+          "ERP.preflight.required[2]",
+          "CRM.preflight.required[2]"
+        ],
+        "runtimeAndNormalRoleBothProjects": "REUSE",
+        "normalUiBothProjects": "BLOCKED",
+        "wholeClosureGranted": false,
+        "repeatAcceptedTests": false,
+        "inconsistency": false
+      },
+      "isApplicationOrHumanAcceptance": false,
+      "duplicateCheckerRunByCrm": false
+    },
+    "finalInstalledMetadataReview": {
+      "state": "COMPLETE",
+      "agent": "/root/audit_evidence_reviewer",
+      "readOnly": true,
+      "openP1P2": 0,
+      "scope": "Four final metadata files,894/cac installation/hash/history/preflight, dependency-lock computed-vs-pinned distinction, CI/owner/human separation, no visible credential exposure."
+    },
+    "delivery": {
+      "sourceCommit": "89427492f27caf72c511a27262b55e73d782c407",
+      "previousMetadataCommit": "408aefc63a05d9dfc28c6391ec5a0657aa151954",
+      "installedRuntime": "89427492f27caf72c511a27262b55e73d782c407",
+      "supervisor": "cac08eaed0c4419550ecdaf6fdf4976252b83fa7",
+      "targetedTestsRerunByCrmThisRun": 0,
+      "sourceCiExactPriorRun": "success",
+      "newApplicationCiRequestedForDocs": false,
+      "existingPr": "https://github.com/melihsnyldzz-ui/melisa-crm/pull/3",
+      "existingAgentsReused": [
+        "/root/audit_source_explorer",
+        "/root/audit_evidence_reviewer"
+      ],
+      "newAgentsCreated": 0,
+      "sourceBatchUnchanged": true
+    }
+  },
+  "uncertainCatalogRecovery": {
+    "taskId": "DOT-CRM-CRM06-U01-UNCERTAIN-SEARCH-r1",
+    "mainId": "CRM06",
+    "finishId": "U01",
+    "humanAcceptanceId": "CRM-UA11",
+    "scope": "One frontend source/offline task; stop after delivery. Dot chooses any subsequent scope.",
+    "authoritativeHandoff": "https://github.com/melihsnyldzz-ui/melisa-erp-v2/pull/23#issuecomment-6190971998",
+    "handoffVersion": "DOT-PRIMARY-HANDOFF-20261015-v1",
+    "observedDispatchState": "ACKED_RUNNING",
+    "nativeTurnId": "01a13f90-7069-7761-bf9a-56de6b3f7130",
+    "ack": "DOT-CRM-CRM06-U01-UNCERTAIN-SEARCH-r1: ALINDI",
+    "ackVerifiedByCoordinator": true,
+    "ackMessageId": "msg_0de2626bf9ecb781016ad0c925f7dc87d2a2ca772ae39782a7",
+    "duplicateScopeCheck": {
+      "recentFiveNativeTurnsRead": true,
+      "priorTaskDeliveryFound": false,
+      "prior894QuantityTaskIsDistinct": true,
+      "repositoryRecordAndProductionNoticeChecked": true
+    },
+    "initial": {
+      "canonicalRoot": "C:/Sirket/CRM/melisa-crm",
+      "originFetch": "https://github.com/melihsnyldzz-ui/melisa-crm.git",
+      "originPush": "https://github.com/melihsnyldzz-ui/melisa-crm.git",
+      "branch": "codex/crm-agents-on-completion-20261003",
+      "head": "9a7bad35358d72c902bc8cc236d599678cd95a07",
+      "clean": true,
+      "worktrees": 8,
+      "erpMainThreadObserved": "idle/completed; ERP09 diagnostic task already delivered",
+      "otherVisibleSourceWritersObserved": false,
+      "existingFrontendAndReviewerInitiallyCompleted": true,
+      "recordsRead": [
+        "AGENTS.md",
+        "PROJECT_DECISIONS.md018/017/v3",
+        "DELIVERY_BOARD.md",
+        "CRM_STATUS.md active single step",
+        "CRM_FINISH_PLAN.md",
+        "USER_ACCEPTANCE.md"
+      ],
+      "schedulersPaused": "User decision and primary handoff record; no schedule changed by CRM",
+      "schedulerQueue": "UNKNOWN; not assumed empty"
+    },
+    "problem": "Failed draft edit leaves uncertainty. The actual Page search/filter/paging handlers trigger controller.search(), which clears error. The old error-only notice hid the only catalog recovery action while footer/selections stayed locked.",
+    "fix": "Only the ready-state Page notice condition now accepts error OR uncertainty; a human-readable fallback preserves the existing reconcile action when catalog reads clear error. The existing busy disabling and controller/operation/auth rules are untouched.",
+    "sourceCommit": "94f2a75322a3daa695d38010a6f2c8ef23f6c17b",
+    "files": [
+      "apps/frontend/src/customerProductRequest/CustomerProductRequestPage.jsx",
+      "apps/frontend/tests/customer-product-request-uncertain-search.test.mjs"
+    ],
+    "productionLinesChanged": 1,
+    "verification": {
+      "command": "node --test --test-timeout=15000 apps/frontend/tests/customer-product-request-uncertain-search.test.mjs",
+      "initialActualProductionRegression": {
+        "tests": 4,
+        "passed": 1,
+        "failed": 3,
+        "scope": "Initial fixture before the explicit enabled-state assertion was added."
+      },
+      "firstFixedResult": {
+        "tests": 4,
+        "passed": 4,
+        "failed": 0,
+        "skipped": 0
+      },
+      "strengthenedFinal": {
+        "tests": 4,
+        "passed": 4,
+        "failed": 0,
+        "skipped": 0,
+        "durationMs": 281,
+        "extraAssertion": "Recovery disabled equals Boolean(busy): false during listBusy-only and true during pending session readback.",
+        "productionRewrittenForAnotherOldBaselineRun": false
+      },
+      "covered": [
+        "Draft503 and409 uncertainty, actual Page pending search and failed filter, successful page2",
+        "Recovery remains visible and enabled with busyfalse/listBusytrue",
+        "Fresh session readback has busytrue/listBusyfalse and disables recovery",
+        "No edit/submit mock API call until authoritative session readback",
+        "Failed session readback preserves uncertainty after another successful list",
+        "Normal/busy, expired403 and submitted states do not expose false recovery"
+      ],
+      "harness": "Entry-only transformSync of the actual Page JSX with hook shim, actual lifecycle/controller/API normalization, RAM storage, injected fake fetch/Response and visual icon stubs. No ReactDOM/browser, physical device or human acceptance.",
+      "initialSilentFixture": "An initial icon-import fixture stalled. Only its owned test tree was stopped; that attempt was not counted as PASS. Final entry-only icon-stub target completed under the15000ms timeout.",
+      "fixtureCleanup": "Resolved absolute own apps/frontend workspace/.sites-runtime directory and uncertain-search prefix guards before removing only the owned temporary fixture.",
+      "independentReviewer": "/root/az_independent_reviewer",
+      "independentReadOnlySourceReviewOpenP1P2": 0,
+      "reviewerRanTests": false,
+      "previousAcceptedTestsManuallyRepeated": false
+    },
+    "unchanged": {
+      "controllerApiAndModelGitBlobsMatched": [
+        "apps/frontend/src/customerProductRequest/controller.js",
+        "apps/frontend/src/customerProductRequest/api.js",
+        "apps/frontend/src/customerProductRequest/model.js"
+      ],
+      "quantityInput894FunctionBytesMatched": true,
+      "reviewFooterAndPendingOperationIdentityUnchanged": true,
+      "backendAuthRolesAndBusinessRulesChanged": false
+    },
+    "delivery": {
+      "sourcePushed": true,
+      "sourceBatchFrozen": true,
+      "existingPr": "https://github.com/melihsnyldzz-ui/melisa-crm/pull/3",
+      "exactSourceCiState": "SUCCESS",
+      "exactCi": [
+        {
+          "id": 38737137795,
+          "workflow": "CRM CI",
+          "event": "pull_request",
+          "headSha": "94f2a75322a3daa695d38010a6f2c8ef23f6c17b",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38737137795"
+        },
+        {
+          "id": 38737130312,
+          "workflow": "CRM CI",
+          "event": "push",
+          "headSha": "94f2a75322a3daa695d38010a6f2c8ef23f6c17b",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38737130312"
+        },
+        {
+          "id": 38737137833,
+          "workflow": "AI Sales Agent - Offline",
+          "event": "pull_request",
+          "headSha": "94f2a75322a3daa695d38010a6f2c8ef23f6c17b",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38737137833"
+        }
+      ],
+      "packagePrepared": true,
+      "installedToTest": false,
+      "gui": "GUI DENENMEDİ",
+      "humanAccepted": false,
+      "existingAgentsReused": [
+        "/root/crm06_remaining_frontend",
+        "/root/az_independent_reviewer"
+      ],
+      "newAgentsCreated": 0,
+      "exactSourceCiObservedAt": "2026-10-15T12:48:02Z",
+      "sourceCiHeadAndWorkflowResultsReadByRoot": true,
+      "status": "TECH_DONE_SOURCE_OFFLINE; authoritative handoff closure remains with Dot",
+      "metadataReview": {
+        "state": "COMPLETE",
+        "agent": "/root/audit_evidence_reviewer",
+        "readOnly": true,
+        "openP1P2": 0,
+        "scope": "Four existing metadata files, exact94f sourceCI vs dated894 installed baseline, no package/installation, single active record/preflight, unchanged acceptance counts and stop-after-task boundary."
+      },
+      "docsOnlyCiRerunRequested": false,
+      "originalSourceTaskPreparedPackage": false,
+      "packagePreparedByLaterTaskRef": "uncertainCatalogRecoveryPackage"
+    },
+    "runtime": {
+      "lastVerifiedInstalledSource": "89427492f27caf72c511a27262b55e73d782c407",
+      "lastVerifiedSupervisor": "cac08eaed0c4419550ecdaf6fdf4976252b83fa7",
+      "lastVerifiedObservedAt": "2026-10-15T10:32:13.068Z",
+      "freshRuntimeProbePerformed": false,
+      "newSourceIsDeployment": false,
+      "oldRuntimeAndRollbackReceiptsUnchanged": true
+    },
+    "acceptance": {
+      "normalGui": "GUI DENENMEDİ",
+      "physicalMobile": false,
+      "actualWindowsRebootOrLogon": false,
+      "humanAccepted": false,
+      "existingUserResponse": "Henüz denemedim",
+      "finishCounts": {
+        "total": 25,
+        "complete": 12,
+        "partial": 13,
+        "red": 0
+      }
+    },
+    "boundaries": {
+      "erpRepositoryWrites": 0,
+      "sharedDbSqlRuntimeConfigStoreServiceOrRestartWrites": 0,
+      "newTestOrCommercialDataWrites": 0,
+      "realProviderCustomerOrPaidApiCalls": 0,
+      "loginOrCredentialAttempts": 0,
+      "erpMessagesOrNewTasksSent": 0,
+      "mainMergeTagLiveOrVegaWrites": 0,
+      "automationOrNewTrackingSystemCreated": false,
+      "extraIndependentTaskStarted": false,
+      "cacheWritingPreflightScriptExecuted": false,
+      "preflightReason": "This specific handoff allows source/offline and existing evidence docs only; the usual preflight writes an out-of-repo runtime cache, so it was not executed in this task. Existing dated runtime/role/UI proof was not rerun or elevated."
+    }
+  },
+  "uncertainCatalogRecoveryPackage": {
+    "taskId": "DOT-CRM-CRM06-R02-PACKAGE-94f2a75-r1",
+    "mainId": "CRM06",
+    "finishId": "R02",
+    "sourceTaskId": "DOT-CRM-CRM06-U01-UNCERTAIN-SEARCH-r1",
+    "scope": "Only the missing immutable inactive package for the already delivered94f source, existing evidence docs and PR3 receipt. Stop after this task; Dot chooses any later installation scope.",
+    "authoritativeHandoff": "https://github.com/melihsnyldzz-ui/melisa-erp-v2/pull/23#issuecomment-6190971998",
+    "observedHandoffState": "ACKED_RUNNING",
+    "nativeTurnId": "01a13fa7-b793-7191-99f6-8578359d2c21",
+    "ack": "DOT-CRM-CRM06-R02-PACKAGE-94f2a75-r1: ALINDI",
+    "ackVerifiedByCoordinator": true,
+    "ackMessageId": "msg_0de2626bf9ecb781016ad0cefcab0887d2a89487bf9de10929",
+    "initial": {
+      "canonicalRoot": "C:/Sirket/CRM/melisa-crm",
+      "originFetch": "https://github.com/melihsnyldzz-ui/melisa-crm.git",
+      "originPush": "https://github.com/melihsnyldzz-ui/melisa-crm.git",
+      "branch": "codex/crm-agents-on-completion-20261003",
+      "head": "3013e345c440e163d58f53a2c9c280701922ec9f",
+      "clean": true,
+      "worktrees": 8,
+      "recordsRead": [
+        "AGENTS.md",
+        "PROJECT_DECISIONS.md018/017/v3",
+        "DELIVERY_BOARD.md",
+        "CRM_STATUS.md",
+        "CRM_FINISH_PLAN.md",
+        "USER_ACCEPTANCE.md"
+      ],
+      "recentThreeNativeTurnsRead": true,
+      "priorSamePackageTaskFound": false,
+      "exact94fPackageExisted": false,
+      "erpMainThreadObserved": "idle/completed",
+      "visibleExistingSubagentsObserved": "completed/idle; no other writer observed",
+      "schedulerQueue": "UNKNOWN; not assumed empty",
+      "automationChanged": false
+    },
+    "preparedObservedAt": "2026-10-15T13:07:27Z",
+    "preparedObservedAtIstanbul": "2026-10-15T16:07:27+03:00",
+    "package": {
+      "sourceCommit": "94f2a75322a3daa695d38010a6f2c8ef23f6c17b",
+      "sourceTree": "c98dd26ca6250a8626ac2d34d1ee225d4bada0d4",
+      "repository": "https://github.com/melihsnyldzz-ui/melisa-crm.git",
+      "packageRoot": "C:/Sirket/CRM/releases/crm-shared-test-94f2a75322a3daa695d38010a6f2c8ef23f6c17b",
+      "manifestFile": "release-manifest.json",
+      "manifestSha256": "16cb075a8734d56afd1f364999ab8f0707255be5c4a042a9c197ccf397eea556",
+      "indexPath": "apps/frontend/dist/client/index.html",
+      "indexSha256": "19624f5d0189c5750089b4c50779809f3a381e323ae59541daa5ee4c3efdf3a5",
+      "sourceFiles": 185,
+      "sourceBlobInventoryRef": "release-manifest.json#sourceFiles",
+      "sourceBlobInventorySha256": "6d9bc49c7bb8e31a6037c93ae2e4ea64186aa428bc99992e41624bcbd4cd7b71",
+      "sourceBlobScope": "All185selected allowed Git source blobs from exact94f, including required frontend/gateway/deploy/adapter paths. Tests/docs/private config are excluded by the unchanged builder policy. Full selected inventory is cryptographically bound by the sealed manifest.",
+      "payloadFiles": 2291,
+      "payloadBytes": 23935639,
+      "locks": {
+        "gateway": {
+          "path": "apps/gateway/package-lock.json",
+          "sha256": "c487dc65e3a107f5235408fad3523c8242a4c01b62c7475154ad4ae41a627b96"
+        },
+        "frontend": {
+          "path": "apps/frontend/package-lock.json",
+          "sha256": "9064a36a0c86464db93cc261ffedbc92a87ea2092315e207301ca8a8aa6d4d24"
+        }
+      },
+      "build": {
+        "viteCrmTest": true,
+        "isolatedPreparation": true,
+        "nodeVersion": "v24.15.0",
+        "platform": "win32",
+        "arch": "x64",
+        "dependencyInstall": "npm-ci-offline-ignore-scripts"
+      },
+      "prepared": true,
+      "inactive": true,
+      "installedToTest": false
+    },
+    "preparation": {
+      "builder": "deploy/test-package.mjs",
+      "builderGitBlob": "2368679c40e412087d758370ec7f8f7ece54d950",
+      "method": "createTestPackage({commit:94f2a75322a3daa695d38010a6f2c8ef23f6c17b,isolatedPreparation:true})",
+      "existingBuilderInvocations": 1,
+      "newBranchOrWorktreeCreated": false,
+      "checkoutResetOrSwitched": false,
+      "sourceExtractedFromGitBlobs": true,
+      "metadataHeadUsedAsPackageSource": false,
+      "cleanCheckoutBeforeAndAfter": true,
+      "lockedOfflineIgnoreScripts": true,
+      "onlineDependencyFallbackUsed": false,
+      "freshViteBuild": true,
+      "stagingAndFinalSealedManifestPayloadAndSourceVerification": true,
+      "selectedSourceBlobsValidated": 185,
+      "dependencyVersionsAndBuilderPolicyChanged": false,
+      "canonicalRawLockBytesBeforeAfterUnchanged": true,
+      "lockByteExplanation": "Package lock hashes are exact Git-blob LF bytes; canonical Windows working-tree CRLF raw hashes differ and were separately compared before/after without editing either lock.",
+      "isolatedBuildDatabaseFallback": "MELISA_ERP_CRM_SHARED_TEST_20261009_01",
+      "buildFallbackLiteralChanged": false,
+      "buildFallbackIsRuntimeDb02Identity": false,
+      "sourceOrAcceptanceTestsRerun": false,
+      "newApplicationCiRequested": false,
+      "cacheWritingPreflightScriptExecuted": false,
+      "preflightReason": "Current narrow task permits only the new artifact, owned preparation and existing evidence docs. The usual out-of-repo runtime-cache writer was not run."
+    },
+    "verification": {
+      "builderFinalReturnEnvironment": "TEST",
+      "builderFinalReturnSource": "94f2a75322a3daa695d38010a6f2c8ef23f6c17b",
+      "rootManifestIndexAndLocksMatched": true,
+      "independentReviewer": "/root/audit_release_inspector",
+      "independentReadOnlyPackageVerdict": "GO",
+      "independentPackageOpenP1P2": 0,
+      "independentVerifyTestPackagePassed": true,
+      "independentAll185SourceBlobsMatchedExactGitCommit": true,
+      "reviewerBuiltOrWroteAnything": false,
+      "authorityComparison": {
+        "reference": "installedRuntime.priorNormalRoleAndCustomerRequestEvidence.unchangedModules",
+        "baselinePackageSource": "89427492f27caf72c511a27262b55e73d782c407",
+        "modulesCompared": 10,
+        "actualNewAndBaselineByteHashesMatchedExistingProof": true,
+        "wholeApplicationByteIdentical": false,
+        "newAuthNativeGuiOrHumanAcceptanceClaimed": false
+      }
+    },
+    "preservation": {
+      "oldPackages": [
+        {
+          "source": "89427492f27caf72c511a27262b55e73d782c407",
+          "manifestSha256": "b4f593eb736820577b19a489f104e599be6e3749e3f31db759898733c73ef3a7",
+          "indexSha256": "3bb1ec44de971549f95cb858bb315cdf101d83b3381321c53c2ef477e95a96a6"
+        },
+        {
+          "source": "957f98773695874ea3d101b7eb4816f9ea080880",
+          "manifestSha256": "a93d2cdd14eafcb021091d98294c41d5e60d31bbc5842d31447f091a843a18af",
+          "indexSha256": "8cdf8904557755900d98769df26f6edcd6efa929bc400970b073b48e4d2d1ddd"
+        }
+      ],
+      "oldManifestAndIndexBeforeAfterEqual": true,
+      "oldPackagesOrRollbackWritten": false,
+      "oldPayloadAcceptedTestsRerun": false,
+      "scope": "Before/after comparison covers the two old manifests and two old indexes, not a new full verification of the old payloads. Builder wrote only its new94f staging/destination."
+    },
+    "delivery": {
+      "existingPr": "https://github.com/melihsnyldzz-ui/melisa-crm/pull/3",
+      "sourceCommit": "94f2a75322a3daa695d38010a6f2c8ef23f6c17b",
+      "sourceCiRef": "uncertainCatalogRecovery.delivery.exactCi",
+      "sourceCiReuse": "Three completedSUCCESS exact94f runs from the preceding accepted source delivery; no new test/CI invocation.",
+      "packagePrepared": true,
+      "installedToTest": false,
+      "gui": "GUI DENENMEDİ",
+      "physicalPhone": false,
+      "actualWindowsRebootOrLogon": false,
+      "humanAccepted": false,
+      "metadataOnlyCommit": true,
+      "metadataHeadSourceCiAttribution": false,
+      "metadataReview": {
+        "state": "COMPLETE",
+        "agent": "/root/audit_evidence_reviewer",
+        "readOnly": true,
+        "openP1P2": 0,
+        "scope": "Four existing metadata files, inactive94f package vs installed894 baseline, dated package-not-prepared history, exact sourceCI vs docs-onlyHEAD, unchanged acceptance/counts and no visible secret."
+      },
+      "newAgentsCreated": 0,
+      "existingAgentsReused": [
+        "/root/audit_release_inspector",
+        "/root/audit_evidence_reviewer"
+      ]
+    },
+    "boundaries": {
+      "activeRuntimePrivateConfigStoreCredentialSessionOrTaskWrites": 0,
+      "erpRepositoryWrites": 0,
+      "erpMessagesOrTasksSent": 0,
+      "sharedDbSqlSchemaDataOrServiceRestartWrites": 0,
+      "installationOrActivationPerformed": false,
+      "realProviderCustomerOrPaidApiCalls": 0,
+      "liveVegaT1MainMergeTagOrPublication": 0,
+      "priorPackagesOverwrittenOrDeleted": false,
+      "secondTaskStarted": false
+    },
+    "acceptance": {
+      "normalGui": "GUI DENENMEDİ",
+      "physicalMobile": false,
+      "actualWindowsRebootOrLogon": false,
+      "humanAccepted": false,
+      "existingHumanAcceptanceId": "CRM-UA11",
+      "finishCounts": {
+        "total": 25,
+        "complete": 12,
+        "partial": 13,
+        "red": 0
+      }
+    }
+  },
+  "staffGrantCopyFeedback": {
+    "taskId": "DOT-CHAIN-20261015-04",
+    "date": "2026-10-16",
+    "mainId": "CRM06",
+    "finishId": "U01",
+    "humanAcceptanceId": "CRM-UA11",
+    "scope": "SOURCE/OFFLINE only; exact current catalog grant copy feedback",
+    "authoritativeHandoff": "https://github.com/melihsnyldzz-ui/melisa-erp-v2/pull/23#issuecomment-6190971998",
+    "observedHandoffState": "ACKED_RUNNING; single dispatch acknowledged by coordinator",
+    "initial": {
+      "sourceCommit": "bbe47e49d944aa943faceb3bc7475fefa8f37680",
+      "canonicalRootVerified": true,
+      "fetchAndPushOrigin": "https://github.com/melihsnyldzz-ui/melisa-crm.git",
+      "branch": "codex/crm-agents-on-completion-20261003",
+      "dirty": false,
+      "worktreesUnchanged": true
+    },
+    "sourceCommit": "1fb0f2574c6d5fe8d55fb07f5d0a0523f1e80955",
+    "files": [
+      "apps/frontend/src/customerProductRequest/StaffProductRequests.jsx",
+      "apps/frontend/tests/customer-product-request-staff-copy.test.mjs"
+    ],
+    "problem": "Copied state survived a replacement grant; delayed copy outcomes from grant A could alter feedback for grant B in the same conversation.",
+    "fix": [
+      "Reset copied only when a replacement grant is accepted.",
+      "Bind clipboard settlement to exact grant object, mounted panel and current context; invalidate immediately on refresh and new grant acceptance.",
+      "Successful retry clears only the copy error, preserving unrelated issue/list failures."
+    ],
+    "verification": {
+      "command": "node --test --test-timeout=15000 apps/frontend/tests/customer-product-request-staff-copy.test.mjs",
+      "guard": "tests/offline-test-guard.mjs",
+      "harness": "Actual Staff component, createStaffRequestApi and extracted actual App key/permission element; hook-render with mocked fetch/clipboard. Visual icons/photo entry only stubbed; no DOM/browser or actual OS clipboard.",
+      "before": {
+        "sourceCommit": "bbe47e49d944aa943faceb3bc7475fefa8f37680",
+        "tests": 13,
+        "pass": 5,
+        "fail": 8,
+        "exitCode": 1,
+        "durationMs": 989.7201
+      },
+      "reviewCorrection": {
+        "finding": "P2: unconditional success error reset hid a later failed issue operation.",
+        "before": {
+          "tests": 15,
+          "pass": 14,
+          "fail": 1,
+          "exitCode": 1,
+          "durationMs": 463.3921
+        },
+        "resolution": "Clear only copyFailureMessage; keep unrelated issue/list errors."
+      },
+      "final": {
+        "tests": 15,
+        "pass": 15,
+        "fail": 0,
+        "exitCode": 0,
+        "durationMs": 442.3927
+      },
+      "coverage": [
+        "copied A to fresh B; explicit B copy",
+        "late A success/rejection before or after B success/failure",
+        "B acceptance before next render",
+        "current B failure and successful retry",
+        "unrelated failed issue error preserved",
+        "token context, actual assignment-key remount and unmount",
+        "refresh invalidation, actual canIssue permission and busy/mutation guards"
+      ],
+      "independentReview": {
+        "reviewer": "existing source reviewer",
+        "scope": "read-only source and target test",
+        "openP1": 0,
+        "openP2": 0,
+        "testExecution": false
+      },
+      "ownedTemporaryFixturesRemoved": true,
+      "stagedSecretScan": "PASS; no leaks found",
+      "oldAcceptedSuitesManuallyRepeated": false,
+      "prerequisiteScript": {
+        "executed": false,
+        "reason": "Active source/offline handoff excludes external cache/config writes; historical preflight record preserved."
+      },
+      "metadataIntegrity": "PASS: previous evidence objects unchanged; one active status heading and one unchanged preflight block (LF/CRLF normalized).",
+      "metadataReview": {
+        "reviewer": "existing evidence reviewer",
+        "scope": "read-only final four-file diff",
+        "openP1": 0,
+        "openP2": 0,
+        "testOrGuiExecution": false
+      }
+    },
+    "unchanged": [
+      "Staff API and gateway",
+      "session/capability issuer and authorization/revoke behavior",
+      "role/assignment permissions and App key",
+      "dependency lockfiles",
+      "historical accepted tests and evidence"
+    ],
+    "delivery": {
+      "branch": "codex/crm-agents-on-completion-20261003",
+      "sourceCommit": "1fb0f2574c6d5fe8d55fb07f5d0a0523f1e80955",
+      "pr": "https://github.com/melihsnyldzz-ui/melisa-crm/pull/3",
+      "prState": "OPEN",
+      "base": "feature/crm-completion",
+      "exactSourceCiStatus": "SUCCESS",
+      "exactSourceCi": [
+        {
+          "conclusion": "success",
+          "databaseId": 38806790435,
+          "event": "pull_request",
+          "headSha": "1fb0f2574c6d5fe8d55fb07f5d0a0523f1e80955",
+          "status": "completed",
+          "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38806790435",
+          "workflowName": "AI Sales Agent - Offline",
+          "jobs": [
+            {
+              "name": "ai-sales-offline",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38806790435/job/116669594498"
+            }
+          ]
+        },
+        {
+          "conclusion": "success",
+          "databaseId": 38806790449,
+          "event": "pull_request",
+          "headSha": "1fb0f2574c6d5fe8d55fb07f5d0a0523f1e80955",
+          "status": "completed",
+          "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38806790449",
+          "workflowName": "CRM CI",
+          "jobs": [
+            {
+              "name": "quality-build-test",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38806790449/job/116669594809"
+            },
+            {
+              "name": "windows-startup-test",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38806790449/job/116669595097"
+            },
+            {
+              "name": "secret-scan",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38806790449/job/116669595100"
+            }
+          ]
+        },
+        {
+          "conclusion": "success",
+          "databaseId": 38806782360,
+          "event": "push",
+          "headSha": "1fb0f2574c6d5fe8d55fb07f5d0a0523f1e80955",
+          "status": "completed",
+          "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38806782360",
+          "workflowName": "CRM CI",
+          "jobs": [
+            {
+              "name": "quality-build-test",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38806782360/job/116669566854"
+            },
+            {
+              "name": "windows-startup-test",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38806782360/job/116669567407"
+            },
+            {
+              "name": "secret-scan",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38806782360/job/116669567429"
+            }
+          ]
+        }
+      ],
+      "metadataDelivery": "Separate docs-only follow-up with [skip ci]; source CI is not attributed to that metadata HEAD."
+    },
+    "runtime": {
+      "state": "SOURCE_UNAPPLIED",
+      "packagePrepared": false,
+      "installed": false,
+      "probed": false,
+      "modified": false
+    },
+    "acceptance": {
+      "normalGui": "GUI DENENMEDİ",
+      "realClipboard": "DENENMEDİ",
+      "physicalPhone": "BEKLİYOR",
+      "windowsRebootLogon": "BEKLİYOR",
+      "human": "BEKLİYOR",
+      "lastHumanReplyUnchanged": "Henüz denemedim.",
+      "crmCounts": {
+        "total": 25,
+        "green": 12,
+        "partial": 13,
+        "red": 0
+      },
+      "wholePlanTotal": 74
+    },
+    "boundaries": {
+      "sharedTestWrites": false,
+      "serviceRestart": false,
+      "configOrSqlWrites": false,
+      "newLoginOrCredentialAttempts": false,
+      "erpMessage": false,
+      "masterHandoffEdit": false,
+      "newPackage": false,
+      "liveOrVegaOrRealT1": false,
+      "customerOrProviderMessages": false,
+      "paidApi": false,
+      "mainMergeOrTag": false,
+      "newAgentGoalAutomationTracker": false,
+      "nextTask": "STOP; Dot selects the next task."
+    }
+  },
+  "sameGrantCopyAttempts": {
+    "taskId": "DOT-CHAIN-20261015-05",
+    "date": "2026-10-16",
+    "mainId": "CRM06",
+    "finishId": "U01",
+    "humanAcceptanceId": "CRM-UA11",
+    "scope": "SOURCE/OFFLINE only; latest copy attempt feedback on the same grant",
+    "authoritativeHandoff": "https://github.com/melihsnyldzz-ui/melisa-erp-v2/pull/23#issuecomment-6190971998",
+    "dispatch": {
+      "singleDispatch": true,
+      "duplicateEvidence": false,
+      "ack": "DOT-CHAIN-20261015-05: ALINDI",
+      "existingReviewersIdleBeforeDispatch": true
+    },
+    "initial": {
+      "sourceCommit": "e9c82e660bb84cf9a8c89362aba8abb9512aff05",
+      "canonicalRootVerified": true,
+      "fetchAndPushOrigin": "https://github.com/melihsnyldzz-ui/melisa-crm.git",
+      "branch": "codex/crm-agents-on-completion-20261003",
+      "dirty": false,
+      "worktreesUnchanged": true,
+      "dependencyLocksUnchanged": true
+    },
+    "sourceCommit": "a7243dedf9ca5d1ca1d5aa1cb3dffaee7c18a7e9",
+    "files": [
+      "apps/frontend/src/customerProductRequest/StaffProductRequests.jsx",
+      "apps/frontend/tests/customer-product-request-staff-copy.test.mjs"
+    ],
+    "productionDiff": {
+      "addedLines": 2,
+      "removedLines": 2
+    },
+    "problem": "Two in-flight copies for the same grant both passed the existing grant/context guard; an older result could replace a newer success or failure.",
+    "fix": {
+      "choice": "Latest attempt wins; multiple explicit copies remain possible without visual redesign.",
+      "behavior": [
+        "Each explicit copy stores a new local attempt identity before starting mocked/native clipboard work.",
+        "Settlement must match the latest attempt as well as existing mounted/context/exact-grant checks.",
+        "A new attempt clears only prior copy feedback; unrelated issue/list errors remain intact."
+      ],
+      "backendOrSecurityContractChanged": false
+    },
+    "verification": {
+      "guard": "tests/offline-test-guard.mjs",
+      "harness": "Existing actual Staff/createStaffRequestApi and actual App key/permission element; hook-render with synthetic fetch and deferred clipboard. No real OS clipboard/network/credential/grant.",
+      "before": {
+        "sourceCommit": "e9c82e660bb84cf9a8c89362aba8abb9512aff05",
+        "command": "node --test --test-timeout=15000 --test-name-pattern='same-grant overlap:' apps/frontend/tests/customer-product-request-staff-copy.test.mjs",
+        "newCases": 10,
+        "pass": 5,
+        "fail": 5,
+        "exitCode": 1,
+        "durationMs": 318.821
+      },
+      "after": {
+        "command": "node --test --test-timeout=15000 --test-name-pattern='same-grant overlap:|current B failure remains visible|a current A copy success cannot clear' apps/frontend/tests/customer-product-request-staff-copy.test.mjs",
+        "newCases": 12,
+        "affectedExistingCases": 2,
+        "total": 14,
+        "pass": 14,
+        "fail": 0,
+        "exitCode": 0,
+        "durationMs": 405.4453
+      },
+      "addedAfterInitialProof": "Two additional cases cover old resolve/reject while the latest attempt remains pending; no claim that all final 12 cases ran before the fix.",
+      "coverage": [
+        "old rejection after latest success",
+        "old success after latest failure",
+        "two clicks before render",
+        "old outcomes while latest attempt pending",
+        "pending result reset and explicit retry",
+        "overlap across refresh/new grant/token context/assignment remount/unmount",
+        "existing current retry and unrelated issue error regressions"
+      ],
+      "existing15CasesPreserved": true,
+      "wholeExisting15SuiteManuallyRepeated": false,
+      "previousAcceptanceReusedAsNewPass": false,
+      "independentReview": {
+        "reviewer": "existing source reviewer",
+        "scope": "read-only source and target tests",
+        "openP1": 0,
+        "openP2": 0,
+        "testBuildGuiRuntimeExecution": false
+      },
+      "ownedTemporaryFixturesRemoved": true,
+      "stagedSecretScan": "PASS; no leaks found",
+      "prerequisiteScript": {
+        "executed": false,
+        "reason": "Active source/offline handoff excludes external cache/config writes; historical preflight remains unchanged."
+      },
+      "metadataIntegrity": "PASS: previous evidence objects unchanged; one active status heading and one unchanged preflight block after LF/CRLF normalization.",
+      "metadataReview": {
+        "reviewer": "existing evidence reviewer",
+        "scope": "read-only final four-file diff",
+        "openP1": 0,
+        "openP2": 0,
+        "testBuildGuiRuntimeExecution": false
+      }
+    },
+    "unchanged": [
+      "Grant/context/refresh/unmount checks from task04",
+      "Unrelated issue/list error protection from task04",
+      "App assignment key and role permissions",
+      "Staff API, gateway and capability/session/revoke contracts",
+      "Dependency locks and earlier acceptance/evidence"
+    ],
+    "delivery": {
+      "branch": "codex/crm-agents-on-completion-20261003",
+      "sourceCommit": "a7243dedf9ca5d1ca1d5aa1cb3dffaee7c18a7e9",
+      "pr": "https://github.com/melihsnyldzz-ui/melisa-crm/pull/3",
+      "prState": "OPEN",
+      "base": "feature/crm-completion",
+      "exactSourceCiStatus": "SUCCESS",
+      "exactSourceCi": [
+        {
+          "conclusion": "success",
+          "databaseId": 38808525153,
+          "event": "pull_request",
+          "headSha": "a7243dedf9ca5d1ca1d5aa1cb3dffaee7c18a7e9",
+          "status": "completed",
+          "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38808525153",
+          "workflowName": "AI Sales Agent - Offline",
+          "jobs": [
+            {
+              "name": "ai-sales-offline",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38808525153/job/116675528217"
+            }
+          ]
+        },
+        {
+          "conclusion": "success",
+          "databaseId": 38808525410,
+          "event": "pull_request",
+          "headSha": "a7243dedf9ca5d1ca1d5aa1cb3dffaee7c18a7e9",
+          "status": "completed",
+          "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38808525410",
+          "workflowName": "CRM CI",
+          "jobs": [
+            {
+              "name": "secret-scan",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38808525410/job/116675529765"
+            },
+            {
+              "name": "windows-startup-test",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38808525410/job/116675530094"
+            },
+            {
+              "name": "quality-build-test",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38808525410/job/116675530126"
+            }
+          ]
+        },
+        {
+          "conclusion": "success",
+          "databaseId": 38808515711,
+          "event": "push",
+          "headSha": "a7243dedf9ca5d1ca1d5aa1cb3dffaee7c18a7e9",
+          "status": "completed",
+          "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38808515711",
+          "workflowName": "CRM CI",
+          "jobs": [
+            {
+              "name": "quality-build-test",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38808515711/job/116675498748"
+            },
+            {
+              "name": "windows-startup-test",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38808515711/job/116675499229"
+            },
+            {
+              "name": "secret-scan",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/38808515711/job/116675499251"
+            }
+          ]
+        }
+      ],
+      "metadataDelivery": "Separate docs-only follow-up [skip ci]; source CI not attributed to metadata HEAD."
+    },
+    "runtime": {
+      "state": "SOURCE_UNAPPLIED",
+      "packagePrepared": false,
+      "installed": false,
+      "probed": false,
+      "modified": false
+    },
+    "acceptance": {
+      "normalGui": "GUI DENENMEDİ",
+      "realClipboard": "DENENMEDİ",
+      "physicalPhone": "BEKLİYOR",
+      "windowsRebootLogon": "BEKLİYOR",
+      "human": "BEKLİYOR",
+      "lastHumanReplyUnchanged": "Henüz denemedim.",
+      "crmCounts": {
+        "total": 25,
+        "green": 12,
+        "partial": 13,
+        "red": 0
+      },
+      "wholePlanTotal": 74
+    },
+    "boundaries": {
+      "sharedTestOrDataWrites": false,
+      "serviceRestart": false,
+      "configOrSqlWrites": false,
+      "newHealthLoginOrCredentialAttempts": false,
+      "erpMessage": false,
+      "masterHandoffEdit": false,
+      "newPackage": false,
+      "liveVegaRealT1": false,
+      "customerProviderMessages": false,
+      "paidApi": false,
+      "mainMergeTagRelease": false,
+      "newAgentGoalAutomationTracker": false,
+      "nextTask": "STOP after task05; Dot selects the next scope, no task06."
+    }
+  },
+  "latestCopyFeedbackPackage": {
+    "taskId": "DOT-CHAIN-20261015-06",
+    "date": "2026-10-16",
+    "mainId": "CRM06",
+    "finishId": "R02",
+    "humanAcceptanceId": "CRM-UA11",
+    "scope": "Single inactive/offline immutable candidate; no activation",
+    "authoritativeHandoff": "https://github.com/melihsnyldzz-ui/melisa-erp-v2/pull/23#issuecomment-6190971998",
+    "initial": {
+      "checkoutHead": "46909d883dd134c98c143a23529907d3b7873c44",
+      "canonicalRootVerified": true,
+      "fetchAndPushOrigin": "https://github.com/melihsnyldzz-ui/melisa-crm.git",
+      "branch": "codex/crm-agents-on-completion-20261003",
+      "dirty": false,
+      "worktrees": 8,
+      "duplicateTask": false,
+      "existingSameSourcePackage": false,
+      "matchingStaging": false
+    },
+    "ack": "DOT-CHAIN-20261015-06: ALINDI",
+    "sourceTask": "DOT-CHAIN-20261015-05",
+    "sourceCommit": "a7243dedf9ca5d1ca1d5aa1cb3dffaee7c18a7e9",
+    "sourceTree": "96008f72aa44661b505fcd8ff44f864e65155fa3",
+    "preparation": {
+      "builder": "deploy/test-package.mjs",
+      "builderGitBlob": "2368679c40e412087d758370ec7f8f7ece54d950",
+      "method": "createTestPackage({commit:a7243dedf9ca5d1ca1d5aa1cb3dffaee7c18a7e9,isolatedPreparation:true})",
+      "existingBuilderInvocations": 1,
+      "startedAtUtc": "2026-10-15T21:28:35.544Z",
+      "completedAtUtc": "2026-10-15T21:29:51.161Z",
+      "completedAtIstanbul": "2026-10-16T00:29:51.161+03:00",
+      "checkoutOrBuilderChanged": false,
+      "metadataHeadUsedAsPackageSource": false,
+      "officialGitTreeAndBlobExport": true,
+      "offlineLockedIgnoreScriptsInstall": true,
+      "freshVite": true,
+      "secondBuild": false,
+      "sourceTestsOrCiRerun": false,
+      "newBranchWorktreeOrDependencyUpgrade": false,
+      "prerequisites": {
+        "diskCapacity": "PASS",
+        "releaseDestinationAbsent": true,
+        "ancestorRealpathLinkReparseChecks": "PASS",
+        "aclReadOnlyCheck": "PASS; existing rights, no ACL change",
+        "pinnedNodeNpm": "PASS",
+        "cachePrecheck": {
+          "readOnly": true,
+          "requiredUniqueTarballs": 224,
+          "verifiedTarballs": 224,
+          "verifiedBytes": 32658751,
+          "excludedOtherPlatformEntries": 50,
+          "missing": 0,
+          "networkUsed": false
+        },
+        "canonicalLocksUnchanged": true
+      },
+      "buildEnvironment": {
+        "sanitizedBy": "offlineBuildEnvironment",
+        "inheritedCredentialsDotenvAndViteInputs": false,
+        "inheritedNodeOptions": false,
+        "isolatedPreparation": true,
+        "existingBuildFallbackLiteralChanged": false,
+        "buildFallbackIsActualRuntimeDatabaseIdentity": false
+      },
+      "reproducibleProvenance": "Exact Git blobs, locked dependencies, pinned toolchain, sanitized environment and sealed payload recorded; no second build or independent bit-for-bit rebuild claim.",
+      "externalCacheWritingPreflightScriptExecuted": false
+    },
+    "package": {
+      "artifactRef": "crm-shared-test-a7243dedf9ca5d1ca1d5aa1cb3dffaee7c18a7e9",
+      "state": "READY_INACTIVE",
+      "manifestSha256": "82ec0b63849817b8d88fe74097a5a0820c118a78d631cf54cf649b90e1545236",
+      "manifestBytes": 475526,
+      "indexSha256": "6d67b7a335f490715e792a9940e9c1b97f745069cf4049fa5b1d4f597fa8a192",
+      "sourceFiles": 185,
+      "payloadFiles": 2291,
+      "payloadBytes": 23936372,
+      "sealedReadOnlyFiles": 2292,
+      "locks": {
+        "gateway": {
+          "path": "apps/gateway/package-lock.json",
+          "sha256": "c487dc65e3a107f5235408fad3523c8242a4c01b62c7475154ad4ae41a627b96"
+        },
+        "frontend": {
+          "path": "apps/frontend/package-lock.json",
+          "sha256": "9064a36a0c86464db93cc261ffedbc92a87ea2092315e207301ca8a8aa6d4d24"
+        }
+      },
+      "build": {
+        "viteCrmTest": true,
+        "isolatedPreparation": true,
+        "nodeVersion": "v24.15.0",
+        "platform": "win32",
+        "arch": "x64",
+        "dependencyInstall": "npm-ci-offline-ignore-scripts"
+      },
+      "toolchain": {
+        "nodeVersion": "v24.15.0",
+        "nodeExecutableSha256": "3331e1ffe19874215472217c5e94f5a0c6d8e18c4ac7111d3937aa0ad5e9b4a5",
+        "npmVersion": "11.12.1",
+        "npmCliSha256": "3ce7cba6f5128dd5f54c98b6a5036b0f850496878cc2e21044b675fe3c594e3e"
+      },
+      "entrypoints": {
+        "supervisor": "deploy/test-supervisor.mjs",
+        "server": "deploy/test-server.mjs"
+      },
+      "privateAbsoluteLocationPublished": false,
+      "blobPackageCommitted": false
+    },
+    "verification": {
+      "builderStagingAndFinalVerifyTestPackage": "PASS",
+      "manifestExportListMatchesExactGitTree": true,
+      "all185ActualSourceGitBlobsMatch": true,
+      "payloadManifestIndexLocksAndEntrypoints": "PASS",
+      "strictPublicByteAndPrivatePathGuards": "PASS via existing builder/verifier; no scanner rules changed",
+      "cleanCheckoutAfterPreparation": true,
+      "independentReview": {
+        "reviewer": "existing release inspector",
+        "verdict": "GO",
+        "openP1": 0,
+        "openP2": 0,
+        "readOnlyVerifyTestPackagePassed": true,
+        "exactGitExportAndBlobsPassed": true,
+        "all2292FilesReadOnly": true,
+        "reviewerBuiltInstalledWroteOrChmod": false
+      },
+      "tooling": {
+        "firstReadback": "Windows command length rejected before execution; no artifact mutation",
+        "completedReadback": "Short read-only query; 62 before/after snapshots compared in tool memory",
+        "secondBuild": false
+      },
+      "stagedSecretScan": "PASS; mandatory masked staged scan found no leaks. Final bytes scanned again immediately before docs commit.",
+      "metadataIntegrity": "PASS: historical evidence unchanged; one active status and one unchanged preflight block; no private operational path/config/callback in new public record.",
+      "metadataReview": {
+        "reviewer": "existing evidence reviewer",
+        "scope": "read-only four-file provenance/status/acceptance diff",
+        "openP1": 0,
+        "openP2": 0,
+        "testBuildGuiRuntimeExecution": false
+      }
+    },
+    "preservation": {
+      "oldPackageCount": 62,
+      "metadataFilesCompared": 124,
+      "manifestAndIndexBytesSizesMtimesModesEqual": true,
+      "publicSnapshotSha256": "c28e2f0ba92de1c7e1bf9f0c32309fb0e9031f3b320819a716eeb55e737e56e2",
+      "prior94f": {
+        "sourceCommit": "94f2a75322a3daa695d38010a6f2c8ef23f6c17b",
+        "manifestSha256": "16cb075a8734d56afd1f364999ab8f0707255be5c4a042a9c197ccf397eea556",
+        "indexSha256": "19624f5d0189c5750089b4c50779809f3a381e323ae59541daa5ee4c3efdf3a5"
+      },
+      "scope": "Manifest/index metadata only; not a fresh full old payload, runtime, rollback or accepted-use test.",
+      "oldPackagesModifiedOrRemoved": false,
+      "oldPayloadOrAcceptanceTestsRerun": false
+    },
+    "delivery": {
+      "branch": "codex/crm-agents-on-completion-20261003",
+      "pr": "https://github.com/melihsnyldzz-ui/melisa-crm/pull/3",
+      "prState": "OPEN",
+      "sourceCommit": "a7243dedf9ca5d1ca1d5aa1cb3dffaee7c18a7e9",
+      "sourceCi": "REUSE; exact a7243de PR38808525410/push38808515711/AIoffline38808525153 SUCCESS from task05",
+      "newSourceOrCiRequested": false,
+      "metadataDelivery": "Docs-only follow-up [skip ci]; prior source CI not attributed to metadata HEAD."
+    },
+    "runtime": {
+      "state": "SOURCE_UNAPPLIED",
+      "packagePrepared": true,
+      "installed": false,
+      "activated": false,
+      "probed": false,
+      "modified": false
+    },
+    "acceptance": {
+      "normalGui": "GUI DENENMEDİ",
+      "physicalPhone": "BEKLİYOR",
+      "windowsRebootLogon": "BEKLİYOR",
+      "human": "BEKLİYOR",
+      "lastHumanReplyUnchanged": "Henüz denemedim.",
+      "crmCounts": {
+        "total": 25,
+        "green": 12,
+        "partial": 13,
+        "red": 0
+      },
+      "wholePlanTotal": 74
+    },
+    "boundaries": {
+      "sharedTestSqlConfigDataWrites": false,
+      "serviceStartStopRestart": false,
+      "healthLoginCredentialRecoveryAttempt": false,
+      "erpMessage": false,
+      "masterHandoffEdit": false,
+      "liveVegaRealT1": false,
+      "customerProviderMessages": false,
+      "paidApi": false,
+      "mainMergeTagRelease": false,
+      "newAgentGoalAutomationTracker": false,
+      "nextTask": "STOP after task06; Dot selects next scope, no task07."
+    }
+  }
+,
+  "crm18Node2419Profile": {
+    "date": "2026-10-17",
+    "scope": "CRM06/E02/R02 existing combined candidate runtime-toolchain preparation unblock; source only",
+    "source": {
+      "commit": "cb7060a524a26d2c5bbd05b85aada896fef7d5fc",
+      "branch": "codex/crm-agents-on-completion-20261003",
+      "files": [
+        "deploy/test-package.mjs",
+        "tests/test-package-node2419.test.mjs"
+      ],
+      "pr": "https://github.com/melihsnyldzz-ui/melisa-crm/pull/3",
+      "receipt": "https://github.com/melihsnyldzz-ui/melisa-crm/pull/3#issuecomment-6225153364"
+    },
+    "approvedTuple": {
+      "profile": "crm18-node-v24.19.0",
+      "commit": "439b63db8376a6b9d3ac8baa625ed98367022623",
+      "tree": "0e58a21cdb2f20015ee8ac5db4ddb285bb3f3f5e",
+      "platform": "win32",
+      "arch": "x64",
+      "nodeVersion": "v24.19.0",
+      "nodeSha256": "3602f2bb1a10f2cbab4c36886218a33c1ab3db87290e73b033c46c77147d0237",
+      "isolatedPreparation": true,
+      "locks": {
+        "gateway": "c487dc65e3a107f5235408fad3523c8242a4c01b62c7475154ad4ae41a627b96",
+        "frontend": "9064a36a0c86464db93cc261ffedbc92a87ea2092315e207301ca8a8aa6d4d24"
+      },
+      "releaseVariant": "node-v24.19.0",
+      "basename": "crm-shared-test-439b63db8376a6b9d3ac8baa625ed98367022623",
+      "exactCanonicalExecutableAndRootPinnedInSource": true
+    },
+    "behavior": {
+      "new": "One closed preparation tuple checked before mkdir; no caller process/hash observation overrides",
+      "preserved": [
+        "legacy root and basename",
+        "origin/clean Git checks",
+        "link/hardlink/ancestor and overwrite guards",
+        "locked offline ignore-scripts dependency installation",
+        "manifest actual Node version validation",
+        "old packages untouched"
+      ],
+      "generalAlternateRootOrSuffix": false,
+      "manifestVerifierRelaxed": false
+    },
+    "targetedVerification": {
+      "command": "node --test --test-timeout=20000 tests/test-package-node2419.test.mjs",
+      "before": {
+        "pass": 2,
+        "fail": 21,
+        "durationMs": 364.3856
+      },
+      "after": {
+        "pass": 23,
+        "fail": 0,
+        "durationMs": 366.5914
+      },
+      "actualReproduction": "Approved variant rejected PACKAGE_RELEASE_ROOT_REJECTED before fix",
+      "negativeBeforeInterpretation": "Most negative before failures are new error-code expectations; not evidence old code accepted unsafe inputs",
+      "fixtureBoundary": "Actual builder evaluated with synthetic VM process/Git/fs/digests only to staging; not real binary/build/runtime proof",
+      "affectedPackageRegression": {
+        "command": "node --import ./tests/offline-test-guard.mjs --test --test-timeout=20000 tests/test-package.test.mjs",
+        "pass": 17,
+        "fail": 0,
+        "durationMs": 21698.5563
+      },
+      "actualVerifierWrongNodeRejected": true,
+      "independentSourceReview": {
+        "reviewer": "existing az independent reviewer",
+        "openP1": 0,
+        "openP2": 0,
+        "readOnly": true
+      },
+      "diffCheck": "PASS",
+      "stagedSecretScan": "PASS; no leaks",
+      "metadataReview": {
+        "reviewer": "existing evidence reviewer",
+        "scope": "read-only four-file diff",
+        "openP1": 0,
+        "openP2": 0,
+        "sourcePackageRuntimeAndHumanSeparation": true
+      },
+      "metadataIntegrity": "PASS: historical JSON unchanged; one active Sıradaki iş; one unchanged preflight block; counters and human acceptance unchanged"
+    },
+    "ci": {
+      "scope": "exact cb7060a source; all jobs and three workflows completed SUCCESS",
+      "pullRequest": {
+        "id": 38970314160,
+        "state": "SUCCESS",
+        "jobs": [
+          "quality-build-test SUCCESS",
+          "windows-startup-test SUCCESS",
+          "secret-scan SUCCESS"
+        ]
+      },
+      "push": {
+        "id": 38970309602,
+        "state": "SUCCESS",
+        "jobs": [
+          "quality-build-test SUCCESS",
+          "windows-startup-test SUCCESS",
+          "secret-scan SUCCESS"
+        ]
+      },
+      "aiOffline": {
+        "id": 38970314336,
+        "state": "SUCCESS"
+      },
+      "metadataHeadInheritsSourceCi": false
+    },
+    "existingFlowEvidence": {
+      "source": "439b63db8376a6b9d3ac8baa625ed98367022623",
+      "pr": 18,
+      "directory": "docs/evidence/crm/2026-10-16-combined-candidate",
+      "chromiumMain": 12,
+      "chromiumAdditional": 4,
+      "creationPosts": 1,
+      "sameUuidGets": 3,
+      "products": 2,
+      "quantities": [
+        3,
+        2
+      ],
+      "total": "759 TRY",
+      "readOnlyReview": "Existing evidence reviewer inspected reopened draft,390px dialog,assigned staff screenshots and JSON",
+      "rerunThisTurn": false,
+      "realSqlOrErpPersistenceClaim": false,
+      "recoveryLimit": "Same browser session; last saved draft per conversation; no cross-device order archive"
+    },
+    "runtime": {
+      "ownerReportedAt": "2026-10-17T00:12:22+03:00",
+      "ownerReportedBlocker": "crmServer PACKAGE_TOOLCHAIN_MISMATCH after Node24.19 transition",
+      "currentHealthIndependentlyProbed": false,
+      "actualNodeDistributionOrBuild": false,
+      "packagePrepared": true,
+      "installed": false,
+      "activated": false,
+      "sourceCheckoutIsDeployment": false,
+      "responsibleOwner": "ERP main owner",
+      "nextDependency": "ERP owner shared TEST transition and source/manifest/index,protection/rollback,normal GUI/readback receipts",
+      "preparedBy": "ERP main owner",
+      "preparedAt": "2026-10-16T21:39:27.983Z",
+      "installedRuntimeReceiptMatched": false,
+      "installedFieldScope": "Owner preparation receipt snapshot only; later shared transition not independently verified",
+      "ownerPreparation": {
+        "receiptName": "crm18-node24-package.json",
+        "receiptSha256": "0b8b275496e8d35145916c8497071d2f81cf82fdd55667f8cbd73028adcd25e7",
+        "equivalenceName": "crm18-node24-equivalence.json",
+        "equivalenceSha256": "fa34a00414d5b2dc17f45d3afcc96d79ba5040a39a9627e4de5fd5ffc9154924",
+        "actualManifestSha256": "e85ce261ece92201e24c86ea52e4df7e95b022b0ae6835e80c9b99e5abaec938",
+        "ownerReportedIndexSha256": "0fcb6b27d9cac1aefa186a41b60962cf18be06154b27b171bb65df99a4dfc5af",
+        "sourceFiles": 186,
+        "payloadFiles": 2292,
+        "ownerOriginalPackageVerifierPassed": true,
+        "rootReadOnlyManifestAndSourceTreeLocksBuildCountsMatched": true,
+        "rootExecutedBuildOrVerifierOrRuntime": false,
+        "ownerReportedSourceLocksPayloadRowsIdentical": true,
+        "ownerReportedOldPackageModified": false,
+        "metadataReview": {
+          "reviewer": "existing evidence reviewer",
+          "scope": "read-only four-file owner preparation checkpoint",
+          "openP1": 0,
+          "openP2": 0
+        }
+      },
+      "actualNodeDistributionOrBuildScope": "CRM execution only; actual owner preparation is separately recorded below"
+    },
+    "acceptance": {
+      "normalLocalGui": "GUI DENENMEDİ",
+      "physicalPhone": "BEKLİYOR",
+      "windowsRebootLogon": "BEKLİYOR",
+      "human": "BEKLİYOR",
+      "lastHumanReplyUnchanged": "Henüz denemedim.",
+      "crmCounts": {
+        "total": 25,
+        "green": 12,
+        "partial": 13,
+        "red": 0
+      },
+      "wholePlanTotal": 74
+    },
+    "boundaries": {
+      "sharedTestRuntimeConfigStoreSqlWrite": false,
+      "serviceStartStopRestart": false,
+      "healthLoginCredentialAttempt": false,
+      "realCustomerMessages": false,
+      "liveVegaRealT1OrCommercialRecords": false,
+      "paidApi": false,
+      "mainMergeTag": false,
+      "newAgentGoalAutomationTracker": false,
+      "oldPackagesModified": false,
+      "preflightScriptExecuted": false,
+      "ownerCoordination": "Existing user-authorized ERP TEST-install coordination; source recipe delivered, four docs dirty before owner requested build freeze; owner warned to wait for clean docs checkpoint.",
+      "sourceFreeze": "Clean52f107b maintained during actual owner build; only docs resumed after completed preparation receipt and owner build-complete commentary were read; application/builder/test unchanged."
+    }
+  }
+,
+  "crm18SharedTestInstallation": {
+    "date": "2026-10-17",
+    "timezone": "Europe/Istanbul",
+    "scope": "Docs-only CRM06/E02/R02 update from ERP owner completed shared TEST receipts; no second technical task",
+    "ownerCompletedAt": "2026-10-16T23:12:27.529Z",
+    "ownerFinalReadbackAt": "2026-10-16T23:10:36.810Z",
+    "provenance": {
+      "owner": "ERP main owner; sole shared TEST writer",
+      "ownerDocumentationCommit": "93a072f137728435f21037e70e9cf074fa6a3fb3",
+      "publicEvidence": "https://github.com/melihsnyldzz-ui/melisa-erp-v2/blob/93a072f137728435f21037e70e9cf074fa6a3fb3/docs/evidence/erp/2026-10-16-joint-test-candidate/README.md",
+      "existingJointReport": "https://github.com/melihsnyldzz-ui/melisa-erp-v2/pull/23#issuecomment-6222599673",
+      "privateReceiptHashes": {
+        "installed-readback.json": "0ee343b1ba9b840801e82405e8b16e33b612b899f3fdec6f4a8c0b4f075d81be",
+        "installed-readback-final.json": "a4499de54219b3f42873191962491e382b0c752c6ef330476281cd46da87e4b0",
+        "stability.json": "7240bcdb14ec0879290b7645c6d55b8043a408c9b7ff4d1ffde9306c9b71c915",
+        "technical-completion.json": "13609dd104585def2a2c5edde968a53fbd19a4f6b40d01ef5d0218f05812e232",
+        "normal-screen-evidence.json": "744228f45c5a55926db1cb26c9c1c1a1f8fc01d0862fb00f5cd458d4233d676c"
+      },
+      "rawPrivateReceiptsOrScreensPublished": false
+    },
+    "readOnlyMatching": {
+      "firstFinalAndStabilityRefsMatchCompletionHashes": true,
+      "actualSettingsFileHashMatchesCompletionAndReadbacks": true,
+      "normalScreenSettingsMatch": true,
+      "normalScreenReadbackRef": "first installed-readback.json; final snapshot identity/settings matched separately",
+      "sixCoreFirstFinalPidBirthArgvMatch": true,
+      "hubFirstFinalPidBirthArgvMatch": true,
+      "coreStages": [
+        "erpNative",
+        "erpApi",
+        "crmNativeOrder",
+        "crmCatalog",
+        "crmOrders",
+        "crmServer"
+      ],
+      "sameDatabaseAndCopy": true,
+      "rawBeforeImageBackupFilesPresent": 5,
+      "newApplicationTestOrRuntimeProbe": false,
+      "underlyingSqlOrTest125Queries": false,
+      "protectedFilesOrTasksReplayed": false
+    },
+    "installed": {
+      "verified": true,
+      "crm": {
+        "source": "439b63db8376a6b9d3ac8baa625ed98367022623",
+        "manifestSha256": "e85ce261ece92201e24c86ea52e4df7e95b022b0ae6835e80c9b99e5abaec938",
+        "indexSha256": "0fcb6b27d9cac1aefa186a41b60962cf18be06154b27b171bb65df99a4dfc5af",
+        "nodeVersion": "v24.19.0"
+      },
+      "erpApplicationSource": "f5f672c439972b287f77ddd2c7750fa0c6369e87",
+      "supervisorSource": "2bf0f7554c5b1984e2baf0e9afc121967d2485e8",
+      "ownerReportedSupervisorManifestPrefix": "fac585",
+      "settingsSha256": "be8ee1864339d487506558335f382d9369a2c51b51703ccb4501afd48e4bcb96",
+      "databaseFamily": "DB02",
+      "copyLabel": "copy-e16b",
+      "actualT1": false,
+      "sourceCheckoutUsedAsDeploymentProof": false
+    },
+    "stability": {
+      "ownerStatus": "OBSERVED_STABLE_TEN_MINUTES",
+      "elapsedMs": 600419,
+      "samples": 21,
+      "allSamplesSameSupervisorAndPublicReady": true,
+      "automaticRestartObserved": false,
+      "actualWindowsRebootOrLogon": false,
+      "proofScope": "Recorded owner interval; no fresh health or service calls by CRM"
+    },
+    "ownerPreservation": {
+      "files": 100,
+      "protectedProcessesUnchanged": true,
+      "sourceAccountsAndRolesUnchanged": true,
+      "originalFilesPreserved": true,
+      "sqlTest125TaskMetadata": "Owner-reported preserved; CRM did not query or replay",
+      "operationLocksClosed": 5,
+      "rawBeforeImageCount": 5,
+      "rootClosedLocksOrMutatedSharedFiles": false
+    },
+    "normalScreens": {
+      "ownerObservedAt": "2026-10-16T23:03:09.308Z",
+      "erpOwnerObserved": {
+        "normalGreenScreenRendered": true,
+        "actualCatalogRowsLoaded": true,
+        "pageSize": 50,
+        "search": true,
+        "productCard": true,
+        "photo": true,
+        "barcode": true,
+        "stock": true,
+        "priceAndCurrency": true,
+        "privateScreensPublished": false
+      },
+      "crmOwnerObserved": {
+        "normalGuiVerified": false,
+        "blocker": "ERR_BLOCKED_BY_CLIENT",
+        "supportedFreshTab": true,
+        "httpIndexAndProcessIdentityVerified": true
+      },
+      "hubOwnerJointReport": {
+        "normalGuiVerified": false,
+        "blocker": "403 Forbidden",
+        "source": "Existing joint report6222599673; not a new CRM browser run"
+      },
+      "crmPerformedNewBrowserOrLoginAttempt": false
+    },
+    "closure": {
+      "jointP033": "GREEN - technical source/package/shared TEST installation",
+      "jointP02": "YELLOW/OPEN",
+      "jointP022": "YELLOW/OPEN",
+      "jointP022c": "YELLOW/OPEN - technical stability done; combined normal GUI open",
+      "jointP023": "YELLOW/OPEN",
+      "originalCrm06E02OrWholeProjectClosed": false,
+      "crmCounts": {
+        "total": 25,
+        "green": 12,
+        "partial": 13,
+        "red": 0
+      },
+      "wholePlanTotal": 74
+    },
+    "acceptance": {
+      "authenticatedOperationsVerified": false,
+      "normalGuiFirstLoginVerified": false,
+      "human": "BEKLİYOR",
+      "humanAccepted": false,
+      "physicalPhoneOrZebra": "BEKLİYOR",
+      "windowsRebootLogon": "BEKLİYOR",
+      "lastHumanReplyUnchanged": "Henüz denemedim.",
+      "originalAcceptanceStepsPreserved": true
+    },
+    "ci": {
+      "erpSupervisorExactSource": "2bf0f7554c5b1984e2baf0e9afc121967d2485e8",
+      "pullRequest": {
+        "id": 38977022199,
+        "state": "SUCCESS"
+      },
+      "push": {
+        "id": 38977018199,
+        "state": "SUCCESS"
+      },
+      "crmSourceCb7060a": "REUSE prior exact-source SUCCESS; not rerun",
+      "docsOnlyDelivery": "Existing feature branch / PR3 with [skip ci]; source CI not assigned to docs HEAD",
+      "rerunRequested": false
+    },
+    "boundaries": {
+      "applicationCodeOrTestsChanged": false,
+      "buildInstallRestart": false,
+      "sharedRuntimeConfigStoreSqlWrite": false,
+      "applicationHttpHealthOrLogin": false,
+      "unsupportedCredentialTransport": false,
+      "privateSettingsScreensCommercialDetailsPublished": false,
+      "newDatabaseMigrationOrCommercialOperation": false,
+      "realCustomerMessages": false,
+      "paidApi": false,
+      "liveVegaRealT1": false,
+      "mainMergeTag": false,
+      "newAgentGoalAutomationTracker": false,
+      "preflightCacheScriptExecuted": false,
+      "nextWorkOpened": false
+    },
+    "documentationReview": {
+      "reviewer": "existing evidence reviewer",
+      "scope": "read-only four-file diff",
+      "openP1": 0,
+      "openP2": 0,
+      "applicationTestOrRuntimeExecution": false
+    },
+    "metadataIntegrity": "PASS: historical JSON unchanged; single active Sıradaki iş; one unchanged historical preflight block; source/runtime/GUI/human states separate",
+    "stagedSecretScan": "Mandatory redacted staged scan required immediately before docs commit; no application tests or CI rerun requested"
+  }
+,
+  "crmTechnicalGoal20261023": {
+    "date": "2026-10-17",
+    "scope": "Existing native CRM-TEKNIK-23EKIM goal; three source/test/GitHub cycles, immutable candidate handoff next",
+    "goal": {
+      "nativeStatus": "active",
+      "verifiedBy": "get_goal",
+      "existingCrmMainThread": true,
+      "goalIdExposed": false,
+      "tokenBudget": null,
+      "definition": "https://github.com/melihsnyldzz-ui/melisa-erp-v2/pull/23#issuecomment-6232818354",
+      "completionClaim": false
+    },
+    "milestones": {
+      "timezone": "Europe/Istanbul",
+      "interim": "2026-10-19",
+      "technicalCandidate": "2026-10-23",
+      "businessAndDevice": [
+        "2026-10-26",
+        "2026-10-27"
+      ],
+      "finalFixAndRollback": [
+        "2026-10-27",
+        "2026-10-28"
+      ],
+      "liveConditionalTarget": "2026-10-30",
+      "datesChanged": false
+    },
+    "delivery": {
+      "branch": "codex/crm-agents-on-completion-20261003",
+      "pr": "https://github.com/melihsnyldzz-ui/melisa-crm/pull/3",
+      "mainMerged": false
+    },
+    "cycles": [
+      {
+        "scope": "P03 existing candidate/source unification",
+        "commit": "67bc82c43cea636663068bf44a043518f5929e3b",
+        "parents": [
+          "2e14a60028f41f9e42d57e38a05079e4058ec4c2",
+          "439b63db8376a6b9d3ac8baa625ed98367022623"
+        ],
+        "candidateBlobsMatched": 334,
+        "featureDeployAndProfileBlobsMatched": 48,
+        "semanticApplicationDeltaVsApprovedCandidate": false,
+        "currentFeatureMetadataPreserved": true,
+        "candidateNotesKeptAsDatedHistory": true,
+        "old12Plus4BrowserOrI01Rerun": false,
+        "independentReview": {
+          "reviewer": "existing az independent reviewer",
+          "openP1": 0,
+          "openP2": 0
+        },
+        "stagedSecretScan": "PASS; no leaks",
+        "ci": {
+          "pullRequest": 39027311125,
+          "push": 39027308677,
+          "aiOffline": 39027311028,
+          "all": "SUCCESS on exact commit"
+        },
+        "scopeScoreIncrease": false,
+        "candidateBlobScope": [
+          "apps/",
+          "packages/",
+          "scripts/",
+          ".github/",
+          ".gitignore"
+        ]
+      },
+      {
+        "scope": "P10.3/A05 current ERP customer and quantities in sales suggestions",
+        "commit": "af524614fdbdd41399acd566fdcd26284b814951",
+        "files": [
+          "apps/frontend/src/App.jsx",
+          "apps/frontend/tests/sales-erp-context-app.test.mjs"
+        ],
+        "problem": "Singleton flow retained first-render ERP state; saved customer/quantity absent and old suggestions survived ERP context changes",
+        "behavior": "Current ref snapshot with selected recipient/current-operation guard; changed ERP customer/quantity cancels old model/policy result and protects staff composer",
+        "targetedCommand": "node --test --test-timeout=20000 apps/frontend/tests/sales-erp-context-app.test.mjs",
+        "before": {
+          "tests": 8,
+          "pass": 0,
+          "fail": 8,
+          "durationMs": 61627.2325,
+          "firstRunCompilerStartupIncluded": true
+        },
+        "correctedConversationFixtureBeforeFix": {
+          "tests": 1,
+          "fail": 1,
+          "sameCaseNotAdditionalCoverage": true,
+          "responseConversationIdMatched": true
+        },
+        "after": {
+          "tests": 8,
+          "pass": 8,
+          "fail": 0,
+          "durationMs": 7096.5891,
+          "writeSentinels": "Actual liveApi send,erpDraft,erpV2Draft names; zero calls"
+        },
+        "verificationScope": "Real App compiled with retained hook cells and actual ERP onSaved/onClose and sales flow; hooks/API boundaries synthetic, not ReactDOM/browser/human/paid provider proof",
+        "cases": [
+          "saved ERP customer and quantities after rerender",
+          "current selected open ERP items",
+          "stale operation ignored",
+          "other recipient ignored",
+          "customer change rejects pending generation",
+          "quantity change invalidates preview",
+          "ERP change during policy read protects staff composer",
+          "A/B conversations use their own saved contexts"
+        ],
+        "independentReview": {
+          "reviewer": "existing az independent reviewer",
+          "openP1": 0,
+          "openP2": 0
+        },
+        "stagedSecretScan": "PASS; no leaks",
+        "ci": {
+          "pullRequest": 39027722078,
+          "push": 39027719280,
+          "aiOffline": 39027722074,
+          "all": "SUCCESS on exact commit"
+        },
+        "installed": false
+      },
+      {
+        "scope": "P10.1/A02 approved wholesale/series/recipient-shipping rules through policy/model/read-only staff review",
+        "commit": "6bc82e6fe9726261ef1d0171d97e5d9da9f5398a",
+        "files": [
+          "apps/gateway/src/services/salesAgent/policy.mjs",
+          "apps/gateway/src/services/salesAgent/policyStore.mjs",
+          "apps/gateway/src/services/salesAgent/preview.mjs",
+          "apps/gateway/src/services/salesAgent/agent.mjs",
+          "apps/gateway/src/services/salesAgent/approvedBusinessRules.test.mjs",
+          "apps/gateway/src/routes/policyRoutes.test.js",
+          "apps/frontend/src/lib/salesRules.js",
+          "apps/frontend/src/SalesRulesSettings.jsx",
+          "apps/frontend/tests/sales-approved-rules.test.mjs"
+        ],
+        "approvedDecisions": {
+          "wholesaleOnly": true,
+          "breakSeries": false,
+          "shippingPayer": "recipient",
+          "sources": [
+            "https://github.com/melihsnyldzz-ui/melisa-erp-v2/pull/23#issuecomment-6232818354",
+            "https://github.com/melihsnyldzz-ui/melisa-erp-v2/pull/23#issuecomment-6222599673"
+          ]
+        },
+        "behavior": "Immutable sourced server facts in GET/model/actual read-only React card; absent legacy facts unknown, malformed or foreign-source facts rejected. Common effective revision includes hard rules; old revision409 and patron fixed-rule override400; legacy policy file shape preserved.",
+        "before": {
+          "tests": 6,
+          "pass": 1,
+          "fail": 5,
+          "durationMs": 371.1962,
+          "command": "node --import ./tests/offline-test-guard.mjs --test apps/gateway/src/services/salesAgent/approvedBusinessRules.test.mjs apps/frontend/tests/sales-approved-rules.test.mjs"
+        },
+        "after": {
+          "tests": 197,
+          "pass": 197,
+          "fail": 0,
+          "skip": 0,
+          "durationMs": 7227.4083,
+          "not197NewTests": true,
+          "command": "node --import ./scripts/ci/offline-guard.mjs --test apps/gateway/src/services/salesAgent/approvedBusinessRules.test.mjs apps/gateway/src/services/salesAgent/salesAgent.test.mjs apps/gateway/src/services/salesAgent/recordedCatalog.test.mjs apps/gateway/src/routes/policyRoutes.test.js apps/gateway/src/routes/salesAgentRoutes.test.js apps/frontend/tests/sales-approved-rules.test.mjs apps/frontend/tests/sales-rules.test.mjs apps/frontend/tests/sales-draft.test.mjs apps/frontend/tests/sales-products.test.mjs apps/frontend/tests/sales-products-canonical-name.test.mjs"
+        },
+        "frontendBuild": {
+          "status": "PASS",
+          "offlineGuard": "scripts/ci/offline-guard.mjs",
+          "envFile": false,
+          "outDir": "unique OS temporary directory; removed in finally",
+          "sharedDistOrRuntimeWritten": false,
+          "existingChunkWarningsOnly": true
+        },
+        "verificationScope": "Offline generate stub, ephemeral policy file, actual HTTP policy routes and real React renderToStaticMarkup; not browser, real LLM, person or physical device acceptance",
+        "independentReview": {
+          "reviewer": "existing az independent reviewer",
+          "openP1": 0,
+          "openP2": 0
+        },
+        "stagedSecretScan": "PASS; no leaks",
+        "ci": {
+          "pullRequest": 39028345874,
+          "push": 39028342757,
+          "aiOffline": 39028345889,
+          "all": "SUCCESS on exact commit"
+        },
+        "unknownMinimumCurrencyCountryMoqDiscountShippingAmountOrDateInvented": false,
+        "automaticCustomerSend": false,
+        "erpWrite": false,
+        "installed": false
+      }
+    ],
+    "continuedWithoutNewUserContinue": true,
+    "executionEvidence": "Three consecutive actual code/test/review/GitHub deliveries in the same native Goal turn, without a new user continue; not a scheduler or unattended availability promise",
+    "currentWork": {
+      "scope": "P03 exact source CI and same-report receipt, then immutable candidate handoff to the existing ERP sole shared runtime owner",
+      "state": "EXACT_SOURCE_CI_SUCCESS; immutable package handoff to existing ERP owner after metadata clean receipt; not installed",
+      "source": "6bc82e6fe9726261ef1d0171d97e5d9da9f5398a",
+      "closed439ProfileUnchanged": true,
+      "newTestEnvironment": false,
+      "sourcePackageInventory": {
+        "source": "6bc82e6fe9726261ef1d0171d97e5d9da9f5398a",
+        "tree": "714f198561fb47d1e1c7308c274c117dba40367b",
+        "selectedSourceCount": 186,
+        "selectedSourceInventorySha256": "ba1d82473c0234e55084bc2c28f6e7b52165a71a714912abe27f50e9e755d7c9",
+        "lockSha256": {
+          "gateway": "c487dc65e3a107f5235408fad3523c8242a4c01b62c7475154ad4ae41a627b96",
+          "frontend": "9064a36a0c86464db93cc261ffedbc92a87ea2092315e207301ca8a8aa6d4d24"
+        },
+        "packageCreated": false,
+        "defaultBaseDestinationAllowedByExistingSource": true,
+        "closed439ProfileChanged": false
+      }
+    },
+    "preflight": {
+      "executedOnce": true,
+      "status": "CHECK_REQUIRED",
+      "exitCode": 1,
+      "changed": true,
+      "cacheSaved": true,
+      "crm": [
+        "historical context REUSE",
+        "historical context REUSE",
+        "normal UI BLOCKED"
+      ],
+      "erp": [
+        "recorded proof BLOCKED",
+        "recorded proof BLOCKED",
+        "recorded proof BLOCKED"
+      ],
+      "runtimeHealthIndependentlyProbed": false,
+      "wholeClosureGranted": false,
+      "repeatAcceptedTests": false
+    },
+    "runtime": {
+      "installedSource": "439b63db8376a6b9d3ac8baa625ed98367022623",
+      "installedManifest": "e85ce261ece92201e24c86ea52e4df7e95b022b0ae6835e80c9b99e5abaec938",
+      "newSourcesApplied": false,
+      "closedNode2419ProfileStillPinnedTo439b63": true,
+      "sourceCheckoutIsDeployment": false,
+      "normalCrmGui": "Existing ERR_BLOCKED_BY_CLIENT; not retried",
+      "normalHubGui": "Existing403; not retried",
+      "sharedOwner": "ERP main owner"
+    },
+    "acceptance": {
+      "human": "BEKLİYOR",
+      "physicalDevice": "BEKLİYOR",
+      "windowsRebootLogon": "BEKLİYOR",
+      "crmCounts": {
+        "total": 25,
+        "green": 12,
+        "partial": 13,
+        "red": 0
+      },
+      "wholePlanTotal": 74,
+      "technicalPercent": "Verification pending: full finite per-original-ID criterion/evidence denominator not yet complete; mixed12/25 not reused as technical percentage"
+    },
+    "boundaries": {
+      "newTestEnvironment": false,
+      "newAgentGoalAutomationTracker": false,
+      "sharedRuntimeSqlConfigStoreServiceWrite": false,
+      "realCustomerMessages": false,
+      "paidApiOrKeyRead": false,
+      "liveVegaRealT1": false,
+      "mainMergeTag": false,
+      "unsupportedBrowserOrCredentialBypass": false
+    },
+    "nextTechnicalReadOnlyReview": {
+      "scope": "P10.2/P10.3 and P11-P13 existing source criteria",
+      "reviewer": "existing audit_source_explorer",
+      "newIndependentSourceGapConfirmed": false,
+      "baselineTestsRerun": false,
+      "freeModelProseStillRequiresHumanReview": true,
+      "physicalGuiRebootNotCompletedByFixtures": true
+    },
+    "metadataIndependentReadOnlyReview": {
+      "reviewer": "existing ai_sales subagent",
+      "firstTwoCyclesOpenP1P2": 0,
+      "historical29KeysUnchanged": true,
+      "singleActiveHeading": true,
+      "historicalPreflightBlockUnchanged": true,
+      "finalThreeCycleReviewer": "existing az independent reviewer",
+      "finalOpenP1": 0,
+      "finalOpenP2": 0,
+      "ciGoalBuildInventoryAreRootReceiptsNotReviewerReruns": true
+    }
+  }
+}

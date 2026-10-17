@@ -18,9 +18,9 @@ function processFixture(input) {
 }
 test('fresh gateway process accepts existing synthetic session only with unchanged active user configuration', async () => {
   const { token } = await processFixture({ mode: 'login' });
+  assert.equal(typeof token, 'string');
   assert.deepEqual(await processFixture({ mode: 'verify', token }), { ok: true, role: 'patron' });
   assert.deepEqual(await processFixture({ mode: 'verify', token, disabled: true }), { ok: false, code: 'AUTH_TOKEN_INVALID' });
   assert.deepEqual(await processFixture({ mode: 'verify', token, changedRole: true }), { ok: false, code: 'AUTH_TOKEN_INVALID' });
-  const expired = await processFixture({ mode: 'login', expired: true });
-  assert.deepEqual(await processFixture({ mode: 'verify', token: expired.token }), { ok: false, code: 'AUTH_TOKEN_EXPIRED' });
+  assert.deepEqual(await processFixture({ mode: 'verify', token, expired: true }), { ok: false, code: 'AUTH_TOKEN_EXPIRED' });
 });

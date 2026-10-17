@@ -29,3 +29,42 @@ test('photo and original-file modes preserve exact bytes and sanitize filenames'
     assert.equal(normalizeOutboundMedia(media(mime, validMediaBytes(mime))).asDocument, true);
   }
 });
+
+for (const [mime, extension, type] of [
+  ['audio/mpeg', 'mp3', 'audio'], ['audio/mp4', 'm4a', 'audio'], ['audio/ogg', 'ogg', 'audio'], ['audio/wav', 'wav', 'audio'], ['video/mp4', 'mp4', 'video'],
+]) {
+  test('outbound ' + mime + ' keeps native type and exact bytes unless explicit document mode is requested', () => {
+    const bytes = validMediaBytes(mime);
+    const native = normalizeOutboundMedia(media(mime, bytes));
+    assert.equal(native.mediaType, type); assert.equal(native.asDocument, false);
+    assert.equal(native.fileName, 'attachment.' + extension);
+    assert.deepEqual(Buffer.from(mediaForJournal(native).data, 'base64'), bytes);
+    const document = normalizeOutboundMedia({ ...media(mime, bytes, '../Türkçe medya.' + extension), asDocument: true });
+    assert.equal(document.mediaType, 'document'); assert.equal(document.asDocument, true);
+    assert(!document.fileName.includes('/'));
+    assert.deepEqual(Buffer.from(mediaForJournal(document).data, 'base64'), bytes);
+  });
+  test('outbound ' + mime + ' rejects truncated or disguised content before transport', () => {
+    const bytes = validMediaBytes(mime);
+    for (const invalidBytes of [bytes.subarray(0, Math.floor(bytes.length / 2)), Buffer.from('<html><script>synthetic</script></html>')]) {
+      assert.throws(() => normalizeOutboundMedia(media(mime, invalidBytes, 'synthetic.' + extension)),
+        e => e.code === 'WHATSAPP_CRM_MEDIA_FORMAT_INVALID' && e.meta.transportAttempted === false);
+    }
+  });
+}
+test('audio/video MIME and filename cannot disguise the other MP4 handler or a different audio format', () => {
+  for (const [mime, otherMime, fileName] of [['audio/mp4', 'video/mp4', 'sound.m4a'], ['video/mp4', 'audio/mp4', 'clip.mp4'], ['audio/mpeg', 'audio/wav', 'sound.mp3']]) {
+    assert.throws(() => normalizeOutboundMedia(media(mime, validMediaBytes(otherMime), fileName)), e => e.code === 'WHATSAPP_CRM_MEDIA_FORMAT_INVALID');
+  }
+  const audio = media('audio/ogg', validMediaBytes('audio/ogg'), 'sound.opus');
+  assert.equal(normalizeOutboundMedia(audio).mediaType, 'audio');
+  assert.throws(() => normalizeOutboundMedia({ ...audio, mimeType: 'audio/mp4' }), e => e.code === 'WHATSAPP_CRM_MEDIA_MIME_MISMATCH');
+  assert.throws(() => normalizeOutboundMedia({ ...audio, fileName: 'sound.mp4' }), e => e.code === 'WHATSAPP_CRM_MEDIA_FILENAME_MISMATCH');
+  assert.throws(() => normalizeOutboundMedia({ ...audio, asDocument: 'false' }), e => e.code === 'WHATSAPP_CRM_MEDIA_INVALID');
+});
+test('audio/video retain the decoded 10 MiB limit before structural parsing', () => {
+  const oversized = Buffer.alloc(MAX_MESSAGE_MEDIA_BYTES + 1);
+  for (const [mime, fileName] of [['audio/wav', 'large.wav'], ['video/mp4', 'large.mp4']]) {
+    assert.throws(() => normalizeOutboundMedia(media(mime, oversized, fileName)), e => e.code === 'WHATSAPP_CRM_MEDIA_TOO_LARGE' && e.meta.transportAttempted === false);
+  }
+});

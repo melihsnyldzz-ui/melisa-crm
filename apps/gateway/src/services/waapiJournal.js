@@ -5,7 +5,7 @@ import crypto from 'node:crypto';
 const mutations = new Map();
 
 export class WaapiJournal {
-  constructor(root = fileURLToPath(new URL('../../runtime/waapi', import.meta.url))) { this.root = root; }
+  constructor(root = process.env.CRM_WAAPI_JOURNAL_DIR || fileURLToPath(new URL('../../runtime/waapi', import.meta.url))) { this.root = root; }
   key(value) { return crypto.createHash('sha256').update(String(value)).digest('hex'); }
   file(group, key) {
     if (!['events', 'state'].includes(group) || !/^[a-f0-9]{64}$/.test(key)) throw new Error('Invalid journal key');
@@ -67,6 +67,29 @@ export class WaapiJournal {
       });
     }
     return { accepted: true, duplicate: !created, ...(mediaHydrated ? { mediaHydrated: true } : {}) };
+  }
+  // Reader recovery is independent of worker retry deadlines and its 100-event batch.
+  // Filter the validated peer/phone before the bound; never report a truncated scan as complete.
+  async pendingMedia(instanceId, { peerJid, phone, limit = 1000 }) {
+    if (!/^(?:[1-9]\d{6,14}@c\.us|[1-9]\d{9,19}@lid)$/.test(peerJid || '')
+      || !/^[1-9]\d{6,14}$/.test(phone || '') || !Number.isSafeInteger(limit) || limit < 1 || limit > 1000) {
+      throw new Error('WAAPI_INCOMING_MEDIA_RECOVERY_SCOPE_INVALID');
+    }
+    let names;
+    try { names = await readdir(path.join(this.root, 'events')); }
+    catch (error) { if (error.code === 'ENOENT') return { providerMessageIds: [], overflow: false }; throw error; }
+    const providerMessageIds = [];
+    let overflow = false;
+    for (const name of names) {
+      if (!/^[a-f0-9]{64}\.json$/.test(name)) continue;
+      const value = await this.get('events', name.slice(0, -5)), event = value?.event;
+      if (value?.done || String(event?.instanceId) !== String(instanceId) || event?.event !== 'message'
+        || event.direction !== 'incoming' || event.mediaPending !== true || event.peerJid !== peerJid || event.phone !== phone
+        || typeof event.providerMessageId !== 'string' || !event.providerMessageId.startsWith(`false_${peerJid}_`)) continue;
+      if (providerMessageIds.length < limit) providerMessageIds.push(event.providerMessageId);
+      else { overflow = true; break; }
+    }
+    return { providerMessageIds, overflow };
   }
   async pending(instanceId) {
     await mkdir(path.join(this.root, 'events'), { recursive: true });

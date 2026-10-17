@@ -1,0 +1,106 @@
+{
+  "checkedAt": "2026-10-13T10:46:24.848Z",
+  "commonSequence": 2,
+  "mainId": "CRM06",
+  "subscope": "shared normal TEST source integration and session compatibility",
+  "runtime": {
+    "activeSource": "09ca1dac346e42037fd02901baf3240aa6ce6285",
+    "changed": false,
+    "erpSource": "2bf27620b1884742b509328969b90bca90c2972c",
+    "database": "MELISA_ERP_CRM_SHARED_TEST_20261009_02",
+    "copyId": "e16b70f0-4057-428b-9abc-6bbcaf35fe82"
+  },
+  "checks": {
+    "backend": {
+      "executor": "root",
+      "tests": 49,
+      "passed": 49,
+      "failed": 0,
+      "skipped": 0,
+      "command": "node --import ./scripts/ci/offline-guard.mjs --test --test-reporter=tap apps/gateway/src/services/customerProductRequestIntegration.test.mjs tests/shared-customer-request-integration.test.mjs apps/gateway/src/services/normalRefreshSession.test.mjs apps/gateway/src/services/crmAuthService.test.js tests/customer-request-authority.test.mjs apps/gateway/src/routes/semihTestSessionRoutes.test.mjs"
+    },
+    "frontend": {
+      "executor": "shared_request_frontend",
+      "tests": 55,
+      "passed": 55,
+      "failed": 0,
+      "skipped": 0,
+      "parts": {
+        "core": 46,
+        "actualApp": 9
+      },
+      "workingDirectory": "apps/frontend",
+      "commands": [
+        "node --import ../../tests/offline-test-guard.mjs --test tests/browser-normal-session.test.mjs tests/native-session-bridge.test.mjs tests/session-loader.test.mjs",
+        "node --import ../../tests/offline-test-guard.mjs --test --test-name-pattern='actual App captures the issuer key|actual App clears browser access|actual App blocks password login while|actual App permits expired|actual App keeps a known issuer logout401|actual App preserves failed/uncertain text|actual App shows only the verified Semih|actual normalized dedicated personel|actual expired-session renewal' tests/text-draft-app.test.mjs"
+      ]
+    },
+    "coupled": {
+      "executor": "root-after-frontend-freeze",
+      "tests": 10,
+      "passed": 10,
+      "failed": 0,
+      "skipped": 0,
+      "command": "node --import ./scripts/ci/offline-guard.mjs --test --test-reporter=tap tests/shared-customer-request-integration.test.mjs",
+      "overlapsBackend": true
+    },
+    "review": {
+      "executor": "shared_request_final_review",
+      "model": "gpt-6.1-sol",
+      "effort": "high",
+      "openP1": 0,
+      "openP2": 0,
+      "readonly": true
+    }
+  },
+  "files": [
+    {
+      "path": "apps/frontend/src/liveApi.js",
+      "testedWindowsWorktreeSha256": "ea9794e5231e9dd98eb5cf996af3a3dde421e1352e2c722cb95e50c8640213cf",
+      "gitStagedSha256": "ea9794e5231e9dd98eb5cf996af3a3dde421e1352e2c722cb95e50c8640213cf"
+    },
+    {
+      "path": "apps/frontend/tests/browser-normal-session.test.mjs",
+      "testedWindowsWorktreeSha256": "e8536863fb78a11fd398e042e111697c04df08c5c1c070f1abeccd5ec474f5fb",
+      "gitStagedSha256": "e8536863fb78a11fd398e042e111697c04df08c5c1c070f1abeccd5ec474f5fb"
+    },
+    {
+      "path": "apps/frontend/tests/text-draft-app.test.mjs",
+      "testedWindowsWorktreeSha256": "87a0dbdffb404bf155aab27472c9cc9ff3e79394824b36e73e71ea0d3ed8b876",
+      "gitStagedSha256": "87a0dbdffb404bf155aab27472c9cc9ff3e79394824b36e73e71ea0d3ed8b876"
+    },
+    {
+      "path": "apps/gateway/src/services/crmAuthService.js",
+      "testedWindowsWorktreeSha256": "bfb0b22621ea806bdbe3bfe4733e74a950a48206e6fc3ff1c5ef09d4268f6110",
+      "gitStagedSha256": "bfb0b22621ea806bdbe3bfe4733e74a950a48206e6fc3ff1c5ef09d4268f6110"
+    },
+    {
+      "path": "apps/gateway/src/services/customerRequestIssuerSession.mjs",
+      "testedWindowsWorktreeSha256": "216143273cb2a33c4593e6f3895d3a3f4b50dad20b17eae0b3fd5e7610907008",
+      "gitStagedSha256": "216143273cb2a33c4593e6f3895d3a3f4b50dad20b17eae0b3fd5e7610907008"
+    },
+    {
+      "path": "tests/shared-customer-request-integration.test.mjs",
+      "testedWindowsWorktreeSha256": "4f5145b6fa4fc19a1252c910d208ad9d383d477c29aac03f335dd79cf618ee45",
+      "gitStagedSha256": "4f5145b6fa4fc19a1252c910d208ad9d383d477c29aac03f335dd79cf618ee45"
+    }
+  ],
+  "humanAcceptance": "PENDING",
+  "mainIdClosed": false,
+  "activation": "NOT_ACTIVATED",
+  "dependencies": [
+    "ERP owner four-key whitelist/config/dependency/projection activation",
+    "existing crm-patron protected normal login delivery",
+    "normal/mobile/personnel and CRM-UA11 acceptance"
+  ],
+  "operations": {
+    "sharedRuntimeWrites": 0,
+    "sqlWrites": 0,
+    "realMessages": 0,
+    "paidAi": 0,
+    "realAccountRoleChanges": 0,
+    "mainMerge": 0,
+    "liveDeploy": 0
+  },
+  "sourceHashNote": "Frozen tested Windows worktree and LF-normalized Git index recorded separately; package Git blobs are sealed by builder."
+}

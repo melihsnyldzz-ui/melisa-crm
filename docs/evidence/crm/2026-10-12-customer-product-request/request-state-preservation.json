@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "preparedAt": "2026-10-12T02:19:22.380Z",
+  "type": "private-offline-restore-preparation",
+  "sourceCommit": "fb34c293fa58154e00b132d13b8246939ce8cbbb",
+  "checks": [
+    {
+      "file": "customer-product-requests.json",
+      "present": true,
+      "bytes": 2700,
+      "sha256": "de493f80c09abfb838977651a854e6ed2566b32899d3048620bf48281021e25c",
+      "sourceUnchanged": true,
+      "restoreBytesEqual": true
+    },
+    {
+      "file": "normal-proof-refresh-journal.json",
+      "present": false,
+      "absencePreserved": true
+    },
+    {
+      "file": "semih-proof-refresh-journal.json",
+      "present": true,
+      "bytes": 628,
+      "sha256": "bf28c574fe4d097c747219903fda1e9db3130cf7c8c10275438b6dcc63647d76",
+      "sourceUnchanged": true,
+      "restoreBytesEqual": true
+    }
+  ],
+  "requestCount": 1,
+  "sameRequestSessionAfterRestore": true,
+  "sourceStateOverwritten": false,
+  "sharedRuntimeChanged": false,
+  "liveBackupOrRestore": false,
+  "serviceRestart": false,
+  "credentialFilesIncluded": false,
+  "realRestartReadback": "owned-proof original journal readback verified; restored copy was not activated",
+  "humanAcceptance": false,
+  "subsequentOwnedProofRestartReadback": true,
+  "restoredCopyActivated": false,
+  "liveRestore": false
+}

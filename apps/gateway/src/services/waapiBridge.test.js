@@ -40,9 +40,9 @@ test('WAAPI event directions use fromMe and reject wrong instance', () => {
   assert.throws(() => normalizeWaapiEvent({ ...envelope(), instanceId: '1' }), /INSTANCE_MISMATCH/);
   assert.throws(() => normalizeWaapiEvent({ ...envelope(), instanceId: '104978' }), /INSTANCE_MISMATCH/);
 });
-test('WAAPI ignores group, status, broadcast and nontrial recipient', () => {
-  for (const patch of [{ from: '1@g.us' }, { isStatus: true }, { broadcast: true }, { from: '905000000000@c.us', id: { fromMe: false, remote: '905000000000@c.us', _serialized: 'x' } }]) {
-    const body = envelope(); Object.assign(body.data.message, patch); assert.equal(normalizeWaapiEvent(body).event, 'ignored');
+test('WAAPI ignores group, status, broadcast and nontrial recipient in TEST scope', () => {
+  for (const patch of [{ from: '1@g.us' }, { isStatus: true }, { broadcast: true }, { from: '905000000000@c.us', id: { fromMe: false, remote: '905000000000@c.us', _serialized: 'false_905000000000@c.us_TEST' } }]) {
+    const body = envelope(); Object.assign(body.data.message, patch); assert.equal(normalizeWaapiEvent(body, { incomingTestOnly: true }).event, 'ignored');
   }
 });
 test('WAAPI journals before ack; duplicate event stays one durable record after reopen', async t => {
@@ -99,13 +99,13 @@ test('WAAPI receipt ACK is monotonic and independent of import success', async t
   assert.equal((await enrichWaapiReceipt({ direction: 'outgoing' }, { ...source, source_id: 'no-ack-evidence' }, f.journal)).status, 'accepted');
 });
 
-test('WAAPI LID requires an explicit verified trial mapping and retains original provider identity', () => {
+test('WAAPI incoming LID is durably normalizable but never treated as a phone', () => {
   const body = envelope(); const lid = '22252259123221@lid';
   Object.assign(body.data.message, { from: lid, id: { fromMe: false, remote: lid, _serialized: `false_${lid}_TEST` } });
-  assert.equal(normalizeWaapiEvent(body, {}).event, 'ignored');
-  assert.equal(normalizeWaapiEvent(body, { verifiedRecipientLid: '99999999999999@lid' }).event, 'ignored');
+  assert.equal(normalizeWaapiEvent(body, {}).phone, null);
+  assert.equal(normalizeWaapiEvent(body, { verifiedRecipientLid: '99999999999999@lid' }).phone, null);
   const event = normalizeWaapiEvent(body, { verifiedRecipientLid: lid });
-  assert.equal(event.phone, '19999999999'); assert.equal(event.direction, 'incoming');
+  assert.equal(event.phone, null); assert.equal(event.peerJid, lid); assert.equal(event.direction, 'incoming');
   assert.equal(event.providerMessageId, `false_${lid}_TEST`);
   body.data.message.id.remote = '19999999999@c.us';
   assert.throws(() => normalizeWaapiEvent(body, { verifiedRecipientLid: lid }), /EVENT_INVALID/);

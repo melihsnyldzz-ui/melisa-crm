@@ -5,7 +5,7 @@ import { assertMediaFormat } from './mediaFormatValidation.js';
 import { normalizeOutboundMedia } from './messageMedia.js';
 import { normalizeWaapiMedia, acceptWaapiWebhook } from '../services/waapiWebhookService.js';
 import { validMediaBytes, fixtureMimes, validPng, pngChunk, validOffice, validMp4, validPdf, validPdfXrefStream } from './validMediaFixtures.js';
-const outboundMimes=fixtureMimes.filter(mime=>!mime.startsWith('audio/')&&!mime.startsWith('video/'));
+const outboundMimes=fixtureMimes;
 function both(bytes,mime) {
   assert.throws(()=>normalizeWaapiMedia({ mimetype:mime,data:bytes.toString('base64'),filename:'synthetic' }),e=>e.code==='WHATSAPP_CRM_WAAPI_MEDIA_REJECTED'&&e.meta.transportAttempted===false);
   if(outboundMimes.includes(mime)) assert.throws(()=>normalizeOutboundMedia({ mimeType:mime,dataUrl:'data:'+mime+';base64,'+bytes.toString('base64') }),e=>e.code==='WHATSAPP_CRM_MEDIA_FORMAT_INVALID'&&e.meta.transportAttempted===false);

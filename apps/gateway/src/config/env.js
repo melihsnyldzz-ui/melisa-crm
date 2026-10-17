@@ -116,6 +116,7 @@ export const env = {
     webhookSecret: process.env.WAAPI_WEBHOOK_SECRET || '',
     timeoutMs: numberEnv('WAAPI_TIMEOUT_MS', 15000),
     bridgeEnabled: booleanEnv('WAAPI_CHATWOOT_BRIDGE_ENABLED', false),
+    incomingTestOnly: booleanEnv('WAAPI_INCOMING_TEST_ONLY', false),
     outboundMediaEnabled: booleanEnv('WAAPI_OUTBOUND_MEDIA_ENABLED', approvedBoundedOwnerMediaDefault),
   },
   evolution: {

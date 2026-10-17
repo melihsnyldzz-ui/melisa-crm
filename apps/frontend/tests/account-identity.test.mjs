@@ -42,8 +42,8 @@ test('production first render with or without a remembered CRM token exposes onl
    globalThis.window={location:{pathname:'/mobile-preview',search:'?demo=1'},matchMedia:()=>({matches:true}),sessionStorage:{getItem:key=>key==='melisa-crm-access-token'?remembered:null},localStorage:{getItem:()=>null}};
    const html=renderToStaticMarkup(React.createElement(App));
    assert.match(html,/aria-label="Melisa CRM güvenli giriş"/);
-   if (remembered) assert.match(html,/Kaydedilen CRM oturumunuzla bağlantı kuruluyor/);
-   else { assert.match(html,/type="password"/); assert.match(html,/Kullanıcı adı/); }
+   assert.match(html,/Oturum kontrol ediliyor/);
+   assert.doesNotMatch(html,/Semih olarak devam et|TEST ADMIN|type="password"/);
    assert.doesNotMatch(html,/Lina Chahine|Mohamed Khaled|lina\.chahine|Sorumlu bekliyor|Davet bağlantısını hazırla|synthetic-remembered-token/);
   }
  }finally{globalThis.window=previousWindow;rmSync(file,{force:true});}

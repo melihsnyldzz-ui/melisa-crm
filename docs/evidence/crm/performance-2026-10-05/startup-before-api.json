@@ -1,0 +1,95 @@
+{
+  "phase": "before",
+  "runtimeSource": "f166b0f7db499c68e6cc6718bcf090fcaf457927",
+  "measuredAt": "2026-10-05T15:49:40.723Z",
+  "scope": "TEST-admin-authorized-read-only",
+  "sampleCount": 3,
+  "scenarios": [
+    {
+      "name": "first-inbox-request",
+      "samples": [
+        {
+          "ms": 4022.85,
+          "status": 200,
+          "bytes": 466316,
+          "rows": 100,
+          "total": 748,
+          "summaryComplete": true,
+          "incomplete": false,
+          "hydratedRows": 100
+        },
+        {
+          "ms": 3925.34,
+          "status": 200,
+          "bytes": 466333,
+          "rows": 100,
+          "total": 748,
+          "summaryComplete": true,
+          "incomplete": false,
+          "hydratedRows": 100
+        },
+        {
+          "ms": 3795.36,
+          "status": 200,
+          "bytes": 466333,
+          "rows": 100,
+          "total": 748,
+          "summaryComplete": true,
+          "incomplete": false,
+          "hydratedRows": 100
+        }
+      ],
+      "medianMs": 3925.34
+    },
+    {
+      "name": "test-conversation-detail",
+      "samples": [
+        {
+          "ms": 137.67,
+          "status": 200,
+          "bytes": 15775
+        },
+        {
+          "ms": 134.18,
+          "status": 200,
+          "bytes": 15775
+        },
+        {
+          "ms": 136.89,
+          "status": 200,
+          "bytes": 15775
+        }
+      ],
+      "medianMs": 136.89
+    },
+    {
+      "name": "catalog-first-page",
+      "samples": [
+        {
+          "ms": 1244,
+          "status": 200,
+          "bytes": 8852,
+          "rows": 12,
+          "catalogTotal": 1085
+        },
+        {
+          "ms": 72.46,
+          "status": 200,
+          "bytes": 8852,
+          "rows": 12,
+          "catalogTotal": 1085
+        },
+        {
+          "ms": 74.02,
+          "status": 200,
+          "bytes": 8852,
+          "rows": 12,
+          "catalogTotal": 1085
+        }
+      ],
+      "medianMs": 74.02
+    }
+  ],
+  "writes": 0,
+  "stoppedOn429": false
+}

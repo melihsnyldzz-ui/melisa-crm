@@ -1,0 +1,103 @@
+{
+  "observedAt": "2026-10-06T20:13:13.6301644Z",
+  "erpSource": "f8946ee14d13ae473f2365818b721bafbde2c5f9",
+  "crmPackage": "C:\\Sirket\\CRM\\releases\\crm-test-77a2fa346b4c3653b77e33625e185c1259402af7",
+  "actorId": 16,
+  "native": {
+    "whileClosed": [
+      {
+        "id": "api",
+        "label": "ERP bağlantısı",
+        "status": "ready",
+        "checkedAt": "2026-10-06T20:12:30.689Z"
+      },
+      {
+        "id": "database",
+        "label": "Veri bağlantısı",
+        "status": "ready",
+        "checkedAt": "2026-10-06T20:12:30.689Z"
+      },
+      {
+        "id": "native",
+        "label": "İşlem servisi",
+        "status": "unavailable",
+        "checkedAt": "2026-10-06T20:12:30.689Z"
+      },
+      {
+        "id": "crm",
+        "label": "CRM bağlantısı",
+        "status": "ready",
+        "checkedAt": "2026-10-06T20:12:30.689Z"
+      }
+    ],
+    "recovery": {
+      "pid": 23612,
+      "recoveryMs": 24459.0,
+      "sourceCommit": "f8946ee14d13ae473f2365818b721bafbde2c5f9",
+      "createdAt": "2026-10-06T20:12:52.1997780Z"
+    },
+    "oldPid": 5996
+  },
+  "crm": {
+    "whileClosed": [
+      {
+        "id": "api",
+        "label": "ERP bağlantısı",
+        "status": "ready",
+        "checkedAt": "2026-10-06T20:13:00.145Z"
+      },
+      {
+        "id": "database",
+        "label": "Veri bağlantısı",
+        "status": "ready",
+        "checkedAt": "2026-10-06T20:13:00.145Z"
+      },
+      {
+        "id": "native",
+        "label": "İşlem servisi",
+        "status": "ready",
+        "checkedAt": "2026-10-06T20:13:00.145Z"
+      },
+      {
+        "id": "crm",
+        "label": "CRM bağlantısı",
+        "status": "unavailable",
+        "checkedAt": "2026-10-06T20:13:00.145Z"
+      }
+    ],
+    "otherChildrenUnchanged": true,
+    "recovery": {
+      "supervisorPid": 74452,
+      "pid": 74768,
+      "recoveryMs": 13456.0
+    },
+    "oldPid": 56768
+  },
+  "final": [
+    {
+      "id": "api",
+      "label": "ERP bağlantısı",
+      "status": "ready",
+      "checkedAt": "2026-10-06T20:13:13.619Z"
+    },
+    {
+      "id": "database",
+      "label": "Veri bağlantısı",
+      "status": "ready",
+      "checkedAt": "2026-10-06T20:13:13.619Z"
+    },
+    {
+      "id": "native",
+      "label": "İşlem servisi",
+      "status": "ready",
+      "checkedAt": "2026-10-06T20:13:13.619Z"
+    },
+    {
+      "id": "crm",
+      "label": "CRM bağlantısı",
+      "status": "ready",
+      "checkedAt": "2026-10-06T20:13:13.619Z"
+    }
+  ],
+  "scope": "Controlled TEST child process closure; HTTP+SQL read-only status; no business writes, Docker or provider sends"
+}

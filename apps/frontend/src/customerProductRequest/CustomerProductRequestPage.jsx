@@ -1,0 +1,73 @@
+import {useEffect,useRef,useState} from 'react';
+import {ArrowLeft,ArrowRight,Check,CheckCircle,Leaf,MagnifyingGlass,Plus,Trash,X} from '@phosphor-icons/react';
+import {createCustomerRequestApi} from './api.js';
+import {createRequestController} from './controller.js';
+import {createCustomerRequestLifecycle} from './lifecycle.js';
+import {consumeCapability,clearCustomerStorage,customerStorage,quantity} from './model.js';
+import './customerProductRequest.css';
+
+// Read without consuming the fragment during render: StrictMode may repeat the
+// initializer, including when browser storage is unavailable. The effect consumes it.
+function openingCapability(){return consumeCapability({location:window.location,storage:window.location.hash?null:customerStorage()});}
+
+export function ProductRequestPhoto({product,loadPhoto,compact=false}) {
+  const element=useRef(null);const [source,setSource]=useState(''),[failed,setFailed]=useState(false);
+  useEffect(()=>{let current=true,observer;setSource('');setFailed(false);const load=()=>{observer?.disconnect();loadPhoto(product).then(value=>{if(current)setSource(value);}).catch(()=>{if(current)setFailed(true);});};if(typeof IntersectionObserver==='function'){observer=new IntersectionObserver(entries=>{if(entries.some(entry=>entry.isIntersecting))load();},{rootMargin:'120px'});if(element.current)observer.observe(element.current);}else load();return()=>{current=false;observer?.disconnect();};},[product.id,loadPhoto]);
+  return <div className={`request-photo${compact?' request-photo-small':''}`} ref={element}>{source&&!failed?<img src={source} alt={product.productName} loading="lazy" decoding="async" referrerPolicy="no-referrer" onError={()=>setFailed(true)}/>:<span>{failed?'Fotoğraf açılamadı':'Fotoğraf yükleniyor…'}</span>}</div>;
+}
+function QuantityInput({item,disabled,onChange}) {
+  const [value,setValue]=useState(String(item.quantity));const [error,setError]=useState('');
+  useEffect(()=>{setValue(String(item.quantity));setError('');},[item,item.quantity]);
+  const commit=()=>{try{const parsed=quantity(value);setError('');if(parsed!==item.quantity)onChange(parsed);}catch{setError('1–9999 arası adet girin.');setValue(String(item.quantity));}};
+  return <label className="request-quantity">Adet<input aria-label={`${item.stockCode} adet`} type="number" inputMode="numeric" min="1" max="9999" step="1" value={value} disabled={disabled} onChange={event=>setValue(event.target.value)} onBlur={commit} onKeyDown={event=>{if(event.key==='Enter'){event.preventDefault();event.currentTarget.blur();}}}/>{error?<span role="alert">{error}</span>:null}</label>;
+}
+export default function CustomerProductRequestPage() {
+  const [capability,setCapability]=useState(openingCapability),[view,setView]=useState({status:capability?'loading':'missing',session:null,products:[],busy:false,listBusy:false,error:'',step:'catalog'}),[search,setSearch]=useState('');
+  const [linkRevision,setLinkRevision]=useState(0);
+  const capabilityRef=useRef(capability),controllerRef=useRef(null),lifecycleRef=useRef(null);const [photoLoader,setPhotoLoader]=useState(()=>()=>Promise.reject(Error('Not ready')));
+  useEffect(()=>{document.body.classList.add('customer-product-request-body');return()=>document.body.classList.remove('customer-product-request-body');},[]);
+  useEffect(()=>{
+    const changeLink=()=>{
+      // replaceState consumes the fragment without emitting its own hashchange;
+      // an already queued native event may arrive after that consumption.
+      if(!window.location.hash)return;
+      const next=consumeCapability({location:window.location,history:window.history});
+      if(next===capabilityRef.current)return;
+      capabilityRef.current=next;
+      lifecycleRef.current?.dispose();lifecycleRef.current=null;controllerRef.current=null;
+      setPhotoLoader(()=>()=>Promise.reject(Error('Not ready')));setSearch('');
+      setView({status:next?'loading':'missing',session:null,products:[],meta:null,busy:false,listBusy:false,error:'',uncertain:false,step:'catalog'});
+      setCapability(next);setLinkRevision(value=>value+1);
+    };
+    window.addEventListener('hashchange',changeLink);
+    if(window.location.hash)changeLink();
+    return()=>window.removeEventListener('hashchange',changeLink);
+  },[]);
+  useEffect(()=>{if(!capability||capabilityRef.current!==capability)return;const lifecycle=createCustomerRequestLifecycle({target:window,createController:onChange=>createRequestController({api:createCustomerRequestApi(capability),storage:customerStorage(),onChange}),onChange:setView,onController:controller=>{controllerRef.current=controller;if(controller)setSearch('');setPhotoLoader(()=>controller?controller.photo:()=>Promise.reject(Error('Not ready')));}});lifecycleRef.current=lifecycle;return()=>{lifecycle.dispose();lifecycleRef.current=null;controllerRef.current=null;};},[capability,linkRevision]);
+  const controller=controllerRef.current,session=view.session,items=session?.draft.items||[],selected=new Set(items.map(item=>item.productId)),locked=view.busy||view.uncertain||Boolean(session?.request);
+  const close=()=>{lifecycleRef.current?.close();clearCustomerStorage();capabilityRef.current='';setCapability('');setView({status:'closed',session:null,products:[],busy:false,error:''});};
+  const updateQuantity=(id,value)=>void controller?.edit(items.map(item=>({productId:item.productId,quantity:item.productId===id?value:item.quantity})));
+  const formSubmit=event=>{event.preventDefault();void controller?.search({...view.filters,search,page:1});};
+  const filter=(key,value)=>void controller?.search({...view.filters,search,[key]:value,page:1});
+  return <main className="customer-request-page">
+    <header className="request-brand-header"><Leaf size={24} weight="fill" aria-hidden="true"/><div><strong>MELİSA BEBE</strong><span>Ürün kataloğu</span></div>{view.status==='ready'?<button type="button" className="request-header-close" aria-label="Kataloğu kapat" onClick={close}><X size={20}/></button>:null}</header>
+    {['missing','closed','expired'].includes(view.status)?<section className="request-empty-state"><Leaf size={36}/><h1>{view.status==='closed'?'Katalog kapatıldı':view.status==='expired'?'Bağlantı süresi doldu':'Katalog bağlantısı gerekli'}</h1><p>{view.status==='closed'?'Seçimleriniz kayıtta korunuyor. Devam etmek için satış temsilcinizin bağlantısını yeniden açın.':view.error||'Satış temsilcinizin size ilettiği katalog bağlantısını açın.'}</p></section>:null}
+    {view.status==='loading'?<section className="request-empty-state" aria-busy="true"><p role="status">Katalog açılıyor…</p>{view.error?<><p role="alert">{view.error}</p><button className="request-main-button" onClick={()=>void controller?.open()}>Yeniden dene</button></>:null}</section>:null}
+    {view.status==='ready'?<>
+      {view.error||view.uncertain?<div className="request-notice request-error" role="alert"><p>{view.error||'Seçim kaydı henüz doğrulanamadı. Devam etmek için kaydı yeniden kontrol edin.'}</p>{view.uncertain?<button type="button" onClick={()=>void controller?.reconcile()} disabled={view.busy}>Kaydı yeniden kontrol et</button>:null}</div>:null}
+      {view.step==='success'&&session.request?<section className="request-success"><CheckCircle size={52} weight="fill"/><h1>Talebiniz alındı</h1><p>Satış temsilciniz seçtiğiniz ürünleri bu konuşmada görebilir. Stok, fiyat ve teslimatı sizinle netleştirecek.</p><div className="request-success-summary"><strong>{session.request.modelCount} ürün</strong><span>{session.request.quantityTotal} adet</span></div><div className="request-submitted-items">{session.request.items.map(item=><article key={item.productId}><ProductRequestPhoto product={item} compact loadPhoto={photoLoader}/><div><h2>{item.productName}</h2><span>{item.stockCode}</span><strong>{item.quantity} adet</strong></div></article>)}</div><p className="request-small-note">Bu kayıt bir ürün talebidir. Sipariş, ödeme veya stok ayırma işlemi yapılmaz.</p></section>:null}
+      {view.step==='catalog'?<section className="request-catalog-content">
+        <form className="request-search" role="search" onSubmit={formSubmit}><MagnifyingGlass size={20} aria-hidden="true"/><input aria-label="Ürün adı veya kodu" placeholder="Ürün adı veya kodu" maxLength={120} value={search} onChange={event=>setSearch(event.target.value)}/><button type="submit" aria-label="Ürün ara" disabled={view.listBusy}><ArrowRight size={20}/></button></form>
+        {view.meta?.categories?.length?<nav className="request-category-list" aria-label="Ürün kategorileri"><button type="button" className={!view.filters.category?'selected':''} aria-pressed={!view.filters.category} disabled={view.listBusy} onClick={()=>filter('category','')}>Tümü</button>{view.meta.categories.map(category=><button key={category.value} type="button" className={view.filters.category===category.value?'selected':''} aria-pressed={view.filters.category===category.value} disabled={view.listBusy} onClick={()=>filter('category',category.value)}>{category.value}</button>)}</nav>:null}
+        {view.meta?.ages?.length?<label className="request-age-filter">Yaş aralığı<select aria-label="Yaş aralığı" disabled={view.listBusy} value={view.filters.age} onChange={event=>filter('age',event.target.value)}><option value="">Tüm yaşlar</option>{view.meta.ages.map(age=><option key={age.value} value={age.value}>{age.value}</option>)}</select></label>:null}
+        <div className="request-results" role="status">{view.listBusy?'Ürünler yükleniyor…':view.meta?`${new Intl.NumberFormat('tr-TR').format(view.meta.total)} fotoğraflı ürün`:''}{view.busy?<span>Seçiminiz kaydediliyor…</span>:null}</div>
+        <div className="request-product-grid" aria-busy={view.listBusy}>{view.products.map(product=><article className="request-product-card" key={product.id}><ProductRequestPhoto product={product} loadPhoto={photoLoader}/><h2>{product.productName}</h2><p>{product.stockCode}</p><button type="button" className={`request-add-button${selected.has(product.id)?' selected':''}`} aria-label={`${product.stockCode} ${selected.has(product.id)?'listeden çıkar':'listeye ekle'}`} aria-pressed={selected.has(product.id)} disabled={locked} onClick={()=>void controller?.toggle(product)}>{selected.has(product.id)?<Check size={17} weight="bold"/>:<Plus size={17}/>}<span>{selected.has(product.id)?'Seçildi':'Listeye ekle'}</span></button></article>)}</div>
+        {!view.listBusy&&view.meta&&view.products.length===0?<div className="request-empty-state"><MagnifyingGlass size={32}/><h2>Ürün bulunamadı</h2><p>Ürün adını veya kodunu değiştirerek yeniden arayın.</p></div>:null}
+        {view.meta&&view.meta.totalPages>1?<nav className="request-pagination" aria-label="Katalog sayfaları"><button type="button" disabled={view.listBusy||view.meta.page<=1} onClick={()=>void controller?.search({...view.filters,page:view.meta.page-1})}>Önceki</button><span>{view.meta.page} / {view.meta.totalPages}</span><button type="button" disabled={view.listBusy||!view.meta.hasNextPage} onClick={()=>void controller?.search({...view.filters,page:view.meta.page+1})}>Sonraki</button></nav>:null}
+        <p className="request-small-note">Seçiminiz ürün talebi olarak kaydedilir. Stok ve fiyatı satış temsilcinizle netleştirin.</p>
+      </section>:null}
+      {view.step==='review'?<section className="request-review-content"><button className="request-back-button" type="button" disabled={view.busy||view.uncertain} onClick={()=>controller?.browse()}><ArrowLeft size={18}/>Kataloğa dön</button><h1>Seçtiklerim</h1><p className="request-review-intro">Adetleri kontrol edin. İstemediğiniz ürünü listeden çıkarabilirsiniz.</p>{items.map(item=><article className="request-review-item" key={item.productId}><ProductRequestPhoto product={item} compact loadPhoto={photoLoader}/><div className="request-review-details"><h2>{item.productName}</h2><p>{item.stockCode}</p><QuantityInput item={item} disabled={locked} onChange={value=>updateQuantity(item.productId,value)}/></div><button type="button" className="request-remove-button" aria-label={`${item.stockCode} listeden çıkar`} disabled={locked} onClick={()=>void controller?.edit(items.filter(value=>value.productId!==item.productId))}><Trash size={20}/></button></article>)}{!items.length?<div className="request-empty-state"><p>Listenizde ürün kalmadı.</p><button className="request-main-button" onClick={()=>controller?.browse()}>Ürün seç</button></div>:null}<p className="request-small-note">Gönderdiğiniz ürün talebi satış temsilcinizin aynı konuşmasında görünür. Bu adım sipariş veya ödeme oluşturmaz.</p></section>:null}
+      {view.step!=='success'?<footer className="request-action-footer"><button type="button" className="request-main-button" disabled={!items.length||view.busy||view.listBusy||(view.step==='catalog'&&view.uncertain)} onClick={()=>view.step==='catalog'?controller?.review():void controller?.submit()}><span>{view.busy?'Kaydediliyor…':view.step==='catalog'?'Seçtiklerimi incele':view.uncertain?'Talebi yeniden kontrol et':'Talebi gönder'}<small>{items.length} ürün · {items.reduce((total,item)=>total+item.quantity,0)} adet</small></span>{view.step==='catalog'?<ArrowRight size={23}/>:<Check size={23}/>}</button></footer>:null}
+    </>:null}
+  </main>;
+}

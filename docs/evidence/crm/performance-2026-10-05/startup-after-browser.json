@@ -1,0 +1,124 @@
+{
+  "phase": "after",
+  "runtimeSource": "2aef938f3f76d8bf4ca95054a5a0f98c19e21001",
+  "method": "native-navigation-DOM-visible-enabled-real-row; frame separately; no tool elapsed added",
+  "samples": [
+    {
+      "sample": {
+        "observerInstalledAt": 248,
+        "listReadyAt": 1237.1000001430511,
+        "paintRequestedAt": 1237.1000001430511,
+        "paintAt": 1237.2000000476837,
+        "count": 25,
+        "focus": true,
+        "visible": "visible"
+      },
+      "resources": [
+        {
+          "route": "/api/live/auth/me",
+          "start": 168.90000009536743,
+          "ms": 584
+        },
+        {
+          "route": "/api/live/crm/inbox",
+          "start": 755.6000001430511,
+          "ms": 440.7999999523163
+        },
+        {
+          "route": "/api/live/crm/erp/drafts",
+          "start": 1207.6000001430511,
+          "ms": 31.799999952316284
+        },
+        {
+          "route": "/api/live/crm/agents",
+          "start": 1208,
+          "ms": 35.10000014305115
+        }
+      ],
+      "listVisible": true,
+      "testButton": true
+    },
+    {
+      "sample": {
+        "observerInstalledAt": 189.30000019073486,
+        "listReadyAt": 627.3000001907349,
+        "paintRequestedAt": 627.3000001907349,
+        "paintAt": 627.5,
+        "count": 25,
+        "focus": true,
+        "visible": "visible"
+      },
+      "resources": [
+        {
+          "route": "/api/live/auth/me",
+          "start": 115.40000009536743,
+          "ms": 31.90000009536743
+        },
+        {
+          "route": "/api/live/crm/inbox",
+          "start": 169.30000019073486,
+          "ms": 422.69999980926514
+        },
+        {
+          "route": "/api/live/crm/erp/drafts",
+          "start": 599.1000001430511,
+          "ms": 10.599999904632568
+        },
+        {
+          "route": "/api/live/crm/agents",
+          "start": 599.3000001907349,
+          "ms": 34.39999985694885
+        }
+      ],
+      "listVisible": false,
+      "testButton": false
+    },
+    {
+      "sample": {
+        "observerInstalledAt": 196.20000004768372,
+        "listReadyAt": 779.2000000476837,
+        "paintRequestedAt": 779.2000000476837,
+        "paintAt": 779.2999999523163,
+        "count": 25,
+        "focus": true,
+        "visible": "visible"
+      },
+      "resources": [
+        {
+          "route": "/api/live/auth/me",
+          "start": 180.60000014305115,
+          "ms": 143.39999985694885
+        },
+        {
+          "route": "/api/live/crm/inbox",
+          "start": 326.7999999523163,
+          "ms": 412.30000019073486
+        },
+        {
+          "route": "/api/live/crm/erp/drafts",
+          "start": 751.1000001430511,
+          "ms": 11.099999904632568
+        },
+        {
+          "route": "/api/live/crm/agents",
+          "start": 751.5,
+          "ms": 35.200000047683716
+        }
+      ],
+      "listVisible": true,
+      "testButton": true
+    }
+  ],
+  "conversationOpen": {
+    "sampleCount": 1,
+    "ms": 633.7000000476837,
+    "readyAt": 1994.2000000476837,
+    "mediaCount": 4,
+    "criterion": "Fresh click from 25-row bootstrap to Semih S real audio/video history; no messages sent"
+  },
+  "notes": [
+    "Native DOM readiness; tool and accessibility wait excluded",
+    "One intermediate tab observation required re-login after session-expired UI; successful third fresh reload measured separately",
+    "Full overview loading continues; first bootstrap counts are explicitly incomplete"
+  ]
+}

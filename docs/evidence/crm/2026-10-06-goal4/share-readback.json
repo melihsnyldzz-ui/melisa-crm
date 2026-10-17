@@ -1,0 +1,37 @@
+{
+  "conversationId": "55",
+  "phone": "905387217733",
+  "providerMessageId": "true_22252259123221@lid_3EB06270C121DE5D504806",
+  "crmGetStatus": 200,
+  "message": {
+    "id": 12273,
+    "type": "image",
+    "text": "8023 CONCEPT — TAKIM\r\nERP kayıtlı adet satış fiyatı: 15,78 USD / ADET.\r\nStok ve sipariş koşulları sipariş öncesinde teyit edilir.",
+    "delivery": {
+      "providerAccepted": true,
+      "chatwootRecorded": true,
+      "delivered": false,
+      "read": false,
+      "ack": null
+    },
+    "imagePresent": true,
+    "attachments": [
+      {
+        "id": 1403,
+        "width": 960,
+        "height": 1220,
+        "fileSize": 109462
+      }
+    ]
+  },
+  "providerDelivery": {
+    "clientRequestId": "5e01440c-af02-4e13-88d2-e1bc734758b0",
+    "conversationId": "55",
+    "provider": "waapi",
+    "deliveryState": "CONFIRMED",
+    "providerMessageIdPresent": true,
+    "chatwootMessageIdPresent": true,
+    "duplicate": false,
+    "updatedAt": "2026-10-06T15:57:29.612Z"
+  }
+}

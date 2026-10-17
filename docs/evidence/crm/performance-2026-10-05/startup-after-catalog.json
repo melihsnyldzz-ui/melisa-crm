@@ -1,0 +1,235 @@
+{
+  "phase": "after",
+  "runtimeSource": "2aef938f3f76d8bf4ca95054a5a0f98c19e21001",
+  "method": "Native click-to-visible enabled product grid; all 12 decoded photos separately, no frame/tool wait",
+  "samples": [
+    {
+      "sample": {
+        "usableMs": 2328.399999856949,
+        "allImagesMs": 2384.7999999523163,
+        "expected": 12,
+        "visible": "visible",
+        "focus": true
+      },
+      "resources": [
+        {
+          "route": "/api/live/crm/catalog/products",
+          "ms": 1326.7999999523163,
+          "start": 84554.60000014305
+        },
+        {
+          "route": "/api/live/crm/catalog/products/product/photo",
+          "ms": 800.2999999523163,
+          "start": 85886.20000004768
+        },
+        {
+          "route": "/api/live/crm/catalog/products/product/photo",
+          "ms": 138.19999980926514,
+          "start": 85886.60000014305
+        },
+        {
+          "route": "/api/live/crm/catalog/products/product/photo",
+          "ms": 66.10000014305115,
+          "start": 86031.29999995232
+        },
+        {
+          "route": "/api/live/crm/catalog/products/product/photo",
+          "ms": 75.29999995231628,
+          "start": 86104.70000004768
+        },
+        {
+          "route": "/api/live/crm/catalog/products/product/photo",
+          "ms": 88.5,
+          "start": 86188.20000004768
+        },
+        {
+          "route": "/api/live/crm/catalog/products/product/photo",
+          "ms": 73,
+          "start": 86283.40000009537
+        },
+        {
+          "route": "/api/live/crm/catalog/products/product/photo",
+          "ms": 73.79999995231628,
+          "start": 86370.70000004768
+        },
+        {
+          "route": "/api/live/crm/catalog/products/product/photo",
+          "ms": 71.19999980926514,
+          "start": 86451.60000014305
+        },
+        {
+          "route": "/api/live/crm/catalog/products/product/photo",
+          "ms": 70.30000019073486,
+          "start": 86528.79999995232
+        },
+        {
+          "route": "/api/live/crm/catalog/products/product/photo",
+          "ms": 75.20000004768372,
+          "start": 86605
+        },
+        {
+          "route": "/api/live/crm/catalog/products/product/photo",
+          "ms": 103.09999990463257,
+          "start": 86686.70000004768
+        },
+        {
+          "route": "/api/live/crm/catalog/products/product/photo",
+          "ms": 118.29999995231628,
+          "start": 86695.70000004768
+        }
+      ]
+    },
+    {
+      "sample": {
+        "usableMs": 681.2000000476837,
+        "allImagesMs": 713.0999999046326,
+        "expected": 12,
+        "visible": "visible",
+        "focus": true
+      },
+      "resources": [
+        {
+          "route": "/api/live/crm/catalog/products",
+          "ms": 110.29999995231628,
+          "start": 113902.10000014305
+        },
+        {
+          "route": "/api/live/crm/catalog/products/product/photo",
+          "ms": 80.40000009536743,
+          "start": 114014.79999995232
+        },
+        {
+          "route": "/api/live/crm/catalog/products/product/photo",
+          "ms": 103.20000004768372,
+          "start": 114015
+        },
+        {
+          "route": "/api/live/crm/catalog/products/product/photo",
+          "ms": 114.79999995231628,
+          "start": 114112
+        },
+        {
+          "route": "/api/live/crm/catalog/products/product/photo",
+          "ms": 118.29999995231628,
+          "start": 114126
+        },
+        {
+          "route": "/api/live/crm/catalog/products/product/photo",
+          "ms": 81.19999980926514,
+          "start": 114234.60000014305
+        },
+        {
+          "route": "/api/live/crm/catalog/products/product/photo",
+          "ms": 78.60000014305115,
+          "start": 114254.29999995232
+        },
+        {
+          "route": "/api/live/crm/catalog/products/product/photo",
+          "ms": 64.09999990463257,
+          "start": 114323.10000014305
+        },
+        {
+          "route": "/api/live/crm/catalog/products/product/photo",
+          "ms": 66.70000004768372,
+          "start": 114340
+        },
+        {
+          "route": "/api/live/crm/catalog/products/product/photo",
+          "ms": 63,
+          "start": 114393.5
+        },
+        {
+          "route": "/api/live/crm/catalog/products/product/photo",
+          "ms": 56.09999990463257,
+          "start": 114414.90000009537
+        },
+        {
+          "route": "/api/live/crm/catalog/products/product/photo",
+          "ms": 59.90000009536743,
+          "start": 114463
+        },
+        {
+          "route": "/api/live/crm/catalog/products/product/photo",
+          "ms": 65.70000004768372,
+          "start": 114476.20000004768
+        }
+      ]
+    },
+    {
+      "sample": {
+        "usableMs": 671.5,
+        "allImagesMs": 698.2999999523163,
+        "expected": 12,
+        "visible": "visible",
+        "focus": true
+      },
+      "resources": [
+        {
+          "route": "/api/live/crm/catalog/products",
+          "ms": 78.29999995231628,
+          "start": 139409
+        },
+        {
+          "route": "/api/live/crm/catalog/products/product/photo",
+          "ms": 92.30000019073486,
+          "start": 139502.29999995232
+        },
+        {
+          "route": "/api/live/crm/catalog/products/product/photo",
+          "ms": 98.20000004768372,
+          "start": 139502.40000009537
+        },
+        {
+          "route": "/api/live/crm/catalog/products/product/photo",
+          "ms": 117.79999995231628,
+          "start": 139605.70000004768
+        },
+        {
+          "route": "/api/live/crm/catalog/products/product/photo",
+          "ms": 133.5,
+          "start": 139615.60000014305
+        },
+        {
+          "route": "/api/live/crm/catalog/products/product/photo",
+          "ms": 68,
+          "start": 139730.70000004768
+        },
+        {
+          "route": "/api/live/crm/catalog/products/product/photo",
+          "ms": 66,
+          "start": 139754.60000014305
+        },
+        {
+          "route": "/api/live/crm/catalog/products/product/photo",
+          "ms": 84.5,
+          "start": 139805.60000014305
+        },
+        {
+          "route": "/api/live/crm/catalog/products/product/photo",
+          "ms": 73.59999990463257,
+          "start": 139841.90000009537
+        },
+        {
+          "route": "/api/live/crm/catalog/products/product/photo",
+          "ms": 68.89999985694885,
+          "start": 139895.10000014305
+        },
+        {
+          "route": "/api/live/crm/catalog/products/product/photo",
+          "ms": 58.30000019073486,
+          "start": 139925.79999995232
+        },
+        {
+          "route": "/api/live/crm/catalog/products/product/photo",
+          "ms": 54.60000014305115,
+          "start": 139971.29999995232
+        },
+        {
+          "route": "/api/live/crm/catalog/products/product/photo",
+          "ms": 53.200000047683716,
+          "start": 139991
+        }
+      ]
+    }
+  ]
+}

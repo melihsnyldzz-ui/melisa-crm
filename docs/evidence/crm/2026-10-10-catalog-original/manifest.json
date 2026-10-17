@@ -1,0 +1,49 @@
+{
+  "version": 1,
+  "date": "2026-10-10",
+  "sourceCommit": "222a95f9a63763c39cb18630373a1f27a55c6f65",
+  "testUrl": "http://127.0.0.1:62700/",
+  "packageManifestSha256": "53f5260aef322024da42f29dce4d6766a58ed191c9a1ad8494bbcd947f2daa0e",
+  "product": {
+    "code": "8023 CONCEPT",
+    "id": 36724,
+    "before": {
+      "variant": "thumbnail",
+      "naturalWidth": 103,
+      "naturalHeight": 128
+    },
+    "after": {
+      "variant": "original",
+      "naturalWidth": 1206,
+      "naturalHeight": 1500,
+      "bytes": 152197,
+      "sha256": "e0a01ba0e0382d4bc5f0bc4562e862cbf8ee777655a9ab00295dafd373360c5f",
+      "matchesErpOriginal": true
+    },
+    "displayWidth": 349,
+    "displayHeight": 349
+  },
+  "files": [
+    {
+      "name": "after-8023-original.jpg",
+      "bytes": 41453,
+      "sha256": "a6feb9b19cb8677d4ab61682474910f56aea6ca546eeee51e203f8fee59ee1fb"
+    }
+  ],
+  "verification": {
+    "realBrowser": true,
+    "offlineTests": {
+      "passed": 1048,
+      "failed": 0
+    },
+    "independentReview": "no findings",
+    "githubCi": "account payment/spending blocked before jobs started",
+    "humanClarityAcceptance": "pending"
+  },
+  "scope": {
+    "customerMessages": 0,
+    "commercialWrites": 0,
+    "liveChanges": 0,
+    "mainMerged": false
+  }
+}

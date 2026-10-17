@@ -1,0 +1,61 @@
+{
+  "date": "2026-10-14",
+  "status": "BLOCKED_UI_CREDENTIAL_TRANSPORT_UNSUPPORTED",
+  "mainId": "CRM06",
+  "crmApplicationSource": "5b6dfe5acf1c0c1ea301f66aea39bf2abcec8f36",
+  "erpApplicationSource": "7a41f6492273dd1ec0bcb086f820be5575372be8",
+  "supervisorSource": "7a081ab2b017",
+  "readerSourceCommit": "d3a47cc5b0af32a3d2bb65681c3d5d8dd0b76484",
+  "actorSetup": {
+    "existingProfilesPreserved": 7,
+    "addedOrdinaryTestProfiles": 2,
+    "managerRole": "mudur",
+    "managerAgentId": 2,
+    "staffRole": "personel",
+    "staffAgentId": 2,
+    "normalManagerApi": "OWNER_PASS_LOGIN_ME_ISSUER_SID_REFRESH_LOGOUT_OWN_JWT_401",
+    "staffDurableRefresh": "UNSUPPORTED_NEW_STAFF_EXISTING_AGENT3_POLICY_UNCHANGED"
+  },
+  "gui": {
+    "httpSurfaceObserved": true,
+    "protectedConsumerError": "ReferenceError: process is not defined",
+    "restrictedModule": "node:process",
+    "restrictedModuleResult": "IMPORT_NOT_ALLOWED",
+    "credentialApiAdvertised": false,
+    "nativeAppsEnabled": false,
+    "newManagerGuiLogin": 0,
+    "newStaffGuiLogin": 0,
+    "customerSessionIssue": 0,
+    "customerInterestSubmission": 0,
+    "assignedStaffUi": "NOT_RUN",
+    "wrongStaffUi": "NOT_RUN_EXISTING_CORE_403_ACCEPTANCE_PRESERVED",
+    "mobileUi": "NOT_RUN",
+    "humanAccepted": false,
+    "credentialBridgeOrInjection": false,
+    "passwordOrTokenOutput": false
+  },
+  "preservation": {
+    "ownerSqlBusinessTablesEqual": "21/21",
+    "oldNormalPersonnelJournalHashPreserved": true,
+    "sharedInterestStore": "ABSENT_BEFORE_AND_AFTER",
+    "newSqlWrites": 0,
+    "nativeSaleStockLedgerEffects": 0,
+    "rootRuntimeWrites": 0,
+    "rootServiceRestarts": 0,
+    "realMessages": 0,
+    "mainMerge": false,
+    "live": false
+  },
+  "phone": {
+    "knownSamsungTailscaleOnline": false,
+    "presentAndroidDeviceObserved": false,
+    "physicalAcceptance": false
+  },
+  "remaining": [
+    "Supported protected UI credential transport",
+    "Normal customer select-quantity-remove-reload-single-interest",
+    "Assigned normal staff view",
+    "Normal mobile/physical and human acceptance",
+    "Current shared reopen and no-duplicate mapping"
+  ]
+}

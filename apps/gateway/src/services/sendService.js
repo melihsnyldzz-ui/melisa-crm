@@ -229,6 +229,15 @@ export async function sendCrmTextMessage(payload = {}, dependencies = {}) {
       await bridge.assertSafe();
       await bridge.resolveConversation(phone, conversationId);
     }
+    if (typeof dependencies.beforeProviderSend === 'function') {
+      try { await dependencies.beforeProviderSend(); }
+      catch (error) {
+        // Authorization rejection happened before any message transport. Keep
+        // the UUID journal truthful instead of recording an uncertain send.
+        error.meta = {...error.meta, transportAttempted:false};
+        throw error;
+      }
+    }
     providerResult = await provider.sendMessage({
       phone,
       remoteJid,
@@ -316,4 +325,21 @@ export async function sendCrmTextMessage(payload = {}, dependencies = {}) {
     sendStatus: getSendStatus(),
     delivery: publicOutboundAttempt(confirmedAttempt),
   };
+}
+
+// A read-only journal lookup. The same actor, target and complete normalized
+// body must match the original attempt; this path never begins or updates one.
+export async function readCrmOutboundStatus(payload = {}, dependencies = {}) {
+  const clientRequestId = validateClientRequestId(payload.clientRequestId);
+  const conversationId = normalizeConversationId(payload.conversationId);
+  const fingerprint = fingerprintOutbound({
+    actorId: String(payload.actorId || ''), conversationId, provider: env.whatsapp.provider,
+    phone: normalizePhone(payload.phone), remoteJid: trimText(payload.remoteJid),
+    text: trimText(payload.text), media: normalizeOutboundMedia(payload.media),
+  });
+  const attempt = await (dependencies.attemptStore || outboundAttemptStore).get(clientRequestId);
+  if (!attempt) throw sendError('WHATSAPP_CRM_ATTEMPT_NOT_FOUND', 'Gönderim kaydı bulunamadı; kilit korunuyor.', 404);
+  if (attempt.fingerprint !== fingerprint || attempt.conversationId !== conversationId || attempt.provider !== env.whatsapp.provider)
+    throw sendError('WHATSAPP_CRM_IDEMPOTENCY_CONFLICT', 'Gönderim kaydı bu hesap ve mesajla eşleşmedi; kilit korunuyor.', 409);
+  return publicOutboundAttempt(attempt);
 }
