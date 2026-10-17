@@ -21,7 +21,7 @@ async function fixture(cryptoApi,run){
  try{
   await build({absWorkingDir:frontend,tsconfigRaw:{},entryPoints:[frontend+'src/ERPOrderDialog.jsx'],outfile:file,bundle:true,platform:'node',format:'esm',jsx:'automatic',external:['react','@phosphor-icons/react'],plugins:[{name:'uuid-dialog-hooks',setup(build){build.onLoad({filter:/ERPOrderDialog\.jsx$/},args=>({loader:'jsx',contents:readFileSync(args.path,'utf8').replace("import {useEffect,useRef,useState} from 'react';","const {useEffect,useRef,useState}=globalThis.__uuidHooks;").replace(' const current=()=>',' globalThis.__uuidHarness.actions={requestId,setReceipt,setActor,store,login,save};\n const current=()=>')}));build.onLoad({filter:/liveApi\.js$/},args=>({loader:'js',contents:readFileSync(args.path,'utf8')+'\nfor(const name of Object.keys(globalThis.__uuidHarness.api))liveApi[name]=(...args)=>globalThis.__uuidHarness.api[name](...args);'}));}}]});
   const Dialog=(await import(pathToFileURL(file).href)).default;
-  const render=()=>{cursor=0;return Dialog({token:'synthetic',actorKey:'id:uuid-test',conversation:{id:'55',name:'Synthetic'},items:[],isCurrent:()=>true,onClose(){},onSaved(){}});};
+  const render=(extra={})=>{cursor=0;return Dialog({token:'synthetic',actorKey:'id:uuid-test',conversation:{id:'55',name:'Synthetic'},items:[],isCurrent:()=>true,onClose(){},onSaved(){},...extra});};
   await run({render,harness,data});
  }finally{if(before.crypto)Object.defineProperty(globalThis,'crypto',before.crypto);else delete globalThis.crypto;globalThis.window=before.window;globalThis.__uuidHooks=before.hooks;globalThis.__uuidHarness=before.harness;rmSync(file,{force:true});rmSync(directory,{recursive:true});}
 }
@@ -55,4 +55,14 @@ test('HTTP LAN UUID: pending ERP intent retries its saved ID without any random 
  await h.harness.actions.login();h.render();await h.harness.actions.save();h.render();
  assert.equal(writes,1);assert(reads.length>=2);assert(reads.every(id=>id===requestId));assert.equal(JSON.parse(h.data.get(key)).payload.requestId,requestId);assert.equal(JSON.parse(h.data.get(key)).resolved,true);
  await h.harness.actions.save();assert.equal(writes,1);
+}));
+test('saved draft new intent returns to fresh catalog instead of resubmitting recovery-only price rows',async()=>fixture({getRandomValues:bytes=>{bytes.fill(4);return bytes;}},async h=>{
+ let catalogOpens=0,cleared=0;
+ const props={recoveryOnly:true,onNewDraft(){catalogOpens++;},items:[{productId:1,stockCode:'SYNTHETIC',priceExact8:'1.00000000'}]};
+ h.render(props);h.harness.actions.setActor('7');h.harness.actions.setReceipt({documentNo:'Synthetic',request:{documentCurrency:'TRY'},grandTotalExact4:'0.0000',items:[]});
+ h.harness.actions.store.current.newIntent=()=>{cleared++;};
+ h.harness.api.erpV2Customers=async()=>{throw Error('Recovery rows must not be reused as a new catalog selection');};
+ find(h.render(props),node=>node.type==='button'&&node.props.children==='Yeni sipariş taslağı').props.onClick();
+ await Promise.resolve();await Promise.resolve();
+ assert.equal(cleared,1);assert.equal(catalogOpens,1);assert.doesNotMatch(renderToStaticMarkup(h.render(props)),/Recovery rows/);
 }));

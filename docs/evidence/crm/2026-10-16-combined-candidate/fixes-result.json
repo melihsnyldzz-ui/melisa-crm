@@ -1,0 +1,215 @@
+{
+  "mode": "synthetic-combined-fixes-browser",
+  "origin": "http://127.0.0.1:33627",
+  "startedAt": "2026-10-16T13:18:58.586Z",
+  "status": "PASS",
+  "scenarios": [
+    {
+      "name": "PR14 real UI rejects delayed success/failure from customer A after switching to B",
+      "status": "PASS",
+      "copiedPhones": [
+        "+905550000001",
+        "+905550000001",
+        "+905550000002"
+      ]
+    },
+    {
+      "name": "PR15 real JPG download contains original fixture pixels while preview fixture is cached",
+      "status": "PASS",
+      "file": "selected-canonical-original.jpg",
+      "width": 960,
+      "height": 1220,
+      "pixel": [
+        207,
+        141,
+        153,
+        255
+      ],
+      "exportPhotoRequests": [],
+      "note": "240px synthetic source variants; no real image quality claim"
+    },
+    {
+      "name": "PR13 actual USD rate field preserves exact8 strings, pads valid input and leaves invalid text for validation",
+      "status": "PASS",
+      "cases": [
+        [
+          "999999999999.12345678",
+          "999999999999.12345678"
+        ],
+        [
+          "123456789012.87654321",
+          "123456789012.87654321"
+        ],
+        [
+          "1.12345678",
+          "1.12345678"
+        ],
+        [
+          "0.00000001",
+          "0.00000001"
+        ],
+        [
+          "0002.50",
+          "2.50000000"
+        ],
+        [
+          "1.123456789",
+          "1.123456789"
+        ],
+        [
+          "1e2",
+          "1e2"
+        ]
+      ],
+      "note": "USD synthetic responses only; no order submitted"
+    },
+    {
+      "name": "Extra probes produce no draft/request/message writes, unexpected browser errors or requests outside selected synthetic origin",
+      "status": "PASS"
+    }
+  ],
+  "screenshots": [
+    "01-phone-old-success-discarded-on-b.png",
+    "02-phone-current-b-success-preserved.png",
+    "03-selected-jpg-original-download.png",
+    "04-exchange-rate-exact8-preserved.png"
+  ],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "httpErrors": [],
+  "failedRequests": [
+    {
+      "stage": "PR14 delayed clipboard feedback across customer switch",
+      "path": "/api/customer-product-request-state",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "stage": "PR14 delayed clipboard feedback across customer switch",
+      "path": "/api/live/auth/remembered",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "stage": "PR14 delayed clipboard feedback across customer switch",
+      "path": "/api/live/crm/customer-product-requests",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "stage": "PR14 delayed clipboard feedback across customer switch",
+      "path": "/api/live/crm/customer-product-requests",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "stage": "PR14 delayed clipboard feedback across customer switch",
+      "path": "/api/live/crm/customer-product-requests",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "stage": "PR14 delayed clipboard feedback across customer switch",
+      "path": "/api/live/crm/customer-product-requests",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "stage": "PR15 chosen canonical JPEG uses original with cached preview",
+      "path": "/api/customer-product-request-state",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "stage": "PR15 chosen canonical JPEG uses original with cached preview",
+      "path": "/api/live/auth/remembered",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "stage": "PR15 chosen canonical JPEG uses original with cached preview",
+      "path": "/api/live/crm/customer-product-requests",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "stage": "PR15 chosen canonical JPEG uses original with cached preview",
+      "path": "/api/live/crm/catalog/products",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "stage": "PR15 chosen canonical JPEG uses original with cached preview",
+      "path": "/api/live/crm/catalog/products/erp-9044/photo",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "stage": "PR13 exact8 exchange-rate field blur",
+      "path": "/api/customer-product-request-state",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "stage": "PR13 exact8 exchange-rate field blur",
+      "path": "/api/live/auth/remembered",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "stage": "PR13 exact8 exchange-rate field blur",
+      "path": "/api/live/crm/customer-product-requests",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "stage": "PR13 exact8 exchange-rate field blur",
+      "path": "/api/live/crm/catalog/products",
+      "error": "net::ERR_ABORTED"
+    }
+  ],
+  "blockedRequests": [],
+  "photoRequests": [
+    {
+      "stage": "PR15 chosen canonical JPEG uses original with cached preview",
+      "path": "/api/live/crm/catalog/products/erp-8023/photo",
+      "variant": "original"
+    },
+    {
+      "stage": "PR15 chosen canonical JPEG uses original with cached preview",
+      "path": "/api/live/crm/catalog/products/erp-9044/photo",
+      "variant": "original"
+    },
+    {
+      "stage": "PR15 chosen canonical JPEG uses original with cached preview",
+      "path": "/api/live/crm/catalog/products/erp-8023/photo",
+      "variant": "preview"
+    },
+    {
+      "stage": "PR15 chosen canonical JPEG uses original with cached preview",
+      "path": "/api/live/crm/catalog/products/erp-9044/photo",
+      "variant": "preview"
+    },
+    {
+      "stage": "PR13 exact8 exchange-rate field blur",
+      "path": "/api/live/crm/catalog/products/erp-9044/photo",
+      "variant": "original"
+    },
+    {
+      "stage": "PR13 exact8 exchange-rate field blur",
+      "path": "/api/live/crm/catalog/products/erp-8023/photo",
+      "variant": "original"
+    },
+    {
+      "stage": "PR13 exact8 exchange-rate field blur",
+      "path": "/api/live/crm/catalog/products/erp-8023/photo",
+      "variant": "preview"
+    }
+  ],
+  "mutations": [],
+  "shaping": [
+    {
+      "fixture": "USD synthetic response only",
+      "path": "/api/live/crm/catalog/products"
+    },
+    {
+      "fixture": "USD synthetic response only",
+      "path": "/api/live/crm/catalog/products"
+    },
+    {
+      "fixture": "USD synthetic response only",
+      "path": "/api/live/crm/catalog/products/erp-8023"
+    },
+    {
+      "fixture": "USD synthetic response only",
+      "path": "/api/live/crm/erp/v2/customers"
+    }
+  ],
+  "finishedAt": "2026-10-16T13:19:15.475Z"
+}

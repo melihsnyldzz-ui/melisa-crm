@@ -22,6 +22,8 @@ import { newRequestId } from "./lib/requestId.js";
 import { nextIncomingTranslation } from "./automaticTranslation.js";
 import { selectedSaleLines, selectionMessage } from "./catalog/productActions.js";
 import ERPOrderDialog from "./ERPOrderDialog.jsx";
+import {createNativeOrderStore} from './lib/nativeOrder.js';
+import {nativeOrderReceiptCard,restoreNativeOrderHistory} from './lib/nativeOrderHistory.js';
 import CatalogWorkspace from "./catalog/CatalogWorkspace.jsx";
 import StaffProductRequests from './customerProductRequest/StaffProductRequests.jsx';
 import {createCatalogPhotoCache} from './catalog/photoCache.js';
@@ -382,6 +384,7 @@ export function App() {
   const [pendingCatalogs, setPendingCatalogs] = useState([]);
   const [notifications, setNotifications] = useState(() => liveMode ? [] : notificationSeed);
   const [draftOrders, setDraftOrders] = useState(() => liveMode ? [] : draftOrderSeed);
+  const [draftOrderStorageWarning,setDraftOrderStorageWarning] = useState('');
   const [videoContext, setVideoContext] = useState(null);
   const videoContextRef = useRef(null);
   const [lastSyncAt, setLastSyncAt] = useState(null);
@@ -668,7 +671,7 @@ export function App() {
       disconnect: () => liveApi.catalogSignOut(closingKey),
       clearPhotos: () => { catalogSessionRef.current?.close(); window.dispatchEvent(new Event("melisa-crm-session-cleared")); },
       clearLocal: () => {
-    setModal(null); setCatalogSource(initialCatalogSource); setLoadingMoreConversations(false); backgroundPageLoadRef.current = ""; if (clearReceipts) clearCatalogStorage(safeCatalogStorage());
+    setModal(null); setErpOrderContext(null); setErpDraftContexts({}); setDraftOrderStorageWarning(''); setCatalogSource(initialCatalogSource); setLoadingMoreConversations(false); backgroundPageLoadRef.current = ""; if (clearReceipts) clearCatalogStorage(safeCatalogStorage());
     setSendStates(interruptedSendStates);
     sendScopeRef.current.invalidate(); sendInFlightRef.current = false; setLiveBusy(false);
     liveKeyRef.current = "";
@@ -735,7 +738,7 @@ export function App() {
     olderHistoryReadRef.current?.controller.abort();olderHistoryReadRef.current=null;olderHistoryAnchorRef.current=null;
     setOlderHistoryState({scope:null,busy:false,error:''});
     if (sessionIdentityRef.current !== identity || liveKeyRef.current !== key) salesDraftFlowRef.current?.close();
-    if (sessionIdentityRef.current !== identity) { setProductDrafts({}); setDraftOrders([]); orderPreviewLedgerRef.current.clear(); }
+    if (sessionIdentityRef.current !== identity) { setProductDrafts({}); setDraftOrders([]); setErpOrderContext(null); setErpDraftContexts({}); orderPreviewLedgerRef.current.clear(); }
     if (sessionIdentityRef.current && sessionIdentityRef.current !== identity) { setProductDrafts({}); setDraftOrders([]); orderPreviewLedgerRef.current.clear(); uiOperationEpochRef.current++; setIncomingTranslations({}); clearCatalogStorage(safeCatalogStorage()); setModal(null); catalogSessionRef.current?.close(); setCatalogSource(initialCatalogSource); sendScopeRef.current.invalidate(); sendInFlightRef.current = false; setDrafts({}); setAttachments({}); attachmentRef.current = {}; setSendStates({}); readReceiptsRef.current = {}; setReadReceipts({}); }
     sessionIdentityRef.current = identity;
     remainingReadRef.current?.controller.abort();remainingReadRef.current=null;
@@ -755,7 +758,6 @@ export function App() {
     setSelectedId((current) => inboxResult.conversations?.some((item) => item.id === current) ? current : inboxResult.conversations?.[0]?.id || ""); setTranslationReady(false);
     setLoginCredentials({ username: "", password: "" });
     setLastSyncAt(new Date()); setSyncError("");
-    if(import.meta.env?.VITE_CRM_TEST === "1") void liveApi.erpDrafts(key).then(result=>{if(liveKeyRef.current===key&&sessionIdentityRef.current===identity)setDraftOrders(result.orders||[]);}).catch(()=>{});
   };
   sessionCallbacksRef.current = {
     onCommit: commitLiveSession,
@@ -783,6 +785,20 @@ export function App() {
     setLoginCredentials({ username: loginCredentials.username, password: "" });
     return sessionLoaderRef.current.start({ credentials });
   };
+
+  const refreshNativeDraftOrders = useCallback(() => {
+    if (!liveSessionRef.current || !sessionIdentityRef.current) return;
+    const actor=entry.enabled?`terminal:${sessionIdentityRef.current}`:sessionIdentityRef.current;
+    try {
+      const {orders,unreadable}=restoreNativeOrderHistory({actor,conversations:conversationsRef.current,storage:window.sessionStorage});
+      setDraftOrders(previous=>orders.map(order=>previous.find(item=>item.requestId===order.requestId&&item.readbackRequired===false)||order));
+      setDraftOrderStorageWarning(unreadable.length?'Bazı taslakların tarayıcı kaydı okunamadı. Bu kayıtlar için yeni sipariş gönderilmedi.':'');
+    } catch {
+      setDraftOrders([]);
+      setDraftOrderStorageWarning('Taslakların tarayıcı kaydı okunamadı. Yeni sipariş gönderilmedi.');
+    }
+  },[entry.enabled]);
+  useEffect(()=>{if(liveSession)refreshNativeDraftOrders();},[conversations,liveSession,refreshNativeDraftOrders]);
 
   if (!permissionRefreshRef.current) permissionRefreshRef.current = createPermissionRefresh({
     getToken: () => liveKeyRef.current,
@@ -1239,6 +1255,19 @@ export function App() {
     catalogContextRef.current = { current:captureUiOperation(selected.id), identity:sessionIdentityRef.current, recipient:String(selected.id), key:liveKeyRef.current };
     setAttachmentMenu(false); setModal("catalog-builder");
   };
+  const openSavedErpDraft = (order) => {
+    if (!liveSessionRef.current) return;
+    const conversation=conversationsRef.current.find(item=>String(item.id)===String(order.conversationId));
+    if (!conversation) return flash('Bu müşteriye erişiminiz artık yok. Konuşma listesini yenileyin.');
+    try {
+      const actor=entry.enabled?`terminal:${sessionIdentityRef.current}`:sessionIdentityRef.current;
+      const record=createNativeOrderStore(actor,conversation.id,window.sessionStorage).read();
+      if(!record||record.payload.requestId!==order.requestId)throw Error('Taslak kurtarma kaydı değişti. Sipariş listesini yeniden açın.');
+      selectConversation(conversation);
+      setErpOrderContext({recipientId:String(conversation.id),items:record.payload.items,recoveryOnly:true,current:captureUiOperation(conversation.id)});
+      setModal('erp-order');
+    } catch(error) {flash(error.message||'Taslak yeniden açılamadı. Yeni sipariş gönderilmedi.');}
+  };
   const closeCatalog = () => { catalogSessionRef.current?.close(); catalogContextRef.current=null; setModal(null); };
   const catalogProductAction = async (products,action) => {
     if (entry.enabled && window.navigator?.onLine === false) throw Error("Bağlantı yok — bu işlem çevrimiçi tamamlanmalıdır.");
@@ -1377,7 +1406,7 @@ export function App() {
         <span className="nav-section-title">ÇALIŞMA ALANI</span>
         <nav className="nav-list" aria-label="Ana menü">
           {import.meta.env.DEV && !liveMode ? <><button className="nav-item" aria-label="Ürün Seç (DEV)" title="Ürün Seç (DEV)" onClick={() => setModal("Ürün Gönder")}><Package size={21}/><span>Ürün Seç (DEV)</span></button><button className="nav-item" aria-label="Sipariş Önizlemesi (DEV)" title="Sipariş Önizlemesi (DEV)" onClick={() => setModal("draft")}><ClipboardText size={21}/><span>Sipariş Önizlemesi (DEV)</span></button></> : null}
-          {[["Gelen Kutusu", "Mesajlar", ChatCircleDots], ...(canAssign ? [["Atanmamışlar", "Atanmamışlar", UserPlus]] : []), ["Müşteriler", "Müşteriler", Users], ...(!staffMode ? [["Yönetim Masası", "Ekip ve özet", ChartBar]] : [])].map(([view, label, Icon]) => <button key={view} title={label} className={`nav-item${view === "Atanmamışlar" ? (inboxView && filter === "Atanmamışlar" ? " active" : "") : activeView === view && !(inboxView && filter === "Atanmamışlar") ? " active" : ""}`} onClick={() => { setActiveView(view === "Atanmamışlar" ? "Gelen Kutusu" : view); setFilter(view === "Atanmamışlar" ? "Atanmamışlar" : "Tüm Konuşmalar"); setMobileChatOpen(false); }}><Icon size={21} weight={activeView === view ? "fill" : "regular"} /><span>{label}</span>{view === "Atanmamışlar" && visibleUnassignedCount > 0 ? <b>{visibleUnassignedCount}</b> : null}</button>)}
+          {[["Gelen Kutusu", "Mesajlar", ChatCircleDots], ...(canAssign ? [["Atanmamışlar", "Atanmamışlar", UserPlus]] : []), ["Müşteriler", "Müşteriler", Users], ...(CATALOG_ENABLED ? [["Taslak Siparişler", "Taslak Siparişler", ClipboardText]] : []), ...(!staffMode ? [["Yönetim Masası", "Ekip ve özet", ChartBar]] : [])].map(([view, label, Icon]) => <button key={view} title={label} className={`nav-item${view === "Atanmamışlar" ? (inboxView && filter === "Atanmamışlar" ? " active" : "") : activeView === view && !(inboxView && filter === "Atanmamışlar") ? " active" : ""}`} onClick={() => { setActiveView(view === "Atanmamışlar" ? "Gelen Kutusu" : view); setFilter(view === "Atanmamışlar" ? "Atanmamışlar" : "Tüm Konuşmalar"); setMobileChatOpen(false); }}><Icon size={21} weight={activeView === view ? "fill" : "regular"} /><span>{label}</span>{view === "Atanmamışlar" && visibleUnassignedCount > 0 ? <b>{visibleUnassignedCount}</b> : null}</button>)}
         </nav>
         <div className="sidebar-bottom">
           <button className="nav-item" onClick={() => changeLayout(true)} title="Terminal görünümü"><DeviceMobile size={20} /><span>Terminal görünümü</span></button>
@@ -1394,7 +1423,7 @@ export function App() {
             {liveSession ? <span className={syncStale ? "connection-label delayed" : "connection-label"} title={lastSyncAt ? `Son güncelleme ${lastSyncAt.toLocaleTimeString("tr-TR")}` : "Bağlantı kuruluyor"}>{syncStale ? "Güncelleme gecikti" : "Güncel"}</span> : <span className="demo-label">Örnek veriler</span>}
             {!staffMode && !entry.enabled ? <button className="layout-switch" title={terminalMode ? "Yönetim görünümü" : "Terminal görünümü"} aria-label={terminalMode ? "Yönetim görünümüne dön" : "Terminal görünümüne geç"} onClick={() => changeLayout(!terminalMode)}>{terminalMode ? <Desktop size={21} /> : <DeviceMobile size={21} />}<span>{terminalMode ? "Yönetim" : "Terminal"}</span></button> : null}
             <button className="notification-button" aria-label="Bildirimler" onClick={() => setModal("notifications")}><Bell size={22} />{notificationUnreadCount > 0 ? <b>{notificationUnreadCount}</b> : null}</button>
-            <div className="top-profile-wrap"><button className="top-profile" aria-label="Hesabım" onClick={() => setRoleMenu((value) => value === "top" ? false : "top")} aria-expanded={roleMenu === "top"}><Avatar initials={userName.slice(0,2).toLocaleUpperCase("tr-TR")} compact /><CaretDown size={14} /></button>{roleMenu === "top" ? <div className="profile-menu top-profile-menu"><strong className="profile-name">{userName} · {roleLabel}</strong>{!staffMode ? <button onClick={() => { changeLayout(!terminalMode); setRoleMenu(false); }}>{terminalMode ? "Yönetim görünümü" : "Terminal görünümü"}</button> : null}<button onClick={() => { setActiveView("Ayarlar"); setRoleMenu(false); }}>Ayarlar</button>{liveSession ? <button onClick={() => { setRoleMenu(false); closeLiveSession("", true); }}>Oturumu kapat</button> : null}</div> : null}</div>
+            <div className="top-profile-wrap"><button className="top-profile" aria-label="Hesabım" onClick={() => setRoleMenu((value) => value === "top" ? false : "top")} aria-expanded={roleMenu === "top"}><Avatar initials={userName.slice(0,2).toLocaleUpperCase("tr-TR")} compact /><CaretDown size={14} /></button>{roleMenu === "top" ? <div className="profile-menu top-profile-menu"><strong className="profile-name">{userName} · {roleLabel}</strong><button onClick={() => {setActiveView("Gelen Kutusu");setMobileChatOpen(false);setRoleMenu(false);}}>Mesajlar</button><button onClick={() => {setActiveView("Müşteriler");setMobileChatOpen(false);setRoleMenu(false);}}>Müşteriler</button>{CATALOG_ENABLED?<button onClick={() => {setActiveView("Taslak Siparişler");setMobileChatOpen(false);setRoleMenu(false);}}>Taslak Siparişler</button>:null}{!staffMode ? <button onClick={() => { changeLayout(!terminalMode); setRoleMenu(false); }}>{terminalMode ? "Yönetim görünümü" : "Terminal görünümü"}</button> : null}<button onClick={() => { setActiveView("Ayarlar"); setRoleMenu(false); }}>Ayarlar</button>{liveSession ? <button onClick={() => { setRoleMenu(false); closeLiveSession("", true); }}>Oturumu kapat</button> : null}</div> : null}</div>
           </div>
         </header>
 
@@ -1470,10 +1499,10 @@ export function App() {
             <div className="inspector-tabs" role="tablist">{["AI Çeviri", "Müşteri 360"].map((tab) => <button key={tab} role="tab" aria-selected={rightTab === tab} className={rightTab === tab ? "active" : ""} onClick={() => setRightTab(tab)}>{tab === "Müşteri 360" ? "Müşteri" : "Çeviri"}</button>)}</div>
             {rightTab === "AI Çeviri" ? <div className="inspector-content"><div className="assistant-status"><span className="assistant-icon"><Sparkle size={22} weight="fill" /></span><div><strong>Çeviri yardımcısı</strong><p>Gelen yabancı mesajları Türkçeye, yazdığınız mesajları müşterinin diline çevirir.</p></div><b>{translationBusy ? "Çalışıyor" : liveSession ? "İstekle" : "Demo"}</b></div><div className="language-section"><label htmlFor="target-language">Yanıt dili</label><div className="language-select"><span className="country-code">{selected.code}</span><select id="target-language" value={targetLanguage} onChange={(event) => { setTargetLanguage(event.target.value); setTranslationReady(false); setTranslationResult(null); }}><option value="auto">Otomatik algıla</option><option value="en">İngilizce</option><option value="fr">Fransızca</option><option value="ar">Arapça</option><option value="de">Almanca</option><option value="it">İtalyanca</option><option value="es">İspanyolca</option><option value="bg">Bulgarca</option><option value="ru">Rusça</option><option value="ro">Romence</option><option value="sq">Arnavutça</option></select><CaretDown size={15} /></div><button className="primary-button language-translate" disabled={!draft.trim() || translationBusy || (liveSession && !liveSession.paidAiEnabled)} onClick={() => { setTabletInspectorOpen(false); setDesktopInspectorOpen(false); translateDraft(); }}><Translate size={18}/>{translationBusy ? "Çevriliyor…" : "Mesajı bu dile çevir"}</button></div><div className="info-box"><Sparkle size={18} weight="fill" /><span>{liveSession ? "Çeviri yalnız siz istediğinizde çalışır. Sonuç önce gösterilir; hiçbir mesaj otomatik gönderilmez." : "Demo çevirisini göndermeden önce kontrol edin."}</span></div><CustomerSummary selected={selected} onAssign={() => openAssignment(selected)} canAssign={canAssign} /></div> : <div className="inspector-content customer-full"><CustomerSummary selected={selected} onAssign={() => openAssignment(selected)} canAssign={canAssign} expanded /></div>}
           </aside>
-        </div> : <BackofficeView activeView={activeView} conversations={conversations} query={query} products={productSeed} catalogs={catalogSeed} draftOrders={draftOrders} role={role} liveSession={liveSession} getSalesRulesContext={currentSalesRulesContext} onRefreshSession={refreshLivePermissions} summary={effectiveSummary} agents={agents} inboxPartial={inboxPartial} agentLoadState={agentLoadState} onRefreshAgents={()=>sessionLoaderRef.current?.refreshAgents()} onOpenConversation={(id, targetFilter = "Tüm Konuşmalar") => { const conversation = conversations.find((item) => String(item.id) === String(id)); if (!conversation) return; selectConversation(conversation); setFilter(targetFilter); setActiveView("Gelen Kutusu"); }} onOpenProduct={(id) => { setSelectedProductId(id); setModal("Ürün Gönder"); }} onOpenCatalog={() => setModal("Katalog")} onOpenPrice={() => setModal("Fiyat")} onOpenVideo={openVideoPilot} onCreateDraft={() => setModal("draft")} onOpenNotifications={() => setModal("notifications")} onNotify={flash} />}
+        </div> : <BackofficeView activeView={activeView} conversations={conversations} query={query} products={productSeed} catalogs={catalogSeed} draftOrders={draftOrders} draftOrderStorageWarning={draftOrderStorageWarning} onOpenDraft={openSavedErpDraft} role={role} liveSession={liveSession} getSalesRulesContext={currentSalesRulesContext} onRefreshSession={refreshLivePermissions} summary={effectiveSummary} agents={agents} inboxPartial={inboxPartial} agentLoadState={agentLoadState} onRefreshAgents={()=>sessionLoaderRef.current?.refreshAgents()} onOpenConversation={(id, targetFilter = "Tüm Konuşmalar") => { const conversation = conversations.find((item) => String(item.id) === String(id)); if (!conversation) return; selectConversation(conversation); setFilter(targetFilter); setActiveView("Gelen Kutusu"); }} onOpenProduct={(id) => { setSelectedProductId(id); setModal("Ürün Gönder"); }} onOpenCatalog={() => setModal("Katalog")} onOpenPrice={() => setModal("Fiyat")} onOpenVideo={openVideoPilot} onCreateDraft={() => liveSession ? openCatalog() : setModal("draft")} onOpenNotifications={() => setModal("notifications")} onNotify={flash} />}
       </main>
 
-      {modal === "erp-order" && erpOrderContext?.current() && String(selected.id) === erpOrderContext.recipientId ? <ERPOrderDialog token={liveKey} actorKey={entry.enabled ? `terminal:${sessionIdentityRef.current}` : sessionIdentityRef.current} conversation={selected} items={erpOrderContext.items} isCurrent={erpOrderContext.current} onClose={()=>{setModal(null);setErpOrderContext(null);}} onSaved={order=>{if(order.request)setErpDraftContexts(values=>({...values,[String(selected.id)]:{requestId:order.request.requestId,customerId:order.request.customerId,items:order.request.items.map(line=>({erpProductId:line.productId,stockCode:line.stockCode,quantity:line.quantity}))}}));setDraftOrders(items=>[{...order,id:order.id||order.orderId,customer:order.customerName||selected.name,owner:userName,total:`${order.documentCurrency||""} ${Number(order.grandTotal||order.total||0).toFixed(2)}`,lines:order.items.length,status:"ERP taslağı",updated:"Şimdi"},...items.filter(item=>String(item.id)!==String(order.id||order.orderId))]);flash(`ERP taslağı yeniden okundu: ${order.documentNo||order.orderNo||order.id}`);}}/> : null}
+      {modal === "erp-order" && erpOrderContext?.current() && String(selected.id) === erpOrderContext.recipientId ? <ERPOrderDialog token={liveKey} actorKey={entry.enabled ? `terminal:${sessionIdentityRef.current}` : sessionIdentityRef.current} conversation={selected} items={erpOrderContext.items} recoveryOnly={erpOrderContext.recoveryOnly} onNewDraft={()=>{setErpOrderContext(null);refreshNativeDraftOrders();openCatalog();}} isCurrent={erpOrderContext.current} onClose={()=>{setModal(null);setErpOrderContext(null);refreshNativeDraftOrders();}} onSaved={order=>{if(order.request)setErpDraftContexts(values=>({...values,[String(selected.id)]:{requestId:order.request.requestId,customerId:order.request.customerId,items:order.request.items.map(line=>({erpProductId:line.productId,stockCode:line.stockCode,quantity:line.quantity}))}}));const card=nativeOrderReceiptCard(order,{customer:selected.name,owner:userName});setDraftOrders(items=>[card,...items.filter(item=>item.requestId!==card.requestId)]);flash(`ERP taslağı yeniden okundu: ${order.documentNo||order.orderNo||order.id}`);}}/> : null}
       {CATALOG_ENABLED && modal === "catalog-builder" && selected.id && liveSession && catalogContextCurrent() ? <CatalogWorkspace conversationId={entry.enabled ? selected.id : undefined} existingStock={CATALOG_EXISTING_STOCK_ENABLED} authMode={CATALOG_CRM_ONLY_ENABLED?"crm":"erp"} key={`${sessionIdentityRef.current}:${roleLabel}:${selected.id}`} token={liveKey} isCurrent={catalogContextCurrent} onSession={session=>{catalogSessionRef.current=session;}} onSource={setCatalogSource} onCrmExpired={()=>{void renewExpiredNormalSession();}} customer={selected} identity={sessionIdentityRef.current} role={roleLabel} canAttach={Boolean(liveSession.liveSendEnabled && !selectedSendUncertain)} onClose={closeCatalog} onAttach={attachCatalogOutput} onProductAction={catalogProductAction} attachmentExists={Boolean(pendingAttachment)} /> : null}
       {toast ? <div className="toast" role="status"><CheckCircle size={20} weight="fill" />{toast}</div> : null}
       {modal === "assign" ? <Modal title="Temsilci ata" onClose={() => !assignmentBusy && setModal(null)}><div className="modal-body"><div className="selected-customer"><Avatar initials={(conversations.find((item) => String(item.id) === String(assignmentTargetId)) || selected).initials} /><div><strong>{(conversations.find((item) => String(item.id) === String(assignmentTargetId)) || selected).name}</strong><span>Bu konuşmadan kim sorumlu olacak?</span></div></div>{liveSession && (agentLoadState.busy || agentLoadState.error) ? <p role={agentLoadState.error ? "alert" : "status"}>{agentLoadState.busy ? "Temsilciler yükleniyor…" : agentLoadState.error}{agentLoadState.error ? <button onClick={()=>sessionLoaderRef.current?.refreshAgents()}>Yeniden dene</button> : null}</p> : null}<div className="assignee-list" role="radiogroup" aria-label="Sorumlu temsilci">{(liveSession ? agents.map((agent) => ({ id: String(agent.id), name: agent.name })) : teamOptions.slice(1).map((name) => ({ id: name, name }))).map((agent) => <button key={agent.id} role="radio" aria-checked={selectedAssigneeId === agent.id} className={selectedAssigneeId === agent.id ? "assignee-option selected" : "assignee-option"} onClick={() => { setSelectedAssigneeId(agent.id); setAssignmentError(""); }}><Avatar initials={agent.name.split(" ").map((part) => part[0]).join("").slice(0, 2)} compact /><span className="assignee-person"><strong>{agent.name}</strong><small>{conversations.filter((item) => item.owner === agent.name).length} {inboxPartial ? "görünür " : ""}konuşma</small></span><span className="assignee-check">{selectedAssigneeId === agent.id ? <Check size={16} weight="bold" /> : null}</span></button>)}</div>{assignmentError ? <p className="assignment-error" role="alert">{assignmentError}</p> : null}<div className="modal-actions"><button className="secondary-button" onClick={() => setModal(null)} disabled={assignmentBusy}>Vazgeç</button><button className="primary-button" onClick={confirmAssignment} disabled={!selectedAssigneeId || assignmentBusy || (liveSession && (agentLoadState.busy || Boolean(agentLoadState.error)))}><UserPlus size={18} />{assignmentBusy ? "Atanıyor…" : "Atamayı onayla"}</button></div></div></Modal> : null}
@@ -1488,7 +1517,7 @@ export function App() {
   );
 }
 
-function BackofficeView({ activeView, conversations, query, products, catalogs, draftOrders, role, liveSession, getSalesRulesContext, onRefreshSession, summary, agents, inboxPartial=false, agentLoadState={busy:false,error:""}, onRefreshAgents, onOpenConversation, onOpenProduct, onOpenCatalog, onOpenPrice, onOpenVideo, onCreateDraft, onOpenNotifications, onNotify }) {
+function BackofficeView({ activeView, conversations, query, products, catalogs, draftOrders, draftOrderStorageWarning, onOpenDraft, role, liveSession, getSalesRulesContext, onRefreshSession, summary, agents, inboxPartial=false, agentLoadState={busy:false,error:""}, onRefreshAgents, onOpenConversation, onOpenProduct, onOpenCatalog, onOpenPrice, onOpenVideo, onCreateDraft, onOpenNotifications, onNotify }) {
   const visibleCustomers = conversations.filter((item) => matchesContactSearch(item, query));
   const unassigned = conversations.filter((item) => item.owner === "Atanmamış");
   const waiting = conversations.filter((item) => item.waitingForReply === true);
@@ -1506,7 +1535,7 @@ function BackofficeView({ activeView, conversations, query, products, catalogs, 
   }));
   const currentUserName = liveSession?.username || liveSession?.name || liveSession?.displayName || role;
 
-  if (isLive && ["Ürün Kataloğu", "Taslak Siparişler"].includes(activeView)) return <section className="backoffice-page"><PageHeading eyebrow="MELİSA CRM" title="Ürün bağlantısı hazırlanıyor" text="Ürün ve sipariş verileri bu bağlantıda henüz kullanılamıyor." /></section>;
+  if (isLive && activeView === "Ürün Kataloğu") return <section className="backoffice-page"><PageHeading eyebrow="MELİSA CRM" title="Ürün bağlantısı hazırlanıyor" text="Ürün ve sipariş verileri bu bağlantıda henüz kullanılamıyor." /></section>;
 
   if (activeView === "El Terminali") return <TerminalPreview conversations={conversations} onOpenConversation={onOpenConversation} onOpenProduct={onOpenProduct} onOpenCatalog={onOpenCatalog} onOpenPrice={onOpenPrice} onOpenVideo={onOpenVideo} onCreateDraft={onCreateDraft} />;
 
@@ -1521,8 +1550,8 @@ function BackofficeView({ activeView, conversations, query, products, catalogs, 
   if (activeView === "Taslak Siparişler") return (
     <section className="backoffice-page">
       <PageHeading eyebrow="ERP HAZIRLIK" title="Taslak Siparişler" text="Kesinleşmeden ve stok düşmeden önce siparişleri kontrol edin." action={<button className="primary-button" onClick={onCreateDraft}><Plus size={18} />Yeni Taslak</button>} />
-      <div className="safety-strip"><CheckCircle size={20} weight="fill" /><span><strong>ERP güvenlik kuralı aktif.</strong> Bu ekrandaki kayıtlar önizlemedir; ERP bağlantısı son aşamada açılacaktır.</span></div>
-      <div className="data-card"><div className="data-card-heading"><div><strong>Açık taslaklar</strong><span>{draftOrders.length} kayıt</span></div><button className="secondary-button" onClick={() => onNotify("Taslak sipariş özeti indirilmeye hazırlandı (demo).")}><DownloadSimple size={17} />Dışa aktar</button></div><div className="order-grid">{draftOrders.map((order) => <article className="order-card" key={order.id}><div className="order-id"><span><ClipboardText size={20} /></span><div><small>{order.id}</small><strong>{order.customer}</strong></div><b>{order.status}</b></div><div className="order-meta"><span>Toplam<strong>{order.total}</strong></span><span>Ürün satırı<strong>{order.lines}</strong></span><span>Sorumlu<strong>{order.owner}</strong></span></div><footer><span>{order.updated}</span><button onClick={() => { if (order.conversationId) onOpenConversation(order.conversationId); }} disabled={!order.conversationId}>Müşteriyi aç <ArrowRight size={15} /></button></footer></article>)}</div></div>
+      <div className="safety-strip"><CheckCircle size={20} weight="fill" /><span><strong>ERP güvenlik kuralı aktif.</strong> {isLive ? "Bu tarayıcı oturumunda korunan son taslaklar gösterilir. Kaydı açınca aynı ERP hesabıyla sunucudan yeniden okunur. Satış, stok ve cari hareketi oluşmaz." : "Bu ekrandaki kayıtlar yerel önizlemedir; ERP’ye kaydedilmez."}</span></div>{draftOrderStorageWarning?<p role="alert">{draftOrderStorageWarning}</p>:null}
+      <div className="data-card"><div className="data-card-heading"><div><strong>{isLive?"Bu tarayıcı oturumundaki taslaklar":"Açık taslaklar"}</strong><span>{draftOrders.length} kayıt</span></div>{!isLive?<button className="secondary-button" onClick={() => onNotify("Taslak sipariş özeti indirilmeye hazırlandı (demo).")}><DownloadSimple size={17} />Dışa aktar</button>:null}</div><div className="order-grid">{draftOrders.map((order) => <article className="order-card" key={order.id} data-crm-request-id={order.requestId}><div className="order-id"><span><ClipboardText size={20} /></span><div><small>{order.documentNo||order.id}</small><strong>{order.customer}</strong></div><b>{order.status}</b></div><div className="order-meta"><span>Toplam<strong>{order.total}</strong></span><span>Ürün satırı<strong>{order.lines}</strong></span><span>Sorumlu<strong>{order.owner}</strong></span></div><footer><span>{order.updated}</span><button onClick={() => { if(isLive)onOpenDraft(order);else if(order.conversationId)onOpenConversation(order.conversationId); }} disabled={!order.conversationId}>{isLive?"Taslağı aç":"Müşteriyi aç"} <ArrowRight size={15} /></button></footer></article>)}</div>{!draftOrders.length?<div className="empty-state"><ClipboardText size={32}/><strong>{isLive?"Bu tarayıcı oturumunda taslak yok":"Henüz sipariş taslağı yok"}</strong><span>{isLive?"Müşteriyi seçip kataloğundan ürün ekleyin; ERP taslağını kaydettikten sonra buradan yeniden açabilirsiniz.":"Bir müşteri için ürün seçip taslak önizleme oluşturun."}</span></div>:null}</div>
     </section>
   );
 
