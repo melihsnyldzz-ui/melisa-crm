@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { env } from '../config/env.js';
+import { getInboxOverview } from './inboxService.js';
 import {
   listChatwootInboxOverview,
   getChatwootConversationDetail,
@@ -501,7 +502,7 @@ test('personnel bootstrap reads only the fresh assigned subset, keeps exact tota
   };
   const user = { role: 'personel', chatwootAgentId: 7, permissions: [] };
   const result = await listChatwootInboxOverview({ view: 'bootstrap', limit: 100, user });
-  assert.equal(peak, 1); assert.equal(pages.length, 1); assert.equal(historyReads, 0);
+  assert.equal(peak, 1); assert.equal(pages.length, 2); assert.equal(historyReads, 0);
   assert.deepEqual(result.conversations.map(row => row.id), Array.from({ length: 23 }, (_, i) => i + 1));
   assert.equal(result.pagination.total, 23); assert.equal(result.pagination.hasNext, false);
   assert.equal(result.summary.pendingHumanReply, null);
@@ -511,7 +512,7 @@ test('personnel bootstrap reads only the fresh assigned subset, keeps exact tota
   }
   rows[0].meta.assignee.id = 8;
   const refreshed = await listChatwootInboxOverview({ view: 'bootstrap', limit: 100, user });
-  assert.equal(pages.length, 2); assert.equal(refreshed.pagination.total, 22);
+  assert.equal(pages.length, 4); assert.equal(refreshed.pagination.total, 22);
   assert.equal(refreshed.conversations.some(row => row.id === 1), false); assert.equal(historyReads, 0);
 });
 
@@ -590,9 +591,16 @@ test('concurrent overview offsets share one complete page traversal and overlapp
 
 test('management snapshots preserve per-request permissions while personnel always reads fresh assignments', async t => {
   inboxFixture(t, 'role-fresh'); const rows = [syntheticConversation(1, 7), syntheticConversation(2, 8), syntheticConversation(3, 7, 2)]; let pages = 0;
-  global.fetch = async url => {
+  let finalReads = 0;
+  global.fetch = async (url, options) => {
     await Promise.resolve();
     if (String(url).includes('/messages')) return jsonResponse({ payload: [] });
+    if (String(url).includes('/filter?')) {
+      finalReads++;
+      const agent = Number(JSON.parse(options.body).payload[0].values[0]);
+      const assigned = rows.filter(row => row.meta.assignee.id === agent && row.inbox_id === 1);
+      return jsonResponse({meta:{all_count:assigned.length},payload:assigned});
+    }
     pages++; return jsonResponse({ data: { meta: { all_count: rows.length }, payload: rows } });
   };
   const staff = { role: 'personel', chatwootAgentId: 7, permissions: [] };
@@ -609,6 +617,7 @@ test('management snapshots preserve per-request permissions while personnel alwa
   const currentPolicy = await listChatwootInboxOverview({ user: { role: 'patron', permissions: [] } });
   assert.equal(pages, 4); assert.equal(currentPolicy.capabilities.assign, false);
   assert(currentPolicy.conversations.every(c => c.capabilities.assign === false));
+  assert.equal(finalReads, 2); // only nonempty personnel responses, never management
 });
 
 test('overview failure clears coalesced work and does not cache a fallback or partial response', async t => {
@@ -877,4 +886,64 @@ test('personnel detail rejects another assignment before hydrating messages and 
  global.fetch=async url=>{if(String(url).includes('/messages')){messageReads++;assignee=8;return jsonResponse({payload:[{id:1,message_type:0,content:'Must stay private'}]});}return jsonResponse(syntheticConversation(1,assignee));};
  await assert.rejects(()=>getChatwootConversationDetail({conversationId:1,user}),e=>e.statusCode===403);assert.equal(messageReads,0);
  assignee=7;await assert.rejects(()=>getChatwootConversationDetail({conversationId:1,user}),e=>e.statusCode===403);assert.equal(messageReads,1);
+});
+
+
+test('ordinary personnel inbox suppresses messages when reassigned during hydration', async t => {
+  for (const changed of [false, true]) await t.test(changed ? 'reassigned' : 'current', async t => {
+    inboxFixture(t, 'ordinary-inbox-final-' + changed);
+    const user = { role: 'personel', chatwootAgentId: 7, permissions: ['crm.view'] };
+    let assignee = 7, historyReads = 0, finalReads = 0;
+    global.fetch = async (url, options) => {
+      const parsed = new URL(String(url));
+      if (parsed.pathname.endsWith('/messages')) {
+        historyReads++;
+        if (changed) assignee = 8;
+        return jsonResponse({payload:[{id:91,conversation_id:1,message_type:0,content:'Private customer message'}]});
+      }
+      if (parsed.pathname.endsWith('/filter')) {
+        finalReads++;
+        assert.equal(options.method, 'POST');
+        const payload = assignee === 7 ? [syntheticConversation(1)] : [];
+        return jsonResponse({meta:{all_count:payload.length},payload});
+      }
+      return jsonResponse({data:{meta:{all_count:1},payload:[syntheticConversation(1)]}});
+    };
+    if (changed) await assert.rejects(listChatwootInboxOverview({user}), e => e.statusCode === 403);
+    else {
+      const result = await listChatwootInboxOverview({user});
+      assert.equal(result.conversations[0].messages[0].text, 'Private customer message');
+    }
+    assert.equal(historyReads, 1); assert.equal(finalReads, 1);
+  });
+});
+
+
+test('ordinary personnel bootstrap rechecks every returned identity without reading messages', async t => {
+  inboxFixture(t, 'ordinary-bootstrap-final'); let filters = 0;
+  const user = {role:'personel',chatwootAgentId:7,permissions:['crm.view']};
+  global.fetch = async (url, options) => {
+    assert(String(url).includes('/conversations/filter?'));
+    assert.equal(options.method, 'POST'); filters++;
+    const payload = filters === 1 ? [syntheticConversation(1), syntheticConversation(2)] : [syntheticConversation(1)];
+    return jsonResponse({meta:{all_count:payload.length},payload});
+  };
+  await assert.rejects(listChatwootInboxOverview({view:'bootstrap',user}), e => e.statusCode === 403);
+  assert.equal(filters, 2);
+});
+
+test('personnel assignment failure cannot fall back to a stale local inbox', async t => {
+  inboxFixture(t, 'ordinary-no-fallback');
+  const oldRead = env.chatwoot.inboxReadEnabled, oldFallback = env.chatwoot.inboxFallbackEnabled;
+  t.after(() => {env.chatwoot.inboxReadEnabled=oldRead;env.chatwoot.inboxFallbackEnabled=oldFallback;});
+  env.chatwoot.inboxReadEnabled = true; env.chatwoot.inboxFallbackEnabled = true;
+  let finalReads = 0;
+  global.fetch = async url => {
+    if (String(url).includes('/messages')) return jsonResponse({payload:[]});
+    if (String(url).includes('/filter?')) {finalReads++;return jsonResponse({meta:{all_count:0},payload:[]});}
+    return jsonResponse({data:{meta:{all_count:1},payload:[syntheticConversation(1)]}});
+  };
+  await assert.rejects(getInboxOverview({user:{role:'personel',chatwootAgentId:7,permissions:['crm.view']}}),
+    e => e.code === 'WHATSAPP_CRM_CONVERSATION_FORBIDDEN' && e.statusCode === 403);
+  assert.equal(finalReads, 1);
 });

@@ -15,7 +15,7 @@ export function parseConversationHistoryBefore(query = {}) {
   return Number(query.before);
 }
 
-// Only the explicit older-page path adds this fresh normal-token guard.
+// Fresh normal-token guard for reads that must recheck authority before response.
 export function createConversationHistoryRequestGuard(req, {verify = verifyCrmAccessToken} = {}) {
   const header = req.get('authorization') || '', original = normalSessionFingerprint(req.user);
   const current = () => {

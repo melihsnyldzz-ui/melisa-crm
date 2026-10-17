@@ -1,15 +1,20 @@
 import { getInboxOverview } from '../services/inboxService.js';
 import { ok } from '../utils/response.js';
-import { createTestPersonnelRequestGuard } from './conversationController.js';
+import { createTestPersonnelRequestGuard, createConversationHistoryRequestGuard } from './conversationController.js';
 
 export async function getInboxController(req, res, next) {
   try {
     const guard = createTestPersonnelRequestGuard(req);
+    // Reuse the normal verifier/fingerprint contract: data fetched while the
+    // actor was deactivated, reassigned or revoked must not leave this request.
+    const normalGuard = req.user?.role === 'personel' && !req.user.testPersonnel
+      ? createConversationHistoryRequestGuard(req) : null;
     if (req.query?.view !== undefined && req.query.view !== 'bootstrap') {
       throw Object.assign(new Error('Gelen kutusu gorunumu gecersiz.'), {
         code: 'WHATSAPP_CRM_INBOX_VIEW_INVALID', statusCode: 400,
       });
     }
+    await normalGuard?.();
     const limit = req.query?.limit;
     const offset = req.query?.offset;
     const overview = await getInboxOverview({ limit, offset, view: req.query?.view, user: req.user });
@@ -23,6 +28,7 @@ export async function getInboxController(req, res, next) {
       await guard();
     }
 
+    await normalGuard?.();
     return ok(res, overview, {
       source: overview.summary?.source || 'whatsapp-crm-inbox',
       readOnly: true,
