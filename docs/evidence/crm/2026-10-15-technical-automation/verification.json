@@ -3494,4 +3494,289 @@
     "metadataIntegrity": "PASS: historical JSON unchanged; single active Sıradaki iş; one unchanged historical preflight block; source/runtime/GUI/human states separate",
     "stagedSecretScan": "Mandatory redacted staged scan required immediately before docs commit; no application tests or CI rerun requested"
   }
+,
+  "crmTechnicalGoal20261023": {
+    "date": "2026-10-17",
+    "scope": "Existing native CRM-TEKNIK-23EKIM goal; three source/test/GitHub cycles, immutable candidate handoff next",
+    "goal": {
+      "nativeStatus": "active",
+      "verifiedBy": "get_goal",
+      "existingCrmMainThread": true,
+      "goalIdExposed": false,
+      "tokenBudget": null,
+      "definition": "https://github.com/melihsnyldzz-ui/melisa-erp-v2/pull/23#issuecomment-6232818354",
+      "completionClaim": false
+    },
+    "milestones": {
+      "timezone": "Europe/Istanbul",
+      "interim": "2026-10-19",
+      "technicalCandidate": "2026-10-23",
+      "businessAndDevice": [
+        "2026-10-26",
+        "2026-10-27"
+      ],
+      "finalFixAndRollback": [
+        "2026-10-27",
+        "2026-10-28"
+      ],
+      "liveConditionalTarget": "2026-10-30",
+      "datesChanged": false
+    },
+    "delivery": {
+      "branch": "codex/crm-agents-on-completion-20261003",
+      "pr": "https://github.com/melihsnyldzz-ui/melisa-crm/pull/3",
+      "mainMerged": false
+    },
+    "cycles": [
+      {
+        "scope": "P03 existing candidate/source unification",
+        "commit": "67bc82c43cea636663068bf44a043518f5929e3b",
+        "parents": [
+          "2e14a60028f41f9e42d57e38a05079e4058ec4c2",
+          "439b63db8376a6b9d3ac8baa625ed98367022623"
+        ],
+        "candidateBlobsMatched": 334,
+        "featureDeployAndProfileBlobsMatched": 48,
+        "semanticApplicationDeltaVsApprovedCandidate": false,
+        "currentFeatureMetadataPreserved": true,
+        "candidateNotesKeptAsDatedHistory": true,
+        "old12Plus4BrowserOrI01Rerun": false,
+        "independentReview": {
+          "reviewer": "existing az independent reviewer",
+          "openP1": 0,
+          "openP2": 0
+        },
+        "stagedSecretScan": "PASS; no leaks",
+        "ci": {
+          "pullRequest": 39027311125,
+          "push": 39027308677,
+          "aiOffline": 39027311028,
+          "all": "SUCCESS on exact commit"
+        },
+        "scopeScoreIncrease": false,
+        "candidateBlobScope": [
+          "apps/",
+          "packages/",
+          "scripts/",
+          ".github/",
+          ".gitignore"
+        ]
+      },
+      {
+        "scope": "P10.3/A05 current ERP customer and quantities in sales suggestions",
+        "commit": "af524614fdbdd41399acd566fdcd26284b814951",
+        "files": [
+          "apps/frontend/src/App.jsx",
+          "apps/frontend/tests/sales-erp-context-app.test.mjs"
+        ],
+        "problem": "Singleton flow retained first-render ERP state; saved customer/quantity absent and old suggestions survived ERP context changes",
+        "behavior": "Current ref snapshot with selected recipient/current-operation guard; changed ERP customer/quantity cancels old model/policy result and protects staff composer",
+        "targetedCommand": "node --test --test-timeout=20000 apps/frontend/tests/sales-erp-context-app.test.mjs",
+        "before": {
+          "tests": 8,
+          "pass": 0,
+          "fail": 8,
+          "durationMs": 61627.2325,
+          "firstRunCompilerStartupIncluded": true
+        },
+        "correctedConversationFixtureBeforeFix": {
+          "tests": 1,
+          "fail": 1,
+          "sameCaseNotAdditionalCoverage": true,
+          "responseConversationIdMatched": true
+        },
+        "after": {
+          "tests": 8,
+          "pass": 8,
+          "fail": 0,
+          "durationMs": 7096.5891,
+          "writeSentinels": "Actual liveApi send,erpDraft,erpV2Draft names; zero calls"
+        },
+        "verificationScope": "Real App compiled with retained hook cells and actual ERP onSaved/onClose and sales flow; hooks/API boundaries synthetic, not ReactDOM/browser/human/paid provider proof",
+        "cases": [
+          "saved ERP customer and quantities after rerender",
+          "current selected open ERP items",
+          "stale operation ignored",
+          "other recipient ignored",
+          "customer change rejects pending generation",
+          "quantity change invalidates preview",
+          "ERP change during policy read protects staff composer",
+          "A/B conversations use their own saved contexts"
+        ],
+        "independentReview": {
+          "reviewer": "existing az independent reviewer",
+          "openP1": 0,
+          "openP2": 0
+        },
+        "stagedSecretScan": "PASS; no leaks",
+        "ci": {
+          "pullRequest": 39027722078,
+          "push": 39027719280,
+          "aiOffline": 39027722074,
+          "all": "SUCCESS on exact commit"
+        },
+        "installed": false
+      },
+      {
+        "scope": "P10.1/A02 approved wholesale/series/recipient-shipping rules through policy/model/read-only staff review",
+        "commit": "6bc82e6fe9726261ef1d0171d97e5d9da9f5398a",
+        "files": [
+          "apps/gateway/src/services/salesAgent/policy.mjs",
+          "apps/gateway/src/services/salesAgent/policyStore.mjs",
+          "apps/gateway/src/services/salesAgent/preview.mjs",
+          "apps/gateway/src/services/salesAgent/agent.mjs",
+          "apps/gateway/src/services/salesAgent/approvedBusinessRules.test.mjs",
+          "apps/gateway/src/routes/policyRoutes.test.js",
+          "apps/frontend/src/lib/salesRules.js",
+          "apps/frontend/src/SalesRulesSettings.jsx",
+          "apps/frontend/tests/sales-approved-rules.test.mjs"
+        ],
+        "approvedDecisions": {
+          "wholesaleOnly": true,
+          "breakSeries": false,
+          "shippingPayer": "recipient",
+          "sources": [
+            "https://github.com/melihsnyldzz-ui/melisa-erp-v2/pull/23#issuecomment-6232818354",
+            "https://github.com/melihsnyldzz-ui/melisa-erp-v2/pull/23#issuecomment-6222599673"
+          ]
+        },
+        "behavior": "Immutable sourced server facts in GET/model/actual read-only React card; absent legacy facts unknown, malformed or foreign-source facts rejected. Common effective revision includes hard rules; old revision409 and patron fixed-rule override400; legacy policy file shape preserved.",
+        "before": {
+          "tests": 6,
+          "pass": 1,
+          "fail": 5,
+          "durationMs": 371.1962,
+          "command": "node --import ./tests/offline-test-guard.mjs --test apps/gateway/src/services/salesAgent/approvedBusinessRules.test.mjs apps/frontend/tests/sales-approved-rules.test.mjs"
+        },
+        "after": {
+          "tests": 197,
+          "pass": 197,
+          "fail": 0,
+          "skip": 0,
+          "durationMs": 7227.4083,
+          "not197NewTests": true,
+          "command": "node --import ./scripts/ci/offline-guard.mjs --test apps/gateway/src/services/salesAgent/approvedBusinessRules.test.mjs apps/gateway/src/services/salesAgent/salesAgent.test.mjs apps/gateway/src/services/salesAgent/recordedCatalog.test.mjs apps/gateway/src/routes/policyRoutes.test.js apps/gateway/src/routes/salesAgentRoutes.test.js apps/frontend/tests/sales-approved-rules.test.mjs apps/frontend/tests/sales-rules.test.mjs apps/frontend/tests/sales-draft.test.mjs apps/frontend/tests/sales-products.test.mjs apps/frontend/tests/sales-products-canonical-name.test.mjs"
+        },
+        "frontendBuild": {
+          "status": "PASS",
+          "offlineGuard": "scripts/ci/offline-guard.mjs",
+          "envFile": false,
+          "outDir": "unique OS temporary directory; removed in finally",
+          "sharedDistOrRuntimeWritten": false,
+          "existingChunkWarningsOnly": true
+        },
+        "verificationScope": "Offline generate stub, ephemeral policy file, actual HTTP policy routes and real React renderToStaticMarkup; not browser, real LLM, person or physical device acceptance",
+        "independentReview": {
+          "reviewer": "existing az independent reviewer",
+          "openP1": 0,
+          "openP2": 0
+        },
+        "stagedSecretScan": "PASS; no leaks",
+        "ci": {
+          "pullRequest": 39028345874,
+          "push": 39028342757,
+          "aiOffline": 39028345889,
+          "all": "SUCCESS on exact commit"
+        },
+        "unknownMinimumCurrencyCountryMoqDiscountShippingAmountOrDateInvented": false,
+        "automaticCustomerSend": false,
+        "erpWrite": false,
+        "installed": false
+      }
+    ],
+    "continuedWithoutNewUserContinue": true,
+    "executionEvidence": "Three consecutive actual code/test/review/GitHub deliveries in the same native Goal turn, without a new user continue; not a scheduler or unattended availability promise",
+    "currentWork": {
+      "scope": "P03 exact source CI and same-report receipt, then immutable candidate handoff to the existing ERP sole shared runtime owner",
+      "state": "EXACT_SOURCE_CI_SUCCESS; immutable package handoff to existing ERP owner after metadata clean receipt; not installed",
+      "source": "6bc82e6fe9726261ef1d0171d97e5d9da9f5398a",
+      "closed439ProfileUnchanged": true,
+      "newTestEnvironment": false,
+      "sourcePackageInventory": {
+        "source": "6bc82e6fe9726261ef1d0171d97e5d9da9f5398a",
+        "tree": "714f198561fb47d1e1c7308c274c117dba40367b",
+        "selectedSourceCount": 186,
+        "selectedSourceInventorySha256": "ba1d82473c0234e55084bc2c28f6e7b52165a71a714912abe27f50e9e755d7c9",
+        "lockSha256": {
+          "gateway": "c487dc65e3a107f5235408fad3523c8242a4c01b62c7475154ad4ae41a627b96",
+          "frontend": "9064a36a0c86464db93cc261ffedbc92a87ea2092315e207301ca8a8aa6d4d24"
+        },
+        "packageCreated": false,
+        "defaultBaseDestinationAllowedByExistingSource": true,
+        "closed439ProfileChanged": false
+      }
+    },
+    "preflight": {
+      "executedOnce": true,
+      "status": "CHECK_REQUIRED",
+      "exitCode": 1,
+      "changed": true,
+      "cacheSaved": true,
+      "crm": [
+        "historical context REUSE",
+        "historical context REUSE",
+        "normal UI BLOCKED"
+      ],
+      "erp": [
+        "recorded proof BLOCKED",
+        "recorded proof BLOCKED",
+        "recorded proof BLOCKED"
+      ],
+      "runtimeHealthIndependentlyProbed": false,
+      "wholeClosureGranted": false,
+      "repeatAcceptedTests": false
+    },
+    "runtime": {
+      "installedSource": "439b63db8376a6b9d3ac8baa625ed98367022623",
+      "installedManifest": "e85ce261ece92201e24c86ea52e4df7e95b022b0ae6835e80c9b99e5abaec938",
+      "newSourcesApplied": false,
+      "closedNode2419ProfileStillPinnedTo439b63": true,
+      "sourceCheckoutIsDeployment": false,
+      "normalCrmGui": "Existing ERR_BLOCKED_BY_CLIENT; not retried",
+      "normalHubGui": "Existing403; not retried",
+      "sharedOwner": "ERP main owner"
+    },
+    "acceptance": {
+      "human": "BEKLİYOR",
+      "physicalDevice": "BEKLİYOR",
+      "windowsRebootLogon": "BEKLİYOR",
+      "crmCounts": {
+        "total": 25,
+        "green": 12,
+        "partial": 13,
+        "red": 0
+      },
+      "wholePlanTotal": 74,
+      "technicalPercent": "Verification pending: full finite per-original-ID criterion/evidence denominator not yet complete; mixed12/25 not reused as technical percentage"
+    },
+    "boundaries": {
+      "newTestEnvironment": false,
+      "newAgentGoalAutomationTracker": false,
+      "sharedRuntimeSqlConfigStoreServiceWrite": false,
+      "realCustomerMessages": false,
+      "paidApiOrKeyRead": false,
+      "liveVegaRealT1": false,
+      "mainMergeTag": false,
+      "unsupportedBrowserOrCredentialBypass": false
+    },
+    "nextTechnicalReadOnlyReview": {
+      "scope": "P10.2/P10.3 and P11-P13 existing source criteria",
+      "reviewer": "existing audit_source_explorer",
+      "newIndependentSourceGapConfirmed": false,
+      "baselineTestsRerun": false,
+      "freeModelProseStillRequiresHumanReview": true,
+      "physicalGuiRebootNotCompletedByFixtures": true
+    },
+    "metadataIndependentReadOnlyReview": {
+      "reviewer": "existing ai_sales subagent",
+      "firstTwoCyclesOpenP1P2": 0,
+      "historical29KeysUnchanged": true,
+      "singleActiveHeading": true,
+      "historicalPreflightBlockUnchanged": true,
+      "finalThreeCycleReviewer": "existing az independent reviewer",
+      "finalOpenP1": 0,
+      "finalOpenP2": 0,
+      "ciGoalBuildInventoryAreRootReceiptsNotReviewerReruns": true
+    }
+  }
 }
