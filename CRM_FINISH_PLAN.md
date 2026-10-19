@@ -1,3 +1,7 @@
+## 19 Ekim — CRM06 ortak sentetik Cloud kaynak teslimi
+
+[CRM PR20](https://github.com/melihsnyldzz-ui/melisa-crm/pull/20) / [ERP PR55](https://github.com/melihsnyldzz-ui/melisa-erp-v2/pull/55): mevcutCatalogBuilder/ERPOrderDialog/NativeOrderReceiptDisplay ayrıCloudgirişinden tek kalıcı ERPsentetikAPI/store kullanır. 5hedefadaptertest ve cloudbuild PASS;390pxgerçekChromiumda2adet/25TRYtaslak,stok/borçetkisi0,yenileme+sunucudan açma,aynıkaydıERPfişindetamamlama+kısmitahsilat ve yanlışpersonelgizlilik doğrulandı. [Ortak ekran/makine kanıtı](https://github.com/melihsnyldzz-ui/melisa-erp-v2/blob/codex/cloud-shared-test-20261019/docs/evidence/erp/2026-10-19-cloud-shared/README.md). PR19günceltaban03a8609/PR18korunur;gerçekgateway/auth/sharedTEST/Windows/Vega/mesaj yazısı0. ExactsonHEADCIson teslimde ayrıdoğrulanır;owner-privateSitesyayını ve gerçekWindows/cihaz/insankabulü BEKLİYOR. CRM06/CRM-UA11/25/12/13/0sayımı aynı; yeniGoal/tracker yok.
+
 ## 17 Ekim — güncel teknik teslim / kurulum ve kabul ayrımı
 
 **CRM-TEKNIK-23EKIM — native ACTIVE:** [Tarihli hedef](https://github.com/melihsnyldzz-ui/melisa-erp-v2/pull/23#issuecomment-6232818354) aynı CRM oturumunda gerçek `get_goal` ile doğrulandı.19 Ekim ara teslimi,23 Ekim teknik aday,26–27 işletme/cihaz,27–28 son hata/geri dönüş,30 Ekim ayrı onaylı LIVE tarihleri değişmez; bu kayıt yeni plan/tree değildir.25 özgün yaprak ve74 kapsamı korunur; teknik yüzde için finite ölçüt/kanıt eşlemesi henüz tamam değil.
