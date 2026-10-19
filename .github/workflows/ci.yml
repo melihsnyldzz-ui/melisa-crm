@@ -39,6 +39,8 @@ jobs:
         run: node scripts/ci/check-syntax.mjs
       - name: Build frontend with offline guard
         run: node scripts/ci/build.mjs
+      - name: Build isolated synthetic Cloud frontend with offline guard
+        run: node scripts/ci/build-cloud.mjs
       - name: Run all offline frontend, gateway and contract tests
         run: node scripts/ci/run-tests.mjs
 
