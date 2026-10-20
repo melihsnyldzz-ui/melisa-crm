@@ -1,0 +1,68 @@
+{
+  "taskId": "DOT-CRM-NODE2419-EXACT-PROFILE-20261020-1759",
+  "date": "2026-10-20",
+  "requirements": ["CRM06", "E02"],
+  "applicationTarget": {
+    "profile": "crm20261020-node-v24.19.0",
+    "commit": "7ba6e4ebc8b70019136d603e6307741189ba03c1",
+    "tree": "db824c8a10b030faee6ea84a69cbb3cf86d7293a",
+    "repoRoot": "C:\\Sirket\\CRM\\melisa-crm",
+    "releasesRoot": "C:\\Sirket\\CRM\\releases\\node-v24.19.0",
+    "executable": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe",
+    "version": "v24.19.0",
+    "platform": "win32",
+    "arch": "x64",
+    "nodeSha256": "3602f2bb1a10f2cbab4c36886218a33c1ab3db87290e73b033c46c77147d0237",
+    "locks": {"gateway": "c487dc65e3a107f5235408fad3523c8242a4c01b62c7475154ad4ae41a627b96", "frontend": "9064a36a0c86464db93cc261ffedbc92a87ea2092315e207301ca8a8aa6d4d24"},
+    "isolatedPreparation": true,
+    "pinEvidence": "Git tree/show bytes + existing Node24.15 manifest + read-only Node24.19 executable SHA256; checkout CRLF hashes excluded"
+  },
+  "builderDelivery": {
+    "baseCommit": "7ba6e4ebc8b70019136d603e6307741189ba03c1",
+    "branch": "codex/crm-agents-on-completion-20261003",
+    "sourceCommit": null,
+    "sourceFiles": [
+      {"path": "deploy/test-package.mjs", "blob": "dd3a057af74826b5a4a62b095265fb550c7c5b4d"},
+      {"path": "tests/test-package-node2419.test.mjs", "blob": "2cfbf4732f50da9ec89759e2d92e7b97d51e5003"}
+    ],
+    "pullRequest": "https://github.com/melihsnyldzz-ui/melisa-crm/pull/3",
+    "ci": "PENDING_SOURCE_COMMIT",
+    "stagedSecretScan": "PENDING_COMMIT"
+  },
+  "verification": {
+    "host": "Node v24.15.0; offline-test-guard",
+    "fixture": "existing VM runs actual builder with synthetic process/Git/fs/digests up to mock staging boundary; no real package build",
+    "before": {"exitCode": 1, "tests": 51, "pass": 24, "fail": 27},
+    "after": {"exitCode": 0, "tests": 51, "pass": 51, "fail": 0, "existingTests": 23, "newTests": 28, "parentTests": 0},
+    "failureMeaning": "new profile unavailable; most negative-case failures were different fail-closed error codes, not prior security vulnerabilities",
+    "compatibility": {"exitCode": 0, "tests": 4, "pass": 4, "fail": 0, "skip": 0},
+    "syntaxDiff": "PASS",
+    "independentReview": {"existingAgent": "az_independent_reviewer", "readOnly": true, "openP1": 0, "openP2": 0, "reviewerRanTestsOrBuild": false},
+    "unchangedNormalizedSections": [
+      {"section": "legacy-profile", "sha256": "5f5ab7acddf8f8b85c1cba96f1ef7dadfccbf5d9c0592cd36f6ab0218c590a6e"},
+      {"section": "source-payload-private-path-link-reparse-and-verifier", "sha256": "76d9dff4613a98e47141422295b420eb927b581d50256c33b5a415405f9d0e6f"},
+      {"section": "offline-environment-and-bounded-npm", "sha256": "89fcbd0f8247fce1ce8a76f086637d01f6320c9f59f6503bc8b894ad863be118"},
+      {"section": "default-canonical-root", "sha256": "3c0260d92a88f7be608f0ea4e64851d48d6bab2f12f8038a2d306117cd065018"},
+      {"section": "immutable-build-and-seal", "sha256": "bc95a53dbf7cec4257f1879509783aa12567bc02ae1dcb896f260f67b8da2b7b"},
+      {"section": "node2419-pin-checks", "sha256": "532505dd996cd45b1c063ba8eea6b7ff24d237986250cfc3f57e25c1b11a2843"},
+      {"section": "complete-cli", "sha256": "9603af0b3d22e75586389930e283394e6ca1e231548b54596496e3f46e302f38"}
+    ]
+  },
+  "boundaries": {
+    "newAgents": 0,
+    "peakActiveAgents": 2,
+    "nativeGoal": "PAUSED",
+    "hiddenQueue": "UNKNOWN",
+    "realNode2419PackageBuildVerify": "NOT_RUN",
+    "dependencyInstallOrCachePreparation": "NOT_RUN",
+    "existingArtifacts": "NOT_MODIFIED",
+    "cacheWritingPreflight": "NOT_RUN_SOURCE_ONLY_SCOPE",
+    "sharedTestRuntimeSqlConfigStoreLockServicesApply": "NOT_TOUCHED",
+    "erpOwnerOrRepository": "NOT_TOUCHED",
+    "oldReuseNewErpTupleMotorProof": "SEPARATE_UNCLOSED_DEPENDENCIES",
+    "guiDeviceHumanAcceptance": "WAITING",
+    "crmUa11": "BEKLIYOR",
+    "liveVegaT1MainPaidApiRealMessagesIdentityAclExceptions": "NOT_USED",
+    "unchangedFinishCounts": {"crmTotal": 25, "crmGreen": 12, "crmPartial": 13, "crmRed": 0, "erpCrmTotal": 74}
+  }
+}

@@ -29,6 +29,17 @@ const crm18Node2419=Object.freeze({
   nodeSha256:'3602f2bb1a10f2cbab4c36886218a33c1ab3db87290e73b033c46c77147d0237',
   locks:Object.freeze({gateway:'c487dc65e3a107f5235408fad3523c8242a4c01b62c7475154ad4ae41a627b96',frontend:'9064a36a0c86464db93cc261ffedbc92a87ea2092315e207301ca8a8aa6d4d24'}),
 });
+// Application source is fixed independently of the builder's delivery commit.
+const crm20261020Node2419=Object.freeze({
+  profile:'crm20261020-node-v24.19.0',
+  commit:'7ba6e4ebc8b70019136d603e6307741189ba03c1',
+  tree:'db824c8a10b030faee6ea84a69cbb3cf86d7293a',
+  repoRoot:'C:\\Sirket\\CRM\\melisa-crm',
+  releasesRoot:'C:\\Sirket\\CRM\\releases\\node-v24.19.0',
+  executable:'C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe',
+  nodeSha256:'3602f2bb1a10f2cbab4c36886218a33c1ab3db87290e73b033c46c77147d0237',
+  locks:Object.freeze({gateway:'c487dc65e3a107f5235408fad3523c8242a4c01b62c7475154ad4ae41a627b96',frontend:'9064a36a0c86464db93cc261ffedbc92a87ea2092315e207301ca8a8aa6d4d24'}),
+});
 
 export function safePackagePath(value) {
   return typeof value==='string' && value.length>0 && value.length<=500 && !value.includes('\\') && !/[<>:"|?*]/.test(value) && !value.startsWith('/')
@@ -234,8 +245,11 @@ function npmCi(directory,{production=false,env}){
   try{execFileSync(process.execPath,[npmPath,'ci','--offline','--ignore-scripts','--no-audit','--no-fund','--bin-links=false',...(production?['--omit=dev']:['--include=dev'])],{cwd:directory,env,stdio:['ignore','pipe','pipe'],windowsHide:true,maxBuffer:16*1024*1024});}
   catch{failure('PACKAGE_OFFLINE_DEPENDENCY_INSTALL_FAILED');}
 }
-function node2419ReleaseRoot({repoRoot,commit,tree,releasesRoot,isolatedPreparation}){
-  const pin=crm18Node2419;
+function node2419ReleaseRoot({repoRoot,commit,tree,releasesRoot,isolatedPreparation,preparationProfile}){
+  let pin;
+  if(preparationProfile===crm18Node2419.profile)pin=crm18Node2419;
+  else if(preparationProfile===crm20261020Node2419.profile)pin=crm20261020Node2419;
+  else failure('PACKAGE_BUILD_PROFILE_REJECTED');
   if(process.platform!=='win32'||process.arch!=='x64'||process.version!=='v24.19.0'
     ||!samePath(repoRoot,pin.repoRoot)||commit!==pin.commit||tree!==pin.tree||isolatedPreparation!==true
     ||releasesRoot!==undefined&&(typeof releasesRoot!=='string'||!samePath(releasesRoot,pin.releasesRoot))
@@ -248,9 +262,10 @@ function node2419ReleaseRoot({repoRoot,commit,tree,releasesRoot,isolatedPreparat
   return pin.releasesRoot;
 }
 export function createTestPackage({repoRoot=canonicalRoot,commit,releasesRoot,isolatedPreparation=false,preparationProfile}){
-  if(typeof isolatedPreparation!=='boolean'||preparationProfile!==undefined&&preparationProfile!==crm18Node2419.profile)failure('PACKAGE_BUILD_PROFILE_REJECTED');
+  const closedNode2419Profile=preparationProfile===crm18Node2419.profile||preparationProfile===crm20261020Node2419.profile;
+  if(typeof isolatedPreparation!=='boolean'||preparationProfile!==undefined&&!closedNode2419Profile)failure('PACKAGE_BUILD_PROFILE_REJECTED');
   const tree=verifyGitPackageSource(repoRoot,commit);
-  if(preparationProfile===crm18Node2419.profile)releasesRoot=node2419ReleaseRoot({repoRoot,commit,tree,releasesRoot,isolatedPreparation});
+  if(closedNode2419Profile)releasesRoot=node2419ReleaseRoot({repoRoot,commit,tree,releasesRoot,isolatedPreparation,preparationProfile});
   else{
     if(releasesRoot===undefined)releasesRoot=path.join(path.dirname(path.resolve(repoRoot)),'releases');
     if(typeof releasesRoot!=='string'||!path.isAbsolute(releasesRoot)||!samePath(releasesRoot,path.join(path.dirname(path.resolve(repoRoot)),'releases'))||within(repoRoot,releasesRoot))failure('PACKAGE_RELEASE_ROOT_REJECTED');
