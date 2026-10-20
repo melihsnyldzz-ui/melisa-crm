@@ -6,7 +6,7 @@
   "source": {
     "branch": "codex/crm-agents-on-completion-20261003",
     "baseCommit": "5c69c287ad41e547c145391d14445cae95d2c7a9",
-    "sourceCommit": null,
+    "sourceCommit": "d1e4425206249e38445fb103e03601f86baa84ec",
     "pullRequest": "https://github.com/melihsnyldzz-ui/melisa-crm/pull/3",
     "files": [
       {"path": "apps/frontend/src/SalesProductCards.jsx", "beforeBlob": "97263c5ae3bb083a1214f4eb31d3f81fdcc9f0d9", "afterBlob": "49d6936017649c0d347b58430fa2fd15ed2b37fb"},
@@ -14,8 +14,19 @@
     ],
     "unchangedPhotoSessionBlob": "ab163ced6162dc5ef874004ef3d30b1fdb71eafd",
     "independentReview": {"existingAgent": "az_independent_reviewer", "firstOpenP2": 1, "finding": "old pending photo authorization result could use the new callback before passive cleanup", "fixAndRealReactRegression": "DONE", "finalReview": "PASS", "finalOpenP1": 0, "finalOpenP2": 0, "readOnly": true, "reviewerRanTestsOrBuild": false},
-    "stagedSecretScan": "PENDING",
-    "ci": "PENDING_SOURCE_COMMIT"
+    "stagedSecretScan": {"sourceCommit": "d1e4425206249e38445fb103e03601f86baa84ec", "result": "PASS", "findings": 0, "exceptionsAdded": 0},
+    "ci": {
+      "headSha": "d1e4425206249e38445fb103e03601f86baa84ec",
+      "conclusion": "SUCCESS",
+      "totalPassedJobs": 7,
+      "finalSourceFrontendBuildAndAllOfflineChecks": "PASS_HOSTED_CI",
+      "runs": [
+        {"id": "39494069642", "workflow": "CRM CI", "event": "pull_request", "status": "completed", "conclusion": "success", "passedJobs": ["secret-scan", "windows-startup-test", "quality-build-test"], "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/39494069642"},
+        {"id": "39494063152", "workflow": "CRM CI", "event": "push", "status": "completed", "conclusion": "success", "passedJobs": ["windows-startup-test", "secret-scan", "quality-build-test"], "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/39494063152"},
+        {"id": "39494069660", "workflow": "AI Sales Agent - Offline", "event": "pull_request", "status": "completed", "conclusion": "success", "passedJobs": ["ai-sales-offline"], "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/39494069660"}
+      ]
+    },
+    "documentationReceiptPolicy": "Documentation-only follow-up uses [skip ci]; exact source CI is not a new run for documentation HEAD, installed TEST, normal GUI, device or human acceptance."
   },
   "verification": {
     "hostNodeVersion": "v24.15.0",
