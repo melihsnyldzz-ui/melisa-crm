@@ -6,7 +6,7 @@ Bu teslim uygulama köprüsünü tamamlamaz. Üretim CRM kodu, ERP deposu, kurul
 
 ## Korunan mevcut sonuç
 
-- PR17/18'in müşteri → ürün/adet → tek ERP taslak → aynı UUID ile geri okuma/yenileme kanıtı korunur; eski12+4 tarayıcı kabulü tekrar koşulmadı.
+- PR17/18'in müşteri → ürün/adet → tek ERP taslak → aynı UUID ile geri okuma/yenileme kanıtı korunur; eski12+4 sentetik tarayıcı senaryosu tekrar koşulmadı. [Mevcut ekranlar ve sonuçlar](../2026-10-16-combined-candidate/README.md), [taslak kaydı](../2026-10-16-combined-candidate/flow/04-order-saved-readback.png), [yenilemeden sonra aynı kayıt](../2026-10-16-combined-candidate/flow/06-order-reopened-after-refresh.png). Bunlar bu tur çekilmiş yeni ekranlar veya gerçek personel kabulü değildir.
 - [CRM PR20 / f5ad566b](https://github.com/melihsnyldzz-ui/melisa-crm/pull/20), mevcut katalog ve ERP diyaloglarını ayrı sentetik Cloud API'ye bağlar. Normal giriş veya Windows TEST'e taşınmadı.
 - [ERP PR55 / d78474ae](https://github.com/melihsnyldzz-ui/melisa-erp-v2/pull/55) sentetik `createSale(orderId)` yolunda tek fiş ve UUID journal korumasını zaten sağlar. Bu iş bunları yeniden geliştirmez.
 - Normal CRM'deki `nativeOrder.js` ve `ERPOrderDialog.jsx`, af84b6d ve PR20'de aynı Git bloblarıdır. `validateNativeReceipt` halen yalnız `draft`, `erpPersisted`, aynı request ve dört etki=false doğrular; satış makbuzu diye gevşetilmedi.
@@ -54,3 +54,7 @@ Beklenen tanısal çıkış **3**: kanıt üretildi, upstream sözleşme bağım
 ERP sahibi mevcut v2 sipariş ile mevcut work-sales fişi arasındaki tekil bağ ve geri okuma sözleşmesini, kendi sırasında ele almalıdır. CRM bundan sonra yalnız doğrulanmış sözleşmeye bağlanabilir. Aktif B264 sahibine ikinci görev veya mesaj gönderilmedi. Ödeme/“Mal gitti” kilidi ve izli düzeltme bu dar vakada çalıştırılmadı; bunların kabulü çıkarılamaz.
 
 Kurulu CRM6bc bilgisi19 Ekim owner'ın [d74ace8a kanıtına](https://github.com/melihsnyldzz-ui/melisa-erp-v2/blob/d74ace8afa43e4a7a721e79ab36435512645e022/docs/evidence/erp/2026-10-19-light-hub-rehearsal.md) dayanır; bu tur yeni runtime sağlığı ölçülmedi. Eski17 Ekim439/e85/SOURCE_UNAPPLIED notu güncel kurulum gerekçesi yapılmadı. **GUI DENENMEDİ; fiziksel cihaz ve insan kabulü BEKLİYOR.** Özgün25/12/13/0 ve49+25 kapsamı korunur; LIVE/main/gerçek mesaj/ücretli servis yok.
+
+## GitHub teslimi
+
+Tanısal kaynak ve ilk kanıt kaydı: [e2aab0c9fb644bf863b1d2cb3a0e46236c8a4579](https://github.com/melihsnyldzz-ui/melisa-crm/commit/e2aab0c9fb644bf863b1d2cb3a0e46236c8a4579), mevcut [PR3](https://github.com/melihsnyldzz-ui/melisa-crm/pull/3). Exact [PR CI39406144637](https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/39406144637), [push CI39406136792](https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/39406136792) ve [AI offline39406144328](https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/39406144328) SUCCESS; toplam yedi job başarılı. Bağımsız kaynak/kanıt incelemesinde açık P1/P2=0, staged secret taraması0. Bu otomatik kontroller yeni native köprü veya insan kabulü değildir; tanısal sonuç exit3 olarak açık kalır. Yalnız belge makbuzu takip commit'i `[skip ci]` ile ayrılır; source CI ona ait yeni koşum diye sunulmaz.

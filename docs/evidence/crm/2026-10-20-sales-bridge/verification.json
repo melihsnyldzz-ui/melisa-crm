@@ -74,7 +74,65 @@
   },
   "delivery": {
     "pr": "https://github.com/melihsnyldzz-ui/melisa-crm/pull/3",
-    "ci": "Pending exact delivery commit; no new bridge PASS claimed",
+    "sourceCommit": "e2aab0c9fb644bf863b1d2cb3a0e46236c8a4579",
+    "ci": [
+      {
+        "conclusion": "success",
+        "event": "pull_request",
+        "headSha": "e2aab0c9fb644bf863b1d2cb3a0e46236c8a4579",
+        "jobs": [
+          {
+            "conclusion": "success",
+            "name": "secret-scan"
+          },
+          {
+            "conclusion": "success",
+            "name": "windows-startup-test"
+          },
+          {
+            "conclusion": "success",
+            "name": "quality-build-test"
+          }
+        ],
+        "status": "completed",
+        "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/39406144637"
+      },
+      {
+        "conclusion": "success",
+        "event": "push",
+        "headSha": "e2aab0c9fb644bf863b1d2cb3a0e46236c8a4579",
+        "jobs": [
+          {
+            "conclusion": "success",
+            "name": "quality-build-test"
+          },
+          {
+            "conclusion": "success",
+            "name": "windows-startup-test"
+          },
+          {
+            "conclusion": "success",
+            "name": "secret-scan"
+          }
+        ],
+        "status": "completed",
+        "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/39406136792"
+      },
+      {
+        "conclusion": "success",
+        "event": "pull_request",
+        "headSha": "e2aab0c9fb644bf863b1d2cb3a0e46236c8a4579",
+        "jobs": [
+          {
+            "conclusion": "success",
+            "name": "ai-sales-offline"
+          }
+        ],
+        "status": "completed",
+        "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/39406144328"
+      }
+    ],
+    "ciScope": "Exact source commit CI succeeded; separate contract diagnostic remains BLOCKED with exit3. This receipt follow-up is documentation only and will use skip ci, not inherit source CI as its own run.",
     "mainMerged": false
   },
   "preflight": {
