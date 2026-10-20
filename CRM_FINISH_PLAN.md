@@ -1,4 +1,8 @@
-## 17 Ekim — güncel teknik teslim / kurulum ve kabul ayrımı
+## 20 Ekim — CRM06/P04/E02 sözleşme bağımlılığı
+
+**DOT-CRM-BRIDGE-20261020-0945-1:** Mevcut taslak/reopen ve PR55 sentetik tek-sipariş/tek-fiş davranışı korunur; üretim kodu yeniden geliştirilmedi. Normal v2 taslak ile work-sales fişi arasında incelenen sözleşmede kaynak bağının, ad+Peşin müşteri biçiminin ve fiyat/quote freshness kararının karşılığı eksik. Pinli mevcut modüllerle bir yeni çevrimdışı tanı vakası `BLOCKED_UPSTREAM_CONTRACT`/exit3 üretti; değişen katalog fiyatına rağmen eski teklif fiyatının korunması tek başına bug sayılmadı. [Exact kaynak/alan/kanıt](docs/evidence/crm/2026-10-20-sales-bridge/README.md). ERP yazısı/kurulum, yeni TEST/Goal/otomasyon, native sözleşme gevşetmesi veya insan PASS yok. Native Goal PAUSED;25/12/13/0 ve74 değişmez. Kalan aynı E02 köprü sözleşmesi koordinatöre devredilir; B264 sahibine ikinci iş verilmez. Owner'ın19 Ekim kaydı CRM6bc kurulu diyor; eski439/SOURCE_UNAPPLIED kayıtları güncel kurulum gereği değildir.
+
+## 17 Ekim — tarihsel teknik teslim / kurulum ve kabul ayrımı
 
 **CRM-TEKNIK-23EKIM — native ACTIVE:** [Tarihli hedef](https://github.com/melihsnyldzz-ui/melisa-erp-v2/pull/23#issuecomment-6232818354) aynı CRM oturumunda gerçek `get_goal` ile doğrulandı.19 Ekim ara teslimi,23 Ekim teknik aday,26–27 işletme/cihaz,27–28 son hata/geri dönüş,30 Ekim ayrı onaylı LIVE tarihleri değişmez; bu kayıt yeni plan/tree değildir.25 özgün yaprak ve74 kapsamı korunur; teknik yüzde için finite ölçüt/kanıt eşlemesi henüz tamam değil.
 

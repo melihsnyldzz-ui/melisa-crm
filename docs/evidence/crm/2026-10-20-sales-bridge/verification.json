@@ -1,0 +1,98 @@
+{
+  "date": "2026-10-20",
+  "taskId": "DOT-CRM-BRIDGE-20261020-0945-1",
+  "root": "C:/Sirket/CRM/melisa-crm",
+  "branch": "codex/crm-agents-on-completion-20261003",
+  "sourceBase": "af84b6da962f85dab1d76a75cf23c1799e4acb69",
+  "applicationSource": "6bc82e6fe9726261ef1d0171d97e5d9da9f5398a",
+  "scope": "Manual CRM source contract investigation; existing native Goal remains paused",
+  "nativeGoal": "paused",
+  "newGoalAutomationTestEnvironment": false,
+  "sourceChanges": [
+    "new offline diagnostic script",
+    "dated evidence and existing status/finish/acceptance records"
+  ],
+  "productionApplicationChanged": false,
+  "erpRepositoryChanged": false,
+  "normalContractSource": {
+    "inspectedHead": "ea0384208116d878c54a7e9cda404ae2ea925f2a",
+    "ownerInstalledSource": "e59e07abf7ae2567cdc2adb93811fe29e0032fe5",
+    "comparedBlobsEqual": true,
+    "files": {
+      "apps/api/src/routes/crmOrderV2Routes.mjs": "b649263ed22de3aa914330f9f97300842df2ea47",
+      "apps/api/src/routes/workSalesRoutes.mjs": "74e3ad3803053ec2c6b6c82d7c71dc5259bf91f9",
+      "apps/api/src/services/crmOrderV2Contract.mjs": "2df534e3328cfde5200afea96b863f07c0692f65",
+      "apps/api/src/services/workSalesModel.mjs": "4176e75f5441d3588d5aeed2698d80c793d36ec6",
+      "apps/api/src/services/workSalesService.mjs": "5a18f72727f006af76d05db8f9f472733e97247b"
+    },
+    "claimBoundary": "Bounded exact-source route/DTO/parser inspection, not native HTTP, SQL, whole ERP absence proof or deployment"
+  },
+  "preservedSource": {
+    "pr19": "03a86097c3fd25551f1faab34881f60ec0fea75b",
+    "pr20": "f5ad566b852425ed21d3ec9e87b783b85e90b890",
+    "erpPr55": "d78474ae0eb45146790e608979fc3e06c9741adb",
+    "crmNativeFilesEqualAcrossBaseAndPr20": true,
+    "old12Plus4BrowserRerun": false,
+    "baselineScoresIncreased": false
+  },
+  "diagnostic": {
+    "command": "node --import ./scripts/ci/offline-guard.mjs scripts/crm-sales-bridge-contract.mjs <pinned-reference-directory>",
+    "nodeVersion": "v24.15.0",
+    "processExitCode": 3,
+    "bridgeAccepted": false,
+    "uniqueNewScenarioCount": 1,
+    "fixtureRemoved": true,
+    "scriptSha256": "cdbe9dd20dafffb686eeb7eeaff8e6527467d9ec9394f93eaf26be8540e74fb0",
+    "probeSha256": "2f27e069b51b5b6ced93b537f42bcf0b1b6cf446e9d952031bee3c9030923828",
+    "initialInvocation": "Completed same diagnostic; shell surfaced its nonzero classification as1. Final child-status capture verifies exact3; semantic report clarified, not additional unique coverage.",
+    "pinManifestRecheck": "Same single scenario rerun after public checksum fields were made explicit; identical observation, exact child exit3 and cleanup true. Not additional acceptance coverage."
+  },
+  "review": {
+    "source": "existing az independent reviewer, read-only",
+    "openCodeP1P2": 0,
+    "finalSevenFileReview": "Read-only final source/evidence/status review: hashes and JSON valid, single active next-work heading and unchanged historical preflight block, no fixture residue; no independent execution or runtime acceptance claimed",
+    "pricingSemantics": "Order revision is not product/quote revision; old quoted price retained is not itself an ERP pricing bug. Requested freshness/reviewed-price policy needs an upstream bridge contract.",
+    "stagedSecretScan": "Initial generic-api-key finding matched public pinned adapter SHA256, not a credential. Explicit name/sha256 manifest fields used; no ignore or rule change. Rechecked staged Gitleaks completed with zero findings."
+  },
+  "runtime": {
+    "currentClaim": "No new observation; published19October owner reports installed CRM6bc",
+    "ownerEvidence": "https://github.com/melihsnyldzz-ui/melisa-erp-v2/blob/d74ace8afa43e4a7a721e79ab36435512645e022/docs/evidence/erp/2026-10-19-light-hub-rehearsal.md",
+    "deploymentPerformed": false,
+    "sharedWrite": false
+  },
+  "acceptance": {
+    "normalGui": "GUI DENENMEDİ",
+    "physicalDevice": "BEKLİYOR",
+    "human": "BEKLİYOR",
+    "crmCounts": {
+      "total": 25,
+      "green": 12,
+      "partial": 13,
+      "red": 0
+    },
+    "originalTotal": 74
+  },
+  "delivery": {
+    "pr": "https://github.com/melihsnyldzz-ui/melisa-crm/pull/3",
+    "ci": "Pending exact delivery commit; no new bridge PASS claimed",
+    "mainMerged": false
+  },
+  "preflight": {
+    "executedOnce": true,
+    "status": "CHECK_REQUIRED",
+    "changed": false,
+    "cacheSaved": true,
+    "repeatAcceptedTests": false,
+    "wholeClosureGranted": false,
+    "scope": "Existing record context, not fresh runtime health"
+  },
+  "boundaries": {
+    "realCustomerOrCommercialRecords": false,
+    "localSqlServerVegaT1": false,
+    "paidApi": false,
+    "newHostingOrTestService": false,
+    "sharedServiceSqlRuntimeConfigWrites": false,
+    "securityOrCredentialChanges": false,
+    "erpB264OwnerMessagedOrReassigned": false
+  }
+}
