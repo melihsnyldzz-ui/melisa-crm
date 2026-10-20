@@ -1,0 +1,52 @@
+{
+  "taskId": "DOT-CRM-TREE17-NEXT-SOURCE-20261020-2020",
+  "dateEuropeIstanbul": "2026-10-20",
+  "requirements": ["A04", "A05"],
+  "decision": {"id": "CRM-DEC-022", "sourceInstruction": "DOT-TREE17-CONTINUATION-20261020-2017", "instructionTimeUtc": "2026-10-20T20:17:00Z", "instructionTimeEuropeIstanbul": "2026-10-20T23:17:00+03:00", "noteCommit": "5c69c287ad41e547c145391d14445cae95d2c7a9", "noteReviewOpenP1P2": 0, "noteStagedLeaks": 0, "noteCiPolicy": "documentation-only [skip ci]"},
+  "source": {
+    "branch": "codex/crm-agents-on-completion-20261003",
+    "baseCommit": "5c69c287ad41e547c145391d14445cae95d2c7a9",
+    "sourceCommit": null,
+    "pullRequest": "https://github.com/melihsnyldzz-ui/melisa-crm/pull/3",
+    "files": [
+      {"path": "apps/frontend/src/SalesProductCards.jsx", "beforeBlob": "97263c5ae3bb083a1214f4eb31d3f81fdcc9f0d9", "afterBlob": "49d6936017649c0d347b58430fa2fd15ed2b37fb"},
+      {"path": "apps/frontend/tests/sales-product-cards-context.test.mjs", "afterBlob": "a38f126e7e41be54c67a3fa80e7c8e7be4eee83d"}
+    ],
+    "unchangedPhotoSessionBlob": "ab163ced6162dc5ef874004ef3d30b1fdb71eafd",
+    "independentReview": {"existingAgent": "az_independent_reviewer", "firstOpenP2": 1, "finding": "old pending photo authorization result could use the new callback before passive cleanup", "fixAndRealReactRegression": "DONE", "finalReview": "PASS", "finalOpenP1": 0, "finalOpenP2": 0, "readOnly": true, "reviewerRanTestsOrBuild": false},
+    "stagedSecretScan": "PENDING",
+    "ci": "PENDING_SOURCE_COMMIT"
+  },
+  "verification": {
+    "hostNodeVersion": "v24.15.0",
+    "harness": "real React19.2/ReactDOM createRoot/act/layout observation and Suspense pending render; actual component/hooks/effects/photo session; inert DOM host and synthetic API/Image/blob boundaries; no browser",
+    "before": {"exitCode": 1, "tests": 5, "pass": 2, "fail": 3},
+    "initialRenderFix": {"exitCode": 0, "tests": 5, "pass": 5, "fail": 0},
+    "reviewGuardBefore": {"exitCode": 1, "tests": 9, "pass": 7, "fail": 2},
+    "after": {"exitCode": 0, "tests": 9, "pass": 9, "fail": 0},
+    "failures": ["same products and ID with new token committed old photo", "new product list with same ID committed old photo", "new photo-ineligible context committed old eligible photo"],
+    "reviewFailures": ["token-only stale401 invalidated new context", "list-only stale403 invalidated new context"],
+    "currentAuthPositiveControls": [401, 403],
+    "compatibility": {"stage": "AFTER_INITIAL_RENDER_FIX_BEFORE_ADDITIONAL_OWNER_GUARD", "exitCode": 0, "tests": 3, "pass": 3, "fail": 0, "skip": 0},
+    "syntaxAndDiff": "PASS",
+    "newFrameworksOrDependencies": 0,
+    "jsxOrHookSourceReplacement": false,
+    "normalBrowserGui": "NOT_TESTED",
+    "physicalDeviceHumanAcceptance": "WAITING"
+  },
+  "boundaries": {
+    "sourceAppliedToTest": false,
+    "packageCreatedOrModified": false,
+    "existingPassiveApplicationTarget": "7ba6e4ebc8b70019136d603e6307741189ba03c1",
+    "erpPinChanged": false,
+    "sharedTestRuntimeStoreConfigSqlServicesOrOwner": "NOT_TOUCHED",
+    "cacheWritingPreflight": "NOT_RUN_SOURCE_OFFLINE_SCOPE",
+    "newAgentsGoalsAutomationsTrackersEnvironments": 0,
+    "worktreesRetained": 8,
+    "nativeGoal": "PAUSED",
+    "hiddenQueue": "UNKNOWN",
+    "crmUa11": "BEKLIYOR",
+    "liveVegaT1MainPaidApiRealMessagesIdentityAclExceptions": "NOT_USED",
+    "unchangedCounts": {"existingHeadings": 17, "originalLeaves": 74, "crmTotal": 25, "crmGreen": 12, "crmPartial": 13, "crmRed": 0}
+  }
+}
