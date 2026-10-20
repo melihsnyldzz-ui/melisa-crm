@@ -127,8 +127,67 @@
   "separateDependency": "Existing order-to-sale upstream contract handoff remains open; this inbox integration does not close it.",
   "delivery": {
     "pr": "https://github.com/melihsnyldzz-ui/melisa-crm/pull/3",
-    "sourceCommit": "Pending integration commit",
-    "ci": "Pending exact source HEAD; old PR19 CI not assigned to integration",
+    "sourceCommit": "6e47fb8d91d0eb7299c0d13c22c597859bf72f91",
+    "ci": [
+      {
+        "conclusion": "success",
+        "event": "pull_request",
+        "headSha": "6e47fb8d91d0eb7299c0d13c22c597859bf72f91",
+        "jobs": [
+          {
+            "conclusion": "success",
+            "name": "quality-build-test"
+          },
+          {
+            "conclusion": "success",
+            "name": "windows-startup-test"
+          },
+          {
+            "conclusion": "success",
+            "name": "secret-scan"
+          }
+        ],
+        "status": "completed",
+        "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/39416211155"
+      },
+      {
+        "conclusion": "success",
+        "event": "push",
+        "headSha": "6e47fb8d91d0eb7299c0d13c22c597859bf72f91",
+        "jobs": [
+          {
+            "conclusion": "success",
+            "name": "quality-build-test"
+          },
+          {
+            "conclusion": "success",
+            "name": "secret-scan"
+          },
+          {
+            "conclusion": "success",
+            "name": "windows-startup-test"
+          }
+        ],
+        "status": "completed",
+        "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/39416205183"
+      },
+      {
+        "conclusion": "success",
+        "event": "pull_request",
+        "headSha": "6e47fb8d91d0eb7299c0d13c22c597859bf72f91",
+        "jobs": [
+          {
+            "conclusion": "success",
+            "name": "ai-sales-offline"
+          }
+        ],
+        "status": "completed",
+        "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/39416211186"
+      }
+    ],
+    "ciScope": "Exact integration source CI, seven successful jobs; old PR19 CI not reused. Documentation-only receipt follow-up uses skip ci and does not claim these as its own runs.",
+    "stagedSecretScan": "Zero findings before source commit; no ignore or rule change",
+    "finalEvidenceReview": "Existing independent reviewer read-only source/evidence review; open P1/P2 zero, hashes and preserved counts/preflight confirmed; no reviewer execution claimed",
     "mainMerged": false
   },
   "boundaries": {

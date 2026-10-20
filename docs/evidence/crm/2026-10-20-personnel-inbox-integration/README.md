@@ -38,7 +38,9 @@ node --import ./tests/offline-test-guard.mjs --test --test-reporter=tap --test-n
 node --import ./tests/offline-test-guard.mjs --test --test-reporter=tap --test-name-pattern="invalid inbox views|personnel bootstrap validates|personnel bootstrap reads only|management snapshots preserve|management bootstrap reads one|personnel detail rejects another assignment" apps/gateway/src/controllers/inboxController.test.js apps/gateway/src/services/chatwootInboxService.test.js
 ```
 
-Üç işlevsel uygulama dosyasının syntax kontrolü ve diff kontrolü geçti. Mevcut bağımsız reviewer altı dosyayı salt okunur inceledi: açık P1/P2=0; test/runtime çalıştırdığı iddia edilmez. Yeni source HEAD'in CI makbuzu commit sonrasında bu aynı kayda eklenecek; PR19'un eski CI'si yeni feature'a atanmaz.
+Üç işlevsel uygulama dosyasının syntax kontrolü ve diff kontrolü geçti. Mevcut bağımsız reviewer altı kaynak dosyası ve kanıt/durum kayıtlarını salt okunur inceledi: açık P1/P2=0; test/runtime çalıştırdığı iddia edilmez. Staged secret taraması0; ignore/rule değişmedi.
+
+Kaynak [6e47fb8d91d0eb7299c0d13c22c597859bf72f91](https://github.com/melihsnyldzz-ui/melisa-crm/commit/6e47fb8d91d0eb7299c0d13c22c597859bf72f91), mevcut [PR3](https://github.com/melihsnyldzz-ui/melisa-crm/pull/3): exact [PR CI39416211155](https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/39416211155), [push CI39416205183](https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/39416205183), [AI offline39416211186](https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/39416211186) SUCCESS; yedi job başarılı. PR19'un eski CI'si bu commit'e atanmadı. Son yalnız belge makbuzu `[skip ci]` ile ayrılır; source CI belge HEAD'ine ait yeni koşum sayılmaz. Source CI veya Windows hosted test job'ı, yerel Windows kurulum/reboot/normal GUI kabulü değildir.
 
 ## Kurulum ve kalan sınır
 
