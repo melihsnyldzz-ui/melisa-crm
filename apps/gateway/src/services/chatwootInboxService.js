@@ -512,6 +512,14 @@ export async function listChatwootInboxOverview({ limit = 25, offset = 0, user =
   ]);
   assertBackendIdentity(identity);
   assertInboxPolicy(policy);
+  // Normal personnel assignment is checked after asynchronous history/readiness work.
+  // A normal personnel request must not publish a conversation reassigned while
+  // its messages were in flight. Reuse the bounded authoritative subset check;
+  // management caching and the existing rehearsal guard remain unchanged.
+  if (user?.role === 'personel' && !user.testPersonnel && rows.length) {
+    await assertChatwootAssignedInboxCurrent({conversationIds:rows.map(row => row.id), user});
+    assertBackendIdentity(identity); assertInboxPolicy(policy);
+  }
   const total = accessibleRows.length;
   const sendEnabled = isChatwootSendEnabled();
   const canSend = sendEnabled && (!user || user.permissions?.includes('crm.send'));

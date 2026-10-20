@@ -1,0 +1,98 @@
+{
+  "date": "2026-10-20",
+  "taskId": "DOT-CRM-INBOX-INTEGRATE-20261020-1119",
+  "nodeVersion": "v24.15.0",
+  "scope": "Narrow existing PR19 regression and affected compatibility groups; synthetic mocked fetch/config in disposable test processes under the existing offline guard",
+  "before": {
+    "phase": "before",
+    "sourceBase": "ce071f19e347dbe6efd8d6219e85602af76a7401",
+    "pr19": "03a86097c3fd25551f1faab34881f60ec0fea75b",
+    "sourceApplicationUnchanged": true,
+    "processExitCode": 1,
+    "args": [
+      "--import",
+      "./tests/offline-test-guard.mjs",
+      "--test",
+      "--test-reporter=tap",
+      "--test-name-pattern=ordinary personnel|personnel assignment failure",
+      "apps/gateway/src/controllers/inboxController.test.js",
+      "apps/gateway/src/services/chatwootInboxService.test.js"
+    ],
+    "counts": {
+      "tests": 13,
+      "suites": 0,
+      "pass": 1,
+      "fail": 12,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0,
+      "duration_ms": 4882.9714
+    },
+    "failedNames": [
+      "not ok 2 - inactive",
+      "not ok 3 - role",
+      "not ok 4 - agent",
+      "not ok 5 - password",
+      "not ok 6 - permission",
+      "not ok 7 - token",
+      "not ok 1 - ordinary personnel inbox never returns data after its normal authority changes",
+      "not ok 1 - current",
+      "not ok 2 - reassigned",
+      "not ok 2 - ordinary personnel inbox suppresses messages when reassigned during hydration",
+      "not ok 3 - ordinary personnel bootstrap rechecks every returned identity without reading messages",
+      "not ok 4 - personnel assignment failure cannot fall back to a stale local inbox"
+    ]
+  },
+  "afterRegressions": {
+    "phase": "after-regressions",
+    "processExitCode": 0,
+    "args": [
+      "--import",
+      "./tests/offline-test-guard.mjs",
+      "--test",
+      "--test-reporter=tap",
+      "--test-name-pattern=ordinary personnel|personnel assignment failure",
+      "apps/gateway/src/controllers/inboxController.test.js",
+      "apps/gateway/src/services/chatwootInboxService.test.js"
+    ],
+    "counts": {
+      "tests": 13,
+      "suites": 0,
+      "pass": 13,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0,
+      "duration_ms": 1695.4565
+    },
+    "topLevelScenarioGroups": 4,
+    "uniqueCoverageNote": "Existing PR19 regression groups rerun on integrated feature; Node counts include nested parent tests; no new business/human acceptance."
+  },
+  "compatibility": {
+    "phase": "compatibility",
+    "processExitCode": 0,
+    "args": [
+      "--import",
+      "./tests/offline-test-guard.mjs",
+      "--test",
+      "--test-reporter=tap",
+      "--test-name-pattern=invalid inbox views|personnel bootstrap validates|personnel bootstrap reads only|management snapshots preserve|management bootstrap reads one|personnel detail rejects another assignment",
+      "apps/gateway/src/controllers/inboxController.test.js",
+      "apps/gateway/src/services/chatwootInboxService.test.js"
+    ],
+    "counts": {
+      "tests": 9,
+      "suites": 0,
+      "pass": 9,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0,
+      "duration_ms": 536.5224
+    },
+    "scope": "Only invalid view, rehearsal bootstrap guard, fresh own subset/counts, management snapshot/bootstrap, and wrong/reassigned detail boundaries."
+  },
+  "localFull87Rerun": false,
+  "old87CountClaimedAsNewAcceptance": false,
+  "newBusinessOrHumanAcceptance": false
+}

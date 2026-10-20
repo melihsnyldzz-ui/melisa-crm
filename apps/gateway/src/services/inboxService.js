@@ -34,7 +34,9 @@ export async function getInboxOverview(options = {}) {
   try {
     return await listChatwootInboxOverview(options);
   } catch (error) {
-    if (!env.chatwoot.inboxFallbackEnabled) throw error;
+    // A local mirror cannot prove current Chatwoot assignment. Never turn a
+    // personnel access/read failure into a successful stale local response.
+    if (!env.chatwoot.inboxFallbackEnabled || options.user?.role === 'personel') throw error;
 
     const fallback = restrictLocalOverview(await listInboxOverview(options), options.user);
     return {

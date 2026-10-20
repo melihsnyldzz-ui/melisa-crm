@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { env } from '../config/env.js';
+import { authenticateCrmUser, createPasswordHash, verifyCrmAccessToken } from '../services/crmAuthService.js';
 import { getInboxController } from './inboxController.js';
 import {installTestPersonnelSession,verifyTestPersonnelSession} from '../services/testPersonnelSession.mjs';
 
@@ -45,4 +46,35 @@ test('personnel bootstrap validates all 23 assignments with two fresh read-only 
   if(mode==='current'){assert.equal(error,undefined);assert.equal(payload.data.conversations.length,23);assert(payload.data.conversations.every(row=>row.chatwootAgentId===3&&row.messagesLoaded===false));}
   else{assert.equal(payload,undefined);assert.equal(error?.statusCode,mode==='revoked'?401:403);}
  });
+});
+
+
+test('ordinary personnel inbox never returns data after its normal authority changes', async t => {
+  for (const mode of ['current','inactive','role','agent','password','permission','token']) await t.test(mode, async t => {
+    const original={fetch:global.fetch,auth:{...env.auth},chatwoot:{...env.chatwoot},whatsapp:{...env.whatsapp}};
+    t.after(()=>{global.fetch=original.fetch;Object.assign(env.auth,original.auth);Object.assign(env.chatwoot,original.chatwoot);Object.assign(env.whatsapp,original.whatsapp);});
+    const password='synthetic-test-password';
+    const configured={id:'ordinary-fixture',username:'ordinary-fixture',role:'personel',active:true,chatwootAgentId:7,passwordHash:createPasswordHash(password,'synthetic-normal-inbox-salt')};
+    Object.assign(env.auth,{jwtSecret:'synthetic-normal-inbox-secret-longer-than-32',issuer:'normal-inbox-fixture',audience:'normal-inbox-fixture',tokenExpiresIn:'5m',personnelCanSend:false,users:[configured]});
+    Object.assign(env.chatwoot,{baseUrl:'http://chatwoot.local',accountId:2,inboxId:1,apiAccessToken:'normal-fixture-'+mode,inboxReadEnabled:true,inboxFallbackEnabled:true,includeGroups:false});
+    Object.assign(env.whatsapp,{provider:'evolution',sendEnabled:false});
+    const token=authenticateCrmUser({username:configured.username,password}).accessToken;
+    const user=verifyCrmAccessToken(token);let payload,error;
+    global.fetch=async url=>{
+      if(String(url).includes('/messages')) {
+        if(mode==='inactive')configured.active=false;
+        if(mode==='role')configured.role='mudur';
+        if(mode==='agent')configured.chatwootAgentId=8;
+        if(mode==='password')configured.passwordHash='changed';
+        if(mode==='permission')env.auth.personnelCanSend=true;
+        if(mode==='token')env.auth.jwtSecret+='changed';
+        return Response.json({payload:[{id:7,conversation_id:1,message_type:0,content:'Must not escape changed authority'}]});
+      }
+      const row={id:1,inbox_id:1,status:'open',meta:{sender:{name:'Own customer'},assignee:{id:7}}};
+      return Response.json({data:{meta:{all_count:1},payload:[row]}});
+    };
+    await getInboxController({query:{},user,get:()=>`Bearer ${token}`},{status(){return this;},json:value=>{payload=value;}},value=>{error=value;});
+    if(mode==='current'){assert.equal(error,undefined);assert.equal(payload.data.conversations[0].messages[0].text,'Must not escape changed authority');}
+    else{assert.equal(payload,undefined);assert.equal(error?.statusCode,401);}
+  });
 });
