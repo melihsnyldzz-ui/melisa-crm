@@ -60,7 +60,9 @@ git diff --check
 
 ## GitHub ve kalan ayrı aşama
 
-Mevcut feature ve [PR3](https://github.com/melihsnyldzz-ui/melisa-crm/pull/3) kullanılır. Kaynak commit'i ve exact-source CI sonucu teslimden sonra bu aynı makbuza eklenir; eski CI yeni HEAD'e atanmaz. Son yalnız belge makbuzu `[skip ci]` ile ayrılır. Staged secret scan normal kurallarla yapılır; yeni ignore/istisna yok.
+Mevcut feature ve açık [PR3](https://github.com/melihsnyldzz-ui/melisa-crm/pull/3) kullanıldı. Builder source [ed02a48bb407630c0ac377ab02e3b0a00fe7147c](https://github.com/melihsnyldzz-ui/melisa-crm/commit/ed02a48bb407630c0ac377ab02e3b0a00fe7147c) push edildi. Bu exact source için [PR CRM CI39472235176](https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/39472235176)3job, [push CRM CI39472227526](https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/39472227526)3job ve [AI-offline39472235338](https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/39472235338)1job SUCCESS: toplam7başarılı iş. Staged Gitleaks PASS/0bulgu; yeni ignore/istisna yok.
+
+Son yalnız belge makbuzu `[skip ci]` ile ayrılır. Yukarıdaki CI, builder source ed02'nin koşumudur; belge HEAD'inin yeni CI'si, uygulama hedefi7ba'nın Node24.19 ile gerçek paket üretimi veya kurulumu değildir. İki source blob kimliği ve gerçek CI sonuçları [verification.json](verification.json) içinde ayrıdır. PR hedefi `feature/crm-completion` korundu; main merge/tag/release yapılmadı.
 
 Sonraki hedef aynı sabit7ba uygulama kaynağı için, yeni profil üzerinden ayrı Node24.19 pasif paket üretimi/doğrulamasıdır. **Bu tur gerçek paket BUILD/VERIFY, dependency install/cache hazırlığı, kurulum veya shared Apply yapılmadı.** Hosted CI frontend build/offline source kontrolleri gerçek yerel pasif paket üretimi sayılmaz. ERP tarafında ayrı tutulan OLD_REUSE_SCOPE/yeniERPtuple/motor-proof bağımlılıkları bu profille kapanmaz.
 

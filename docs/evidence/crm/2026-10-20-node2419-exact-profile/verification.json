@@ -20,14 +20,24 @@
   "builderDelivery": {
     "baseCommit": "7ba6e4ebc8b70019136d603e6307741189ba03c1",
     "branch": "codex/crm-agents-on-completion-20261003",
-    "sourceCommit": null,
+    "sourceCommit": "ed02a48bb407630c0ac377ab02e3b0a00fe7147c",
     "sourceFiles": [
       {"path": "deploy/test-package.mjs", "blob": "dd3a057af74826b5a4a62b095265fb550c7c5b4d"},
       {"path": "tests/test-package-node2419.test.mjs", "blob": "2cfbf4732f50da9ec89759e2d92e7b97d51e5003"}
     ],
     "pullRequest": "https://github.com/melihsnyldzz-ui/melisa-crm/pull/3",
-    "ci": "PENDING_SOURCE_COMMIT",
-    "stagedSecretScan": "PENDING_COMMIT"
+    "ci": {
+      "headSha": "ed02a48bb407630c0ac377ab02e3b0a00fe7147c",
+      "conclusion": "SUCCESS",
+      "totalPassedJobs": 7,
+      "runs": [
+        {"id": "39472235176", "workflow": "CRM CI", "event": "pull_request", "status": "completed", "conclusion": "success", "passedJobs": ["secret-scan", "quality-build-test", "windows-startup-test"], "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/39472235176"},
+        {"id": "39472227526", "workflow": "CRM CI", "event": "push", "status": "completed", "conclusion": "success", "passedJobs": ["secret-scan", "windows-startup-test", "quality-build-test"], "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/39472227526"},
+        {"id": "39472235338", "workflow": "AI Sales Agent - Offline PR", "event": "pull_request", "status": "completed", "conclusion": "success", "passedJobs": ["ai-sales-offline"], "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/39472235338"}
+      ]
+    },
+    "stagedSecretScan": {"sourceCommit": "ed02a48bb407630c0ac377ab02e3b0a00fe7147c", "result": "PASS", "findings": 0, "exceptionsAdded": 0},
+    "documentationReceiptPolicy": "Documentation-only follow-up uses [skip ci]; the source CI above is not a new CI run for the documentation HEAD and does not prove a real Node24.19 package build or installed runtime."
   },
   "verification": {
     "host": "Node v24.15.0; offline-test-guard",
