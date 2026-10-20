@@ -1,5 +1,15 @@
 # CRM karar merkezi
 
+### CRM-DEC-022 — 20 Ekim 2026 — Aynı bitiş ağacında bağımlılığı hazır işlere devam
+
+**Durum: Doğrudan kullanıcı kararı.** `DOT-TREE17-CONTINUATION-20261020-2017`; kaynak mevcut Dot koordinatör konuşmasındaki 20 Ekim 20:17 UTC / **23:17 Europe/Istanbul** kullanıcı talimatıdır: “Melisa Bitiş Ağacı’ndaki aynı 17 başlığı tamamlanana kadar takip et. Her iş için benden yeniden seçim veya ‘devam et’ mesajı bekleme.” Bu kayıt önceki geçici PAR5 seçim-bekleme yönünü günceller; CRM-DEC-020/021 önceliği ve mevcut bitiş kapsamı korunur.
+
+**Yürütme:** Önce mevcut ajanların güncel durumu, tamamlanan teslimler, dosya sahipliği ve bağımlılıklar doğrulanır. Çalışan görev kesilmez, tamamlanmış iş yeniden yaptırılmaz; erişilemeyen ajan **UNKNOWN** kalır. Aynı mevcut 17 başlık / 74 özgün yaprak içinden bağımlılığı hazır en öncelikli yetkili iş seçilir, yürütülür ve sonucu doğrulanır; mevcut bitiş kaydı güncellenip uygun sonraki işe geçilir. Her küçük iş için yeni seçim veya devam mesajı şart değildir. Engel ve çözüm için gereken halka kaydedilir; yapılabilir bağımsız iş sürer. Yeni ağaç, tracker, Goal, ana ajan veya otomasyon oluşturulmaz; bu not mevcut PAUSED Goal veya zamanlamayı etkinleştirmez ve fiilen çalışmayan bir turu çalışıyor saymaz.
+
+**Sahiplik ve kabul:** Kurulum ve ortak TEST/runtime/store/config/SQL/servis yazarı mevcut **ERP Yerel ana ajanıdır**. Aynı kaynak veya serviste iki eşzamanlı yazar olmaz; CRM kendi kaynak/UI/offline doğrulama ve feature GitHub teslimini yürütür, ERP kurulumu sürerken çakışmayan bağımsız işler ilerleyebilir. Kod tamam, hedefli test PASS, TEST'e gerçekten kuruldu, normal GUI/fiziksel cihaz ve insan kullanım kabulü ayrı yazılır. Her başlık yalnız kendi özgün bitiş ölçütü kanıtlandığında yeşile döner; **CRM25 / 12🟢 / 13🟡 / 0🔴 ve toplam74** bu karar nedeniyle değişmez. Gerçek insan kabulü USER_ACCEPTANCE.md içinde BEKLİYOR kalır; anlamlı ilerleme kısa sonuç/görülebilir kanıt/sıradaki iş raporuyla bildirilir.
+
+**Yetki değişmez:** Yalnız gerçekten kullanıcı kararı, bağlantı işlemi veya ek onay gerektiren adım sorulur. LIVE/Vega/gerçek T1/ticari kayıt/müşteri mesajı, ücretli API, main merge/tag/release, güvenlik/kimlik/ACL aşma ve mevcut kurulum/owner sınırları genişlemez. Aynı 17 başlığın takibi yeni ürün kapsamı veya eski kabulü teknik testle kapatma yetkisi değildir.
+
 ### CRM-DEC-021 — 16 Ekim 2026 — Önce dikey iş akışları, Cloud sentetik TEST ve yerel entegrasyon (karşı ERP-DEC-063)
 
 **Durum: Onaylı; kurulum/Cloud E2E TEST PASS değildir.**

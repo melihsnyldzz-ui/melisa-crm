@@ -1,5 +1,11 @@
 # Melisa CRM — etkin çalışma talimatları
 
+## Güncel devam kuralı — 20 Ekim 2026 / CRM-DEC-022
+
+`DOT-TREE17-CONTINUATION-20261020-2017`: Aynı mevcut 17 başlık / 74 özgün yaprakta, ajan durumu ve tamamlanan teslimler doğrulanarak bağımlılığı hazır en öncelikli yetkili işe devam edilir; her işte yeni seçim veya “devam” beklenmez. Önceki geçici PAR5 seçim-bekleme yönü bu tarihli kullanıcı kararıyla güncellendi. Çalışan iş kesilmez, eski iş tekrarlanmaz, erişilemeyen ajan UNKNOWN kalır; engel ve gereken halka kaydedilip çakışmayan hazır işe geçilir. [CRM-DEC-022](PROJECT_DECISIONS.md) ayrıntılı kayıttır; yeni ağaç/Goal/ana ajan/otomasyon oluşturulmaz, mevcut PAUSED Goal kendiliğinden açılmaz.
+
+Mevcut ERP Yerel ajanı tek ortak TEST/kurulum/SQL/runtime/servis yazarıdır. Kaynak, test, TEST kurulumu, GUI/cihaz ve insan kabulü ayrı kalır; özgün bitiş ölçütü olmadan yeşil sayaç artmaz. Aynı dosyada iki yazar, LIVE/Vega/T1/gerçek müşteri/ücretli API/main/güvenlik sınırlarını aşma yetkisi yoktur. Aşağıdaki CRM06/dikey akış önceliği ve kabul edilmiş teslimler korunur.
+
 ## EN YÜKSEK ÖNCELİK — 16 Ekim 2026 / CRM-DEC-021: Büyük iş akışını tamamla, sonra panel
 
 Kullanıcı **önce ERP/CRM'deki orijinal bitiş gereksinimlerinin büyük dikey akışlarını** ilerletmeyi, yüzde/performans panelini **sonra** geliştirmeyi açıkça seçti. Bağlayıcı kalıcı karar [PROJECT_DECISIONS.md](PROJECT_DECISIONS.md) **CRM-DEC-021**; karşı repo **ERP-DEC-063**. Bu öncelik, önceki mini Cloud bug-fix görev seçimini günceller; eski teslimlerin teknik kanıtı korunur.
