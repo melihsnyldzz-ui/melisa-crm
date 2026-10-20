@@ -36,10 +36,44 @@ export function validateNativeReceipt(receipt,body,expectedSource){
 }
 export function createNativeOrderStore(actor,conversationId,storage){
  const key=`melisa-crm-native-order-v2:${encodeURIComponent(actor)}:${encodeURIComponent(String(conversationId))}`;
+ let verifiedRecord=null;
  const read=()=>{if(!actor||!/^\d+$/.test(String(conversationId)))fail();const raw=storage.getItem(key);if(!raw)return null;const r=JSON.parse(raw);if(r.version!==2||!/^\d+$/.test(r.nativeActorId)||typeof r.resolved!=='boolean'||r.payload.conversationId!==String(conversationId))fail();validateNativeOrder(r.payload);if(r.expectedSource)validateNativeSource(r.expectedSource);return r;};
  const write=r=>{const raw=JSON.stringify(r);storage.setItem(key,raw);if(storage.getItem(key)!==raw)fail('Taslak tarayıcıda korunamadı. Sipariş gönderilmedi.');return r;};
  const assertActor=(r,id)=>{if(!r||r.nativeActorId!==String(id))fail('Taslağın oluşturulduğu ERP hesabıyla giriş yapın.');return r;};
- return {read,assertActor,prepare(payload,nativeActorId,expectedSource){validateNativeOrder(payload);if(expectedSource)validateNativeSource(expectedSource);const previous=read();if(previous){assertActor(previous,nativeActorId);if(!equal(previous.payload,payload))fail('Aynı taslak kimliğiyle farklı seçim gönderilemez.');return previous;}if(!/^\d+$/.test(String(nativeActorId)))fail();return write({version:2,nativeActorId:String(nativeActorId),resolved:false,payload:JSON.parse(JSON.stringify(payload)),...(expectedSource?{expectedSource:JSON.parse(JSON.stringify(expectedSource))}:{})});},resolved(actorId){return write({...assertActor(read(),actorId),resolved:true});},newIntent(actorId){if(!assertActor(read(),actorId).resolved)fail('Önceki taslak sonucu bekleniyor.');storage.removeItem(key);if(storage.getItem(key)!==null)fail();}};
+ // Compare the complete captured envelope, including resolved/source/pricing state.
+ const assertCurrent=(record,actorId)=>{const current=assertActor(read(),actorId);if(!equal(current,record))fail('Taslak kaydı değişti. Kaydı yeniden açın.');return current;};
+ return {read,assertActor,assertCurrent,prepare(payload,nativeActorId,expectedSource){validateNativeOrder(payload);if(expectedSource)validateNativeSource(expectedSource);const previous=read();if(previous){assertActor(previous,nativeActorId);if(!equal(previous.payload,payload))fail('Aynı taslak kimliğiyle farklı seçim gönderilemez.');return previous;}if(!/^\d+$/.test(String(nativeActorId)))fail();return write({version:2,nativeActorId:String(nativeActorId),resolved:false,payload:JSON.parse(JSON.stringify(payload)),...(expectedSource?{expectedSource:JSON.parse(JSON.stringify(expectedSource))}:{})});},resolved(actorId,record=read()){const next=write({...assertCurrent(record,actorId),resolved:true});verifiedRecord=JSON.parse(JSON.stringify(next));return next;},newIntent(actorId){if(!assertActor(read(),actorId).resolved)fail('Önceki taslak sonucu bekleniyor.');assertCurrent(verifiedRecord,actorId);storage.removeItem(key);if(storage.getItem(key)!==null)fail();verifiedRecord=null;}};
 }
-export async function recoverNativeOrder({store,nativeActorId,readDetail,isCurrent}){const record=store.assertActor(store.read(),nativeActorId);let receipt;try{receipt=await readDetail(record.payload.requestId);}catch(e){if(e.status===404)return {record,receipt:null,missing:true};throw e;}if(!isCurrent())return {record,receipt:null,missing:false};validateNativeReceipt(receipt,record.payload,record.expectedSource);store.resolved(nativeActorId);return {record,receipt,missing:false};}
-export async function submitNativeOrder({store,payload,nativeActorId,readDetail,createDraft,isCurrent,expectedSource}){const previous=store.read(),record=store.prepare(payload,nativeActorId,expectedSource);if(previous){const r=await recoverNativeOrder({store,nativeActorId,readDetail,isCurrent});if(r.receipt||!r.missing||!isCurrent())return r.receipt;if(record.resolved)fail('Doğrulanmış taslak artık okunamadı.');}if(!isCurrent())return null;try{await createDraft(record.payload);}catch(e){if(!isCurrent())throw e;const r=await recoverNativeOrder({store,nativeActorId,readDetail,isCurrent});if(r.receipt)return r.receipt;throw e;}if(!isCurrent())return null;return(await recoverNativeOrder({store,nativeActorId,readDetail,isCurrent})).receipt;}
+async function recoverNativeRecord({store,nativeActorId,readDetail,isCurrent},record){
+ const inactive={record,receipt:null,missing:false};
+ if(!isCurrent())return inactive;
+ store.assertCurrent(record,nativeActorId);
+ let receipt;
+ try{receipt=await readDetail(record.payload.requestId);}catch(e){
+  if(!isCurrent())return inactive;
+  store.assertCurrent(record,nativeActorId);
+  if(e.status===404)return {record,receipt:null,missing:true};
+  throw e;
+ }
+ if(!isCurrent())return inactive;
+ store.assertCurrent(record,nativeActorId);
+ validateNativeReceipt(receipt,record.payload,record.expectedSource);
+ store.resolved(nativeActorId,record);
+ return {record,receipt,missing:false};
+}
+function currentRecovery(result,{store,nativeActorId,isCurrent}){
+ if(!isCurrent())return {...result,receipt:null,missing:false};
+ // A successful inner recovery has already changed only this envelope to resolved.
+ store.assertCurrent(result.receipt?{...result.record,resolved:true}:result.record,nativeActorId);
+ return result;
+}
+export async function recoverNativeOrder(options){const record=options.store.assertActor(options.store.read(),options.nativeActorId);return currentRecovery(await recoverNativeRecord(options,record),options);}
+export async function submitNativeOrder({store,payload,nativeActorId,readDetail,createDraft,isCurrent,expectedSource}){
+ const previous=store.read(),record=store.prepare(payload,nativeActorId,expectedSource),recovery={store,nativeActorId,readDetail,isCurrent};
+ if(previous){const r=currentRecovery(await recoverNativeRecord(recovery,record),recovery);if(r.receipt||!r.missing||!isCurrent())return r.receipt;if(record.resolved)fail('Doğrulanmış taslak artık okunamadı.');}
+ if(!isCurrent())return null;
+ store.assertCurrent(record,nativeActorId);
+ try{await createDraft(record.payload);}catch(e){if(!isCurrent())throw e;const r=currentRecovery(await recoverNativeRecord(recovery,record),recovery);if(!isCurrent())return null;if(r.receipt)return r.receipt;throw e;}
+ if(!isCurrent())return null;
+ return currentRecovery(await recoverNativeRecord(recovery,record),recovery).receipt;
+}
