@@ -29,9 +29,20 @@
   },
   "delivery": {
     "pullRequest": "https://github.com/melihsnyldzz-ui/melisa-crm/pull/3",
-    "sourceCommit": null,
-    "exactHeadCi": "PENDING_SOURCE_COMMIT",
-    "stagedSecretScan": "PENDING_COMMIT",
+    "sourceCommit": "56442129a01bd4ae870457f512e20b4cbf613c6c",
+    "committedSourceBlobs": "MATCH",
+    "exactHeadCi": {
+      "headSha": "56442129a01bd4ae870457f512e20b4cbf613c6c",
+      "conclusion": "SUCCESS",
+      "successfulJobCount": 7,
+      "runs": [
+        {"id": 39461345993, "workflow": "CRM CI", "event": "pull_request", "conclusion": "success", "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/39461345993", "jobs": ["secret-scan", "windows-startup-test", "quality-build-test"]},
+        {"id": 39461340094, "workflow": "CRM CI", "event": "push", "conclusion": "success", "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/39461340094", "jobs": ["secret-scan", "quality-build-test", "windows-startup-test"]},
+        {"id": 39461346035, "workflow": "AI Sales Agent - Offline", "event": "pull_request", "conclusion": "success", "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/39461346035", "jobs": ["ai-sales-offline"]}
+      ]
+    },
+    "stagedSecretScan": {"scope": "sourceCommit", "result": "PASS", "findings": 0, "exceptionsAdded": 0},
+    "receiptPolicy": "docs-only [skip ci]; source CI is not a fresh run for the receipt HEAD",
     "deployment": "SOURCE_UNAPPLIED"
   },
   "boundaries": {
@@ -43,7 +54,8 @@
     "runtimeLockP03": "UNKNOWN_NOT_PROBED",
     "cacheWritingPreflight": "NOT_RUN_SOURCE_ONLY_SCOPE",
     "sharedTestRuntimeSqlServicesConfig": "NOT_TOUCHED",
-    "packageBuildInstall": "NOT_RUN",
+    "localPackageBuildInstall": "NOT_RUN",
+    "hostedBuildOfflineTests": "PASS_SOURCE_CI",
     "browserNormalGui": "NOT_RUN",
     "physicalDeviceWindowsLogonHumanAcceptance": "WAITING",
     "crmUa11": "BEKLIYOR",

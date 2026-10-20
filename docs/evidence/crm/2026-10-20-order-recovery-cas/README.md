@@ -46,8 +46,10 @@ git diff --check
 
 ## GitHub, kurulum ve kalan kabul
 
-Mevcut [PR3](https://github.com/melihsnyldzz-ui/melisa-crm/pull/3) ve feature kullanılacak; kaynak commit'i oluşunca exact-head hosted CI sonucu bu makbuza eklenecek. Eski PR veya source CI'si devralınmadı. Staged secret taraması commit öncesi zorunlu; ignore/rule/exception değişikliği yok.
+Kaynak [56442129a01bd4ae870457f512e20b4cbf613c6c](https://github.com/melihsnyldzz-ui/melisa-crm/commit/56442129a01bd4ae870457f512e20b4cbf613c6c) mevcut feature üzerinden [PR3](https://github.com/melihsnyldzz-ui/melisa-crm/pull/3)'e push edildi; uzak PR head tam SHA ile doğrulandı. Exact [PR CI39461345993](https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/39461345993), [push CI39461340094](https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/39461340094), [AI-offline39461346035](https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/39461346035) SUCCESS; toplam7job başarılı. Source/test blob'ları committed tree ile eşleşti. Eski PR/source CI'si devralınmadı. Commit öncesi masked staged Gitleaks0; ignore/rule/exception değişikliği yok.
 
-**SOURCE_UNAPPLIED; paket/build/kurulum/runtime/normal GUI DENENMEDİ.** Fiziksel cihaz, gerçek Windows reboot/logon ve CRM-UA11 insan kabulü BEKLİYOR. Bu görev için ekran kanıtı üretilmedi; offline unit/sentetik kontrol ekran veya gerçek kabul diye sunulmaz. Son kurulu source6bc82e6 yalnız önceki owner kaydıdır, bu tur taze runtime kimliği değildir.
+CI makbuzu yalnız belge `[skip ci]` follow-up commit'iyle kaydedilir; source CI o metadata HEAD'i için yeni koşum değildir. Belge için uygulama testleri/CI yeniden başlatılmadı. Hosted build ve Windows sözleşme fixture'ları yerel paket kurulumu veya gerçek reboot değildir.
+
+**SOURCE_UNAPPLIED; yerel paket/build/kurulum/runtime/normal GUI DENENMEDİ.** Fiziksel cihaz, gerçek Windows reboot/logon ve CRM-UA11 insan kabulü BEKLİYOR. Bu görev için ekran kanıtı üretilmedi; offline unit/sentetik kontrol ekran veya gerçek kabul diye sunulmaz. Son kurulu source6bc82e6 yalnız önceki owner kaydıdır, bu tur taze runtime kimliği değildir.
 
 25CRM=12tamam/13kısmi/0açık ve toplam74 kapsamı korunur. UI görsel aktarımı bekleyen ayrı iş, CRM06/E02'nin ayrı order→sale upstream sözleşme bağımlılığı ve ERP tek shared-owner sorumluluğu kapanmaz. Yeni ERP sözleşmesi/satış motoru/auth/quote-policy geliştirilmedi; LIVE/Vega/T1/main/gerçek müşteri verisi veya mesajı/ücretli API kullanılmadı. Bu tek kaynak işi GitHub makbuzu tamamlanınca durur.
