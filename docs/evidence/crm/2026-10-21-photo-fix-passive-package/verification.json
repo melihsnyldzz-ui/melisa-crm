@@ -1,0 +1,156 @@
+{
+  "date": "2026-10-21",
+  "requirements": [
+    "CRM06",
+    "E02",
+    "A04",
+    "A05"
+  ],
+  "scope": "Existing finish tree; source/profile and inactive package preparation only; ERP installation owner unchanged",
+  "erpReceiptCheck": {
+    "ownerThread": "01a107ef-f13e-73c0-9e08-fd5c4545325e",
+    "title": "Melisa ERP’yi tamamla",
+    "status": "ACTIVE_REHEARSAL_AND_RESTORATION",
+    "finalCandidateInstallReceipt": "NOT_AVAILABLE_AT_INITIAL_CHECK",
+    "readOnlyReview": {
+      "path": "C:/Sirket/ERP/evidence/ERP-P03-DEFENDER-REVIEW-20261021/installation-alternatives-review.json",
+      "sha256": "0e9fa3582ac02f1c146ad4dfb9dd460966f3315ae92c46f8b6e80ae1820cbab9",
+      "observedUtc": "2026-10-21T05:22:23.57Z",
+      "newInstallStarted": false,
+      "runtimeOrDatabaseModified": false,
+      "completedReadOnlyReview": true
+    },
+    "limitation": "This read-only alternatives review and later active rehearsal are not a completed Apply/readback receipt. ERP canonical STATUS is historical; installed runtime identity is not inferred from source checkout."
+  },
+  "applicationTarget": {
+    "profile": "crm20261021-node-v24.19.0",
+    "commit": "d1e4425206249e38445fb103e03601f86baa84ec",
+    "tree": "ce0e2a95a2d9897aedbd021d79a5c6a5e0371d19",
+    "repoRoot": "C:/Sirket/CRM/melisa-crm",
+    "releasesRoot": "C:/Sirket/CRM/releases/node-v24.19.0",
+    "executable": "C:/Sirket/ERP/tools/node-v24.19.0/node.exe",
+    "version": "v24.19.0",
+    "platform": "win32",
+    "arch": "x64",
+    "nodeSha256": "3602f2bb1a10f2cbab4c36886218a33c1ab3db87290e73b033c46c77147d0237",
+    "npmCliSha256": "3ce7cba6f5128dd5f54c98b6a5036b0f850496878cc2e21044b675fe3c594e3e",
+    "isolatedPreparation": true,
+    "locks": {
+      "gateway": "c487dc65e3a107f5235408fad3523c8242a4c01b62c7475154ad4ae41a627b96",
+      "frontend": "9064a36a0c86464db93cc261ffedbc92a87ea2092315e207301ca8a8aa6d4d24"
+    },
+    "pinEvidence": "Fresh Git tree and raw Git lock bytes plus actual executable/npm CLI digest. Windows checkout CRLF hashes excluded."
+  },
+  "builderDelivery": {
+    "baseCommit": "8e40de980d1c6a162387540d35e2c7d9fa537440",
+    "sourceCommit": null,
+    "branch": "codex/crm-agents-on-completion-20261003",
+    "pullRequest": "https://github.com/melihsnyldzz-ui/melisa-crm/pull/3",
+    "sourceFiles": [
+      {
+        "path": "deploy/test-package.mjs",
+        "blob": "6bea6bfe96950f3f028a046cb81c57f0d1d9b6bd"
+      },
+      {
+        "path": "tests/test-package-node2419.test.mjs",
+        "blob": "7c6cbdc9068690e91c79962cb9dbaf17e13bc296"
+      }
+    ],
+    "ci": "PENDING",
+    "stagedSecretScan": "PENDING"
+  },
+  "verification": {
+    "host": "Node v24.19.0 win32/x64",
+    "fixture": "Actual builder in existing synthetic VM to first staging boundary; not a real build",
+    "before": {
+      "tests": 61,
+      "pass": 51,
+      "fail": 10
+    },
+    "after": {
+      "exitCode": 0,
+      "tests": 61,
+      "pass": 61,
+      "fail": 0,
+      "existingTests": 51,
+      "newTests": 10
+    },
+    "beforeMeaning": "New profile unavailable. Negative-case error-code differences are not ten prior security vulnerabilities. An initial added-test syntax error was corrected before this baseline; a broad comparison marker error was corrected before the final section check.",
+    "compatibility": {
+      "exitCode": 0,
+      "tests": 4,
+      "pass": 4,
+      "fail": 0
+    },
+    "protectedSections": [
+      {
+        "section": "legacy-profile",
+        "sha256": "2e79b6820a07c766f8bad0a65115efad79338028199dd8b156118f05c85da9f6",
+        "unchanged": true
+      },
+      {
+        "section": "previous-profile",
+        "sha256": "6d1282d78e295ec9469e5a504f0c5177778c5540cdb59ca701c85d368d0f5b43",
+        "unchanged": true
+      },
+      {
+        "section": "source-payload-and-verifier",
+        "sha256": "7f298eeae5761d3748b3aad036cd06138be99ef70abe95e7315182465c01c76e",
+        "unchanged": true
+      },
+      {
+        "section": "git-source",
+        "sha256": "82959be729258eed8566a2452fd91bc3b738b1715bd3d4e61db7a9b611405208",
+        "unchanged": true
+      },
+      {
+        "section": "offline-and-npm",
+        "sha256": "675fa047946a0f02d2636d19e917062b7d8721c0231370ede9dc8dce33cba918",
+        "unchanged": true
+      },
+      {
+        "section": "node-pins",
+        "sha256": "ff5512084b174ad6cf9227102495bfeff7d8341a6a28e9ff7e46a96bde537701",
+        "unchanged": true
+      },
+      {
+        "section": "immutable-build-and-cli",
+        "sha256": "89a16147f33203522dc7fb7069967e658b83613d4b5ae287c5b226def83937fe",
+        "unchanged": true
+      }
+    ],
+    "independentReview": {
+      "agent": "az_independent_reviewer",
+      "readOnly": true,
+      "openP1": 0,
+      "openP2": 0,
+      "testsOrBuildByReviewer": false
+    }
+  },
+  "inactivePackage": {
+    "status": "NOT_YET_BUILT",
+    "destination": "C:/Sirket/CRM/releases/node-v24.19.0/crm-shared-test-d1e4425206249e38445fb103e03601f86baa84ec",
+    "destinationAbsentBefore": true
+  },
+  "boundaries": {
+    "newAgents": 0,
+    "newGoals": 0,
+    "nativeGoalAtCheck": null,
+    "sharedTestRuntimeSqlConfigStoreServicesInstall": "NOT_MODIFIED",
+    "erpSource": "READ_ONLY",
+    "old439And7baProfiles": "UNCHANGED",
+    "oldPackages": "NOT_MODIFIED",
+    "cacheWritingPreflight": "NOT_RUN",
+    "realGui": "GUI_DENENMEDI",
+    "physicalDevice": "WAITING",
+    "crmUa11": "BEKLIYOR",
+    "liveVegaT1MainMergeTagPaidApiRealCustomerMessagesIdentityBypass": "NOT_USED",
+    "unchangedFinishCounts": {
+      "crmTotal": 25,
+      "green": 12,
+      "partial": 13,
+      "red": 0,
+      "totalErpCrm": 74
+    }
+  }
+}

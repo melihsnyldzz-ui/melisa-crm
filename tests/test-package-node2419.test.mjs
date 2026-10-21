@@ -17,6 +17,7 @@ const nodeSha256='3602f2bb1a10f2cbab4c36886218a33c1ab3db87290e73b033c46c77147d02
 const locks={gateway:'c487dc65e3a107f5235408fad3523c8242a4c01b62c7475154ad4ae41a627b96',frontend:'9064a36a0c86464db93cc261ffedbc92a87ea2092315e207301ca8a8aa6d4d24'};
 const profile='crm18-node-v24.19.0';
 const october20={profile:'crm20261020-node-v24.19.0',commit:'7ba6e4ebc8b70019136d603e6307741189ba03c1',tree:'db824c8a10b030faee6ea84a69cbb3cf86d7293a'};
+const october21={profile:'crm20261021-node-v24.19.0',commit:'d1e4425206249e38445fb103e03601f86baa84ec',tree:'ce0e2a95a2d9897aedbd021d79a5c6a5e0371d19'};
 const production=fs.readFileSync(new URL('../deploy/test-package.mjs',import.meta.url),'utf8');
 const equal=(a,b)=>path.win32.resolve(a).toLowerCase()===path.win32.resolve(b).toLowerCase();
 
@@ -134,4 +135,39 @@ test('20 October profile leaves the generic destination and closed CLI unchanged
   const noProfile=fixture({},october20);assert.throws(()=>noProfile.run({preparationProfile:undefined}),{code:'PACKAGE_RELEASE_ROOT_REJECTED'});assert.deepEqual(noProfile.calls.writes,[]);
   assert.throws(()=>f.main(['create','--commit',october20.commit,'--preparation-profile',october20.profile]),{code:'PACKAGE_CLI_ARGUMENTS_REJECTED'});
   const invalid=fixture({},october20);assert.throws(()=>invalid.run({isolatedPreparation:'true'}),{code:'PACKAGE_BUILD_PROFILE_REJECTED'});assert.deepEqual(invalid.calls.writes,[]);
+});
+
+test('21 October photo-fix source reaches only its own immutable candidate',()=>{
+  const f=fixture({},october21);assert.throws(()=>f.run(),{code:'FIXTURE_STAGING_BOUNDARY'});
+  assert.equal(f.calls.writes[0],releasesRoot);
+  assert.equal(path.win32.dirname(f.calls.writes[1]),releasesRoot);
+  assert.equal(f.calls.destinations[0],path.win32.join(releasesRoot,'crm-shared-test-'+october21.commit));
+  assert.equal(f.calls.nodeReads,1);assert.deepEqual(f.calls.lockReads.sort(),['frontend','gateway']);
+});
+
+test('21 October profile defaults to its literal root without accepting an arbitrary destination',()=>{
+  const f=fixture({},october21);assert.throws(()=>f.run({releasesRoot:undefined}),{code:'FIXTURE_STAGING_BOUNDARY'});assert.equal(f.calls.writes[0],releasesRoot);
+  const other=fixture({},october21);assert.throws(()=>other.run({releasesRoot:'C:\\Other\\release'}),{code:'PACKAGE_NODE2419_PROFILE_REJECTED'});assert.deepEqual(other.calls.writes,[]);
+});
+
+test('photo-fix and previous profiles cannot borrow each other source tuples',()=>{
+  for(const previous of [{commit,tree,profile},october20]){
+    const current=fixture({tree:previous.tree},october21);assert.throws(()=>current.run({commit:previous.commit}),{code:'PACKAGE_NODE2419_PROFILE_REJECTED'});assert.deepEqual(current.calls.writes,[]);
+    const older=fixture({tree:october21.tree},previous);assert.throws(()=>older.run({commit:october21.commit}),{code:'PACKAGE_NODE2419_PROFILE_REJECTED'});assert.deepEqual(older.calls.writes,[]);
+  }
+});
+
+for(const [name,change]of Object.entries({sourceTree:{tree:'0'.repeat(40)},binaryDigest:{nodeSha256:'0'.repeat(64)},version:{version:'v24.15.0'},gatewayLock:{locks:{...locks,gateway:'0'.repeat(64)}},frontendLock:{locks:{...locks,frontend:'0'.repeat(64)}}}))test('21 October exact profile rejects '+name+' before any write',()=>{
+  const f=fixture(change,october21);assert.throws(()=>f.run(),{code:'PACKAGE_NODE2419_PROFILE_REJECTED'});assert.deepEqual(f.calls.writes,[]);
+});
+
+test('21 October profile requires isolation and retains closed API and CLI selection',()=>{
+  const f=fixture({},october21);assert.throws(()=>f.run({isolatedPreparation:false}),{code:'PACKAGE_NODE2419_PROFILE_REJECTED'});assert.deepEqual(f.calls.writes,[]);
+  assert.throws(()=>f.main(['create','--commit',october21.commit,'--preparation-profile',october21.profile]),{code:'PACKAGE_CLI_ARGUMENTS_REJECTED'});
+  const unknown=fixture({},october21);assert.throws(()=>unknown.run({preparationProfile:'crm20261022-node-v24.19.0'}),{code:'PACKAGE_BUILD_PROFILE_REJECTED'});assert.deepEqual(unknown.calls.writes,[]);
+});
+
+test('21 October exact profile still refuses redirection and replacement of a sealed package',()=>{
+  const link=fixture({reparse:true},october21);assert.throws(()=>link.run(),{code:'PACKAGE_REPARSE_REJECTED'});assert.deepEqual(link.calls.writes,[]);
+  const existing=fixture({existing:true},october21);assert.throws(()=>existing.run(),{code:'PACKAGE_ALREADY_EXISTS'});assert.deepEqual(existing.calls.writes,[releasesRoot]);
 });

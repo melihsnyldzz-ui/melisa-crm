@@ -40,6 +40,17 @@ const crm20261020Node2419=Object.freeze({
   nodeSha256:'3602f2bb1a10f2cbab4c36886218a33c1ab3db87290e73b033c46c77147d0237',
   locks:Object.freeze({gateway:'c487dc65e3a107f5235408fad3523c8242a4c01b62c7475154ad4ae41a627b96',frontend:'9064a36a0c86464db93cc261ffedbc92a87ea2092315e207301ca8a8aa6d4d24'}),
 });
+// Keep the later photo-context fix distinct from earlier prepared candidates.
+const crm20261021Node2419=Object.freeze({
+  profile:'crm20261021-node-v24.19.0',
+  commit:'d1e4425206249e38445fb103e03601f86baa84ec',
+  tree:'ce0e2a95a2d9897aedbd021d79a5c6a5e0371d19',
+  repoRoot:'C:\\Sirket\\CRM\\melisa-crm',
+  releasesRoot:'C:\\Sirket\\CRM\\releases\\node-v24.19.0',
+  executable:'C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe',
+  nodeSha256:'3602f2bb1a10f2cbab4c36886218a33c1ab3db87290e73b033c46c77147d0237',
+  locks:Object.freeze({gateway:'c487dc65e3a107f5235408fad3523c8242a4c01b62c7475154ad4ae41a627b96',frontend:'9064a36a0c86464db93cc261ffedbc92a87ea2092315e207301ca8a8aa6d4d24'}),
+});
 
 export function safePackagePath(value) {
   return typeof value==='string' && value.length>0 && value.length<=500 && !value.includes('\\') && !/[<>:"|?*]/.test(value) && !value.startsWith('/')
@@ -249,6 +260,7 @@ function node2419ReleaseRoot({repoRoot,commit,tree,releasesRoot,isolatedPreparat
   let pin;
   if(preparationProfile===crm18Node2419.profile)pin=crm18Node2419;
   else if(preparationProfile===crm20261020Node2419.profile)pin=crm20261020Node2419;
+  else if(preparationProfile===crm20261021Node2419.profile)pin=crm20261021Node2419;
   else failure('PACKAGE_BUILD_PROFILE_REJECTED');
   if(process.platform!=='win32'||process.arch!=='x64'||process.version!=='v24.19.0'
     ||!samePath(repoRoot,pin.repoRoot)||commit!==pin.commit||tree!==pin.tree||isolatedPreparation!==true
@@ -262,7 +274,7 @@ function node2419ReleaseRoot({repoRoot,commit,tree,releasesRoot,isolatedPreparat
   return pin.releasesRoot;
 }
 export function createTestPackage({repoRoot=canonicalRoot,commit,releasesRoot,isolatedPreparation=false,preparationProfile}){
-  const closedNode2419Profile=preparationProfile===crm18Node2419.profile||preparationProfile===crm20261020Node2419.profile;
+  const closedNode2419Profile=preparationProfile===crm18Node2419.profile||preparationProfile===crm20261020Node2419.profile||preparationProfile===crm20261021Node2419.profile;
   if(typeof isolatedPreparation!=='boolean'||preparationProfile!==undefined&&!closedNode2419Profile)failure('PACKAGE_BUILD_PROFILE_REJECTED');
   const tree=verifyGitPackageSource(repoRoot,commit);
   if(closedNode2419Profile)releasesRoot=node2419ReleaseRoot({repoRoot,commit,tree,releasesRoot,isolatedPreparation,preparationProfile});
