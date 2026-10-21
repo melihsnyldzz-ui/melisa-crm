@@ -20,7 +20,21 @@
       "runtimeOrDatabaseModified": false,
       "completedReadOnlyReview": true
     },
-    "limitation": "This read-only alternatives review and later active rehearsal are not a completed Apply/readback receipt. ERP canonical STATUS is historical; installed runtime identity is not inferred from source checkout."
+    "limitation": "This read-only alternatives review and later active rehearsal are not a completed Apply/readback receipt. ERP canonical STATUS is historical; installed runtime identity is not inferred from source checkout.",
+    "coordination": {
+      "directUserAuthorizationViaDot": true,
+      "erpOwnerAcknowledged": true,
+      "ownerStatement": "Installation has not started; old 7ba candidate will not be installed; d1 package tuple must be matched before Apply.",
+      "ownerReportedCurrentRuntime": {
+        "erp": "e59e07ab",
+        "crm": "6bc82e6f",
+        "supervisor": "13bdf75a",
+        "database": "DB02",
+        "copy": "e16b",
+        "t1": false
+      },
+      "runtimeEvidenceLevel": "ERP_OWNER_REPORT_NOT_NEW_CRM_READBACK"
+    }
   },
   "applicationTarget": {
     "profile": "crm20261021-node-v24.19.0",
@@ -43,7 +57,7 @@
   },
   "builderDelivery": {
     "baseCommit": "8e40de980d1c6a162387540d35e2c7d9fa537440",
-    "sourceCommit": null,
+    "sourceCommit": "993332154eef2b4995339c8fc25074860021cf3a",
     "branch": "codex/crm-agents-on-completion-20261003",
     "pullRequest": "https://github.com/melihsnyldzz-ui/melisa-crm/pull/3",
     "sourceFiles": [
@@ -56,8 +70,82 @@
         "blob": "7c6cbdc9068690e91c79962cb9dbaf17e13bc296"
       }
     ],
-    "ci": "PENDING",
-    "stagedSecretScan": "PENDING"
+    "ci": {
+      "headSha": "993332154eef2b4995339c8fc25074860021cf3a",
+      "conclusion": "SUCCESS",
+      "passedJobs": 7,
+      "runs": [
+        {
+          "id": "39559610283",
+          "event": "pull_request",
+          "headSha": "993332154eef2b4995339c8fc25074860021cf3a",
+          "status": "completed",
+          "conclusion": "success",
+          "jobs": [
+            {
+              "name": "secret-scan",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "name": "windows-startup-test",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "name": "quality-build-test",
+              "status": "completed",
+              "conclusion": "success"
+            }
+          ],
+          "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/39559610283"
+        },
+        {
+          "id": "39559605481",
+          "event": "push",
+          "headSha": "993332154eef2b4995339c8fc25074860021cf3a",
+          "status": "completed",
+          "conclusion": "success",
+          "jobs": [
+            {
+              "name": "secret-scan",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "name": "windows-startup-test",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "name": "quality-build-test",
+              "status": "completed",
+              "conclusion": "success"
+            }
+          ],
+          "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/39559605481"
+        },
+        {
+          "id": "39559610357",
+          "event": "pull_request",
+          "headSha": "993332154eef2b4995339c8fc25074860021cf3a",
+          "status": "completed",
+          "conclusion": "success",
+          "jobs": [
+            {
+              "name": "ai-sales-offline",
+              "status": "completed",
+              "conclusion": "success"
+            }
+          ],
+          "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/39559610357"
+        }
+      ]
+    },
+    "stagedSecretScan": {
+      "findings": 0,
+      "exceptionsAdded": 0
+    }
   },
   "verification": {
     "host": "Node v24.19.0 win32/x64",
@@ -128,9 +216,63 @@
     }
   },
   "inactivePackage": {
-    "status": "NOT_YET_BUILT",
-    "destination": "C:/Sirket/CRM/releases/node-v24.19.0/crm-shared-test-d1e4425206249e38445fb103e03601f86baa84ec",
-    "destinationAbsentBefore": true
+    "status": "READY_INACTIVE_NOT_INSTALLED",
+    "startedUtc": "2026-10-21T07:06:38.898Z",
+    "completedUtc": "2026-10-21T07:08:42.611Z",
+    "builderSourceCommit": "993332154eef2b4995339c8fc25074860021cf3a",
+    "createCalls": 1,
+    "officialVerifier": {
+      "packageRoot": "C:\\Sirket\\CRM\\releases\\node-v24.19.0\\crm-shared-test-d1e4425206249e38445fb103e03601f86baa84ec",
+      "manifestSha256": "a0e86fccbdb95eeb97e4dc08e383db7bf8f12a29b040f34a78f6c37e3093b5ef",
+      "sourceCommit": "d1e4425206249e38445fb103e03601f86baa84ec",
+      "sourceTree": "ce0e2a95a2d9897aedbd021d79a5c6a5e0371d19",
+      "supervisor": "deploy/test-supervisor.mjs",
+      "environment": "TEST"
+    },
+    "index": {
+      "path": "apps/frontend/dist/client/index.html",
+      "size": 1265,
+      "sha256": "20c54be38615a81f327a27939a5318d09c2ac5dd4a720e159f61a9b6eeba6f77"
+    },
+    "sourceFiles": 186,
+    "payloadFiles": 2292,
+    "payloadBytes": 23960004,
+    "sealedFilesIncludingManifest": 2293,
+    "allReadonly": true,
+    "sourceCard": {
+      "path": "apps/frontend/src/SalesProductCards.jsx",
+      "gitBlob": "49d6936017649c0d347b58430fa2fd15ed2b37fb"
+    },
+    "preservation": {
+      "packages": 63,
+      "records": 344,
+      "manifestAndIndexRecords": 126,
+      "mismatches": []
+    },
+    "installed": false,
+    "receipt": {
+      "path": "docs/evidence/crm/2026-10-21-photo-fix-passive-package/package-receipt.json",
+      "sha256": "2d78ae2e19b3084c01ba96c9d5f56a28b20af68e72042c639678750d729b74a5"
+    },
+    "preservationBefore": {
+      "path": "docs/evidence/crm/2026-10-21-photo-fix-passive-package/preservation-before.json",
+      "sha256": "738870367dd983f1ed63d7910f16f2822ba2d628dd7878c9efb486c8a691e77f"
+    },
+    "independentArtifactReview": {
+      "agent": "az_independent_reviewer",
+      "readOnly": true,
+      "result": "GO",
+      "openP1": 0,
+      "openP2": 0,
+      "officialVerifierExitCode": 0,
+      "sourceBlobsComparedToGit": 186,
+      "sourceBlobMismatches": 0,
+      "sealedReadonlyFiles": 2293,
+      "linksOrSpecialFiles": 0,
+      "locksAndIndexMatched": true,
+      "oldPackageProtectionEvidence": "ROOT_SNAPSHOT_AND_AFTER_COMPARISON; reviewer did not rescan all older packages",
+      "newBuildTestInstallOrRuntimeWrites": 0
+    }
   },
   "boundaries": {
     "newAgents": 0,

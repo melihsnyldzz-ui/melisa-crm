@@ -1,0 +1,35 @@
+{
+  "startedUtc": "2026-10-21T07:06:38.898Z",
+  "completedUtc": "2026-10-21T07:08:42.611Z",
+  "builderSourceCommit": "993332154eef2b4995339c8fc25074860021cf3a",
+  "createCalls": 1,
+  "officialVerifier": {
+    "packageRoot": "C:\\Sirket\\CRM\\releases\\node-v24.19.0\\crm-shared-test-d1e4425206249e38445fb103e03601f86baa84ec",
+    "manifestSha256": "a0e86fccbdb95eeb97e4dc08e383db7bf8f12a29b040f34a78f6c37e3093b5ef",
+    "sourceCommit": "d1e4425206249e38445fb103e03601f86baa84ec",
+    "sourceTree": "ce0e2a95a2d9897aedbd021d79a5c6a5e0371d19",
+    "supervisor": "deploy/test-supervisor.mjs",
+    "environment": "TEST"
+  },
+  "index": {
+    "path": "apps/frontend/dist/client/index.html",
+    "size": 1265,
+    "sha256": "20c54be38615a81f327a27939a5318d09c2ac5dd4a720e159f61a9b6eeba6f77"
+  },
+  "sourceFiles": 186,
+  "payloadFiles": 2292,
+  "payloadBytes": 23960004,
+  "sealedFilesIncludingManifest": 2293,
+  "allReadonly": true,
+  "sourceCard": {
+    "path": "apps/frontend/src/SalesProductCards.jsx",
+    "gitBlob": "49d6936017649c0d347b58430fa2fd15ed2b37fb"
+  },
+  "preservation": {
+    "packages": 63,
+    "records": 344,
+    "manifestAndIndexRecords": 126,
+    "mismatches": []
+  },
+  "installed": false
+}
