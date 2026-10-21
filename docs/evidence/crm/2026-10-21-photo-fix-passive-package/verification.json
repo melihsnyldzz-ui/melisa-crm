@@ -36,7 +36,7 @@
       "runtimeEvidenceLevel": "ERP_OWNER_REPORT_NOT_NEW_CRM_READBACK"
     },
     "latestInstallAttempt": {
-      "evidenceLevel": "ERP_OWNER_THREAD_REPORT_ONLY; NEW_RECEIPT_PATH_HASH_REQUESTED",
+      "evidenceLevel": "OWNER_HELD_STATE_REPORT_PLUS_HASH_MATCHED_RECORDED_RECEIPTS; NO_NEW_SQL_CIM_RUNTIME_QUERY",
       "ownerThread": "01a107ef-f13e-73c0-9e08-fd5c4545325e",
       "attemptUtc": "2026-10-21T09:28:00Z",
       "timePrecision": "minute",
@@ -50,32 +50,133 @@
       "newApplicationsInstalledReported": false,
       "queryStoreRestoreReported": {
         "scope": "QUERY_STORE_NOT_DATABASE_WRITE_PERMISSION",
-        "actualMode": "READ_WRITE"
+        "actualMode": "READ_WRITE",
+        "evidenceLevel": "HASH_MATCHED_OWNER_QUERY_STORE_RECEIPT",
+        "observedUtc": "2026-10-21T09:28:12.9749765Z"
       },
       "oldRuntimeContinuityReported": {
         "pidCreationPathAllSame": true,
         "apiNative": "e59e07a",
         "database": "DB02",
-        "evidenceLevel": "ERP_OWNER_REPORT_NOT_NEW_CRM_QUERY"
+        "evidenceLevel": "OWNER_COLLECTED_HASH_MATCHED_SNAPSHOT_NOT_LIVE_CRM_QUERY",
+        "observedUtc": "2026-10-21T09:36:07.9215794Z"
       },
       "diagnosticTimestamps": {
-        "claimUtc": "2026-10-21T09:24:40Z",
-        "cutIntentUtc": "2026-10-21T09:27:37Z",
-        "elapsedSeconds": 177,
+        "claimUtc": "2026-10-21T09:24:40.9641631Z",
+        "cutIntentUtc": "2026-10-21T09:27:37.442Z",
+        "claimAgeAtIntentSeconds": 176.4778369,
+        "previousRoundedClockDifferenceSeconds": 177,
         "ownerInvestigatingGuardSeconds": 60,
-        "confirmedRootCause": false,
+        "exactFirstWorkerReason": "NOT_RETAINED",
+        "guardExpiry": "PROVEN_AT_INTENT_IF_EARLIER_GATES_PASSED",
+        "confirmedSoleRootCause": false,
         "guardRelaxationAuthorized": false
       },
-      "receiptFiles": "REQUESTED_FROM_OWNER_NOT_YET_RECEIVED",
-      "recovery": "ERP owner determines supported recovery while preserving the consumed claim and installed baseline; no second Apply/probe/install from CRM",
+      "receiptFiles": {
+        "status": "ALL_FOUR_SHA256_AND_SELECTED_RECORDED_FIELDS_MATCHED",
+        "directory": "C:/Sirket/ERP/evidence/ERP-P03-DEFENDER-REVIEW-20261021",
+        "files": [
+          {
+            "filename": "install-f1a950c0c6624629a1401a02b4138680-07.json",
+            "sha256": "1ba33d67129e68d1fa1a6cc8f0fcf2863c0f908389e2a3863f297e69baa54eaa",
+            "bytes": 192,
+            "observedUtc": "2026-10-21T09:28:11.1300512Z",
+            "phase": "APPLY_ONCE"
+          },
+          {
+            "filename": "install-f1a950c0c6624629a1401a02b4138680-09.json",
+            "sha256": "6e4cabf6b71bc1372f99a5b01b2b2b2706d0fa8e2233b8b3d4d8e51346778fe3",
+            "bytes": 290,
+            "observedUtc": "2026-10-21T09:28:12.9749765Z",
+            "phase": "QUERY_STORE_RESTORED"
+          },
+          {
+            "filename": "install-f1a950c0c6624629a1401a02b4138680-11.json",
+            "sha256": "b238f20b3ba6f34cc0c8e09c2e61b142d9e97562f647775a6ba953ceabe0347b",
+            "bytes": 292,
+            "observedUtc": "2026-10-21T09:28:13.0398120Z",
+            "phase": "FINAL_SUMMARY"
+          },
+          {
+            "filename": "current-failed-precut-readback-20261021-0940.json",
+            "sha256": "28b68b4984ad128799e7853c07914f6203bada06192de6ed8f1da37af77057b2",
+            "bytes": 3422,
+            "observedUtc": "2026-10-21T09:36:07.9215794Z"
+          }
+        ],
+        "apply": {
+          "exitCode": 1,
+          "safeCodes": [
+            "P03_PRIVATE_INSTALL_APPLY_NOT_COMPLETE"
+          ],
+          "result": null
+        },
+        "queryStore": {
+          "databaseName": "MELISA_ERP_CRM_SHARED_TEST_20261009_02",
+          "copyId": "E16B70F0-4057-428B-9ABC-6BBCAF35FE82",
+          "sealed": true,
+          "actualMode": "READ_WRITE",
+          "desiredMode": "READ_WRITE",
+          "scope": "QUERY_STORE_ONLY"
+        },
+        "final": {
+          "installationAttempted": true,
+          "applyComplete": false,
+          "queryStoreRestoreRequired": true,
+          "queryStoreRestored": true,
+          "failed": true
+        },
+        "readback": {
+          "observedUtc": "2026-10-21T09:36:07.9215794Z",
+          "filenameTimeIsNotObservationTime": true,
+          "oldIdentities": {
+            "count": 10,
+            "allPresent": true,
+            "allSameCreation": true,
+            "allSamePath": true
+          },
+          "tasks": {
+            "count": 2,
+            "allOldXmlUnchanged": true,
+            "states": [
+              4,
+              4
+            ]
+          },
+          "health": [
+            {
+              "sourceCommit": "e59e07abf7ae2567cdc2adb93811fe29e0032fe5",
+              "databaseName": "MELISA_ERP_CRM_SHARED_TEST_20261009_02",
+              "copyId": "e16b70f0-4057-428b-9abc-6bbcaf35fe82"
+            },
+            {
+              "sourceCommit": "e59e07abf7ae2567cdc2adb93811fe29e0032fe5",
+              "databaseName": "MELISA_ERP_CRM_SHARED_TEST_20261009_02",
+              "copyId": "e16b70f0-4057-428b-9abc-6bbcaf35fe82"
+            }
+          ],
+          "heldCutIntentPresent": false,
+          "coreCutWitnessPresent": false,
+          "drainWitnessPresent": false,
+          "newInstallationProven": false,
+          "humanAcceptance": "BEKLIYOR",
+          "mutationsExecutedByReadback": false
+        },
+        "limitation": "Recorded owner snapshots were read and hash-matched. No live CIM/SQL/process/task/health or GUI probe was repeated. HELD_CORE_CUT and consumed-claim state remain owner-reported; Apply wrapper preserves only generic failure code."
+      },
+      "recovery": "ERP owner reports no currently supported no-cut resume; consumed claim and old eight immutable files preserved. Only safe Current first-failure diagnostics are being developed. No repeat Apply/claim reset/TTL or guard relaxation.",
       "successfulInstallReceipt": "NOT_AVAILABLE",
-      "crmRuntimeSqlHealthGuiOr15Checks": "NOT_RUN"
+      "crmRuntimeSqlHealthGuiOr15Checks": "NOT_RUN",
+      "supportedNoCutResume": {
+        "available": false,
+        "evidenceLevel": "ERP_OWNER_REPORT"
+      }
     },
     "currentPriority": "Existing item14 safe owner installation first; item15 on the same installed version afterward; no unrelated new source work.",
     "coordinatorReport": {
       "directMessageDelivered": true,
       "threadId": "01a15d42-a70f-7510-9fce-73ce1cb433e9",
-      "scope": "new item14 FAILED_HELD_CORE_CUT after claim; consumed claim retained; same Apply must not repeat; receipt files pending; no installed GUI or human acceptance claim"
+      "scope": "item14 after-claim HELD_CORE_CUT; four receipt hashes and recorded outcomes matched; first worker reason NOT_RETAINED and expiry conditional; owner reports no supported no-cut resume; consumed claim retained/no same Apply; no installed GUI or human acceptance claim"
     },
     "previousInstallAttempts": [
       {
