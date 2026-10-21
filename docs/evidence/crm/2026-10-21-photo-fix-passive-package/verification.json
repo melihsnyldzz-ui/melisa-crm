@@ -36,77 +36,120 @@
       "runtimeEvidenceLevel": "ERP_OWNER_REPORT_NOT_NEW_CRM_READBACK"
     },
     "latestInstallAttempt": {
-      "evidenceLevel": "ERP_OWNER_REPORT_PLUS_READ_ONLY_HASH_AND_RECORDED_OUTCOME_MATCH; NO_NEW_SQL_OR_RUNTIME_QUERY",
+      "evidenceLevel": "ERP_OWNER_THREAD_REPORT_ONLY; NEW_RECEIPT_PATH_HASH_REQUESTED",
       "ownerThread": "01a107ef-f13e-73c0-9e08-fd5c4545325e",
-      "ownerStatusCursor": "a8482fe0-e68b-43ab-91be-73c9b893e84c:145",
-      "attemptUtc": "2026-10-21T08:13:13Z",
-      "attemptIstanbul": "2026-10-21T11:13:13+03:00",
+      "attemptUtc": "2026-10-21T09:28:00Z",
+      "timePrecision": "minute",
+      "attemptIstanbul": "2026-10-21T12:28:00+03:00",
       "candidate": "CRM d1e / ERP6dc / SUPda5b",
-      "result": "REJECTED_BEFORE_CLAIM_AND_TRANSITION",
-      "code": "P03_OWNER_SUCCESSOR_REJECTED",
-      "oldRuntimeUnchangedReported": true,
-      "qsRestoreReported": {
-        "utc": "2026-10-21T08:13:16Z",
-        "mode": "READ_WRITE",
-        "scope": "QUERY_STORE_NOT_DATABASE_WRITE_PERMISSION"
+      "result": "FAILED_HELD_CORE_CUT",
+      "claimAcquiredReported": true,
+      "claimConsumedAndRetainedReported": true,
+      "repeatApplyAllowed": false,
+      "cutDrainWitnessAndNewStartCompletedReported": false,
+      "newApplicationsInstalledReported": false,
+      "queryStoreRestoreReported": {
+        "scope": "QUERY_STORE_NOT_DATABASE_WRITE_PERMISSION",
+        "actualMode": "READ_WRITE"
       },
-      "healthReported": {
-        "utc": "2026-10-21T08:24:00Z",
-        "timePrecision": "minute",
-        "erp": "e59",
+      "oldRuntimeContinuityReported": {
+        "pidCreationPathAllSame": true,
+        "apiNative": "e59e07a",
         "database": "DB02",
-        "copy": "e16b",
-        "t1": false,
-        "healthPorts": [
-          4184,
-          4186
-        ],
-        "http200Ports": [
-          5234,
-          62700
-        ],
-        "acceptedAsGuiOrNewInstall": false
+        "evidenceLevel": "ERP_OWNER_REPORT_NOT_NEW_CRM_QUERY"
       },
-      "exactFailedReceiptAndQsPathHash": {
-        "status": "HASH_AND_SELECTED_CONTENT_MATCHED",
-        "directory": "C:/Sirket/ERP/evidence/ERP-P03-DEFENDER-REVIEW-20261021",
-        "failedApply": {
-          "filename": "install-4171083b14874217bdd14dca005be08d-07.json",
-          "sha256": "e08b38f974f2511a246ecb16192130c0c2d575db822feb16e21ca6d88319b7e6",
-          "bytes": 182,
-          "phase": "APPLY_ONCE",
-          "observedUtc": "2026-10-21T08:13:13.7972641Z",
-          "exitCode": 1,
-          "safeCodes": [
-            "P03_OWNER_SUCCESSOR_REJECTED"
-          ],
-          "result": null
-        },
-        "queryStoreRestored": {
-          "filename": "install-4171083b14874217bdd14dca005be08d-09.json",
-          "sha256": "34ddf19eb92b774f67b468ff38896c9be669f6ef53bab203808c56b3e7d91cdf",
-          "bytes": 290,
-          "phase": "QUERY_STORE_RESTORED",
-          "observedUtc": "2026-10-21T08:13:16.2826160Z",
-          "databaseName": "MELISA_ERP_CRM_SHARED_TEST_20261009_02",
-          "copyId": "E16B70F0-4057-428B-9ABC-6BBCAF35FE82",
-          "sealed": true,
-          "actualMode": "READ_WRITE",
-          "desiredMode": "READ_WRITE"
-        },
-        "scope": "Existing two regular single-link files read only; SHA256 and selected recorded fields matched. No repeated Apply/QS/SQL/service/runtime/browser operation. Before-claim and unchanged baseline remain owner-reported facts."
+      "diagnosticTimestamps": {
+        "claimUtc": "2026-10-21T09:24:40Z",
+        "cutIntentUtc": "2026-10-21T09:27:37Z",
+        "elapsedSeconds": 177,
+        "ownerInvestigatingGuardSeconds": 60,
+        "confirmedRootCause": false,
+        "guardRelaxationAuthorized": false
       },
-      "currentDiagnostic": "ERP owner reported 13 independent diagnostic fixture PASS; extended continuity diagnostic still under review. No successful reinstallation receipt or normal GUI acceptance.",
+      "receiptFiles": "REQUESTED_FROM_OWNER_NOT_YET_RECEIVED",
+      "recovery": "ERP owner determines supported recovery while preserving the consumed claim and installed baseline; no second Apply/probe/install from CRM",
       "successfulInstallReceipt": "NOT_AVAILABLE",
-      "crmRuntimeOrGuiAcceptance": "NOT_RUN",
-      "crmSharedProbingOrWrites": "NOT_RUN"
+      "crmRuntimeSqlHealthGuiOr15Checks": "NOT_RUN"
     },
     "currentPriority": "Existing item14 safe owner installation first; item15 on the same installed version afterward; no unrelated new source work.",
     "coordinatorReport": {
       "directMessageDelivered": true,
       "threadId": "01a15d42-a70f-7510-9fce-73ce1cb433e9",
-      "scope": "new item14 rejection before claim; no success or human acceptance claim"
-    }
+      "scope": "new item14 FAILED_HELD_CORE_CUT after claim; consumed claim retained; same Apply must not repeat; receipt files pending; no installed GUI or human acceptance claim"
+    },
+    "previousInstallAttempts": [
+      {
+        "evidenceLevel": "ERP_OWNER_REPORT_PLUS_READ_ONLY_HASH_AND_RECORDED_OUTCOME_MATCH; NO_NEW_SQL_OR_RUNTIME_QUERY",
+        "ownerThread": "01a107ef-f13e-73c0-9e08-fd5c4545325e",
+        "ownerStatusCursor": "a8482fe0-e68b-43ab-91be-73c9b893e84c:145",
+        "attemptUtc": "2026-10-21T08:13:13Z",
+        "attemptIstanbul": "2026-10-21T11:13:13+03:00",
+        "candidate": "CRM d1e / ERP6dc / SUPda5b",
+        "result": "REJECTED_BEFORE_CLAIM_AND_TRANSITION",
+        "code": "P03_OWNER_SUCCESSOR_REJECTED",
+        "oldRuntimeUnchangedReported": true,
+        "qsRestoreReported": {
+          "utc": "2026-10-21T08:13:16Z",
+          "mode": "READ_WRITE",
+          "scope": "QUERY_STORE_NOT_DATABASE_WRITE_PERMISSION"
+        },
+        "healthReported": {
+          "utc": "2026-10-21T08:24:00Z",
+          "timePrecision": "minute",
+          "erp": "e59",
+          "database": "DB02",
+          "copy": "e16b",
+          "t1": false,
+          "healthPorts": [
+            4184,
+            4186
+          ],
+          "http200Ports": [
+            5234,
+            62700
+          ],
+          "acceptedAsGuiOrNewInstall": false
+        },
+        "exactFailedReceiptAndQsPathHash": {
+          "status": "HASH_AND_SELECTED_CONTENT_MATCHED",
+          "directory": "C:/Sirket/ERP/evidence/ERP-P03-DEFENDER-REVIEW-20261021",
+          "failedApply": {
+            "filename": "install-4171083b14874217bdd14dca005be08d-07.json",
+            "sha256": "e08b38f974f2511a246ecb16192130c0c2d575db822feb16e21ca6d88319b7e6",
+            "bytes": 182,
+            "phase": "APPLY_ONCE",
+            "observedUtc": "2026-10-21T08:13:13.7972641Z",
+            "exitCode": 1,
+            "safeCodes": [
+              "P03_OWNER_SUCCESSOR_REJECTED"
+            ],
+            "result": null
+          },
+          "queryStoreRestored": {
+            "filename": "install-4171083b14874217bdd14dca005be08d-09.json",
+            "sha256": "34ddf19eb92b774f67b468ff38896c9be669f6ef53bab203808c56b3e7d91cdf",
+            "bytes": 290,
+            "phase": "QUERY_STORE_RESTORED",
+            "observedUtc": "2026-10-21T08:13:16.2826160Z",
+            "databaseName": "MELISA_ERP_CRM_SHARED_TEST_20261009_02",
+            "copyId": "E16B70F0-4057-428B-9ABC-6BBCAF35FE82",
+            "sealed": true,
+            "actualMode": "READ_WRITE",
+            "desiredMode": "READ_WRITE"
+          },
+          "scope": "Existing two regular single-link files read only; SHA256 and selected recorded fields matched. No repeated Apply/QS/SQL/service/runtime/browser operation. Before-claim and unchanged baseline remain owner-reported facts."
+        },
+        "currentDiagnostic": "ERP owner reported 13 independent diagnostic fixture PASS; extended continuity diagnostic still under review. No successful reinstallation receipt or normal GUI acceptance.",
+        "successfulInstallReceipt": "NOT_AVAILABLE",
+        "crmRuntimeOrGuiAcceptance": "NOT_RUN",
+        "crmSharedProbingOrWrites": "NOT_RUN",
+        "coordinatorReport": {
+          "directMessageDelivered": true,
+          "threadId": "01a15d42-a70f-7510-9fce-73ce1cb433e9",
+          "scope": "new item14 rejection before claim; no success or human acceptance claim"
+        }
+      }
+    ]
   },
   "applicationTarget": {
     "profile": "crm20261021-node-v24.19.0",

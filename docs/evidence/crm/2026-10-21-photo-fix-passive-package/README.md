@@ -29,13 +29,21 @@ Resmî builder tek çağrıda **07:06:38–07:08:42UTC** arasında yeni d1 uygul
 
 Kullanıcı Dot üzerinden kurulumdan önce d1 fotoğraf düzeltmesiyle eşleme ve ERP'yle doğrudan koordinasyona açık yetki verdi. ERP sahibi kurulumun başlamadığını ve eski7ba adayını kurmayacağını teyit etti; yeni tam tuple ve makbuz path/hash doğrudan ona iletildi. Owner'ın bildirdiği mevcut ERP e59e07ab / CRM6bc82e6f / SUP13bdf75a / DB02-copye16b-T1false kimlikleri **ERP owner bildirimi** seviyesindedir; CRM yeni runtime readback'i değildir. Eski controller'ın7ba/de54 tuple'ını yeni kaynağa güvenle bağlamak owner'ın dar source/profile/admission/recovery işidir; burada shared pin değiştirilmedi. Yeni kurulum makbuzu gelince CRM'nin salt okunur eşlemesi yapılacak.
 
-## Son owner durumu — başarısız gerçek kurulum denemesi
+## Önceki owner denemesi — claim öncesi ret
 
 **21 Ekim11:13:13TR (08:13:13Z)** ERP owner yeni d1e/6dc/da5b Apply denemesinin **P03_OWNER_SUCCESSOR_REJECTED** ile claim/transition öncesinde durduğunu bildirdi. Yeni paketin runtime'a uygulanmış olduğu iddia edilmez. Owner eski çalışan tuple'ın korunduğunu,11:13:16TR QS READ_WRITE geri dönüşünü ve11:24TR eski e59/DB02/copye16b/T1false health ile5234/62700HTTP200 sonucunu bildirdi. Bunlar **owner bildirimi** seviyesindedir; CRM'nin yeni bağımsız dosya/runtime readback'i veya normal GUI/insan kabulü değildir. HTTP200 tek başına PASS sayılmadı.
 
 Alt ret nedenini mevcut caller genelleştirdiği için ERP sahibi dar diagnostic kaynak incelemesini yürütüyor; kaynak nedeni tahmin edilmedi ve hiçbir güvenlik şartı gevşetilmedi. Owner'ın verdiği iki korunmuş dosya salt okunur eşlendi: `install-4171083b14874217bdd14dca005be08d-07.json` SHA256 **e08b38f974f2511a246ecb16192130c0c2d575db822feb16e21ca6d88319b7e6**, APPLY_ONCE/exit1/ret kodu; `-09.json` SHA256 **34ddf19eb92b774f67b468ff38896c9be669f6ef53bab203808c56b3e7d91cdf**, QUERY_STORE_RESTORED/DB02/copyE16B/sealedtrue/actual=desiredREAD_WRITE. Tam path ve seçilmiş alanlar verification.json'da. **READ_WRITE burada Query Store modudur; veritabanı yazma izni değildir.** İki dosyanın hash ve kayıtlı alanlarının eşliği yeni SQL/runtime sorgusu, değişmeyen baseline'ın bağımsız güncel doğrulaması veya başarılı kurulum sayılmadı. İlk kullanıcı güncellemesindeki veritabanının yazma durumu ifadesi bu ayrımla düzeltildi. d1 pasif paket/manifest/index/2d78paket makbuzu değişmedi; build/test/shared probing tekrarı veya shared yazı yok. Engelin bilgisi yetkili koordinatöre doğrudan iletildi.
 
 Kullanıcının son önceliği **önce14, sonra15**: tamamlandı makbuzu+normal TEST URL geldikten sonra CRM kaynak/paket/runtime eşlemesi ve desteklenen normal açılış; ardından aynı sürümde mevcut birleşik iş günü senaryoları. Başarılı kurulum yokken15 veya normal GUI testi başlatılmadı. Upstream order→sale sözleşmesinin açık halkası da bu kurulum reddiyle kapanmaz. İlgisiz geliştirme/ikinci kurulum açılmadı; mevcut kabul sayıları değişmedi.
+
+## Son owner durumu — claim sonrası HELD_CORE_CUT
+
+**21 Ekim12:28TR/09:28Z** son gerçek Apply, owner bildirimine göre **FAILED HELD_CORE_CUT** ile claim alındıktan sonra ve cut/drain witness/yeni başlatma öncesinde durdu. Yeni uygulama kurulmadı. **Tüketilen claim saklanır; aynı Apply tekrarlanmaz.** Önceki11:13TR ret ile aşamalar farklıdır; önceki hash-eşlenmiş iki dosya tarihsel kanıt olarak JSON'da korunur.
+
+Owner Query Store READ_WRITE geri dönüşünü, taze RO OLD10 PID/creation/path eşliğini ve eski e59e07a/DB02 API-native sağlığını bildirdi. Bunlar şu an **owner bildirimi** seviyesindedir; bu yeni denemenin dosya path+SHA'ları istendi ve henüz RO eşlenmedi. CRM ortak SQL/runtime/health/probe/GUI/Apply işlemi açmadı. d1 pasif paket, manifest, index ve paket makbuzu değişmedi.
+
+Owner60s fresh-owner cut guard'ını ve desteklenen recovery'yi inceliyor. Verilen zamanlar claim09:24:40Z→cut-intent09:27:37Z; fark177sn. Bu aritmetik **kesin kök neden veya60sn sınırını gevşetme kararı değildir**. Tek shared writer ERP; claim reset/silme, güvenlik atlama veya aynı kurulumu tekrar etme yok. Mevcut14 başarılı kurulum+koruma/rollback makbuzu gelmeden normal CRM/15 başlamaz; teknik kanıt insan kabulü sayılmaz. Koordinatöre bu yeni after-claim engel doğrudan bildirildi.
 
 ## Korunan sınır
 
