@@ -1,11 +1,24 @@
 // Approved single-CRM-login reader. No listener, ERP login, credential store, cache or business write.
 import { ERP_ORIGIN, ERP_DATABASE, ERP_PRODUCT_DATABASE } from './erpSourceContract.mjs';
+import {resolveTestEndpoints} from '../../../../deploy/test-endpoints.mjs';
 const PREFIX = '/crm/catalog/products';
 // Internal only: router rechecks the read lease immediately before committing response bytes.
 export const CATALOG_RESPONSE_GUARD = Symbol('catalog-response-guard');
 const fail = (status, code) => Response.json({ success: false, error: { code, message: code } }, { status, headers: { 'cache-control': 'no-store' } });
 const identity = id => (typeof id === 'string' && id.trim()) || (Number.isSafeInteger(id) && id > 0);
 const sameId = (a, b) => identity(a) && identity(b) && String(a) === String(b);
+function canonicalEnvironmentMatches(meta){
+  if(!process.env.CRM_TEST_PROFILE)return meta.environment==='CANONICAL_TEST';
+  try{
+    const target=resolveTestEndpoints(),scope=meta.businessScope;
+    return target.cleanSynthetic===true&&ERP_ORIGIN===target.catalogOrigin
+      &&meta.environment==='CLEAN_SYNTHETIC_TEST'&&meta.synthetic===true
+      &&meta.sourceIdentity?.environment==='CLEAN_SYNTHETIC_TEST'&&meta.sourceIdentity.contract==='melisa-catalog.v1'
+      &&scope?.scopeKind==='VERIFIED_CLEAN_SYNTHETIC_TEST'&&scope.database===target.database
+      &&Object.keys(scope).sort().join()==='database,scopeKind,supportedCurrencies'
+      &&JSON.stringify(scope.supportedCurrencies)===JSON.stringify(['TRY','USD','EUR']);
+  }catch{return false;}
+}
 async function bytes(response, max) {
   if (!response.body) throw Error('EMPTY_BODY');
   const reader = response.body.getReader(); const chunks = []; let length = 0;
@@ -103,7 +116,7 @@ export function createCatalogBridge({ deploymentApproved = false, transport, aut
       if (upstream.status !== 200) return fail(upstream.status >= 400 ? upstream.status : 502, upstream.code || 'ERP_READ_REJECTED');
       if (upstream.data.meta?.catalogVersion === 'melisa-catalog.v1') {
         const m=upstream.data.meta;
-        if(m.source!=='melisa-erp-catalog'||m.environment!=='CANONICAL_TEST'||m.sourceDatabaseVerified!==true||!sameId(m.verifiedCrmActorId,crm.id)||m.verifiedCrmRole!==crm.role||m.cached!==false) return fail(503,'ERP_SOURCE_IDENTITY_REQUIRED');
+        if(m.source!=='melisa-erp-catalog'||!canonicalEnvironmentMatches(m)||m.sourceDatabaseVerified!==true||!sameId(m.verifiedCrmActorId,crm.id)||m.verifiedCrmRole!==crm.role||m.cached!==false) return fail(503,'ERP_SOURCE_IDENTITY_REQUIRED');
         const validate=row=>{if(!row||!/^erp-[1-9]\d*$/.test(row.id||'')||row.id!==`erp-${row.erpProductId}`||!Number.isSafeInteger(row.erpProductId)||typeof row.stockCode!=='string'||!row.stockCode||!(row.productName===null||typeof row.productName==='string')||!/^[a-f0-9]{64}$/.test(row.revision||'')||!['guarded-path','unavailable'].includes(row.photoStatus)||row.photoPath!==(row.photoStatus==='guarded-path'?`${PREFIX}/${row.id}/photo`:null))throw Error('PRODUCT_CONTRACT');return row;};
         const data=id?validate(upstream.data.data):upstream.data.data.map(validate);
         if(id&&data.id!==id)return fail(502,'PRODUCT_ID_MISMATCH');
