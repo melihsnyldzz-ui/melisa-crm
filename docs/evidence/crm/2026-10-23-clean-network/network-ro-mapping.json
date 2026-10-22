@@ -1,0 +1,243 @@
+{
+  "scope": "CRM06/M01 existing clean TEST source/package/runtime read-only mapping",
+  "recordDate": "2026-10-23",
+  "timezone": "Europe/Istanbul",
+  "installation": {
+    "owner": "Existing ERP main agent; CRM did not install or mutate runtime",
+    "receipt": "C:\\Sirket\\ERP\\clean\\20261022\\runtime\\network-install-20261022T230726Z\\result.json",
+    "receiptSha256": "522d3ff4d22d70864e2729f4963f9b7c63ee974f24a4189d38bad8cc8c015220",
+    "phase": "INSTALLED_READBACK_OK",
+    "observedAt": "2026-10-22T23:07:57.7531976Z",
+    "finalGuiReceipt": "C:\\Sirket\\ERP\\clean\\20261022\\runtime\\network-gui-proof.json",
+    "finalGuiReceiptSha256": "6b32f09bacea99ae0489a45cb504d4101f464559172efdd0bccb34cfa4c9e941",
+    "guiObservedAt": "2026-10-22T23:10:35.9605809Z",
+    "rawPrivateFilesPublished": false
+  },
+  "identity": {
+    "crmSource": "bc8c307ee29f115b2bb7fd4e61f87e9bf482ba54",
+    "erpSource": "035fcc08d8f56cdd0cbc437a290285328fce1ec9",
+    "erpPackageId": "CLEAN-ERP-20261022-035fcc08d8f5",
+    "crmSeparatePackageId": null,
+    "crmSeparateManifestPresentInReceipt": false,
+    "installedClonePaths": {
+      "crm": "C:\\Sirket\\ERP\\clean\\20261022\\crm",
+      "erp": "C:\\Sirket\\ERP\\clean\\20261022\\erp"
+    },
+    "installedTrackedDiffs": {
+      "crm": 0,
+      "erp": 0
+    },
+    "database": "MELISA_ERP_CLEAN_TEST_20261022",
+    "environmentId": "e662fd94-d797-4b3b-938a-d143ad758b67",
+    "synthetic": true,
+    "actualT1": false,
+    "previousInstalledErpSource": "759bbc62ff2b03341860e2f865101c23dbd596ee",
+    "previousSourceExplanation": "Owner says759 was the previous actual installed health/clone source;791 was an older historical2.5 snapshot. Not inferred solely from Git."
+  },
+  "crmSourceMapping": {
+    "previousSource": "c8d0e28f0ea6cf16133c87dd548a4281381abfb7",
+    "appsPackagesDeployChangedPaths": [
+      "deploy/test-server.mjs"
+    ],
+    "frontendSourceChanged": false,
+    "frontendRebuilt": false,
+    "serverGitBlobSha256": "d1a741ab2bf224bc76c6637cfc44dd020db82a5374720f3e0eb20b93c33acc49",
+    "installedServerPhysicalSha256": "12ea8954d92356e7d3065dde32f961e9c6d9a16eae8f932bd291123a826c44e8",
+    "workspaceReviewPhysicalSha256": "3cbc12f715ca4c8d43160a6a84418e5a57f8e481d72c370ec985634c6f7262c6",
+    "installedCrLfToLfBytesEqualExactGitBlob": true,
+    "workspaceNormalizedBytesEqualExactGitBlob": true,
+    "processAbsoluteWorkingDirectoryIndependentlyRecovered": false,
+    "processSourceAttribution": "Owner launch receipt plus installed Git/blob and disk-to-HTTP asset proof; relative CLI alone does not prove full source path/hash."
+  },
+  "publicReadback": {
+    "execution": "CRM GET-only checks from installation computer; no login or credential read",
+    "origins": [
+      "http://127.0.0.1:62800",
+      "http://192.168.1.46:62800",
+      "http://100.87.188.3:62800"
+    ],
+    "assets": [
+      {
+        "path": "/",
+        "diskFile": "index.html",
+        "bytes": 1279,
+        "sha256": "b7fea2410d4f9846282b0f13e1ea9dfdec8ba726258caf4b38aca815b2d68095"
+      },
+      {
+        "path": "/assets/index-CCqRXctr.js",
+        "bytes": 896000,
+        "sha256": "24311f7c9a67e852978e767902bb1fd80dedac4675ad955ef82d0c4d151d5825"
+      },
+      {
+        "path": "/assets/index-D7F-go5Z.css",
+        "bytes": 167363,
+        "sha256": "eac3bfb694425777f621b3d45cdbe3b16a857017d1bf09e9ef883fa73932efc3"
+      }
+    ],
+    "allThreeAssetsDiskHttpBytesEqualAtAllThreeOrigins": true,
+    "unauthenticatedAuthMe": {
+      "allThreeOriginsStatus": 401,
+      "error": "WHATSAPP_CRM_AUTH_TOKEN_REQUIRED"
+    },
+    "apiHealth": {
+      "url": "http://127.0.0.1:4194/test-health",
+      "sourcePackageDatabaseEnvironmentMatched": true,
+      "purpose": "clean-store-day-inbound-and-sales",
+      "writes": true,
+      "stockEffect": true,
+      "ledgerEffect": true
+    },
+    "nativeHealth": {
+      "url": "http://127.0.0.1:4196/test-health",
+      "sourcePackageDatabaseEnvironmentMatched": true,
+      "purpose": "crm-order-draft-only",
+      "writes": true,
+      "stockEffect": false,
+      "ledgerEffect": false
+    },
+    "bothHealthBoundaries": {
+      "synthetic": true,
+      "actualT1": false,
+      "externalOperations": false,
+      "automaticJobs": false,
+      "originalDatabaseAccess": 0,
+      "liveDatabaseAccess": 0,
+      "sysadmin": 0,
+      "databaseControl": 0,
+      "reservationEffect": false
+    }
+  },
+  "operatingSystemReadOnlyReview": {
+    "cleanPortCount": 7,
+    "cleanListenerCount": 11,
+    "cleanProcessCount": 6,
+    "uiWebPorts": [
+      5244,
+      62800
+    ],
+    "internalLoopbackPorts": [
+      4194,
+      4196,
+      62801,
+      62802,
+      62803
+    ],
+    "explicitUiAddresses": [
+      "127.0.0.1",
+      "192.168.1.46",
+      "100.87.188.3"
+    ],
+    "protectedListenerCount": 21,
+    "protectedAddressPortPidExecutableUnchanged": true,
+    "protectedProcessBirthTimesEqualAtCommonCimMicrosecondPrecision": true,
+    "maxRepresentationDifferenceMicroseconds": 0.8,
+    "exactFinalReviewTimestampRecorded": false,
+    "reviewerOpenP1P2": 0
+  },
+  "preservation": {
+    "beforeAfterInventoryBytes": 5295,
+    "beforeSha256": "39a1fe1c15739637afb55943a94609e95b2c64cfeb0e1b9d7b6e7ce41a576fa8",
+    "afterSha256": "39a1fe1c15739637afb55943a94609e95b2c64cfeb0e1b9d7b6e7ce41a576fa8",
+    "fileEqualityIndependentlyVerified": true,
+    "newCrmSqlQuery": false,
+    "ownerFinalGuiDataScopes": 53,
+    "ownerUnchangedScopes": 53,
+    "ownerSqlRestoreCount": 0,
+    "ownerNewCommercialWrites": 0,
+    "ownerExistingFirewallRulesUnchanged": true,
+    "firewallIndependentlyComparedByCrm": false
+  },
+  "guiEvidence": {
+    "executor": "ERP owner using normal staff login on installation-computer browser",
+    "normalCrmLanLogin": "Owner PASS",
+    "normalCrmTailscaleLogin": "Owner PASS",
+    "crmRefresh": "Owner PASS",
+    "normalErpLanLogin": "Owner PASS",
+    "normalErpTailscaleLogin": "Owner PASS",
+    "erpRefresh": "Owner PASS",
+    "crmOwnerResult": "Assigned synthetic Örnek Mağaza; product0007 photo;125.50TRY",
+    "crmScreenshotIndependentlyShows": "Customer, catalog and product photo; price is below captured fold",
+    "erpScreenshotIndependentlyShows": "Three synthetic products; selected0007 stock23ADET/125.50TRY and photo",
+    "orderScreenshotIndependentlyShows": "Same three drafts; selected CR2-450649569C91470FA7B6A9330B,3×125.50=376.50TRY",
+    "finalizedSaleAttribution": "Owner readback record of CRS-20261022-3, not independently visible in order screenshot",
+    "screenshots": [
+      {
+        "path": "network-crm-lan.jpg",
+        "bytes": 69481,
+        "sha256": "4a546935a9bf9c91c56d796f626d07cd515be6264f7c8f9a779cf0dc733614ab"
+      },
+      {
+        "path": "network-crm-tailscale.jpg",
+        "bytes": 69481,
+        "sha256": "4a546935a9bf9c91c56d796f626d07cd515be6264f7c8f9a779cf0dc733614ab"
+      },
+      {
+        "path": "network-erp-lan.jpg",
+        "bytes": 59436,
+        "sha256": "56c5b7cdfac7ebba78e65aaef43e4009a858239f1f0204dc4cf793a257a9377f"
+      },
+      {
+        "path": "network-erp-tailscale.jpg",
+        "bytes": 59436,
+        "sha256": "56c5b7cdfac7ebba78e65aaef43e4009a858239f1f0204dc4cf793a257a9377f"
+      },
+      {
+        "path": "network-erp-order-lan.jpg",
+        "bytes": 61300,
+        "sha256": "a938e3457445d2fd944a9db8c98f960692c90a6dfd9a426751bf9b84da421a23"
+      }
+    ],
+    "duplicateScreenshotBoundary": "LAN and Tailscale pairs are byte-identical with no address bar. Origin attribution uses owner record and separate HTTP proof, not independent screenshot pixels.",
+    "screenshotOriginalsUnchanged": true,
+    "threeUniquePixelContentsReviewed": true,
+    "separatePhysicalDeviceTest": false,
+    "humanAcceptance": "BEKLİYOR",
+    "physicalMobileTc21": "BEKLİYOR",
+    "windowsRebootLogon": "BEKLİYOR"
+  },
+  "github": {
+    "branch": "codex/crm-agents-on-completion-20261003",
+    "pr": "https://github.com/melihsnyldzz-ui/melisa-crm/pull/3",
+    "prState": "OPEN",
+    "crmExactSource": "bc8c307ee29f115b2bb7fd4e61f87e9bf482ba54",
+    "crmExactSuccessfulJobs": 7,
+    "crmRuns": [
+      39868432842,
+      39868425461,
+      39868432917
+    ],
+    "erpExactSource": "035fcc08d8f56cdd0cbc437a290285328fce1ec9",
+    "erpExactSuccessfulJobs": 6,
+    "erpRuns": [
+      39868737448,
+      39868730251
+    ],
+    "erpRunsIndependentlyReadFromGithub": true,
+    "applicationTestsRepeatedForMapping": false,
+    "docsFollowupIsInstalledSource": false
+  },
+  "closure": {
+    "mapping": "COMPLETE",
+    "crmLeaves": 25,
+    "green": 12,
+    "yellow": 13,
+    "red": 0,
+    "sharedHeadings": 17,
+    "totalOriginalLeaves": 74,
+    "humanAcceptanceIds": [
+      "CRM-UA04",
+      "CRM-UA11"
+    ]
+  },
+  "prohibitedOperationsPerformedByCrmInMapping": {
+    "runtimeWrite": false,
+    "configReadOrWrite": false,
+    "sql": false,
+    "login": false,
+    "guiFlowRepeat": false,
+    "customerMessage": false,
+    "paidApi": false,
+    "live": false,
+    "mainMerge": false
+  }
+}
