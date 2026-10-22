@@ -1,5 +1,15 @@
 # CRM karar merkezi
 
+### CRM-DEC-023 — 22 Ekim 2026 — Güncel kaynaklarla temiz yerel yapay TEST
+
+**Durum: Doğrudan kullanıcı kararı; çalışan yeni kurulum henüz doğrulanmadı.** Mevcut **Kordinatör AJAN** konuşmasının `01a1626b-8fc5-7aa0-86ba-022f61b6f631` turu / `01a1626b-90ba-7501-aa38-130150bad200` kullanıcı mesajı salt okunur doğrulandı: “Çalışan eski crm ve erpye ihtiyacım yok tek ihtiyacım erp ve crmin son sürümlerini temiz bir repoya çekip bağlayıp bitirmek”. Koordinatör aynı iki mevcut proje sahibine işi devretti; kendiliğinden haberleşme varsayılmadı.
+
+**Yeni öncelik:** Güncel gerçek kaynaklar ve kaydedilmemiş önemli işler korunarak ayrı temiz yerel teslim hazırlanır. İlk görünür sonuç iki güncel uygulamanın açılması, yapay CRM siparişinin ERP'de tek kez oluşması ve yeniden açılışta aynı kayıttan okunmasıdır. Eski TEST'in P03/claim/sürüm devri artık bu hedefin ön koşulu değildir. Eski dosya, süreç, veri veya kanıt silinmez/durdurulmaz; güvenlik kontrolleri kaldırılmaz. Dar sentetik ekran tam uygulama diye sunulmaz.
+
+**Sahiplik:** ERP mevcut ana ajanı yeni ortak alanın adres/veri kimliği, ERP kaynağı, kurulum/runtime/veritabanı sahibidir. CRM mevcut ana ajanı kanonik origin/dal/dirty ve exact kaynak kapsamını doğrular; kendi feature dalında mevcut giriş/adres/veri sözleşmesinin gerekli CRM kaynak uyarlamasını yapar. Fotoğraf, oturum/rol/atama, müşteri/ürün/fiyat doğrulaması ve tekil sipariş/reopen korunur. ERP adresi seçilmeden sabit adres uydurulmaz; CRM paralel kurulum başlatmaz.
+
+**Kapanış ve sınırlar:** Kaynak, build/CI, kurulum, normal GUI ve insan kabulü ayrı kalır. CRM yerel JSON journal'ı ERP'nin kendi kalıcı kaydı sayılmaz. Mevcut 17 başlık / ERP 49 + CRM 25 ve kabul ID'leri korunur; sayaç kanıtsız artmaz. Yeni yardımcı/ajan/sohbet/Goal/takip sistemi yok. Gerçek müşteri mesajı/ücretli AI/LIVE/Vega/T1/gerçek ticari yazı/main merge veya yayın sınırları değişmez; rutin devam onayı beklenmez.
+
 ### CRM-DEC-022 — 20 Ekim 2026 — Aynı bitiş ağacında bağımlılığı hazır işlere devam
 
 **Durum: Doğrudan kullanıcı kararı.** `DOT-TREE17-CONTINUATION-20261020-2017`; kaynak mevcut Dot koordinatör konuşmasındaki 20 Ekim 20:17 UTC / **23:17 Europe/Istanbul** kullanıcı talimatıdır: “Melisa Bitiş Ağacı’ndaki aynı 17 başlığı tamamlanana kadar takip et. Her iş için benden yeniden seçim veya ‘devam et’ mesajı bekleme.” Bu kayıt önceki geçici PAR5 seçim-bekleme yönünü günceller; CRM-DEC-020/021 önceliği ve mevcut bitiş kapsamı korunur.

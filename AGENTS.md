@@ -1,5 +1,13 @@
 # Melisa CRM — etkin çalışma talimatları
 
+## Güncel hedef — 22 Ekim 2026 / CRM-DEC-023
+
+Kullanıcı güncel ERP ve CRM kaynaklarını ayrı temiz yerel alanda, yalnız yapay verilerle bağlayıp bitirmeyi seçti. **Eski TEST'i yeni sürüme devretmek bu hedefin ön şartı değildir.** Eski kaynak, paket, hizmet ve veriler silinmez veya durdurulmaz. Aşağıdaki tarihsel P03/claim/OLD geçiş işi yeni temiz alan için kapı sayılmaz; güvenlik kontrolleri gevşetilmez.
+
+CRM kanonik feature dalındaki güncel kaynak/dirty durumunu doğrular, mevcut ERP bağlantı sözleşmesine gereken dar kaynak uyarlamasını yapar. Yeni alanın adresi, yapay veri kaynağı, kurulumu ve ortak runtime yazısı ERP sahibindedir; CRM adres uydurmaz veya paralel kurulum yapmaz. İlk görünür sonuç iki güncel uygulamanın açılması, yapay CRM siparişinin ERP'de bir kez oluşması ve yeniden açılışta aynı kaydın korunmasıdır. Ayrı dar Cloud ekranı tam CRM teslimi sayılmaz. Fotoğraf düzeltmeleri, normal yetki, müşteri/ürün/fiyat doğrulaması ve sipariş tekilliği korunur.
+
+Mevcut 17 başlık / 74 yaprak ve insan kabulü ayrımı korunur; yeni yardımcı/ajan/sohbet/Goal/tree/otomasyon yok. Gerçek müşteri mesajı, ücretli servis, LIVE/Vega/T1/gerçek ticari yazı ve main merge/yayın için ayrı somut onay gerekir. Kaynak/build/CI veya yerel mock journal çalışan ERP entegrasyonu ve insan kabulü değildir. Doğrudan kullanıcı kaynağı [PROJECT_DECISIONS.md](PROJECT_DECISIONS.md) CRM-DEC-023; etkin adım [CRM_STATUS.md](CRM_STATUS.md) içindedir.
+
 ## Güncel devam kuralı — 20 Ekim 2026 / CRM-DEC-022
 
 `DOT-TREE17-CONTINUATION-20261020-2017`: Aynı mevcut 17 başlık / 74 özgün yaprakta, ajan durumu ve tamamlanan teslimler doğrulanarak bağımlılığı hazır en öncelikli yetkili işe devam edilir; her işte yeni seçim veya “devam” beklenmez. Önceki geçici PAR5 seçim-bekleme yönü bu tarihli kullanıcı kararıyla güncellendi. Çalışan iş kesilmez, eski iş tekrarlanmaz, erişilemeyen ajan UNKNOWN kalır; engel ve gereken halka kaydedilip çakışmayan hazır işe geçilir. [CRM-DEC-022](PROJECT_DECISIONS.md) ayrıntılı kayıttır; yeni ağaç/Goal/ana ajan/otomasyon oluşturulmaz, mevcut PAUSED Goal kendiliğinden açılmaz.
