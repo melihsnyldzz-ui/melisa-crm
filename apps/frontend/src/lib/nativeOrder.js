@@ -1,5 +1,9 @@
 import {canonicalPricing,pricingSourceExact,pricingVersionId} from '../catalog/canonicalStock.js';
 const fail=message=>{throw Error(message||'ERP taslağı doğrulanamadı.');};
+export function nativeOrderFailureMessage(error,preservedDraft=false){
+ const network=error instanceof TypeError&&error.status===undefined&&error.code===undefined&&['Failed to fetch','NetworkError when attempting to fetch resource.','Load failed'].includes(error.message);
+ return network?(preservedDraft===true?'Bağlantı kesildi. Taslağınız korunuyor; aynı taslağı yeniden doğrulayın.':'Bağlantı kesildi. Bağlantıyı yeniden deneyin.'):error?.message||'ERP işlemi tamamlanamadı. Seçiminiz korunuyor.';
+}
 const pricingContract='melisa-crm-draft-pricing.v1';
 const keys=(value,names)=>value&&typeof value==='object'&&!Array.isArray(value)&&Object.keys(value).length===names.length&&names.every(k=>Object.hasOwn(value,k));
 const rootKeys=['requestId','conversationId','peer','customerId','customerMatch','documentCurrency','exchangeRateExact8','items'];

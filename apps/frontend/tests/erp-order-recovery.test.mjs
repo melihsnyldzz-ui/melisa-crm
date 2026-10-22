@@ -1,8 +1,15 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createPendingErpOrderStore,recoverPendingErpOrder,submitPendingErpOrder,validateErpOrderPayload,ERP_ORDER_TEST_DATABASE} from '../src/liveApi.js';
-import {createNativeOrderStore,recoverNativeOrder,submitNativeOrder,validateNativeOrder,validateNativeSource} from '../src/lib/nativeOrder.js';
+import {createNativeOrderStore,recoverNativeOrder,submitNativeOrder,validateNativeOrder,validateNativeSource,nativeOrderFailureMessage} from '../src/lib/nativeOrder.js';
 const id='00000000-0000-4000-8000-000000000001';
+test('native network failure gives Turkish same-draft guidance without hiding other errors',async t=>{
+ const guidance='Bağlantı kesildi. Taslağınız korunuyor; aynı taslağı yeniden doğrulayın.';
+ for(const message of ['Failed to fetch','NetworkError when attempting to fetch resource.','Load failed'])await t.test(message,()=>assert.equal(nativeOrderFailureMessage(new TypeError(message),true),guidance));
+ await t.test('no preserved journal does not claim durable draft recovery',()=>assert.equal(nativeOrderFailureMessage(new TypeError('Failed to fetch')),'Bağlantı kesildi. Bağlantıyı yeniden deneyin.'));
+ for(const error of [Object.assign(new Error('Yetkiniz yok.'),{status:403}),Object.assign(new Error('Fiyat değişti.'),{status:409}),Object.assign(new Error('CRM sunucusu zamanında yanıt vermedi.'),{code:'CRM_REQUEST_TIMEOUT'}),new TypeError('Cannot read properties of null'),new Error('Failed to fetch'),Object.assign(new TypeError('Failed to fetch'),{status:403}),Object.assign(new TypeError('Failed to fetch'),{code:'AUTH_TOKEN_INVALID'})])await t.test(`${error.name}:${error.code||error.status||error.message}`,()=>assert.equal(nativeOrderFailureMessage(error),error.message));
+ await t.test('missing error retains the existing generic fallback',()=>assert.equal(nativeOrderFailureMessage(null),'ERP işlemi tamamlanamadı. Seçiminiz korunuyor.'));
+});
 const payload={requestId:id,conversationId:'55',customerId:593,exchangeRate:1,items:[{stockCode:'0007',sourceId:'vega-12',quantity:2,unitPrice:196,currency:'TRY'}]};
 const receipt={database:ERP_ORDER_TEST_DATABASE,requestId:id,status:'draft',customerId:593,erpPersisted:true,testOnly:true,stockEffect:false,ledgerEffect:false,documentCurrency:'TRY',exchangeRate:1,grandTotal:392,items:[{...payload.items[0],lineTotal:392}]};
 function storage(){const data=new Map();return {data,getItem:key=>data.get(key)??null,setItem:(key,value)=>data.set(key,value),removeItem:key=>data.delete(key)};}
