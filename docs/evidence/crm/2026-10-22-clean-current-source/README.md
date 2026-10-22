@@ -1,5 +1,23 @@
 # 22 Ekim — CRM06/E02 temiz kaynak → paket → runtime eşlemesi
 
+## Güncel — 22 Ekim aynı siparişten tek satış ve CRM sonucu
+
+CRM uygulama/frontend **c8d0e28f0ea6cf16133c87dd548a4281381abfb7**; ERP uygulama **3db0830df16d36d59cc69b1a19feb593357aaf35**, paket **CLEAN-ERP-20261022-3db0830df16d**. ERP frontend9f build'i ve uygulama farkı0 ayrı; CRM'de bağımsız packageId health alanı yok/null, source/bundle/PID delili vardır. Nihai [makbuz](installation-receipt-order-sale.json) SHA256 **f9231d810a7140f2816ca0ec3edea99be3ccbbe3a675e5b5cc335742f2e19c82**. Önceki495221a1 snapshot'ından yalnız yeni alt-sonuç görselinin eklenmesiyle değişti; rawlistentry çıkarılınca önceki hash birebir yeniden oluşur.
+
+ERP tek sahibinin normal personel15→aynıorder3→satıştaslağı invoice1, ayrı sorumlu17→FINALIZED akışı tamamlandı. Aynı3×125.50=376.50TRY, stok24→21, müşteri hesabı0→376.50; tek stok/tek müşteri hareketi,3order/1invoice/2action/0intent. CRM normal atanmış personel ekranında aynıUUID/satışbelgesi tekrar açıldı; [olay kaydı](order-sale-crm-readback.json) yalnız draftGET200+saleGET200 gösterir, POST0. Bunlar gerçek uygulama ve temiz MSSQL'de **yapay verilerle teknik GUI** kanıtıdır; insan kabulü değildir.
+
+- [CRM tamamlanmış satış](order-sale-crm-final.jpg)
+- [ERP sorumlu — görünür nihai sonuç](order-sale-supervisor-final-result.jpg)
+- [ERP personel — satış taslağı](order-sale-personnel-draft.jpg)
+- [Stok21](order-sale-stock-final.jpg)
+
+[CRM RO eşleme kaydı](order-sale-ro-mapping.json): iki cleanclone appdiff0;23listener/16uniquePID-birth-executable/currenthealth fark0; CRM index+2asset ve ERP index+9asset disk/HTTP hash aynı. Eski16listener before/makbuz/current aynı;7korunan digest beforeSQL çıktısı→finalJSON→makbuz7/7 eş.8native/12eskiSale/2compat definitionhashvalid owner SQL çıktısıdır; CRM yeniSQL/APIişlemi/GUI/prova/restart yapmadı. Süreç çalışma dizini ayrıca OS'den çıkarılmadı. İlk supervisor-final görüntüsü alt sonucu kırpıyordu; saklandı, sonraki yeni-result görseli aynı mevcut ekran kaydırılarak alındı, işlem tekrar edilmedi.
+
+CRM c8 exact [PR CI](https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/39779665785), [push CI](https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/39779654667), [AIoffline](https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/39779665786) SUCCESS7job. ERP3db exact [PR CI](https://github.com/melihsnyldzz-ui/melisa-erp-v2/actions/runs/39783687016)/[push CI](https://github.com/melihsnyldzz-ui/melisa-erp-v2/actions/runs/39783679870) SUCCESS6job. Son kaynak/makbuz/görsel bağımsız ROreview açıkP1/P2=0. Bu kayıt yalnız-belge teslimidir; yeni uygulama CI'si veya yeni kurulum sayılmaz.
+
+Owner replay/çatışanistek/personel403/native4196POST403 ve engine-sonrası transactionrollback kanıtı makbuzda; CRM tekrarlamadı. Yedek COPY_ONLY/CHECKSUM+VERIFYONLY var; restore yok. İnsan/telefon/reboot/CRM-UA04/UA11 BEKLİYOR,25/12/13/0/74 aynı.5.1cmd politika reddi ayrı ve aşılmaz; yeni hosting/mesaj/ücretli API/LIVE/Vega/T1/main yok. Aşağıdaki13:54 ve daha eski snapshotlar tarihseldir.
+
+
 Kurulum yalnız mevcut ERP sahibi tarafından yeni `C:/Sirket/ERP/clean/20261022/` alanında yapıldı. CRM kanonik source, test, review ve GitHub teslimini yaptı; ortak SQL/config/servis yazısı veya ikinci kurulum yapmadı.
 
 ## Güncel — 22 Ekim13:54TR / normal ekran ve kurulu iki düzeltme

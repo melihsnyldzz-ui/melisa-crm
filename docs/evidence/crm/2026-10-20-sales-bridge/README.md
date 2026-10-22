@@ -1,6 +1,11 @@
 # CRM06 / P04 — mevcut siparişten tek ERP satış fişine sözleşme incelemesi
 
-## 22 Ekim kaynak tüketicisi — kesin sözleşme hazır, kurulum henüz değil
+## Güncel22Ekim — kurulu teknik bağlantı ve makbuz eşlemesi tamam
+
+CRM c8 / ERP3db, son f9231d81 makbuz ve kaynak/paket/bundle/PID/health eşlemesi RO tamamlandı; aynı order3→invoice1/CRS-20261022-3/376.50TRY/FINALIZED sonucu iki normal ekranda ve yalnızGET yeniden okumada uyumlu. Owner stok24→21/customer0→376.50, tek stok/tek müşteri hareketi ve rollback/replay/rolret kayıtlarını verdi; CRM yeniSQL/GUI/POST/akıştekrarı yapmadı. CRMpackageId null, ERPfrontendbuilt9f/appdiff0 ve insan kabulü ayrı tutulur. [Nihai ekran/makbuz/RO kapsam](../2026-10-22-clean-current-source/README.md), [makine kaydı](../2026-10-22-clean-current-source/order-sale-ro-mapping.json). Son bağımsız ROreview açıkP1/P2=0; CRMc8 CI7/ERP3db CI6 SUCCESS. Sonraki aynı mevcut örnek mağaza günü ERP ortak sırasındadır; bu RO teslimde başlamadı.25/12/13/0/74 ve gerçek personel/telefon/reboot BEKLİYOR. Aşağıdaki kaynak hazırlığı ve retler tarihsel checkpointlerdir.
+
+
+## Tarihsel22Ekim kaynak tüketicisi — hazırlık checkpointi
 
 ERP sahibi mevcut PR54 worktree'sinde native4196 `GET /api/test/crm/orders/v2/drafts/:requestId/sale` / `melisa-order-sale.v1` sözleşmesini kesinleştirdi. Aynı ERP Bearer ve CRM authorization ile eski draftGET önce/sonra, aynı CRM actor/conversation/peer/assignment kontrolü korunur. DTO yalnız doğrulanmış mevcut sipariş için NOT_CONVERTED/sale:null, DRAFT veya FINALIZED döndürür. Eksik draft404, erişim401/403, kurulu olmayan şema/bozuklink503 veya ağ kaybı satışyok değildir. Native draft-only health/effectfalse pini korunur; satışPOST yalnız ERP4194'te owner'dadır.
 

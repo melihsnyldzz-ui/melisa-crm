@@ -1,0 +1,25 @@
+{
+  "kind": "actual-native-transaction-rollback",
+  "environment": "CLEAN_SYNTHETIC_TEST",
+  "engineReached": true,
+  "code": "CLEAN_SALE_UNAVAILABLE",
+  "before": {
+    "stock": 24,
+    "balance": 0,
+    "state": "draft",
+    "stockMovements": 0,
+    "customerMovements": 0,
+    "requests": 1,
+    "intents": 0
+  },
+  "after": {
+    "stock": 24,
+    "balance": 0,
+    "state": "draft",
+    "stockMovements": 0,
+    "customerMovements": 0,
+    "requests": 1,
+    "intents": 0
+  },
+  "nativeFailure": null
+}

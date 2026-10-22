@@ -187,7 +187,7 @@
     "acceptance": "Technical conversion not yet proven; original human/device/reboot acceptance and 25/12/13/0/74 counts unchanged."
   },
   "saleConsumer20261022": {
-    "stage": "SOURCE_CI_READY_OWNER_INSTALLATION_REPORTED_FINAL_RECEIPT_PENDING",
+    "stage": "TECHNICAL_LINKED_SALE_INSTALLED_AND_RO_MATCHED_HUMAN_PENDING",
     "sourceBase": "a7d1a2b8beea992c8b03573d1bce01363a3f5209",
     "contract": {
       "schemaVersion": "melisa-order-sale.v1",
@@ -317,10 +317,11 @@
         "next": "ERP-only final fix/targeted verification/exact source CI/installation receipt and complete normal sale + CRM readback proof.",
         "crmApplicationSourceUnchanged": "c8d0e28f0ea6cf16133c87dd548a4281381abfb7",
         "humanAcceptance": "PENDING"
-      }
+      },
+      "scope": "Historical source-delivery/intermediate owner checkpoints; finalInstallation below is current."
     },
     "acceptance": {
-      "newLinkedSaleGui": "IN_PROGRESS_OWNER_NORMAL_UI_NOT_PASSED",
+      "newLinkedSaleGui": "TECHNICAL_NORMAL_GUI_VERIFIED_FROM_OWNER_RECORDS",
       "physicalDevice": "PENDING",
       "human": "PENDING",
       "windowsReboot": "PENDING",
@@ -362,6 +363,27 @@
       "exactCiHead": "c8d0e28f0ea6cf16133c87dd548a4281381abfb7",
       "totalJobs": 7,
       "documentationFollowup": "Separate skip-ci receipt, not a new application or inherited CI claim."
+    },
+    "finalInstallation": {
+      "mapping": "../2026-10-22-clean-current-source/order-sale-ro-mapping.json",
+      "mappingSha256": "b00f7b8f528cdc3433094ee11840bb373a15494896c8a2616b35ee957fd173bd",
+      "receiptSha256": "f9231d810a7140f2816ca0ec3edea99be3ccbbe3a675e5b5cc335742f2e19c82",
+      "crmSource": "c8d0e28f0ea6cf16133c87dd548a4281381abfb7",
+      "crmPackageId": null,
+      "erpSource": "3db0830df16d36d59cc69b1a19feb593357aaf35",
+      "erpPackageId": "CLEAN-ERP-20261022-3db0830df16d",
+      "sourceBundleProcessPublicHealthMatch": true,
+      "orderId": "3",
+      "invoiceId": "1",
+      "documentNo": "CRS-20261022-3",
+      "state": "FINALIZED",
+      "totalExact4": "376.5000",
+      "readbackGETOnly": true,
+      "independentReviewOpenP1P2": 0,
+      "normalGuiByOwner": true,
+      "human": "PENDING",
+      "crmNewSqlGuiOrOperationalReplay": false,
+      "sharedReportEditedByCrm": false
     }
   }
 }

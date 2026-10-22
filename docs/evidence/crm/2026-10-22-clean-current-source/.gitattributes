@@ -1,0 +1,2 @@
+# Preserve this captured listener snapshot byte-for-byte for its owner SHA-256.
+order-sale-install-before-listeners.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
