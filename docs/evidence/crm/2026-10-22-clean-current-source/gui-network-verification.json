@@ -1,0 +1,439 @@
+{
+  "schemaVersion": "crm-technical-gui-network-evidence.v1",
+  "date": "2026-10-22",
+  "executedBy": "Existing ERP main owner; one browser and shared runtime writer.",
+  "reviewedByCrm": "Read-only source, screenshots and existing proof files; no parallel browser/SQL/runtime test.",
+  "crmApplicationSourceAtCapture": "a24c00d017ffb76814101013754b70a01cda3a3c",
+  "erpApplicationSourceAtCapture": "100a9a5596a9d7b2aff27230b03e3a8fbcc03aa1",
+  "cases": [
+    {
+      "file": "gui-request-cut-proof.json",
+      "proof": {
+        "case": "request-cut",
+        "requestId": "fb911576-bfce-4f05-b015-3ea0879c688a",
+        "bodyPreserved": true,
+        "quantity": 2,
+        "recoveryEvents": [
+          {
+            "event": "Network.requestWillBeSent",
+            "method": "GET",
+            "path": "/api/live/crm/erp/v2/drafts/fb911576-bfce-4f05-b015-3ea0879c688a"
+          },
+          {
+            "event": "Network.responseReceived",
+            "path": "/api/live/crm/erp/v2/drafts/fb911576-bfce-4f05-b015-3ea0879c688a",
+            "status": 404
+          },
+          {
+            "event": "Network.requestWillBeSent",
+            "method": "POST",
+            "path": "/api/live/crm/erp/v2/drafts"
+          },
+          {
+            "event": "Network.responseReceived",
+            "path": "/api/live/crm/erp/v2/drafts",
+            "status": 200
+          },
+          {
+            "event": "Network.requestWillBeSent",
+            "method": "GET",
+            "path": "/api/live/crm/erp/v2/drafts/fb911576-bfce-4f05-b015-3ea0879c688a"
+          },
+          {
+            "event": "Network.responseReceived",
+            "path": "/api/live/crm/erp/v2/drafts/fb911576-bfce-4f05-b015-3ea0879c688a",
+            "status": 200
+          }
+        ]
+      },
+      "sha256": "764bd7512a98f1b04a9b77b2e5467defb3af22cc91e2de1e49a90b333ea5132b"
+    },
+    {
+      "file": "gui-response-loss-proof.json",
+      "proof": {
+        "case": "response-loss-after-native-commit",
+        "requestId": "45064956-9c91-470f-a7b6-a9330b60e456",
+        "quantity": 3,
+        "serverResponsePausedStatus": 200,
+        "responseWithheldUntilClientTimeout": true,
+        "automaticRecoveryReadFailed": true,
+        "postCountOnRecovery": 0,
+        "recoveryEvents": [
+          {
+            "event": "Network.requestWillBeSent",
+            "method": "GET",
+            "path": "/api/live/crm/erp/v2/drafts/45064956-9c91-470f-a7b6-a9330b60e456"
+          },
+          {
+            "event": "Network.responseReceived",
+            "path": "/api/live/crm/erp/v2/drafts/45064956-9c91-470f-a7b6-a9330b60e456",
+            "status": 200
+          }
+        ],
+        "temporaryInterceptionCleared": true
+      },
+      "sha256": "7481dedc3f506a2f998981eee1d3ecdb194dfe20554aeac18ca458b5466186b7"
+    },
+    {
+      "file": "gui-reload-proof.json",
+      "proof": {
+        "requestId": "45064956-9c91-470f-a7b6-a9330b60e456",
+        "crmSessionSurvivedReload": true,
+        "normalDraftHistoryReopened": true,
+        "draftPostCount": 0,
+        "reads": [
+          {
+            "path": "/api/live/crm/erp/v2/drafts/45064956-9c91-470f-a7b6-a9330b60e456",
+            "status": 200
+          }
+        ]
+      },
+      "sha256": "cf6f2c04fde9f4cb37dda7c2eaa04fb5c6127f37ca2fafb2a2a0d1f3cfda8346"
+    }
+  ],
+  "ownerSqlCommitProof": {
+    "requestId": "45064956-9c91-470f-a7b6-a9330b60e456",
+    "orderId": 3,
+    "quantity": 3,
+    "totalTry": "376.50",
+    "status": "Owner verified SQL commit while the POST response was paused; CRM performed no SQL query."
+  },
+  "screenshots": [
+    {
+      "file": "crm-request-cut-pending.jpg",
+      "sha256": "f0ef11ee8e610fe003238dbc569ec5a2e4a0ebcdfd545c6dcabcbda43124a5e9"
+    },
+    {
+      "file": "crm-request-cut-recovered.jpg",
+      "sha256": "47a5c1838759c544d8f00750a3762123e3e43ee1907fce8e7590176adc074b0d"
+    },
+    {
+      "file": "crm-response-loss-pending.jpg",
+      "sha256": "9f029a70b3f488b420f2cdc2849b89da1389ea34da6c9ace6378a39eaa811b53"
+    },
+    {
+      "file": "crm-response-loss-recovered.jpg",
+      "sha256": "6f150f5e94fb2ad97735fd8db9dd0133564026a2ba97177cefc79a77c92a0f9e"
+    }
+  ],
+  "networkWarningFix": {
+    "sourceCommit": "1dd07d1f49b01a1847a519a0868294cb05188cd2",
+    "leafCasesPassed": 12,
+    "nodeTestsIncludingParentPassed": 13,
+    "frontendBuild": "PASS",
+    "openReviewP1P2": 0,
+    "exactSourceCI": {
+      "pr": 39764301807,
+      "push": 39764294296,
+      "aiOffline": 39764301782,
+      "result": "SUCCESS"
+    },
+    "runtimeAndGuiVerification": "INSTALLED_AND_OWNER_NORMAL_GUI_VERIFIED",
+    "guiProof": {
+      "file": "C:\\Sirket\\ERP\\clean\\20261022\\runtime\\gui-turkish-network-proof.json",
+      "sha256": "0a525abdbd163df2743bd6a1c0bb811550e05653618928b4c0b7243385a3ee77",
+      "unsafeCredentialText": false,
+      "proof": {
+        "source": "1dd07d1f49b01a1847a519a0868294cb05188cd2",
+        "requestId": "45064956-9c91-470f-a7b6-a9330b60e456",
+        "message": "Bağlantı kesildi. Taslağınız korunuyor; aynı taslağı yeniden doğrulayın.",
+        "quantityLocked": 3,
+        "restoredDocument": "CR2-450649569C91470FA7B6A9330B",
+        "restoredTotal": 376.5,
+        "draftPosts": 0,
+        "draftReads": [
+          {
+            "path": "/api/live/crm/erp/v2/drafts/45064956-9c91-470f-a7b6-a9330b60e456",
+            "status": 200
+          }
+        ],
+        "temporaryBlockCleared": true
+      }
+    }
+  },
+  "originalPhoto": {
+    "erpSourceCommit": "970cfc24b9fdb0017a79c5ca6c03bb4b59a23bbc",
+    "sourceReviewOpenP1P2": 0,
+    "reviewScope": "Only new original media variant, path/hash, immutable metadata and finite clean target source; no SQL/runtime writes.",
+    "runtimeAndGuiVerification": "INSTALLED_AND_OWNER_NORMAL_GUI_VERIFIED",
+    "guiProof": {
+      "file": "C:\\Sirket\\ERP\\clean\\20261022\\runtime\\gui-original-photo-proof.json",
+      "sha256": "8b3907e29f981e540f183cc5f0bfaacd5ee35d72d74943103f9d21fc938a1cce",
+      "unsafeCredentialText": false,
+      "proof": {
+        "source": "970cfc24b9fdb0017a79c5ca6c03bb4b59a23bbc",
+        "photos": [
+          {
+            "variant": "original",
+            "status": 200,
+            "mime": "image/png"
+          },
+          {
+            "variant": null,
+            "status": 200,
+            "mime": "image/png"
+          }
+        ],
+        "displayedOriginalDimensions": {
+          "width": 320,
+          "height": 320
+        },
+        "naturalSourceNotUpscaled": true
+      }
+    }
+  },
+  "humanAcceptance": "PENDING",
+  "physicalMobile": "NOT_RUN",
+  "windowsRebootLogon": "NOT_RUN",
+  "finishCountsUnchanged": {
+    "total": 25,
+    "green": 12,
+    "partial": 13,
+    "red": 0
+  },
+  "currentOwnerInstallation": {
+    "file": "C:\\Sirket\\ERP\\clean\\20261022\\runtime\\installation-receipt-gui.json",
+    "sha256": "9407d35235d5b6575706c57d1c624afbc79d3b29f2bac1c0b5705f0906341014",
+    "observedAtUtc": "2026-10-22T10:49:24.36Z",
+    "crm": {
+      "source": "1dd07d1f49b01a1847a519a0868294cb05188cd2",
+      "package": "CLEAN-CRM-20261022-1dd07d1f49b0",
+      "frontendBuiltFrom": "1dd07d1f49b01a1847a519a0868294cb05188cd2",
+      "pr": 3
+    },
+    "erp": {
+      "source": "970cfc24b9fdb0017a79c5ca6c03bb4b59a23bbc",
+      "package": "CLEAN-ERP-20261022-970cfc24b9fd",
+      "pr": 54
+    },
+    "identity": {
+      "ok": true,
+      "environment": "CLEAN_SYNTHETIC_TEST",
+      "environmentId": "e662fd94-d797-4b3b-938a-d143ad758b67",
+      "database": "MELISA_ERP_CLEAN_TEST_20261022",
+      "crmOrigin": "http://127.0.0.1:62801",
+      "synthetic": true,
+      "actualT1": false,
+      "externalOperations": false,
+      "databaseName": "MELISA_ERP_CLEAN_TEST_20261022",
+      "serverName": "Semih\\MELISADEV",
+      "originalDatabaseAccess": 0,
+      "liveDatabaseAccess": 0,
+      "sysadmin": 0,
+      "databaseControl": 0,
+      "port": 4196,
+      "mode": "erp",
+      "writes": true,
+      "purpose": "crm-order-draft-only",
+      "automaticJobs": false,
+      "stockEffect": false,
+      "ledgerEffect": false,
+      "reservationEffect": false,
+      "sourceCommit": "970cfc24b9fdb0017a79c5ca6c03bb4b59a23bbc",
+      "packageId": "CLEAN-ERP-20261022-970cfc24b9fd"
+    },
+    "served": [
+      {
+        "system": "erp",
+        "url": "http://127.0.0.1:5244/ornek-akis.html",
+        "sha256": "2f4b180c152a1100df4c36aee0b1efcbc78b4d32af835a6adf86709c6c14fe9d",
+        "servedMatches": true
+      },
+      {
+        "system": "crm",
+        "url": "http://127.0.0.1:62800/",
+        "sha256": "656a01b5b3a059f40d1dbd3e19217a70b2fc50b7055bc155a4442b1d2a8dc233",
+        "servedMatches": true
+      }
+    ],
+    "ownerGui": {
+      "normalStaffLogin": true,
+      "normalErpLogin": true,
+      "originalPhoto": true,
+      "requestCutRecovery": true,
+      "responseLossRecovery": true,
+      "reloadAndReopen": true,
+      "turkishNetworkWarning": true,
+      "secondEffect": false,
+      "temporaryNetworkInterceptionCleared": true
+    },
+    "nativeDrafts": {
+      "totalDistinctUUIDs": 3,
+      "orders": 3,
+      "lines": 3,
+      "journals": 3,
+      "eachUUIDExactlyOneRecord": true,
+      "originalOrder1Preserved": true,
+      "pendingIntents": 0,
+      "stockMovements": 0,
+      "invoices": 0,
+      "partyBalancesZero": true,
+      "stock": [
+        24,
+        12,
+        0
+      ],
+      "definitionsValid": 8
+    },
+    "oldListenerIdentitiesPreserved": {
+      "count": 16,
+      "differences": []
+    },
+    "preservationScope": "All previous systems and three distinct synthetic test orders preserved; CRM made no SQL/runtime write."
+  },
+  "independentCrmReadOnlyMatch": {
+    "observedAtUtc": "2026-10-22T10:54:59.8719618Z",
+    "method": "Read-only receipt/source/served-file/process and public api/health; no login, GUI, SQL query, restart or write.",
+    "ownerReceiptSha256": "9407d35235d5b6575706c57d1c624afbc79d3b29f2bac1c0b5705f0906341014",
+    "crmCloneHead": "1dd07d1f49b01a1847a519a0868294cb05188cd2",
+    "erpCloneHead": "970cfc24b9fdb0017a79c5ca6c03bb4b59a23bbc",
+    "crmApplicationTrackedClean": true,
+    "erpApplicationTrackedClean": true,
+    "frontendIndexSha256": "656a01b5b3a059f40d1dbd3e19217a70b2fc50b7055bc155a4442b1d2a8dc233",
+    "servedIndexSha256": "656a01b5b3a059f40d1dbd3e19217a70b2fc50b7055bc155a4442b1d2a8dc233",
+    "crmSourceMatches": true,
+    "erpSourceMatches": true,
+    "servedMatches": true,
+    "processes": [
+      {
+        "port": 62803,
+        "address": "127.0.0.1",
+        "pid": 54828,
+        "createdAtUtc": "2026-10-22T10:40:42.3163330Z",
+        "executablePath": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe",
+        "matchesReceipt": true
+      },
+      {
+        "port": 62802,
+        "address": "127.0.0.1",
+        "pid": 2808,
+        "createdAtUtc": "2026-10-22T10:40:42.3050390Z",
+        "executablePath": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe",
+        "matchesReceipt": true
+      },
+      {
+        "port": 62801,
+        "address": "127.0.0.1",
+        "pid": 35108,
+        "createdAtUtc": "2026-10-22T10:40:42.2896270Z",
+        "executablePath": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe",
+        "matchesReceipt": true
+      },
+      {
+        "port": 62800,
+        "address": "127.0.0.1",
+        "pid": 35108,
+        "createdAtUtc": "2026-10-22T10:40:42.2896270Z",
+        "executablePath": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe",
+        "matchesReceipt": true
+      },
+      {
+        "port": 5244,
+        "address": "127.0.0.1",
+        "pid": 64760,
+        "createdAtUtc": "2026-10-22T09:22:26.5215770Z",
+        "executablePath": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe",
+        "matchesReceipt": true
+      },
+      {
+        "port": 4196,
+        "address": "127.0.0.1",
+        "pid": 62132,
+        "createdAtUtc": "2026-10-22T10:39:31.1282490Z",
+        "executablePath": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe",
+        "matchesReceipt": true
+      },
+      {
+        "port": 4194,
+        "address": "127.0.0.1",
+        "pid": 52940,
+        "createdAtUtc": "2026-10-22T10:39:31.1147210Z",
+        "executablePath": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe",
+        "matchesReceipt": true
+      }
+    ],
+    "allReceiptListenerCount": 22,
+    "listenerDifferences": [],
+    "erpPublicHealth": [
+      {
+        "port": 4194,
+        "success": true,
+        "data": {
+          "status": "ok",
+          "environment": "CLEAN_SYNTHETIC_TEST",
+          "environmentId": "e662fd94-d797-4b3b-938a-d143ad758b67",
+          "database": "MELISA_ERP_CLEAN_TEST_20261022",
+          "crmOrigin": "http://127.0.0.1:62801",
+          "synthetic": true,
+          "actualT1": false,
+          "externalOperations": false,
+          "sourceCommit": "970cfc24b9fdb0017a79c5ca6c03bb4b59a23bbc"
+        }
+      },
+      {
+        "port": 4196,
+        "success": true,
+        "data": {
+          "status": "ok",
+          "environment": "CLEAN_SYNTHETIC_TEST",
+          "environmentId": "e662fd94-d797-4b3b-938a-d143ad758b67",
+          "database": "MELISA_ERP_CLEAN_TEST_20261022",
+          "crmOrigin": "http://127.0.0.1:62801",
+          "synthetic": true,
+          "actualT1": false,
+          "externalOperations": false,
+          "sourceCommit": "970cfc24b9fdb0017a79c5ca6c03bb4b59a23bbc"
+        }
+      }
+    ],
+    "receiptListenersOutsideCurrentCleanPorts": 15,
+    "processSourceAttribution": "Owner installation receipt maps the processes to sources; CRM independently matched PID/birth/executable and served bytes, not process working directory.",
+    "ownerPreservedBaseline": {
+      "count": 16,
+      "differences": []
+    }
+  },
+  "currentOwnerSqlReadback": {
+    "file": "C:\\Sirket\\ERP\\clean\\20261022\\runtime\\gui-final-sql.txt",
+    "sha256": "434144b4f731d7be4c41ee34dad55a903ed95bc17b03c6d3801b4ef7d31c7c63",
+    "orders": 3,
+    "distinctRequestIds": 3,
+    "rowsPerUuid": 1,
+    "initialOrder1Preserved": true,
+    "stockMovements": 0,
+    "invoices": 0,
+    "stock": [
+      24,
+      12,
+      0
+    ],
+    "source": "Existing ERP owner SQL output only; no CRM SQL query."
+  },
+  "currentScreenshots": [
+    {
+      "file": "erp-final-gui-order.jpg",
+      "sha256": "e17d343b5533ca8e1f7544ddabb7ee960846947f5bd41ee7467d286af9d2a2ef"
+    },
+    {
+      "file": "crm-gui-catalog-fixed.jpg",
+      "sha256": "6b848db05a7653092d572467baeb2f4a25293d4e980640d7f397ea7f0b054e4c"
+    },
+    {
+      "file": "crm-turkish-network-pending.jpg",
+      "sha256": "a809dadfc2f434194163b85377483d87de157fe44fe48a940c79cd1d2f460fec"
+    },
+    {
+      "file": "crm-turkish-network-recovered.jpg",
+      "sha256": "6f150f5e94fb2ad97735fd8db9dd0133564026a2ba97177cefc79a77c92a0f9e"
+    }
+  ],
+  "launcher": {
+    "path": "C:/Sirket/ERP/clean/20261022/Melisa-TEST-Ac.cmd",
+    "syntaxPass": true,
+    "actualCmdInvocation": "BLOCKED_BEFORE_START_BY_AUTOMATIC_TOOL_POLICY_REVIEW",
+    "source": "ERP owner direct report; not retried through another tool.",
+    "windowsRebootTested": false,
+    "humanAcceptance": "PENDING"
+  },
+  "sourceRuntimeDistinction": "Earlier cases and four pre-fix screenshots remain a24/100. Current warning/photo screenshots and installation are 1dd/970. Future docs-only delivery HEAD does not change the installed application source or inherit its CI."
+}
