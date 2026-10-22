@@ -39,5 +39,6 @@ Kurulumdan sonra hedef adresler: [LAN CRM](http://192.168.1.46:62800/), [Tailsca
 - Testler yalnız `offline-test-guard.mjs`, sentetik istek/soket metadatası ve rastgele loopback portları kullandı. Sabit TEST portuna, gerçek peer'a, SQL'e veya provider'a bağlanılmadı. Proxy fixture'ındaki 200/401/403 gerçek oturum veya cihaz kabulü değildir.
 - Mevcut source explorer, auth tester, release inspector ve bağımsız reviewer kullanıldı; yeni ajan/altyapı kurulmadı. Son dar bağımsız incelemede açık **P1/P2=0**.
 - `node --check` ve `git diff --check` başarılı. Source/CI, kurulu runtime, normal ekran, fiziksel cihaz ve insan kabulü ayrı kalır.
+- Push öncesi tam geçmiş taraması eski `28fcad9` kanıtındaki tek `fileSha256` değerini yanlış pozitif olarak işaretledi. İlgili dosyanın gerçek SHA256 özeti içerik açılmadan birebir eşlendi, bağımsız reviewer doğruladı. Yalnız o tarihsel commit/dosya/kural/satır fingerprint'i `.gitleaksignore` içine alındı; genel kural veya path istisnası eklenmedi. Eski kanıt dosyası değiştirilmedi.
 
 Kaynak snapshot SHA256: server `3cbc12f715ca4c8d43160a6a84418e5a57f8e481d72c370ec985634c6f7262c6`; test `5d65b137de7fd3ece081da40c1e7d46cc86b84bda23631088c49ec0266573d63`. Exact source commit ve hosted CI teslim sonrası aynı kayda eklenir. Eski 25 CRM yaprağı / 12 tamam / 13 kısmi / 0 açık ve toplam 74 kapsamı değişmedi.
