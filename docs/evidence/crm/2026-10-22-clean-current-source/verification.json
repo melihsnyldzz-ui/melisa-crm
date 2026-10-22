@@ -1,0 +1,204 @@
+{
+  "schemaVersion": "crm-clean-source-runtime-evidence.v1",
+  "observedAt": "2026-10-22T09:24:39.5375884Z",
+  "scope": "Technical source/package/runtime matching; no authenticated GUI, physical device or human acceptance.",
+  "ownerReceipt": {
+    "file": "C:\\Sirket\\ERP\\clean\\20261022\\runtime\\installation-receipt.json",
+    "sha256": "7d331a1b925e34e8b4f8ddd3f126567010dc736536e1ce7e857e6b319ae55bd0",
+    "capturedAtUtc": "2026-10-22T09:29:45.4678972Z",
+    "observedAt": "2026-10-22T09:25:28.936Z"
+  },
+  "expectedAndObserved": {
+    "readAtUtc": "2026-10-22T09:24:39.5375884Z",
+    "crmSourceCommit": "a24c00d017ffb76814101013754b70a01cda3a3c",
+    "frontendIndexSha256": "8478510ca6b0d8db305573d2e7698df3eceeb998949adf6e1a3b2bf449d32104",
+    "servedIndexSha256": "8478510ca6b0d8db305573d2e7698df3eceeb998949adf6e1a3b2bf449d32104",
+    "servedIndexMatches": true,
+    "erpHealth": [
+      {
+        "port": 4194,
+        "sourceCommit": "100a9a5596a9d7b2aff27230b03e3a8fbcc03aa1",
+        "packageId": "CLEAN-ERP-20261022-100a9a5596a9",
+        "database": "MELISA_ERP_CLEAN_TEST_20261022",
+        "environmentId": "e662fd94-d797-4b3b-938a-d143ad758b67",
+        "environment": "CLEAN_SYNTHETIC_TEST",
+        "synthetic": true,
+        "stockEffect": false,
+        "ledgerEffect": false,
+        "reservationEffect": false,
+        "actualT1": false,
+        "originalDatabaseAccess": 0,
+        "liveDatabaseAccess": 0,
+        "sysadmin": 0,
+        "databaseControl": 0,
+        "externalOperations": false,
+        "automaticJobs": false
+      },
+      {
+        "port": 4196,
+        "sourceCommit": "100a9a5596a9d7b2aff27230b03e3a8fbcc03aa1",
+        "packageId": "CLEAN-ERP-20261022-100a9a5596a9",
+        "database": "MELISA_ERP_CLEAN_TEST_20261022",
+        "environmentId": "e662fd94-d797-4b3b-938a-d143ad758b67",
+        "environment": "CLEAN_SYNTHETIC_TEST",
+        "synthetic": true,
+        "stockEffect": false,
+        "ledgerEffect": false,
+        "reservationEffect": false,
+        "actualT1": false,
+        "originalDatabaseAccess": 0,
+        "liveDatabaseAccess": 0,
+        "sysadmin": 0,
+        "databaseControl": 0,
+        "externalOperations": false,
+        "automaticJobs": false
+      }
+    ],
+    "processes": [
+      {
+        "port": 4194,
+        "address": "127.0.0.1",
+        "pid": 63984,
+        "createdAtUtc": "2026-10-22T09:22:26.5019810Z",
+        "executablePath": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe"
+      },
+      {
+        "port": 4196,
+        "address": "127.0.0.1",
+        "pid": 44224,
+        "createdAtUtc": "2026-10-22T09:22:26.5131030Z",
+        "executablePath": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe"
+      },
+      {
+        "port": 5244,
+        "address": "127.0.0.1",
+        "pid": 64760,
+        "createdAtUtc": "2026-10-22T09:22:26.5215770Z",
+        "executablePath": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe"
+      },
+      {
+        "port": 62800,
+        "address": "127.0.0.1",
+        "pid": 12320,
+        "createdAtUtc": "2026-10-22T09:22:30.4443880Z",
+        "executablePath": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe"
+      },
+      {
+        "port": 62801,
+        "address": "127.0.0.1",
+        "pid": 12320,
+        "createdAtUtc": "2026-10-22T09:22:30.4443880Z",
+        "executablePath": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe"
+      },
+      {
+        "port": 62802,
+        "address": "127.0.0.1",
+        "pid": 46488,
+        "createdAtUtc": "2026-10-22T09:22:30.4537200Z",
+        "executablePath": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe"
+      },
+      {
+        "port": 62803,
+        "address": "127.0.0.1",
+        "pid": 49732,
+        "createdAtUtc": "2026-10-22T09:22:30.4635940Z",
+        "executablePath": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe"
+      }
+    ],
+    "method": "Read-only public health, source HEAD, served/file SHA256 and process metadata; no auth/SQL/config/service writes."
+  },
+  "receiptMatch": {
+    "crmSource": true,
+    "crmIndexAndServedBytes": true,
+    "erpSourceAndPackage": true,
+    "databaseAndEnvironment": true,
+    "sixProcessPidBirthExecutable": true
+  },
+  "crmPackageId": "CLEAN-CRM-20261022-a24c00d017ff",
+  "frontendBuiltFrom": "334fef95f485098e8dd3bd2a3f1a817f3c686ad0",
+  "ownerProof": {
+    "erpReadback": {
+      "environment": "CLEAN_SYNTHETIC_TEST",
+      "source": "100a9a5596a9d7b2aff27230b03e3a8fbcc03aa1",
+      "actualT1": false,
+      "actor": "ornek-satis",
+      "role": "clean_test_sales",
+      "catalogCount": 3,
+      "syntheticCount": 3,
+      "detailCode": "0007 MELISA",
+      "price": "125.50000000",
+      "currency": "TRY",
+      "barcodePreserved": "0000000000007",
+      "photoEligible": 1,
+      "withoutPhoto": 2,
+      "photoHashVerified": true,
+      "unauthorizedStatus": 401,
+      "genericWriteDenied": 403,
+      "normalErpOrders": 1,
+      "normalErpOrderId": "1",
+      "normalErpOrderTotal": 251,
+      "refreshActor": 15,
+      "logout": true
+    },
+    "crmHttpToNativeSQL": {
+      "kind": "actual-crm-http-to-native-sql",
+      "crmActor": "clean-staff-20261022",
+      "role": "personel",
+      "conversationId": "55",
+      "managerConversation": "55",
+      "strangerDenied": 403,
+      "catalogTested": true,
+      "catalogCount": 1,
+      "catalogStockCode": "0007 MELISA",
+      "catalogPrice": "125.50000000",
+      "catalogCurrency": "TRY",
+      "photoBytes": 1359,
+      "customerId": 1,
+      "orderId": 1,
+      "documentNo": "CR2-89A4D7340F0349C9A9BDB5A790",
+      "total": "251.0000",
+      "sameUuidSameId": true,
+      "differentBodyStatus": 409,
+      "liveSendEnabled": false,
+      "paidAiEnabled": false,
+      "stockEffect": false,
+      "ledgerEffect": false
+    },
+    "nativeSqlBeforeAfterSHA256": "de41d06cb539a730857b00aff9717e860bce21eaf0551a29ce9795cda2c7ef4a"
+  },
+  "ownerPreservation": {
+    "scope": "Only the six verified NEW process identities and their private launchers. Preserve the synthetic DB/order and all OLD systems. No automatic restore/reset or old process adoption.",
+    "oldListenersPreserved": true,
+    "oldListenerEntries": 16,
+    "restorePerformed": false,
+    "windowsRebootPerformed": false
+  },
+  "gui": {
+    "normalLoginPageObserved": true,
+    "authenticatedFlow": "NOT_RUN_PROTECTED_FIRST_LOGIN_HANDOFF_UNAVAILABLE",
+    "humanAcceptance": "PENDING",
+    "screenshot": "normal-test-login.jpg"
+  },
+  "sourceVerification": {
+    "initialProfileTargeted": {
+      "passed": 64,
+      "failed": 0,
+      "skipped": 0
+    },
+    "gatewayFixAffected": {
+      "passed": 22,
+      "failed": 0,
+      "skipped": 0
+    },
+    "countsOverlap": true,
+    "frontendBuild": "PASS",
+    "independentReviewOpenP1P2": 0,
+    "sourceCI": {
+      "head": "a24c00d017ffb76814101013754b70a01cda3a3c",
+      "pr": 39754665944,
+      "push": 39754658067,
+      "aiOffline": 39754665780,
+      "conclusion": "SUCCESS"
+    }
+  }
+}

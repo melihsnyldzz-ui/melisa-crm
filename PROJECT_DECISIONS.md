@@ -2,7 +2,7 @@
 
 ### CRM-DEC-023 — 22 Ekim 2026 — Güncel kaynaklarla temiz yerel yapay TEST
 
-**Durum: Doğrudan kullanıcı kararı; çalışan yeni kurulum henüz doğrulanmadı.** Mevcut **Kordinatör AJAN** konuşmasının `01a1626b-8fc5-7aa0-86ba-022f61b6f631` turu / `01a1626b-90ba-7501-aa38-130150bad200` kullanıcı mesajı salt okunur doğrulandı: “Çalışan eski crm ve erpye ihtiyacım yok tek ihtiyacım erp ve crmin son sürümlerini temiz bir repoya çekip bağlayıp bitirmek”. Koordinatör aynı iki mevcut proje sahibine işi devretti; kendiliğinden haberleşme varsayılmadı.
+**Durum: Doğrudan kullanıcı kararı;22Ekim temiz kurulumun teknik makbuzu eşleşti, normal GUI/insan kabulü açık.** [CRMa24c00d/ERP100a9a5 kaynak-paket-runtime ve gerçek servis/SQL kanıtı](docs/evidence/crm/2026-10-22-clean-current-source/README.md), özgün yaprak veya insan kabulünü kapatmaz. Mevcut **Kordinatör AJAN** konuşmasının `01a1626b-8fc5-7aa0-86ba-022f61b6f631` turu / `01a1626b-90ba-7501-aa38-130150bad200` kullanıcı mesajı salt okunur doğrulandı: “Çalışan eski crm ve erpye ihtiyacım yok tek ihtiyacım erp ve crmin son sürümlerini temiz bir repoya çekip bağlayıp bitirmek”. Koordinatör aynı iki mevcut proje sahibine işi devretti; kendiliğinden haberleşme varsayılmadı.
 
 **Yeni öncelik:** Güncel gerçek kaynaklar ve kaydedilmemiş önemli işler korunarak ayrı temiz yerel teslim hazırlanır. İlk görünür sonuç iki güncel uygulamanın açılması, yapay CRM siparişinin ERP'de tek kez oluşması ve yeniden açılışta aynı kayıttan okunmasıdır. Eski TEST'in P03/claim/sürüm devri artık bu hedefin ön koşulu değildir. Eski dosya, süreç, veri veya kanıt silinmez/durdurulmaz; güvenlik kontrolleri kaldırılmaz. Dar sentetik ekran tam uygulama diye sunulmaz.
 
