@@ -152,5 +152,38 @@
     "sharedServiceSqlRuntimeConfigWrites": false,
     "securityOrCredentialChanges": false,
     "erpB264OwnerMessagedOrReassigned": false
+  },
+  "followUp20261022": {
+    "decision": "CRM-DEC-024",
+    "humanAuthorization": {
+      "thread": "01a15d42-a70f-7510-9fce-73ce1cb433e9",
+      "turn": "01a16373-2ed3-7762-b901-c860af00c592",
+      "message": "01a16373-2fcf-7a82-9161-bae5970710f8",
+      "verifiedFromDirectHumanMessage": true
+    },
+    "canonicalSourceHead": "0064cf2f57cc8b04f4c29e87ad82f96288c1a1ce",
+    "installedApplicationSources": {
+      "crm": "1dd07d1f49b01a1847a519a0868294cb05188cd2",
+      "erp": "970cfc24b9fdb0017a79c5ca6c03bb4b59a23bbc"
+    },
+    "branch": "codex/crm-agents-on-completion-20261003",
+    "originVerified": true,
+    "dirtyAtStart": false,
+    "inspectedCrmBlobs": {
+      "apps/frontend/src/lib/nativeOrder.js": "53cfe8387940a49366823b01f618f65649120c6a",
+      "apps/frontend/src/lib/nativeOrderHistory.js": "38842ad203224ac910790b4643fb925d45120435",
+      "apps/frontend/src/ERPOrderDialog.jsx": "8ac3d3b7866052fbabcde5de3207215bc547a081"
+    },
+    "preserved": "Actual normal clean GUI draft/catalog/photo/recovery evidence from 2026-10-22 is reused; old 20 October probe was not rerun.",
+    "missingConsumer": "The normal API/validator/receipt/card only handles immutable draft status and effects=false. There is no consumed verified link from the same requestId to an ERP-authorized sale result in these inspected paths.",
+    "upstreamDependency": "ERP owner is reusing invoiceDraftService and a unique order-to-invoice link; exact read-only sidecar endpoint/DTO/status/amount/effect/permission/retry contract pending. No DTO or write API is invented by CRM.",
+    "boundedScope": "Known exact CRM files and pinned ERP970 crmOrderV2Routes/Contract/Service and cleanSyntheticServer; not an exhaustive assertion that ERP lacks a sales engine. Code graph transport closed, so direct source was used.",
+    "pr20Unchanged": "f5ad566b852425ed21d3ec9e87b783b85e90b890",
+    "erpPr55Unchanged": "d78474ae0eb45146790e608979fc3e06c9741adb",
+    "normalApplicationChanged": false,
+    "newTestExecution": false,
+    "newGuiSqlRuntimeWrite": false,
+    "installationOwner": "Existing ERP main agent only",
+    "acceptance": "Technical conversion not yet proven; original human/device/reboot acceptance and 25/12/13/0/74 counts unchanged."
   }
 }

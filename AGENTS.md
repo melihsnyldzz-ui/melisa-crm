@@ -1,5 +1,9 @@
 # Melisa CRM — etkin çalışma talimatları
 
+## Güncel bağlı adım — 22 Ekim 2026 / CRM-DEC-024
+
+Kullanıcının sıralı teknik yürütme kararı mevcut koordinatör sohbetindeki doğrudan insan mesajından doğrulandı. İlk hedef aynı yapay CRM siparişinin ERP'de mevcut yetkili onayla tek satışa, doğru ve tek stok/müşteri hesabı etkisine bağlanmasıdır. CRM önce mevcut E02/CRM06 kaynak eksiklerini ayırır; ERP'nin kesin readback sözleşmesi olmadan satış/ödeme sonucu veya yeni UI/API icat etmez. Çalışan1dd taslak/katalog/fotoğraf/kesinti ve CAS korumaları korunur. Kaynak ve dar tüketici düzeltmesi CRM'de; ortak temiz TEST SQL/runtime/servis/kurulum ve teknik tarayıcı ERP tek sahibindedir. Bu hedefteki yalnız yapay etkiler yetkilidir; LIVE/Vega/T1/gerçek ticari kayıt/mesaj/ücretli servis/main ve insan kabulü sınırları aynı kalır.5.1 politika reddi aşılmaz, yeni altyapı/ajan/Goal/otomasyon/tree yok. [CRM-DEC-024](PROJECT_DECISIONS.md) ve tek etkin [CRM_STATUS.md](CRM_STATUS.md) uygulanır.
+
 ## Güncel hedef — 22 Ekim 2026 / CRM-DEC-023
 
 Kullanıcı güncel ERP ve CRM kaynaklarını ayrı temiz yerel alanda, yalnız yapay verilerle bağlayıp bitirmeyi seçti. **Eski TEST'i yeni sürüme devretmek bu hedefin ön şartı değildir.** Eski kaynak, paket, hizmet ve veriler silinmez veya durdurulmaz. Aşağıdaki tarihsel P03/claim/OLD geçiş işi yeni temiz alan için kapı sayılmaz; güvenlik kontrolleri gevşetilmez.

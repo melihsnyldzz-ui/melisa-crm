@@ -1,3 +1,7 @@
+## 22 Ekim — E02 / CRM06 aynı siparişin bağlı ERP satış sonucunu okuma
+
+CRM-DEC-024 ile ilk teknik hedef mevcut yapay CRM siparişi→ERP yetkili onay→tek satış/tek stok-cari etkisidir. ERP sahibi uygulama/SQL/kurulum/normal GUI'yi; CRM kesin sözleşmeye bağlı read-only sonuç tüketimini sahiplenir. Çalışan1dd taslak/UUID/body/reopen/katalog/fotoğraf korunur. Şu an normal native makbuz taslak-only'dir; bağlı satış durum/belge geri okuması ERP sözleşmesi bağımlılığıdır. [Mevcut E02 kaynak bulgusu](docs/evidence/crm/2026-10-20-sales-bridge/README.md); etkin adım CRM_STATUS'tadır. Yeni satış/ödeme yolu veya ikinci tracker açılmaz; teknik/kurulum/insan ayrımı ve25/12/13/0/74 korunur. Aşağıdaki eski checkpoint'ler tarihsel sıradır.
+
 ## 13 Ekim — E02 fiyat-witness tüketicisi
 
 Yarım kalan mevcut E02 bağımlılığı dar kaynak kesitinde tamamlandı: gerçek ERP pricing metadata kaybı kapandı, SOURCE eski gövdesi korunarak MANUAL sürüm/null-source witness seçime ve native isteğe bağlandı. [Kanıt](docs/evidence/crm/2026-10-13-manual-price-witness/README.md). Kaynak/test hazır; ERP owner CURRENT transaction/native successor kanıtı ve sahipli aktivasyon olmadan yeni yol normal TEST'te açılmaz. Yeni SQL/config/store/port/restart yapılmadı;1be paket değişmedi. Normal/mobil/insan E02, I01 ve CRM06 kabulü açık; **25/12/13/0** korunur. Sonraki tek bağlı iş: ERP native successor hazır olduğunda aynı UUID/aynı fiyat sürümü taslak/readback, değişmiş sürüm reddi ve tarihsel readback normal ekran kontrolü.

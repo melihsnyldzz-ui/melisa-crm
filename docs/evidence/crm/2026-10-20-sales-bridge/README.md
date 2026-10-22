@@ -1,5 +1,25 @@
 # CRM06 / P04 — mevcut siparişten tek ERP satış fişine sözleşme incelemesi
 
+## 22 Ekim devamı — kurulu normal taslak ile onaylı satışın sonuç bağı
+
+CRM-DEC-024 doğrudan kullanıcı mesajından doğrulandı. İnceleme anında kanonik CRM `0064cf2f57cc8b04f4c29e87ad82f96288c1a1ce`, origin/dal doğru, dirty0; kurulu uygulama1dd07d1 ve ERP970cfc2'dir. Güncel temiz alan ve gerçek teknik GUI/kesinti kanıtı [22 Ekim arşivinde](../2026-10-22-clean-current-source/README.md) korunur. Aşağıdaki20Ekim BLOCKED tanısı geçmişteki ayrı kaynak kapsamıdır; yeniden koşulmadı ve normal/native satışa dönüşüm kanıtı sayılmaz.
+
+| Exact mevcut kaynak | Çalışan kısım | Bu hedefte gerçekten eksik olan |
+| --- | --- | --- |
+| `apps/frontend/src/liveApi.js:647–649` | Normal müşteri arama, native v2 draftPOST ve aynıUUID detailGET. | Aynı siparişin ERP onay/satış sonucunu okuma sözleşmesi tüketilmiyor; CRM satışPOST'u eklenmeyecek. |
+| `apps/frontend/src/lib/nativeOrder.js:35–39,51–83` | Immutable aynıbody/tutar/para birimi; yalnız draft/effectsfalse receipt; CAS ve GET-first recovery. | Bağlı satışın doğrulanmış kimlik/durum/tutar/etki bilgisi mevcut makbuz doğrulaması içinde yok. Draft doğrulaması genel olarak gevşetilemez. |
+| `apps/frontend/src/ERPOrderDialog.jsx:13` ve `lib/nativeOrderHistory.js:27–29` | ERP taslağını ve doğrulanmış taslak kartını gösterir. | Mevcut açıklama taslak oluşturma sonucudur; sonradan oluşan satışın güncel durumu gösterilemez. Dönüşüm sonrası da “hareket oluşmadı” yazısını güncel durum diye sunmamak gerekir. |
+| `deploy/test-erp-orders.mjs:31–37,69–76,93–99` | Exact native4196 source/package/health, normal CRM+ERP auth/rol ve yeniden assignment kontrolü; üç v2draft route aktarımı. | ERP'nin kesinleştirdiği read-only bağlı sonuç için aynı kapsam/yetki ve hedef pinlerinin korunması gerekir. Native draft-only purpose/effectsfalse sağlık sözleşmesi belirsiz biçimde gevşetilmez. |
+| ERP970 `apps/api/src/routes/crmOrderV2Routes.mjs`, `services/crmOrderV2Contract.mjs:53–59`, `cleanSyntheticServer.mjs:9` | Üç v2draft route, strict immutable draft document ve yalnız draftPOST allowlist. | Bu incelenen normal/native kesitte onaylı satışa bağlı readback DTO'su yok. Bu bütün ERP'de satış motoru olmadığı iddiası değildir. |
+
+**ERP tek sahibindeki bağlı iş:** Owner mevcut `invoiceDraftService` create/finalize motorunu, temiz transaction/journal ve UNIQUE order→invoice bağıyla kullanacağını; v2receipt/order1–3'ü değiştirmeyeceğini bildirdi. İlk dar aday aynı TRY order3; güncel ürün/fiyat/barkod/stok witness uyuşmazsa409. Kesin endpoint/DTO henüz yayımlanmadı; bu yön bilgisi çalışan köprü veya CRM'nin uyduracağı sözleşme değildir. PR20CRM f5ad566b ve ERP55 d78474ae halen açık aynı sentetik ayrı hattır, normal motor olarak alınmaz.
+
+**Sonraki tek CRM halkası:** ERP sahibi exact kaynak, read-only endpoint/DTO, onay/satış-yok/belirsiz durum semantiği, kaynak requestId→tek belge bağı, tutar/döviz/etki doğrulaması ve yetki/retry sözleşmesini verir. CRM aynı mevcut store/recovery ve normal UI içinde yalnız bu sonucu doğrulayıp gösterir; yenileme/yanıt kaybı satış veya sipariş POST'u üretmez. Önce değişen davranışın hedefli kontrolleri/review/source teslimi, sonra tek sahipli kurulum. Şimdilik üretim kodu, TEST/SQL/GUI veya yeni test çalışması yoktur; graph aracı bağlantısı kapalı olduğundan inceleme exact bilinen dosya ve pinli ERP kaynağıyla sınırlıdır.
+
+Yeni ajan/yardımcı/Goal/tree/kurulum yok. Gerçek personel/telefon/reboot kabulü BEKLİYOR,25/12/13/0/74 aynı.5.1cmd politika reddi bu işin önkoşulu değildir ve aşılmaz. Yalnız yeni temiz yapay TEST'te owner'a yetkili sentetik satış/etki; gerçek müşteri/ticari kayıt/LIVE/Vega/T1/ücretli servis/main merge/tag yok.
+
+## Tarihsel — 20 Ekim kaynak ve tanısal vaka
+
 20 Ekim 2026 · `DOT-CRM-BRIDGE-20261020-0945-1` · **ERP sözleşmesi bağımlılığı açık**.
 
 Bu teslim uygulama köprüsünü tamamlamaz. Üretim CRM kodu, ERP deposu, kurulu TEST ve müşteri kayıtları değiştirilmedi. Native Goal `paused`; manuel kaynak incelemesi zamanlamayı yeniden açmadı.
