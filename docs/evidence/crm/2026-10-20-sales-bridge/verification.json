@@ -187,7 +187,7 @@
     "acceptance": "Technical conversion not yet proven; original human/device/reboot acceptance and 25/12/13/0/74 counts unchanged."
   },
   "saleConsumer20261022": {
-    "stage": "SOURCE_READY_INSTALLATION_AND_EXACT_CI_PENDING",
+    "stage": "SOURCE_CI_READY_OWNER_INSTALLATION_PENDING",
     "sourceBase": "a7d1a2b8beea992c8b03573d1bce01363a3f5209",
     "contract": {
       "schemaVersion": "melisa-order-sale.v1",
@@ -256,7 +256,16 @@
       "independentUpstreamReview": {
         "previous409P2": "CLOSED_AFTER_OWNER_FIX",
         "remainingOpenP1P2": 0,
-        "scope": "Read-only source and regression-test review; no test/SQL/GUI execution."
+        "scope": "Read-only source and regression-test review; no test/SQL/GUI execution.",
+        "latestMetadataNameHealthDeltaOpenP1P2": 0
+      },
+      "recordCheckAfterCompaction": {
+        "status": "CHECK_REQUIRED",
+        "changed": false,
+        "cacheSaved": true,
+        "wholeClosureGranted": false,
+        "repeatAcceptedTests": false,
+        "claim": "Existing prerequisite gaps unchanged; this does not block independent authorized source delivery or establish acceptance."
       }
     },
     "runtime": {
@@ -264,7 +273,14 @@
       "erp": "970cfc24b9fdb0017a79c5ca6c03bb4b59a23bbc",
       "newInstallation": false,
       "sharedSqlConfigServiceWriteByCrm": false,
-      "newGuiByCrm": false
+      "newGuiByCrm": false,
+      "latestReceiptCheck": {
+        "observedAt": "2026-10-22T15:39:10+03:00",
+        "path": "C:/Sirket/ERP/clean/20261022/runtime/installation-receipt-gui.json",
+        "sha256": "9407d35235d5b6575706c57d1c624afbc79d3b29f2bac1c0b5705f0906341014",
+        "newInstallationReceiptPresent": false,
+        "scope": "Existing receipt still identifies CRM1dd/ERP970. Owner is preparing the new combined installation; no fresh shared GUI/SQL/runtime probing by CRM."
+      }
     },
     "acceptance": {
       "newLinkedSaleGui": "NOT_RUN",
@@ -278,6 +294,37 @@
         "red": 0
       },
       "originalTotal": 74
+    },
+    "sourceDelivery": {
+      "applicationSource": "c8d0e28f0ea6cf16133c87dd548a4281381abfb7",
+      "branch": "codex/crm-agents-on-completion-20261003",
+      "pr": 3,
+      "prState": "OPEN",
+      "remoteAndPrExactHeadVerified": true,
+      "stagedSecretScan": "PASS_NO_FINDINGS",
+      "ci": [
+        {
+          "id": 39779665785,
+          "event": "pull_request",
+          "conclusion": "SUCCESS",
+          "jobs": 3
+        },
+        {
+          "id": 39779654667,
+          "event": "push",
+          "conclusion": "SUCCESS",
+          "jobs": 3
+        },
+        {
+          "id": 39779665786,
+          "event": "pull_request_offline_ai",
+          "conclusion": "SUCCESS",
+          "jobs": 1
+        }
+      ],
+      "exactCiHead": "c8d0e28f0ea6cf16133c87dd548a4281381abfb7",
+      "totalJobs": 7,
+      "documentationFollowup": "Separate skip-ci receipt, not a new application or inherited CI claim."
     }
   }
 }
