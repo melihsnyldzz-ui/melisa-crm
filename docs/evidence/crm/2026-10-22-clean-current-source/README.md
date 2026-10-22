@@ -1,8 +1,26 @@
 # 22 Ekim — CRM06/E02 temiz kaynak → paket → runtime eşlemesi
 
-## Ara eşleme — 22 Ekim mağaza günü; nihai makbuz bekleniyor
+## Güncel — 22 Ekim mağaza günü nihai RO eşlemesi
 
-[RO snapshot](store-day-ro-mapping.json),18:23TR'de kurulu ERP **7dc6fac / CLEAN-ERP-20261022-7dc6fac0898a** ile CRM **c8d0e28** kaynaklarını ayrı kaydeder. Cleanclone diff0;7loopbackport/6PID, canlı sağlık/DB/ortam ve ERP4194 işlem/native4196 yalnız taslak ayrımı uyumlu. Eski16listener actualOS fark0; CRM3/ERP11 dosyanın disk/HTTP SHA256'sı aynı. Pin launcher/health kaynağı eşlendi, yeni yetkili CRM sipariş çağrısı çalıştırılmadı.7dc exact PR39802467273 ve push39802457830 SUCCESS; bu sonuç henüz sonraki dar okuma düzeltmesinin CI'si değildir.
+[Nihai makine kaydı](store-day-ro-mapping.json): ERP **5aa4cb3eb143ec1171f0b221e16919d36893883d / CLEAN-ERP-20261022-5aa4cb3eb143**, frontend **7dc6fac/appdiff0**, CRM **c8d0e28**. Son özel makbuz SHA256 **5f804901b42bf40d0970cf39e962df6768616939ca28500d7d3e21ab59523c19**;15kanıt hash'i eş. Ham makbuz repo dışında, güvenli özeti/hashleri bu kayıttadır. ERP'nin [kamuya açık teslimi](https://github.com/melihsnyldzz-ui/melisa-erp-v2/blob/5546d3d5192a99de4a5920717c97ef096b624afa/docs/evidence/erp/2026-10-22-clean-shared-install.md) ayrıdır.
+
+Cleanclone diff0;7loopbackport/6PID ve eski16actualOS fark0. Canlı iki sağlık/source/paket/DB/ortam ve4194 inbound+sales/4196 yalnız taslak ayrımı uyumlu. CRM3dosya ve ERP'nin gerçek `ornek-akis.html` girişi dahil20dosya disk/HTTP SHAeş. Owner son CRM okuması native5aa üzerinden aynı sipariş3 taslak ve bağlı satış1 FINALIZED/376.50TRY, writes0 gösterir; CRM yeni yetkili çağrı çalıştırmadı. Normal18/19GUI count3→kabul3→fatura4/**TSTB-20261022-GUI3**,2×60=120TRY/kayıtlı iki kur1; kabulde stok21→23, kesinleştirmede tedarikçi0→120 ve ikinci stok etkisi0. OwnerSQL native8/SALE12/compat2/aktif23valid,3sipariş/1satış/1kabul/1alış/2stok/1müşteri/1tedarikçi hareketi/intents0; CRM SQL/provayı tekrarlamadı.
+
+- [Kayıtlı kur1 ve120TRY alış sonucu](store-day-final-purchase-recorded-rate.jpg)
+- [Korunmuş CRM kataloğu ve fotoğraf](store-day-crm-catalog-current.jpg)
+- [Stok23 ve125.50TRY satış fiyatı](store-day-stock-current.jpg)
+
+HTTP9kontrol **3replay200+6negatif** ve ayrıca **yetkili nativePOST403** içerir. Yanlış9negatif/unauth etiketi yalnız belgede düzeltildi; kaynak/kurulum/prova tekrarlanmadı.12koruma kapsamından11'i aynı; eski sipariş/satış hashleri korunmuş. `old_users` tamhashi değişti: normal login `last_login_at` yazısı ve uygulamanın yalnız o sütundaUPDATE yetkisi ownerSQL kanıtı; sütunbazlı beforeimage yok,12/12aynı denmez. Backup/CHECKSUM/VERIFYONLY ve rollback ownerkanıtıdır; commit sonrası boş-cohort inverse geçerli değildir, otomatik restore/reset yok.
+
+Exact5aa [PR CI39804466004](https://github.com/melihsnyldzz-ui/melisa-erp-v2/actions/runs/39804466004) ve [push CI39804453903](https://github.com/melihsnyldzz-ui/melisa-erp-v2/actions/runs/39804453903) SUCCESS6job. Son bağımsız ROreview açıkP1/P2=0. Bu CRM teslimi yalnız kanıt/durum belgeleridir; uygulama CI'si yeniden açılmadı. İnsan/telefon/Windowsreboot/CRM-UA04/UA11 **BEKLİYOR**;25/12/13/0/74 aynı. Ortak6337512025 raporunu ERP tek sahibi günceller; CRM bu rapora yazmadı.
+
+Sonraki ERP belgeHEAD5546 için [PR39807267938](https://github.com/melihsnyldzz-ui/melisa-erp-v2/actions/runs/39807267938) Windows fixture zamanlaması nedeniyle FAIL, aynıhead [push39807257095](https://github.com/melihsnyldzz-ui/melisa-erp-v2/actions/runs/39807257095) PASS. ERP sahibinin yalnız bu fixture'da stdin/EOF/doğalexit/sınırlıwait düzeltmesi ROreview0; yeni exactWindowsCI BEKLİYOR. Bu sonraki PR durumu, kurulu5aa'nın başarılı uygulama CI'si ve makbuz eşlemesinden ayrıdır; merge/LIVE onayı verilmez.
+
+Son GitHub metadata kontrolünde dar test düzeltmesi8290095 için [PR39809238265](https://github.com/melihsnyldzz-ui/melisa-erp-v2/actions/runs/39809238265)/[push39809226958](https://github.com/melihsnyldzz-ui/melisa-erp-v2/actions/runs/39809226958) IN_PROGRESS; yeniWindowsnativePASS henüz yok. Bu gözlem kurulu5aa makbuzundan ayrıdır.
+
+## Tarihsel ara eşleme — 22 Ekim18:23TR; o anda makbuz bekleniyordu
+
+[Tarihsel RO snapshot](https://github.com/melihsnyldzz-ui/melisa-crm/blob/28fcad91c16eddd7a5ccb6da286ae0b1ef5eed2c/docs/evidence/crm/2026-10-22-clean-current-source/store-day-ro-mapping.json),18:23TR'de kurulu ERP **7dc6fac / CLEAN-ERP-20261022-7dc6fac0898a** ile CRM **c8d0e28** kaynaklarını ayrı kaydeder. Cleanclone diff0;7loopbackport/6PID, canlı sağlık/DB/ortam ve ERP4194 işlem/native4196 yalnız taslak ayrımı uyumlu. Eski16listener actualOS fark0; CRM3/ERP11 dosyanın disk/HTTP SHA256'sı aynı. Pin launcher/health kaynağı eşlendi, yeni yetkili CRM sipariş çağrısı çalıştırılmadı.7dc exact PR39802467273 ve push39802457830 SUCCESS; bu sonuç henüz sonraki dar okuma düzeltmesinin CI'si değildir.
 
 Owner'ın normalGUI kanıtı count3/kabul3/fatura4,2×60=120TRY; kabulde stok21→23, kesinleştirmede tedarikçi0→120 ve ikinci stok etkisi yok. CRM mevcut kabul/fatura görsellerini inceledi; tarayıcıda akışı tekrarlamadı. Fatura görseli kayıtlı-kur düzeltmesinden **öncedir**, kur bilgisinin bu görünümde doğrulanamadığını açıkça gösterir. HTTP kaydı3replay200+6negatif ve ayrıca nativewrite403 içerir;9negatif diye sayılmaz.12koruma kapsamından11'i aynı; eski sipariş/satış hashleri korunmuş. `old_users` farkının normal login `last_login_at` yazısından geldiği owner açıklamasıdır; hash tek başına yalnız bu alanın değiştiğini kanıtlamaz.
 

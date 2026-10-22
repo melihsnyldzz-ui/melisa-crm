@@ -1,16 +1,124 @@
 {
   "schemaVersion": "melisa-crm.store-day-read-only-mapping.v1",
-  "observedAt": "2026-10-22T15:23:48.3447733Z",
-  "mode": "READ_ONLY_PRELIMINARY_NOT_FINAL_INSTALLATION_ACCEPTANCE",
+  "observedAt": "2026-10-22T15:40:59.2926014Z",
+  "receiptReadFinishedAt": "2026-10-22T15:44:32.6353232Z",
+  "mode": "FINAL_READ_ONLY_TECHNICAL_MAPPING_HUMAN_ACCEPTANCE_PENDING",
+  "previousSnapshot": {
+    "commit": "28fcad91c16eddd7a5ccb6da286ae0b1ef5eed2c",
+    "observedAt": "2026-10-22T15:23:48.3447733Z",
+    "mode": "PRELIMINARY",
+    "url": "https://github.com/melihsnyldzz-ui/melisa-crm/blob/28fcad91c16eddd7a5ccb6da286ae0b1ef5eed2c/docs/evidence/crm/2026-10-22-clean-current-source/store-day-ro-mapping.json"
+  },
   "sources": {
     "crmApplication": "c8d0e28f0ea6cf16133c87dd548a4281381abfb7",
-    "crmCanonicalDocumentationHead": "5342b4358d8cd7e0ffb606a93fa532e3049e6f55",
-    "erpApplicationAtObservation": "7dc6fac0898a163a6447f52daafe9cf3d4f571d9",
-    "erpPackageAtObservation": "CLEAN-ERP-20261022-7dc6fac0898a",
+    "crmCanonicalDocumentationHeadBeforeThisUpdate": "28fcad91c16eddd7a5ccb6da286ae0b1ef5eed2c",
+    "erpApplication": "5aa4cb3eb143ec1171f0b221e16919d36893883d",
+    "erpPackage": "CLEAN-ERP-20261022-5aa4cb3eb143",
+    "erpFrontendBuiltFrom": "7dc6fac0898a163a6447f52daafe9cf3d4f571d9",
+    "erpFrontendDiffFromApplication": 0,
+    "erpDocumentationHeadAtReview": "5546d3d5192a99de4a5920717c97ef096b624afa",
     "cleanCloneTrackedDiffFiles": 0,
     "cleanCloneDirtyFiles": 0,
     "crmStandalonePackageId": null,
-    "limit": "Source checkout identity, public health, served bytes and process identity are separate observations; checkout alone is not deployment proof."
+    "sourceAttributionLimit": "Clean source identity, public health, served artifact hashes and PID/birth/executable are separate evidence. Source checkout alone is not a deployment. Process working directories and process secrets were not independently extracted."
+  },
+  "receipt": {
+    "localPath": "C:\\Sirket\\ERP\\clean\\20261022\\runtime\\installation-receipt-store-day.json",
+    "sha256": "5F804901B42BF40D0970CF39E962DF6768616939CA28500D7D3E21AB59523C19",
+    "observedAt": "2026-10-22T15:41:02.014Z",
+    "privateOriginalPublished": false,
+    "evidenceFileCount": 15,
+    "evidenceFileHashDifferences": 0,
+    "listenerDifferences": 0,
+    "summary": {
+      "erp": {
+        "url": "http://127.0.0.1:5244/ornek-akis.html",
+        "servedIndexSHA256": "dca8093d1b44818cb306f734526882990fb847f80694f70d9b000fdc68162aad",
+        "servedIndexMatches": true,
+        "sourceCommit": "5aa4cb3eb143ec1171f0b221e16919d36893883d",
+        "packageId": "CLEAN-ERP-20261022-5aa4cb3eb143",
+        "frontendBuiltFrom": "7dc6fac0898a163a6447f52daafe9cf3d4f571d9",
+        "frontendDiffFromApplication": 0,
+        "pr": 54
+      },
+      "crm": {
+        "url": "http://127.0.0.1:62800/",
+        "servedIndexSHA256": "b7fea2410d4f9846282b0f13e1ea9dfdec8ba726258caf4b38aca815b2d68095",
+        "servedIndexMatches": true,
+        "sourceCommit": "c8d0e28f0ea6cf16133c87dd548a4281381abfb7",
+        "runtimePackageId": "NOT_EXPOSED_BY_APPLICATION",
+        "pr": 3
+      },
+      "nativeBoundary": "crm-order-draft-only",
+      "technical": {
+        "nativePositiveAndRollback": true,
+        "originalSaleGuardRegressionAndRollback": true,
+        "normalGUIReceivingPurchase": true,
+        "normalGUICrmCatalog": true,
+        "normalGUIStock": true,
+        "httpChecks": 9,
+        "replayChecks": 3,
+        "negativeChecks": 6,
+        "nativeWriteStatus": 403,
+        "stock": 23,
+        "supplierDebtTry": 120,
+        "customerDebtTry": 376.5,
+        "orders": 3,
+        "sales": 1,
+        "receipts": 1,
+        "purchases": 1,
+        "stockEffectsFromReceiving": 1,
+        "stockEffectsFromPurchase": 0,
+        "supplierEffects": 1
+      },
+      "preservation": {
+        "oldListenerEntries": 16,
+        "oldListenersUnchanged": true,
+        "protectedScopesUnchanged": [
+          "media",
+          "native_receipts",
+          "old_permissions",
+          "old_roles",
+          "order_lines",
+          "orders",
+          "original_media",
+          "original_sale",
+          "other_products",
+          "prices",
+          "product1_cost"
+        ],
+        "protectedScopeDifferences": [
+          {
+            "scope": "old_users",
+            "reason": "Supported normal authentication updates last_login_at; actual application grant permits UPDATE only on that column. Full row hash is not unchanged; no field-level before-image claim."
+          }
+        ],
+        "oldRolesPermissionsUnchanged": true
+      },
+      "recovery": {
+        "backupCopyOnlyChecksumVerified": true,
+        "restorePerformed": false,
+        "nativeOperationRollbackProved": true,
+        "emptyNewCohortInverseProved": true,
+        "emptyInverseNotValidAfterBusinessCommit": true,
+        "noAutomaticRestoreReset": true
+      },
+      "acceptance": {
+        "technicalGUI": "VERIFIED",
+        "human": "PENDING",
+        "physicalDevice": "NOT_RUN",
+        "windowsRebootLogon": "NOT_RUN",
+        "launcher5_1": "PREVIOUS_POLICY_REJECTION_NOT_RETRIED"
+      }
+    },
+    "sourceOfSqlAndGuiEvidence": "ERP owner; CRM performed read-only file/OS/public-health/static-asset checks and screenshot inspection.",
+    "metadataCorrection": {
+      "initialReceiptSha256": "121A690D7C768F241081C9D37B9A7069A7CED2C4C09F7002A20C4CFA8EA3F53B",
+      "finalReceiptSha256": "5F804901B42BF40D0970CF39E962DF6768616939CA28500D7D3E21AB59523C19",
+      "initialMetadataCapturedAt": "2026-10-22T15:40:59.2926014Z",
+      "correction": "HTTP9/replay3/negative6 and authenticated native403 labels; linked15 evidence hashes unchanged. Initial receipt file metadata in the earlier observation is superseded by this final receipt.",
+      "sourceOrRuntimeRestartRequired": false
+    }
   },
   "environment": {
     "database": "MELISA_ERP_CLEAN_TEST_20261022",
@@ -21,8 +129,8 @@
     "loopbackOnly": true
   },
   "observation": {
-    "observedAt": "2026-10-22T15:23:48.3447733Z",
-    "mode": "READ_ONLY_PRELIMINARY",
+    "observedAt": "2026-10-22T15:40:59.2926014Z",
+    "mode": "READ_ONLY_FINAL_RUNTIME_OBSERVATION",
     "health": [
       {
         "port": 4194,
@@ -49,8 +157,8 @@
           "stockEffect": true,
           "ledgerEffect": true,
           "reservationEffect": false,
-          "sourceCommit": "7dc6fac0898a163a6447f52daafe9cf3d4f571d9",
-          "packageId": "CLEAN-ERP-20261022-7dc6fac0898a"
+          "sourceCommit": "5aa4cb3eb143ec1171f0b221e16919d36893883d",
+          "packageId": "CLEAN-ERP-20261022-5aa4cb3eb143"
         }
       },
       {
@@ -78,8 +186,8 @@
           "stockEffect": false,
           "ledgerEffect": false,
           "reservationEffect": false,
-          "sourceCommit": "7dc6fac0898a163a6447f52daafe9cf3d4f571d9",
-          "packageId": "CLEAN-ERP-20261022-7dc6fac0898a"
+          "sourceCommit": "5aa4cb3eb143ec1171f0b221e16919d36893883d",
+          "packageId": "CLEAN-ERP-20261022-5aa4cb3eb143"
         }
       }
     ],
@@ -87,15 +195,15 @@
       {
         "port": 4194,
         "address": "127.0.0.1",
-        "pid": 24996,
-        "creationUtc": "2026-10-22T15:12:39.9352474Z",
+        "pid": 30048,
+        "creationUtc": "2026-10-22T15:24:49.6527722Z",
         "executable": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe"
       },
       {
         "port": 4196,
         "address": "127.0.0.1",
-        "pid": 18576,
-        "creationUtc": "2026-10-22T15:12:39.9502832Z",
+        "pid": 20204,
+        "creationUtc": "2026-10-22T15:24:49.6670168Z",
         "executable": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe"
       },
       {
@@ -108,29 +216,29 @@
       {
         "port": 62800,
         "address": "127.0.0.1",
-        "pid": 65784,
-        "creationUtc": "2026-10-22T15:12:45.6092218Z",
+        "pid": 65524,
+        "creationUtc": "2026-10-22T15:24:53.9769840Z",
         "executable": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe"
       },
       {
         "port": 62801,
         "address": "127.0.0.1",
-        "pid": 65784,
-        "creationUtc": "2026-10-22T15:12:45.6092218Z",
+        "pid": 65524,
+        "creationUtc": "2026-10-22T15:24:53.9769840Z",
         "executable": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe"
       },
       {
         "port": 62802,
         "address": "127.0.0.1",
-        "pid": 48532,
-        "creationUtc": "2026-10-22T15:12:45.6181051Z",
+        "pid": 43776,
+        "creationUtc": "2026-10-22T15:24:53.9868684Z",
         "executable": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe"
       },
       {
         "port": 62803,
         "address": "127.0.0.1",
-        "pid": 35760,
-        "creationUtc": "2026-10-22T15:12:45.6302250Z",
+        "pid": 11760,
+        "creationUtc": "2026-10-22T15:24:54.0025491Z",
         "executable": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe"
       }
     ],
@@ -174,17 +282,24 @@
         "allEqual": true,
         "files": [
           {
+            "path": "assets/example-BaQ9KB24.css",
+            "status": 200,
+            "diskSha256": "828033A2A9888CD8F493A93391145C7ACC88F6C2A0119C50F35FBD0240ECBEF1",
+            "httpSha256": "828033A2A9888CD8F493A93391145C7ACC88F6C2A0119C50F35FBD0240ECBEF1",
+            "equal": true
+          },
+          {
+            "path": "assets/example-BO7S_GTK.js",
+            "status": 200,
+            "diskSha256": "449FFA397157EB2C3E1A2D9910D5FA4F7B5FF6006EE9673E0890C18FDA3B0057",
+            "httpSha256": "449FFA397157EB2C3E1A2D9910D5FA4F7B5FF6006EE9673E0890C18FDA3B0057",
+            "equal": true
+          },
+          {
             "path": "assets/modulepreload-polyfill-B5Qt9EMX.js",
             "status": 200,
             "diskSha256": "D2A32840421496E872ADE591618D2FA5C33797605D1AEC04301717E5A90757D0",
             "httpSha256": "D2A32840421496E872ADE591618D2FA5C33797605D1AEC04301717E5A90757D0",
-            "equal": true
-          },
-          {
-            "path": "assets/preload-helper-BXl3LOEh.js",
-            "status": 200,
-            "diskSha256": "D887044E7C17FD90344FC4F74F53CAC686584DAF2A458AB2136D36F1946E9AB6",
-            "httpSha256": "D887044E7C17FD90344FC4F74F53CAC686584DAF2A458AB2136D36F1946E9AB6",
             "equal": true
           },
           {
@@ -209,17 +324,31 @@
             "equal": true
           },
           {
-            "path": "assets/workflow-BKDA0SdN.css",
+            "path": "assets/testProductPriceModel-DsrvD341.js",
             "status": 200,
-            "diskSha256": "2ED98FAA14BA0E1974423DEAFBC09E5999F789495C7F11D458ACB3F4E81DBD5D",
-            "httpSha256": "2ED98FAA14BA0E1974423DEAFBC09E5999F789495C7F11D458ACB3F4E81DBD5D",
+            "diskSha256": "6C7D65A64DC8EE56BFDFA66F9639407B5FED8007C25A5045788A0D8B1DAC2E18",
+            "httpSha256": "6C7D65A64DC8EE56BFDFA66F9639407B5FED8007C25A5045788A0D8B1DAC2E18",
             "equal": true
           },
           {
-            "path": "assets/workflow-C0mlzR-H.js",
+            "path": "assets/workingCatalogSession-D9OXY2kT.css",
             "status": 200,
-            "diskSha256": "706F84763B3D10142ACB45B0E4E3D410547CEA8772AA97F619AAB210DE690E6F",
-            "httpSha256": "706F84763B3D10142ACB45B0E4E3D410547CEA8772AA97F619AAB210DE690E6F",
+            "diskSha256": "5673FCD359C507ABB861BA31B140AFF68A2BC2464102658D4080DE71978E2F4D",
+            "httpSha256": "5673FCD359C507ABB861BA31B140AFF68A2BC2464102658D4080DE71978E2F4D",
+            "equal": true
+          },
+          {
+            "path": "assets/workingCatalogSession-eBPwlZ13.js",
+            "status": 200,
+            "diskSha256": "38B4FD6187CE6D1AB90565496000000F3EB0269AD62CF973E6EC98938B6DEA2E",
+            "httpSha256": "38B4FD6187CE6D1AB90565496000000F3EB0269AD62CF973E6EC98938B6DEA2E",
+            "equal": true
+          },
+          {
+            "path": "workflow-bridge.js",
+            "status": 200,
+            "diskSha256": "65931A17D770793C8799358DF074232BBF2CCBF6C637E6C739A6FB7395B381DD",
+            "httpSha256": "65931A17D770793C8799358DF074232BBF2CCBF6C637E6C739A6FB7395B381DD",
             "equal": true
           },
           {
@@ -230,10 +359,52 @@
             "equal": true
           },
           {
+            "path": "workflow-events.js",
+            "status": 200,
+            "diskSha256": "A60A3CE3B040A4B579A8B95D76DD1ABEF84085378E82524594AAEE09CB7FED20",
+            "httpSha256": "A60A3CE3B040A4B579A8B95D76DD1ABEF84085378E82524594AAEE09CB7FED20",
+            "equal": true
+          },
+          {
+            "path": "workflow-receipt-actions.js",
+            "status": 200,
+            "diskSha256": "93AC15C12B855BB998E60DBA414A33996D2915B45ACD2CCF2CAA05B3CB97665F",
+            "httpSha256": "93AC15C12B855BB998E60DBA414A33996D2915B45ACD2CCF2CAA05B3CB97665F",
+            "equal": true
+          },
+          {
+            "path": "workflow-screen.js",
+            "status": 200,
+            "diskSha256": "F88801D91EAFDAFFA2733E6BB83B3D451477C38B66CAA931BDCEAB6CA0467610",
+            "httpSha256": "F88801D91EAFDAFFA2733E6BB83B3D451477C38B66CAA931BDCEAB6CA0467610",
+            "equal": true
+          },
+          {
+            "path": "workflow-settlement-ui.js",
+            "status": 200,
+            "diskSha256": "3946CD4FC9CC13401D73C53FCA3F6A9FBFBAB9A63388E50139E4022A7540D231",
+            "httpSha256": "3946CD4FC9CC13401D73C53FCA3F6A9FBFBAB9A63388E50139E4022A7540D231",
+            "equal": true
+          },
+          {
             "path": "workflow-settlement.css",
             "status": 200,
             "diskSha256": "540AABEFBE30B7FC2F4C3178379804F52E5F0174B2D70F36BA1ACF283EC6C8E1",
             "httpSha256": "540AABEFBE30B7FC2F4C3178379804F52E5F0174B2D70F36BA1ACF283EC6C8E1",
+            "equal": true
+          },
+          {
+            "path": "workflow-settlement.js",
+            "status": 200,
+            "diskSha256": "557234337C3A42C509DAD7A6856316BFEB159A94FCB5AA99F9DF6D53F4D726B7",
+            "httpSha256": "557234337C3A42C509DAD7A6856316BFEB159A94FCB5AA99F9DF6D53F4D726B7",
+            "equal": true
+          },
+          {
+            "path": "workflow-terminal.js",
+            "status": 200,
+            "diskSha256": "DCEA0282298E4B22603BE7690AF6515250965CB64F3B650D7FF256AF44C823DC",
+            "httpSha256": "DCEA0282298E4B22603BE7690AF6515250965CB64F3B650D7FF256AF44C823DC",
             "equal": true
           },
           {
@@ -244,22 +415,16 @@
             "equal": true
           },
           {
-            "path": "is-akisi-taslagi.html",
+            "path": "ornek-akis.html",
             "status": 200,
-            "diskSha256": "7FA8332D39D3D0624563E56633F988A77C89FE41C85D7A54ECB1C44B3CA98766",
-            "httpSha256": "7FA8332D39D3D0624563E56633F988A77C89FE41C85D7A54ECB1C44B3CA98766",
+            "diskSha256": "DCA8093D1B44818CB306F734526882990FB847F80694F70D9B000FDC68162AAD",
+            "httpSha256": "DCA8093D1B44818CB306F734526882990FB847F80694F70D9B000FDC68162AAD",
             "equal": true
           }
         ]
       }
     ],
     "ownerEvidence": [
-      {
-        "file": "store-day-installed-health.json",
-        "path": "C:\\Sirket\\ERP\\clean\\20261022\\runtime\\store-day-installed-health.json",
-        "bytes": 1769,
-        "sha256": "B33D015304C0E9C418000E8690D5C2EA6A8142A1B2E08262299BA37F25A1F8D8"
-      },
       {
         "file": "store-day-native-rollback.json",
         "path": "C:\\Sirket\\ERP\\clean\\20261022\\runtime\\store-day-native-rollback.json",
@@ -293,70 +458,440 @@
     ]
   },
   "nativePin": {
-    "expectedSourceAtObservation": "7dc6fac0898a163a6447f52daafe9cf3d4f571d9",
-    "expectedPackageAtObservation": "CLEAN-ERP-20261022-7dc6fac0898a",
-    "provenance": "ERP-owner start-crm.ps1 reads fresh native4196 /test-health; existing CRM order adapter enforces exact source/package/port and zero stock/ledger effects.",
-    "newAuthenticatedCrmOrderCallPerformed": false,
-    "processSecretsInspected": false,
-    "limit": "Launcher/configuration provenance was read; loaded process environment and a new authenticated order roundtrip were not independently inspected."
+    "expectedSource": "5aa4cb3eb143ec1171f0b221e16919d36893883d",
+    "expectedPackage": "CLEAN-ERP-20261022-5aa4cb3eb143",
+    "nativePurpose": "crm-order-draft-only",
+    "stockEffect": false,
+    "ledgerEffect": false,
+    "provenance": "ERP owner launcher captures native4196 public health into the existing exact CRM pin. Owner final CRM read records nativeSource5aa with the unchanged order3 and linked sale1. Existing proxy source enforces exact source/package/port and draft-only effects.",
+    "crmNewAuthenticatedOrderRoundTripPerformed": false,
+    "ownerFinalCrmReadSha256": "96AAC13A2490CA8D59922ABE2A936AEF51E585AC2AF08D5205918EAB985425E8",
+    "loadedProcessEnvironmentOrSecretsRead": false
   },
   "ownerEvidence": {
-    "proofsAreOwnerProduced": true,
-    "crmSqlExecuted": false,
-    "crmNewScenarioExecuted": false,
-    "nativeRollback": "Owner native ten-step transaction proof returns to baseline; local path/hash references are in observation.ownerEvidence.",
-    "oldSaleRollback": "Owner existing-sale proof returns to baseline; no new CRM sale replay was executed.",
-    "normalGui": "Owner reports normal staff18 count3/receipt3 and supervisor19 purchase4/TSTB-20261022-GUI3, 2 x 60 = 120 TRY; stock21->23 only at receipt, supplier0->120 only at finalize. CRM inspected two owner screenshots, not the browser or a human acceptance.",
-    "guiScreenshotInspected": [
-      "store-day-office-accepted.jpg",
-      "store-day-purchase-finalized.jpg"
+    "files": [
+      {
+        "file": "store-day-independent-final.json",
+        "sha256": "D4F47A2657537BF5D8A97AD89F65D6D111CCA95F04C82BF7A65C910A28910C69",
+        "receiptSha256": "d4f47a2657537bf5d8a97ad89f65d6d111cca95f04c82bf7a65c910a28910c69",
+        "bytes": 1668,
+        "equal": true
+      },
+      {
+        "file": "store-day-final-api-read.json",
+        "sha256": "B077624D74485B2B650B6F658DB3942DD32DD1D8B5A542EEA5EF8A984F3CFF69",
+        "receiptSha256": "b077624d74485b2b650b6f658db3942dd32dd1d8b5a542eea5ef8a984f3cff69",
+        "bytes": 3568,
+        "equal": true
+      },
+      {
+        "file": "store-day-final-crm-read.json",
+        "sha256": "96AAC13A2490CA8D59922ABE2A936AEF51E585AC2AF08D5205918EAB985425E8",
+        "receiptSha256": "96aac13a2490ca8d59922abe2a936aef51e585ac2af08d5205918eab985425e8",
+        "bytes": 4886,
+        "equal": true
+      },
+      {
+        "file": "store-day-final-api-proof.json",
+        "sha256": "5684DE3B11AD7345F679A51F7C52B6D64D85AD0D9DB7EAFFF4F7A38669AA55F2",
+        "receiptSha256": "5684de3b11ad7345f679a51f7c52b6d64d85ad0d9db7eafff4f7a38669aa55f2",
+        "bytes": 4398,
+        "equal": true
+      },
+      {
+        "file": "store-day-native-rollback.json",
+        "sha256": "00474EFC02F877CAFF2C42E63D5C72DCD4F98799F54C4C44C7C92ACA5BB30C69",
+        "receiptSha256": "00474efc02f877caff2c42e63d5c72dcd4f98799f54c4c44c7c92aca5bb30c69",
+        "bytes": 1096,
+        "equal": true
+      },
+      {
+        "file": "store-day-existing-sale-rollback.json",
+        "sha256": "913AEAD049CA7CB17118C62AE38C76FC043B371BDD2749C52329A52A03DF878F",
+        "receiptSha256": "913aead049ca7cb17118c62ae38c76fc043b371bdd2749c52329a52a03df878f",
+        "bytes": 770,
+        "equal": true
+      },
+      {
+        "file": "store-day-protected-before.txt",
+        "sha256": "BAC513C94D26EDF5207409D2018FD027ED31FEA9ADDA95AF3C1AA5560E64DFB7",
+        "receiptSha256": "bac513c94d26edf5207409d2018fd027ed31fea9adda95af3c1aa5560e64dfb7",
+        "bytes": 1151,
+        "equal": true
+      },
+      {
+        "file": "store-day-protected-after.txt",
+        "sha256": "36BA155287AD6C5BC39FC8A91C829CBC8008210B2C2AE3D7BBCDBD36A1A76BA3",
+        "receiptSha256": "36ba155287ad6c5bc39fc8a91c829cbc8008210b2c2ae3d7bbcdbd36a1a76ba3",
+        "bytes": 1151,
+        "equal": true
+      },
+      {
+        "file": "store-day-auth-audit-column-proof.txt",
+        "sha256": "D35C2816C66F104C594AB22725147D103BEF924ED495295562A64B047786FAC1",
+        "receiptSha256": "d35c2816c66f104c594ab22725147d103bef924ed495295562a64b047786fac1",
+        "bytes": 1487,
+        "equal": true
+      },
+      {
+        "file": "store-day-final-listeners.json",
+        "sha256": "9EAAF12C910EA4B9CC963FAAC3EBC15AB5946E7A8B34AAC1F831D3103849DB18",
+        "receiptSha256": "9eaaf12c910ea4b9cc963faac3ebc15ab5946e7a8b34aac1f831d3103849db18",
+        "bytes": 1374,
+        "equal": true
+      },
+      {
+        "file": "store-day-personnel-submitted.jpg",
+        "sha256": "501D2BF7F632C2A39A020B05A7C1DA20E5081BFB17FF4DFE8613EF73B57306E8",
+        "receiptSha256": "501d2bf7f632c2a39a020b05a7c1da20e5081bfb17ff4dfe8613ef73b57306e8",
+        "bytes": 161812,
+        "equal": true
+      },
+      {
+        "file": "store-day-final-purchase-recorded-rate.jpg",
+        "sha256": "788AE568B0E17C2B17AB4A4EDB63729BC5949F41FE8C6D9D3EFC80A9D83272CD",
+        "receiptSha256": "788ae568b0e17c2b17ab4a4edb63729bc5949f41fe8c6d9d3efc80a9d83272cd",
+        "bytes": 84194,
+        "equal": true
+      },
+      {
+        "file": "store-day-supplier-history.jpg",
+        "sha256": "E0C3646F0FB7B19D733C96F8DFB17991957A48652147E791F30CC80D466F4670",
+        "receiptSha256": "e0c3646f0fb7b19d733c96f8dfb17991957a48652147e791f30cc80d466f4670",
+        "bytes": 89752,
+        "equal": true
+      },
+      {
+        "file": "store-day-crm-catalog-current.jpg",
+        "sha256": "CC55C10FD248219FE5A038AD5592AC335213E2B67A88177D317E695FBB2BCAC3",
+        "receiptSha256": "cc55c10fd248219fe5a038ad5592ac335213e2b67a88177d317e695fbb2bcac3",
+        "bytes": 83742,
+        "equal": true
+      },
+      {
+        "file": "store-day-stock-current.jpg",
+        "sha256": "460020CA42BBA84F093A00211A5421244FBD81DEF5D5BE9D2E8C96184D23A4C2",
+        "receiptSha256": "460020ca42bba84f093a00211a5421244fbd81def5d5be9d2e8c96184d23a4c2",
+        "bytes": 80785,
+        "equal": true
+      }
     ],
-    "screenshotLimit": "The purchase-finalized screenshot precedes the stored-rate read fix and visibly says the recorded rate could not be verified.",
+    "independentFinal": {
+      "databaseName": "MELISA_ERP_CLEAN_TEST_20261022",
+      "serverName": "Semih\\MELISADEV",
+      "stock": 23,
+      "customer": 376.5,
+      "supplier": 120,
+      "nativeDefinitions": 8,
+      "historicalSaleDefinitions": 12,
+      "compatibilityDefinitions": 2,
+      "activeDefinitions": 23,
+      "orders": 3,
+      "sales": 1,
+      "purchases": 1,
+      "receivingCounts": 1,
+      "receipts": 1,
+      "inboundJournal": 8,
+      "inboundIntents": 0,
+      "receiving": [
+        {
+          "id": 3,
+          "state": "accepted",
+          "created_by": 18,
+          "decided_by": 19
+        }
+      ],
+      "purchase": [
+        {
+          "id": 4,
+          "document_no": "TSTB-20261022-GUI3",
+          "status": "finalized",
+          "grand_total": 120,
+          "document_currency": "TRY",
+          "account_currency": "TRY",
+          "account_amount": 120,
+          "exchange_rate_snapshot": 1,
+          "account_exchange_rate_snapshot": 1
+        }
+      ],
+      "stockMovements": [
+        {
+          "product_id": 1,
+          "source_type": "sales_invoice",
+          "source_id": 1,
+          "quantity_in": 0,
+          "quantity_out": 3,
+          "quantity_net": -3,
+          "created_by": 17,
+          "source_warehouse": null
+        },
+        {
+          "product_id": 1,
+          "source_type": "goods_receipt_batch",
+          "source_id": 3,
+          "quantity_in": 2,
+          "quantity_out": 0,
+          "quantity_net": 2,
+          "created_by": 19,
+          "source_warehouse": "ORNEK-20261022"
+        }
+      ],
+      "supplierMovements": [
+        {
+          "purchase_invoice_id": 4,
+          "movement_type": "purchase_invoice",
+          "balance_effect": 120,
+          "account_currency": "TRY",
+          "account_amount": 120,
+          "created_by": 19
+        }
+      ]
+    },
+    "independentSqlWasExecutedBy": "ERP owner only; CRM read the existing result and the guard-validation SQL/raw evidence.",
     "protectedDigests": {
-      "scopes": 12,
+      "scopes": [
+        {
+          "scope": "media",
+          "before": "0DDF74E6AEF4F708A3DD7CD27FB0BA0E2A60A567DE74E76BE18EE1506631BC92",
+          "after": "0DDF74E6AEF4F708A3DD7CD27FB0BA0E2A60A567DE74E76BE18EE1506631BC92",
+          "equal": true
+        },
+        {
+          "scope": "native_receipts",
+          "before": "4F90D6FA75C0190ADC1431CA293964A0899F565D137433E5FFE921CCED0A3046",
+          "after": "4F90D6FA75C0190ADC1431CA293964A0899F565D137433E5FFE921CCED0A3046",
+          "equal": true
+        },
+        {
+          "scope": "old_permissions",
+          "before": "8F2DF14211DFC0D68AA0832084A4F9A6F7A87A6D2ABA127679C68A67E27A71F0",
+          "after": "8F2DF14211DFC0D68AA0832084A4F9A6F7A87A6D2ABA127679C68A67E27A71F0",
+          "equal": true
+        },
+        {
+          "scope": "old_roles",
+          "before": "A4DD0F3173A7E31CC6AD636B52DC5ED67AD256A2C8FBCD0F7E1617B910872AD8",
+          "after": "A4DD0F3173A7E31CC6AD636B52DC5ED67AD256A2C8FBCD0F7E1617B910872AD8",
+          "equal": true
+        },
+        {
+          "scope": "old_users",
+          "before": "F6B3D48C2712C03B5389D2CFAC2CBFEE5AB04A757EE79096BD33A0AC5579D672",
+          "after": "E1F3D4EEC4B995A84F0A2CBA5591E87244157FF6D2FBB4A325C308366E813CDC",
+          "equal": false
+        },
+        {
+          "scope": "order_lines",
+          "before": "7E9EF77A1C974E5405D83074E5EDF19BF783CC7D90CAD0C98EF21B7DDD050725",
+          "after": "7E9EF77A1C974E5405D83074E5EDF19BF783CC7D90CAD0C98EF21B7DDD050725",
+          "equal": true
+        },
+        {
+          "scope": "orders",
+          "before": "F09A94F59E654A690AD90F796781E7DAD09BE88F423281783EE5D0B28428200E",
+          "after": "F09A94F59E654A690AD90F796781E7DAD09BE88F423281783EE5D0B28428200E",
+          "equal": true
+        },
+        {
+          "scope": "original_media",
+          "before": "55509A6A3E4155877839F3CB2B1D479E2CCD0BD8330E3E87F13362296B41D023",
+          "after": "55509A6A3E4155877839F3CB2B1D479E2CCD0BD8330E3E87F13362296B41D023",
+          "equal": true
+        },
+        {
+          "scope": "original_sale",
+          "before": "578D64AF222AA92FEEE4696306425C632C27E7A2BCA64E3E323F40BFA4AA3E60",
+          "after": "578D64AF222AA92FEEE4696306425C632C27E7A2BCA64E3E323F40BFA4AA3E60",
+          "equal": true
+        },
+        {
+          "scope": "other_products",
+          "before": "0838FD73F4162E8A4A6452AD45753806D2719151117A3324E2C56B7E66E08B52",
+          "after": "0838FD73F4162E8A4A6452AD45753806D2719151117A3324E2C56B7E66E08B52",
+          "equal": true
+        },
+        {
+          "scope": "prices",
+          "before": "13A9334189B395A06F9DE992D8B8D0E46A902048E7654638FC5FEA24AB7AFE14",
+          "after": "13A9334189B395A06F9DE992D8B8D0E46A902048E7654638FC5FEA24AB7AFE14",
+          "equal": true
+        },
+        {
+          "scope": "product1_cost",
+          "before": "CA91319E4B08A690B0F166576303BAE659663C4BA6AD454E52FBAE035152E951",
+          "after": "CA91319E4B08A690B0F166576303BAE659663C4BA6AD454E52FBAE035152E951",
+          "equal": true
+        }
+      ],
       "unchanged": 11,
       "changed": [
         "old_users"
       ],
-      "oldOrdersLinesNativeReceiptsAndInvoice1HashesEqual": true,
-      "oldUsersChangeAttribution": "Owner attributes old_users change to normal login last_login_at; authService contains that write, but digests alone do not prove that this was the only changed column.",
-      "newTargetedCrmOrderReadbackPerformed": false
+      "explanation": "Supported normal authentication writes last_login_at. The actual owner SQL grant proof permits application UPDATE only on that column; there is no field-level before-image and the full old_users row digest is not unchanged."
     },
-    "readProjectionFix": {
-      "status": "SOURCE_REVIEW_ONLY_NOT_INSTALLED_AT_OBSERVATION",
-      "reviewer": "existing az_independent_reviewer",
-      "openP1P2": 0,
-      "reviewedStoreSha256BeforeEolNormalization": "50849DDA5278C637AF036535F504378D26CB9541071C7274F78B61FDED6F82D3",
-      "finalNormalizedStoreSha256": "06F0CBF26D24BCDC994C84C362FA65D60D776518E3C73AC6B19731B3E45602D3",
-      "testSha256": "1910AE9D8E1EFD681E2C8C6F4850030B68F36C31D7C69F9355493189BCCD845F",
-      "normalizationCheck": "Parent read final text diff: same nine read-only lines against 7dc; no financial/stock/auth/replay guard change.",
-      "owner55TargetPassNotRerun": true
+    "http": {
+      "checks": 9,
+      "replayed200": 3,
+      "negative": 6,
+      "additionalAuthenticatedNativeWriteStatus": 403,
+      "newChecksExecutedByCrm": false
+    },
+    "crmReadback": {
+      "crmApplicationSource": "c8d0e28f0ea6cf16133c87dd548a4281381abfb7",
+      "nativeSource": "5aa4cb3eb143ec1171f0b221e16919d36893883d",
+      "liveSendEnabled": false,
+      "paidAiEnabled": false,
+      "writes": 0,
+      "order": {
+        "id": 3,
+        "status": "draft",
+        "totalExact4": "376.5000",
+        "erpPersisted": true,
+        "testOnly": true
+      },
+      "linkedSale": {
+        "requestId": "45064956-9c91-470f-a7b6-a9330b60e456",
+        "state": "FINALIZED",
+        "id": "1",
+        "documentNo": "CRS-20261022-3",
+        "status": "finalized",
+        "customerId": "1",
+        "currency": "TRY",
+        "totalExact4": "376.5000",
+        "stockEffect": true,
+        "ledgerEffect": true,
+        "collectionEffect": false,
+        "reservationEffect": false
+      },
+      "limit": "Order3 remains a draft-order record; its linked sale1 is FINALIZED. These are not a new order/sale mutation."
+    },
+    "purchaseReadback": {
+      "invoiceId": "4",
+      "receiptId": "3",
+      "status": "finalized",
+      "number": "TSTB-20261022-GUI3",
+      "currency": "TRY",
+      "totals": {
+        "subtotalExact4": "120.0000",
+        "grandTotalExact4": "120.0000"
+      },
+      "recordedInvoiceBasis": {
+        "source": "stored-native-invoice",
+        "invoiceId": "4",
+        "supplierId": "1",
+        "receiptId": "3",
+        "documentCurrency": "TRY",
+        "documentExchangeRateExact8": "1.00000000",
+        "accountCurrency": "TRY",
+        "accountExchangeRateExact8": "1.00000000",
+        "accountAmountExact4": "120.0000",
+        "amountTryExact4": "120.0000"
+      }
+    },
+    "normalGui": {
+      "performedBy": "ERP owner using normal staff18/supervisor19 and normal CRM/stock screens",
+      "crmBrowserControlled": false,
+      "crmInspectedExistingScreenshots": true,
+      "realHumanAcceptance": false
+    },
+    "previousRollbackAndSchemaInverse": "Owner positive native10-step and existing-sale regression rollback proofs were reused. Empty-cohort inverse proof is not valid after the committed synthetic receipt/purchase; no automatic restore/reset is authorized or performed."
+  },
+  "screenshots": [
+    {
+      "file": "store-day-final-purchase-recorded-rate.jpg",
+      "bytes": 84194,
+      "sha256": "788AE568B0E17C2B17AB4A4EDB63729BC5949F41FE8C6D9D3EFC80A9D83272CD",
+      "copiedByteForByte": true,
+      "syntheticOnly": true,
+      "visuallyInspected": true
+    },
+    {
+      "file": "store-day-crm-catalog-current.jpg",
+      "bytes": 83742,
+      "sha256": "CC55C10FD248219FE5A038AD5592AC335213E2B67A88177D317E695FBB2BCAC3",
+      "copiedByteForByte": true,
+      "syntheticOnly": true,
+      "visuallyInspected": true
+    },
+    {
+      "file": "store-day-stock-current.jpg",
+      "bytes": 80785,
+      "sha256": "460020CA42BBA84F093A00211A5421244FBD81DEF5D5BE9D2E8C96184D23A4C2",
+      "copiedByteForByte": true,
+      "syntheticOnly": true,
+      "visuallyInspected": true
     }
+  ],
+  "reviews": {
+    "existingReviewer": "az_independent_reviewer",
+    "finalSourceAndReceiptOpenP1P2": 0,
+    "correctedReceiptCountingIssueClosed": true,
+    "scope": "Read-only technical mapping only; not approval for new SQL/runtime work, LIVE, main merge or human acceptance."
   },
   "github": {
+    "crmPullRequest": "https://github.com/melihsnyldzz-ui/melisa-crm/pull/3",
     "erpPullRequest": "https://github.com/melihsnyldzz-ui/melisa-erp-v2/pull/54",
-    "sourceCommit": "7dc6fac0898a163a6447f52daafe9cf3d4f571d9",
+    "erpPublicDelivery": "https://github.com/melihsnyldzz-ui/melisa-erp-v2/blob/5546d3d5192a99de4a5920717c97ef096b624afa/docs/evidence/erp/2026-10-22-clean-shared-install.md",
+    "applicationCiHead": "5aa4cb3eb143ec1171f0b221e16919d36893883d",
     "ci": [
       {
-        "run": 39802467273,
+        "run": 39804466004,
         "status": "completed",
-        "conclusion": "success"
+        "conclusion": "success",
+        "jobs": 3
       },
       {
-        "run": 39802457830,
+        "run": 39804453903,
         "status": "completed",
-        "conclusion": "success"
+        "conclusion": "success",
+        "jobs": 3
       }
     ],
     "ciHeadShaVerified": true,
-    "newReadProjectionCommitAndCi": "PENDING"
+    "crmApplicationCi": "Existing c8 source CI reused; no application rebuild or tests for this documentation-only mapping.",
+    "documentationCi": "This CRM documentation-only commit uses [skip ci]; application CI is not attributed to a documentation HEAD.",
+    "laterErpPrHeadObservation": {
+      "head": "5546d3d5192a99de4a5920717c97ef096b624afa",
+      "pullRequestRun": {
+        "run": 39807267938,
+        "conclusion": "failure",
+        "failedCheck": "windows-startup-test",
+        "detail": "Existing benign-child lifetime fixture ended during lazy Add-Type compilation."
+      },
+      "pushRun": {
+        "run": 39807257095,
+        "conclusion": "success"
+      },
+      "ownerTestOnlyFix": {
+        "file": "scripts/canonical/p03-rehearsal-old-lifetime.test.mjs",
+        "sha256": "D2CF9A432950D3CE9D5758284AE0A1628837D40DC4B158C83F01F0886B43E8FF",
+        "readOnlyReviewOpenP1P2": 0,
+        "newExactWindowsCi": "IN_PROGRESS"
+      },
+      "limit": "This later PR/fixture state is separate from the installed5aa exact successful application CI and does not grant a merge/release approval.",
+      "currentFixHead": "8290095262e764389149d92bc3201a9dedfebdf3",
+      "currentFixCi": [
+        {
+          "run": 39809238265,
+          "event": "pull_request",
+          "status": "in_progress",
+          "conclusion": null
+        },
+        {
+          "run": 39809226958,
+          "event": "push",
+          "status": "in_progress",
+          "conclusion": null
+        }
+      ],
+      "currentFixCiObservedBy": "CRM parent after document review; fresh GitHub metadata only, no local test run."
+    }
   },
-  "finalReceipt": null,
   "completion": {
-    "finalSourcePackageRuntimeMapping": false,
-    "newNormalGuiAfterReadFix": false,
-    "finalOldSaleAndActiveGuardHashMapping": false,
-    "originalOrder3Invoice1FinalReadbackMapping": false,
+    "finalSourcePackageRuntimeMapping": true,
+    "newNormalGuiAfterReadFix": "OWNER_TECHNICAL_EVIDENCE_VERIFIED",
+    "finalOldSaleAndActiveGuardHashMapping": true,
+    "originalOrder3Invoice1ProtectedAndOwnerReadbackMapped": true,
     "realHumanAcceptance": "BEKLIYOR",
     "physicalPhoneAndReboot": "BEKLIYOR",
     "crmLeaves": {
@@ -367,39 +902,21 @@
     },
     "originalTotalLeaves": 74
   },
-  "next": "ERP owner finishes read-projection package, normal recorded-rate screen and final installation/protection receipt; CRM then maps the final source/package/runtime read-only.",
+  "next": "This installation mapping is complete. Existing ERP-owned common sequence continues at 2.5; CRM does not start another flow or write the common report in this read-only delivery. Existing CRM-UA04/UA11 human/device/reboot acceptance remains pending.",
   "boundaries": {
     "crmApplicationChanged": false,
     "sqlWrites": false,
     "runtimeWrites": false,
     "serviceRestart": false,
     "newLogin": false,
+    "newCustomerMessages": false,
     "paidApi": false,
     "liveVegaRealT1": false,
     "mainMerge": false,
     "testsRerun": false,
-    "newCustomerMessages": false
-  },
-  "subsequentOwnerEvidenceReadOnlyReview": {
-    "status": "PRELIMINARY",
-    "finalApiChecks": {
-      "replayed200": 3,
-      "negative": 6,
-      "additionalNativeWriteStatus": 403
-    },
-    "sameInvoiceAndReceipt": {
-      "invoiceId": 4,
-      "receiptId": 3,
-      "quantity": 2,
-      "unitPriceTry": 60,
-      "totalTry": 120,
-      "rate": 1
-    },
-    "fileSha256": {
-      "store-day-protected-after.txt": "5D7D3296BF2DC13BEF21D77896A6A6F0AD4149F9D2B85B2F383CC9AEFC4DB521",
-      "store-day-final-api-proof.json": "5684DE3B11AD7345F679A51F7C52B6D64D85AD0D9DB7EAFFF4F7A38669AA55F2",
-      "store-day-recorded-basis-native-read.json": "CB180F4976256C805046B27094D0EC72837F9AF0FA62A6B1B692002E2F55ABC9"
-    },
-    "sqlOrApiRerunByCrm": false
+    "privateOriginalReceiptPublished": false,
+    "commonReport6337512025WrittenByCrm": false,
+    "changesLimitedToCrmEvidenceAndStatusDocuments": true,
+    "directSqlClientUsedByCrm": false
   }
 }
