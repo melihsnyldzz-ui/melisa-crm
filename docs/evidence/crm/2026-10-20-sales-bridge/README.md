@@ -14,6 +14,10 @@ Hedefli kaynak kanıtı: yeni native validator/async/recovery50NodePASS; native 
 
 Sonraki halka ERP tek sahibindedir: kendi source/review/CI ve CRM sourceCI hazır olunca yeni temiz alana tek kurulum; mevcut order3'ü normal onay/satış/stock-cari/readback ve yenileme/yanıt kaybında tek etkiyle doğrular. CRM runtime/SQL/GUI yazmaz. ERP409eski-revision journal kilidi owner dar reconciliation düzeltmesiyle kapandı; son metadata/triggername/health ayrımı RO incelemesinde de açıkP1/P2=0. Owner6SQLnegatif/rollback ve7sourcePASS bildirdi; CRM bunları çalıştırmış sayılmaz. Yeni kurulu satış GUI sonucu henüz yok. İnsan/fiziksel cihaz/reboot ve25/12/13/0/74 korunur.
 
+## 22 Ekim15:56TR — önceki P2 kapandı, gerçek aktarımda barcode-null bağı sürüyor
+
+Önceki runtime()/transactionbegin hata sınırı düzeltmesi mevcut reviewer tarafından yeniden RO okundu ve yalnız bu kapsamda P1/P2=0 ile kapandı; özel yeni regresyon gözlenmediği owner'a iletildi. Bu barcode veya tüm satış GO'su değildir. Owner'ın sonraki normalGUI denemesinde orijinal v2 sipariş satırının barkod saklamadığı ortaya çıktı; satışa aktarım güvenli reddedildi, satış/stok etkisi oluşmadı. ERP sahibi boşluğu tahmini barkodla doldurmadan ve orijinal kaydı değiştirmeden köprüyü düzeltiyor. Yeni finalERPsource/exactCI/kurulum makbuzu/normal satış ve CRMreadback kanıtı henüz yok. CRMc8/7CI kaynak teslimi hazır ve unchanged; kurulum/SQL/GUI owner'da kalır.
+
 ## 22 Ekim15:52TR — yeni kurulum owner bildirimi, nihai makbuz bekleniyor
 
 ERP sahibi9f541f98/CRMc8d0e28 temiz adaylarını kurduğunu, ERP4194 operasyonel satış yetkisi/native4196 draft-only ayrımının korunduğunu bildirdi. CRM clean frontend build23.56snPASS owner çıktısından RO okundu. Yeni nihai kurulum makbuzu henüz yoktur; eski9407d352 makbuzu bu yeni kaynaklara atanmaz. İlk normalERPpersonel ekranı aynı order3/3adet/376.50TRY kaydını gösterir; bu dönüşüm/onay/tek-etki sonucu değildir. Dört mevcut temiz TEST tablosunda eksik SELECT için owner dar düzeltme yaptı; genel DBcontrol/sysadmin/eskiDB yetkisi açılmadı.

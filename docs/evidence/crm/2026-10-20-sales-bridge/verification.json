@@ -301,9 +301,22 @@
             34
           ],
           "issue": "runtime() and transaction begin outside typed unavailable error boundary.",
-          "reportedToOwner": true
+          "reportedToOwner": true,
+          "status": "CLOSED_NARROW_SOURCE_REVIEW",
+          "reviewScope": "Only runtime()/transaction initialization masking, not barcode bridge or overall sale flow.",
+          "dedicatedNewRegressionObserved": false
         },
         "sharedWritesByCrm": false
+      },
+      "ownerLatestCheckpoint": {
+        "observedAt": "2026-10-22T15:56:51+03:00",
+        "finalNewReceiptAvailable": false,
+        "finalErpSourcePending": true,
+        "normalConversion": "REJECTED_NO_EFFECT_OWNER_REPORT",
+        "blocker": "Existing native v2 order line does not persist a barcode; owner adapting the bridge without inventing a value or changing original receipt.",
+        "next": "ERP-only final fix/targeted verification/exact source CI/installation receipt and complete normal sale + CRM readback proof.",
+        "crmApplicationSourceUnchanged": "c8d0e28f0ea6cf16133c87dd548a4281381abfb7",
+        "humanAcceptance": "PENDING"
       }
     },
     "acceptance": {
