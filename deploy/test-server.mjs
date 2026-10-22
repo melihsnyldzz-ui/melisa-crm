@@ -26,20 +26,55 @@ export function resolveTestLanNetwork(value,interfaces=os.networkInterfaces(),en
     const mask=ipv4Number(entry.netmask),bits=mask.toString(2).padStart(32,'0');
     const minimum=address.startsWith('10.')?8:address.startsWith('172.')?12:16;
     if(!/^1+0+$/.test(bits)||bits.indexOf('0')<minimum||bits.indexOf('0')>30)throw Error('TEST_LAN_NETMASK_INVALID');
+    if(endpoints.cleanSynthetic&&(address!=='192.168.1.46'||entry.netmask!=='255.255.255.0'))throw Error('CLEAN_TEST_LAN_NETWORK_REQUIRED');
     return{address,mask,network:(ipv4Number(address)&mask)>>>0,origin:`http://${address}:${endpoints.ui}`};
   }
   throw Error('TEST_LAN_INTERFACE_REQUIRED');
 }
+function tailscalePeerAddress(value) {
+  if(typeof value!=='string'||!/^100\.(?:0|[1-9][0-9]{0,2})(?:\.(?:0|[1-9][0-9]{0,2})){2}$/.test(value))return false;
+  const parts=value.split('.').map(Number);
+  return parts[1]>=64&&parts[1]<=127&&parts[2]<=255&&parts[3]<=255;
+}
+function testUiNetworkSettings(env,endpoints) {
+  const lanAddress=validateTestLanAddress(env.CRM_TEST_LAN_ADDRESS||'');
+  if(endpoints.isolated&&lanAddress&&lanAddress!=='192.168.1.46')throw Error('SHARED_TEST_LAN_ADDRESS_REQUIRED');
+  const tailscaleAddress=env.CRM_TEST_TAILSCALE_ADDRESS||'',peerInput=env.CRM_TEST_TAILSCALE_PEERS||'';
+  if(tailscaleAddress&&(!endpoints.cleanSynthetic||tailscaleAddress!=='100.87.188.3'))throw Error('CLEAN_TEST_TAILSCALE_ADDRESS_REQUIRED');
+  if(typeof peerInput!=='string'||(!tailscaleAddress&&peerInput))throw Error('CLEAN_TEST_TAILSCALE_PEERS_REQUIRED');
+  const peers=peerInput?peerInput.split(',').map(value=>value.trim()):[];
+  if(peers.length>64||peers.some(value=>!tailscalePeerAddress(value))||new Set(peers).size!==peers.length||tailscaleAddress&&!peers.length)throw Error('CLEAN_TEST_TAILSCALE_PEERS_REQUIRED');
+  return {lanAddress,tailscaleAddress,peers};
+}
+// Reuse the UI request boundary for separate, explicit listeners. Internal APIs
+// are never bound to these addresses; no subnet-wide Tailscale permission exists.
+export function resolveTestUiNetworks(env=process.env,interfaces=os.networkInterfaces(),endpoints=resolveTestEndpoints(env)) {
+  const {lanAddress,tailscaleAddress,peers}=testUiNetworkSettings(env,endpoints),networks=[];
+  const lan=resolveTestLanNetwork(lanAddress,interfaces,endpoints);if(lan)networks.push(lan);
+  if(tailscaleAddress){
+    const entry=Object.values(interfaces).flatMap(entries=>entries||[]).find(item=>!item.internal&&item.family==='IPv4'&&item.address===tailscaleAddress);
+    if(!entry||entry.netmask!=='255.255.255.255')throw Error('CLEAN_TEST_TAILSCALE_INTERFACE_REQUIRED');
+    networks.push({address:tailscaleAddress,origin:`http://${tailscaleAddress}:${endpoints.ui}`,peers,kind:'tailscale'});
+  }
+  return networks;
+}
 export function testUiRequestAllowed(req,lanNetwork=null,endpoints=resolveTestEndpoints()) {
   const local=req.socket?.localAddress,remote=req.socket?.remoteAddress;
+  const network=(Array.isArray(lanNetwork)?lanNetwork:[lanNetwork]).find(item=>item?.address===local);
   let host;
   if(local==='127.0.0.1'&&remote==='127.0.0.1')host=`127.0.0.1:${endpoints.ui}`;
-  else if(lanNetwork&&local===lanNetwork.address){
-    try{if(!remote||!validateTestLanAddress(remote))return false}catch{return false}
-    if(((ipv4Number(remote)&lanNetwork.mask)>>>0)!==lanNetwork.network)return false;
-    if(!['GET','HEAD'].includes(req.method)&&req.headers.origin!==lanNetwork.origin)return false;
-    host=lanNetwork.address+':'+endpoints.ui;
+  else if(network){
+    if(network.kind==='tailscale'){
+      if(!endpoints.cleanSynthetic||!tailscalePeerAddress(remote)||!network.peers.includes(remote))return false;
+    }else{
+      try{if(!remote||!validateTestLanAddress(remote))return false}catch{return false}
+      if(((ipv4Number(remote)&network.mask)>>>0)!==network.network)return false;
+      if(endpoints.cleanSynthetic&&[network.network,(network.network|(~network.mask>>>0))>>>0].includes(ipv4Number(remote)))return false;
+    }
+    if(!['GET','HEAD'].includes(req.method)&&req.headers.origin!==network.origin)return false;
+    host=network.address+':'+endpoints.ui;
   }else return false;
+  if(endpoints.cleanSynthetic&&(['forwarded','x-real-ip','x-forwarded-for','x-forwarded-host','x-forwarded-proto'].some(key=>Object.hasOwn(req.headers,key))||!['GET','HEAD'].includes(req.method)&&req.headers.origin!=='http://'+host))return false;
   return req.headers.host===host&&(!req.headers.origin||req.headers.origin==='http://'+host)
     &&!req.headers['x-forwarded-host']&&!req.headers['x-forwarded-for']
     &&(!req.headers['sec-fetch-site']||['same-origin','none'].includes(req.headers['sec-fetch-site'])||testTerminalFrameAllowed(req,host));
@@ -76,10 +111,8 @@ if (!env.CRM_BASELINE_ENV) throw Error('CRM_BASELINE_ENV_REQUIRED');
 const {runtime,logs}=resolveTestDirectories(repoRoot,env);
 const endpoints=resolveTestEndpoints(env);
 const paidAi=env.CRM_PAID_AI_ENABLED==='true'&&!endpoints.isolated;
-const lanAddress=validateTestLanAddress(env.CRM_TEST_LAN_ADDRESS||'');
-if(endpoints.cleanSynthetic&&lanAddress)throw Error('CLEAN_TEST_LOOPBACK_REQUIRED');
-if(endpoints.isolated&&lanAddress&&lanAddress!=='192.168.1.46')throw Error('SHARED_TEST_LAN_ADDRESS_REQUIRED');
-const uiOrigins=[endpoints.uiOrigin,...(lanAddress?[`http://${lanAddress}:${endpoints.ui}`]:[])];
+const {lanAddress,tailscaleAddress,peers}=testUiNetworkSettings(env,endpoints);
+const uiOrigins=[endpoints.uiOrigin,...[lanAddress,tailscaleAddress].filter(Boolean).map(address=>`http://${address}:${endpoints.ui}`)];
 // AI activation is explicit for this TEST session, never inherited from baseline dotenv.
 const salesMode=env.CRM_AI_SALES_MODE==='copilot'?'copilot':'off';
 const terminalPersonnel=env.CRM_TEST_TERMINAL_PERSONNEL_USERNAME||(endpoints.isolated&&!endpoints.cleanSynthetic?'crm-ahmet':'');
@@ -100,6 +133,7 @@ Object.assign(env, {
   WHATSAPP_CRM_PORT: String(endpoints.gateway), CRM_UI_ORIGIN: endpoints.uiOrigin,
   WHATSAPP_CRM_CORS_ORIGINS: uiOrigins.join(','),
   CRM_CATALOG_UI_ORIGINS:uiOrigins.join(','),CRM_TEST_LAN_ADDRESS:lanAddress,
+  CRM_TEST_TAILSCALE_ADDRESS:tailscaleAddress,CRM_TEST_TAILSCALE_PEERS:peers.join(','),
   WHATSAPP_PROVIDER: 'waapi', WHATSAPP_TEST_NUMBER_ONLY: 'true',
   CHATWOOT_INBOX_FALLBACK_ENABLED: 'false',
   WHATSAPP_ALLOWED_TEST_NUMBERS: '905387217733', WAAPI_TEST_RECIPIENT: '905387217733',
@@ -130,7 +164,7 @@ async function startTestServer(){
 configureTestServerEnvironment(root);
 const endpoints=resolveTestEndpoints();
 if(endpoints.businessScope&&!endpoints.cleanSynthetic){const {installBusinessTestReadBudget}=await import('../apps/gateway/src/services/businessTestReadBudget.mjs');await installBusinessTestReadBudget({executionRoot:root});}
-const lanNetwork=resolveTestLanNetwork(process.env.CRM_TEST_LAN_ADDRESS);
+const uiNetworks=resolveTestUiNetworks(process.env,os.networkInterfaces(),endpoints);
 const createTestSession=endpoints.cleanSynthetic?null:installTestAdminSession({uiOrigin:process.env.CRM_UI_ORIGIN,gatewayOrigin:endpoints.gatewayOrigin});
 const {findCrmUserByUsername}=await import('../apps/gateway/src/services/crmAuthService.js');
 const createPersonnelSession=process.env.CRM_TEST_TERMINAL_PERSONNEL_USERNAME?installTestPersonnelSession({uiOrigin:process.env.CRM_UI_ORIGIN,gatewayOrigin:endpoints.gatewayOrigin,username:process.env.CRM_TEST_TERMINAL_PERSONNEL_USERNAME,resolveUser:findCrmUserByUsername}):null;
@@ -150,11 +184,11 @@ if(process.env.CRM_CUSTOMER_PRODUCT_REQUEST_ENABLED==='true'){
 }
 const gateway = createApp({customerProductRequestRouter}).listen(endpoints.gateway, '127.0.0.1');
 const assets = path.join(root, 'apps/frontend/dist/client');
-const handler=createTestUiHandler({assets,createTestSession,createPersonnelSession,lanNetwork});
+const handler=createTestUiHandler({assets,createTestSession,createPersonnelSession,lanNetwork:uiNetworks,endpoints});
 const ui=http.createServer(handler).listen(endpoints.ui,'127.0.0.1',()=>console.log('Melisa CRM TEST hazır: '+endpoints.uiOrigin));
-const lanUi=lanNetwork?http.createServer(handler).listen(endpoints.ui,lanNetwork.address,()=>console.log('Melisa CRM LAN UI hazır.')):null;
-for (const server of [ui,lanUi,gateway].filter(Boolean)) server.on('error', error => { console.error(error.code || 'TEST_START_FAILED'); process.exit(1); });
-for (const signal of ['SIGINT','SIGTERM']) process.on(signal, () => { stopIncoming(); stopWorker(); ui.close(); lanUi?.close(); gateway.close(); setTimeout(() => process.exit(0), 500).unref(); });
+const remoteUis=uiNetworks.map(network=>http.createServer(handler).listen(endpoints.ui,network.address,()=>console.log('Melisa CRM TEST UI hazır: '+network.origin)));
+for (const server of [ui,...remoteUis,gateway]) server.on('error', error => { console.error(error.code || 'TEST_START_FAILED'); process.exit(1); });
+for (const signal of ['SIGINT','SIGTERM']) process.on(signal, () => { stopIncoming(); stopWorker(); ui.close(); for(const server of remoteUis)server.close(); gateway.close(); setTimeout(() => process.exit(0), 500).unref(); });
 }
 export function createTestUiHandler({assets,createTestSession,createPersonnelSession=null,lanNetwork=null,endpoints=resolveTestEndpoints()}) {
 return (req,res)=>{

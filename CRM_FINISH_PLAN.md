@@ -1,4 +1,8 @@
-## 22 Ekim — mevcut mağaza günü nihai teknik eşleme; insan kabulü ayrı
+## 23 Ekim — CRM06 / M01 temiz TEST ağ kaynağı; kurulum ve kabul ayrı
+
+Yalnız kullanıcı UI62800 için exact LAN192.168.1.46/24 ve Tailscale100.87.188.3+owner peer listesi kaynak desteği hazır. Mevcut normal auth/aynı-origin proxy ve iç62801/2/3 loopback korunur; otomatik bootstrap yok. Yeni5regresyonFAIL→PASS, etkilenen41PASS ve bağımsızROreview0 teknik hazırlıktır. Kurulu c8 ile frontend/apps/packages fark0, runtime kapsamındaki tek değişiklik `deploy/test-server.mjs`. [Kaynak, kurulum env sözleşmesi ve sınırlar](docs/evidence/crm/2026-10-23-clean-network/README.md). ERP sahibi kurulum/config/SQL/restart/firewall tek yazarıdır; bu kayıt kurulum, uzak fiziksel cihaz veya insan PASS değildir. CRM06/M01 ve mevcut kabul ID'leri **BEKLİYOR**; 25/12🟢/13🟡/0🔴 ve17başlık/74yaprak değişmez. Yeni leaf/tree/ajan/Goal yok.
+
+## Önceki22 Ekim — mevcut mağaza günü nihai teknik eşleme; insan kabulü ayrı
 
 ERP5aa uygulama/7dcfrontend/c8CRM, son özel makbuz5f804901 ve15kanıt;7port/6PID+eski16actualOS/source/paket/sağlık/CRM3-ERP20sunulan dosya eşleşti. Owner normal18/19GUI kabul3→alış4/TSTB-20261022-GUI3/120TRY/kayıtlı kur1, stok21→23 yalnız kabulde ve tedarikçi120 yalnız kesinleştirmede; eski order3 taslak/bağlısale1FINALIZED/376.50 korunmuş. Son ownerSQL8/12/2/23valid/intents0 ve HTTP3replay+6negatif/native403 kayıtları RO eşlendi;12koruma11aynı/old_users normal login istisnası açık.5aa exactCI6SUCCESS, sonreview açıkP1/P2=0. [Nihai kanıt/sınırlar](docs/evidence/crm/2026-10-22-clean-current-source/store-day-ro-mapping.json). CRM yeni uygulama/SQL/runtime/GUI/prova başlatmadı; yeni yeşil yaprak yok.25/12/13/0,17başlık/74yaprak,CRM-UA04/UA11/telefon/reboot **BEKLİYOR**. Mevcut ortak sıranın2.5 adımı ERP sahibinde; yeni plan/ajan veya commonreport yazısı yok.
 
