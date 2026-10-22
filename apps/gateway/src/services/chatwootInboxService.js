@@ -2,7 +2,8 @@ import { env } from '../config/env.js';
 import { createHash } from 'node:crypto';
 import { resolvePhoneIdentity } from '../utils/phoneIdentity.js';
 import { chatwootApiRequest } from './chatwootApiService.js';
-import { assertConversationAccess, assertCrmPermission, findCrmUserById } from './crmAuthService.js';
+import { assertConversationAccess, assertCrmPermission, findCrmUserById, listConfiguredCrmUsers } from './crmAuthService.js';
+import {resolveTestEndpoints} from '../../../../deploy/test-endpoints.mjs';
 import { normalSessionFingerprint } from './normalRefreshSession.mjs';
 import { waapiSendReady, refreshWaapiReadiness } from './waapiReadiness.js';
 import { WAAPI_RECIPIENT } from '../providers/waapiProvider.js';
@@ -16,6 +17,31 @@ const OVERVIEW_SNAPSHOT_TTL_MS = 20000;
 let conversationSnapshot = null;
 let messageReadIdentity = null;
 const messageReads = new Map();
+
+// Only conversation metadata is seeded here. Catalog and orders still cross
+// the existing authenticated ERP HTTP boundary and persist in the owner's SQL.
+function cleanSyntheticProjection(user=null) {
+  if(process.env.CRM_TEST_PROFILE!=='clean-synthetic-20261022')return null;
+  const endpoints=resolveTestEndpoints();
+  const invalid=()=>Object.assign(Error('Yapay TEST konuşma kaynağı doğrulanamadı.'),{code:'CLEAN_CONVERSATION_PROJECTION_REQUIRED',statusCode:503});
+  const text=process.env.CRM_CLEAN_CONVERSATION_PROJECTION_JSON;
+  if(typeof text!=='string'||text.length>16384)throw invalid();
+  let projection;try{projection=JSON.parse(text);}catch{throw invalid();}
+  if(!projection||Array.isArray(projection)||projection.version!==1||projection.synthetic!==true||projection.environment!=='CLEAN_SYNTHETIC_TEST'
+    ||String(projection.environmentId).toLowerCase()!=='e662fd94-d797-4b3b-938a-d143ad758b67'||projection.database!==endpoints.database
+    ||!Array.isArray(projection.conversations)||projection.conversations.length>2)throw invalid();
+  const users=listConfiguredCrmUsers().filter(value=>value.active);
+  if(user){const current=findCrmUserById(user.id);if(!current?.active||user.testAdmin||user.testPersonnel||normalSessionFingerprint(current)!==normalSessionFingerprint(user))throw Object.assign(Error('CRM oturumu değişti.'),{code:'AUTH_TOKEN_INVALID',statusCode:401});assertCrmPermission(current,'crm.view');}
+  const ids=new Set();return projection.conversations.map(row=>{
+    if(!row||typeof row!=='object')throw invalid();const id=String(row.id),phone=id==='55'?'905550000001':id==='56'?'905550000002':null;
+    if(!phone||row.phone!==phone||ids.has(id)||typeof row.name!=='string'||!row.name.trim()||row.name.length>120||!Number.isSafeInteger(row.assigneeAgentId)||row.assigneeAgentId<1)throw invalid();
+    ids.add(id);const assigned=users.find(value=>value.chatwootAgentId===row.assigneeAgentId);if(!assigned)throw invalid();
+    return {id,name:row.name,phone:'+'+phone,contactId:id,backend:'clean-synthetic',provider:'synthetic',synthetic:true,channel:'whatsapp',language:'Türkçe',status:'open',unread:0,
+      assignedUserId:assigned.id,assignedUserName:assigned.displayName,chatwootAgentId:row.assigneeAgentId,
+      preview:'Yapay TEST: ürün ve sipariş taslağı',lastMessageAt:'2026-10-22T00:00:00.000Z',messages:[{id:Number(id)*100,direction:'incoming',text:'Yapay TEST: ürün ve sipariş taslağı',createdAt:'2026-10-22T00:00:00.000Z'}],
+      detailLoaded:true,messagesLoaded:true,history:{complete:true,hasMore:false,nextBefore:null},canSend:false,canAssign:false,capabilities:{read:true,send:false,assign:false}};
+  });
+}
 
 function backendIdentity() {
   return JSON.stringify([env.chatwoot.baseUrl, env.chatwoot.accountId, env.chatwoot.apiAccessToken]);
@@ -478,6 +504,8 @@ async function listChatwootInboxBootstrap({ limit, user }) {
 }
 
 export async function listChatwootInboxOverview({ limit = 25, offset = 0, user = null, view } = {}) {
+  const seeded=cleanSyntheticProjection(user);
+  if(seeded){assertCrmPermission(user,'crm.view');const rows=seeded.filter(row=>user?.role!=='personel'||row.chatwootAgentId===user.chatwootAgentId),safeLimit=Math.min(Math.max(Number(limit)||25,1),500),safeOffset=Math.max(Number(offset)||0,0),conversations=rows.slice(safeOffset,safeOffset+safeLimit),total=rows.length;return {conversations,summary:{total,complete:true,open:total,unread:0,unassigned:0,pendingHumanReply:total,source:'clean-synthetic-projection'},pagination:{limit:safeLimit,offset:safeOffset,total,hasNext:safeOffset+conversations.length<total,nextOffset:safeOffset+conversations.length<total?safeOffset+conversations.length:null},capabilities:{read:true,send:false,assign:false},boundaries:['Only the conversation is synthetic seed metadata; products, prices and drafts are read from the separate clean ERP SQL application.']};}
   if (view === 'bootstrap' && ['patron', 'mudur'].includes(user?.role)) {
     return listChatwootInboxBootstrap({ limit, user });
   }
@@ -582,6 +610,7 @@ async function readAccessibleConversation({ conversationId, user }) {
 }
 // Fresh assignment metadata only: never hydrates message history or media.
 export async function getChatwootConversationAccess({ conversationId, user }) {
+  const seeded=cleanSyntheticProjection(user);if(seeded){const row=seeded.find(value=>value.id===String(conversationId));if(!row)throw Object.assign(Error('Konuşma bulunamadı.'),{code:'WHATSAPP_CRM_CONVERSATION_NOT_FOUND',statusCode:404});return assertConversationAccess(user,row);}
   return (await readAccessibleConversation({conversationId,user})).access;
 }
 
@@ -612,6 +641,7 @@ export async function getChatwootProductRequestBinding({ conversationId, user })
 }
 export async function getChatwootConversationDetail({ conversationId, user, before }) {
   if (before !== undefined && historyId(before) === null) throw Object.assign(new Error('Gecmis imleci gecersiz.'), {code:'WHATSAPP_CRM_HISTORY_CURSOR_INVALID',statusCode:400});
+  if(process.env.CRM_TEST_PROFILE==='clean-synthetic-20261022'){const row=await getChatwootConversationAccess({conversationId,user});return before===undefined?row:{...row,messages:[]};}
   await refreshWaapiReadiness();
   const {raw,identity,policy} = await readAccessibleConversation({conversationId,user});
   if (before !== undefined && historyId(raw.id) !== historyId(conversationId)) throw historyPageInvalid();
@@ -630,6 +660,7 @@ export async function getChatwootConversationDetail({ conversationId, user, befo
 }
 
 export async function listChatwootAgents() {
+  if(cleanSyntheticProjection()){return listConfiguredCrmUsers().filter(user=>user.active&&user.chatwootAgentId).map(user=>({id:user.chatwootAgentId,name:user.displayName,role:user.role,availability:'synthetic',synthetic:true}));}
   const response = await chatwootApiRequest('/agents');
   const rows = Array.isArray(response) ? response : (response?.payload || []);
   return rows.map((agent) => ({

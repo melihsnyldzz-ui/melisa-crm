@@ -56,7 +56,7 @@ export function testTerminalFrameAllowed(req,host) {
 }
 
 export function testAdminBootstrapAllowed(req,endpoints=resolveTestEndpoints()) {
-  return req.method==='POST' && req.url==='/api/test-admin/session'
+  return !endpoints.cleanSynthetic && req.method==='POST' && req.url==='/api/test-admin/session'
     && req.socket?.remoteAddress==='127.0.0.1' && req.headers.host===`127.0.0.1:${endpoints.ui}`
     && req.headers.origin===endpoints.uiOrigin
     && !req.headers['x-forwarded-host'] && !req.headers['x-forwarded-for']
@@ -77,11 +77,13 @@ const {runtime,logs}=resolveTestDirectories(repoRoot,env);
 const endpoints=resolveTestEndpoints(env);
 const paidAi=env.CRM_PAID_AI_ENABLED==='true'&&!endpoints.isolated;
 const lanAddress=validateTestLanAddress(env.CRM_TEST_LAN_ADDRESS||'');
+if(endpoints.cleanSynthetic&&lanAddress)throw Error('CLEAN_TEST_LOOPBACK_REQUIRED');
 if(endpoints.isolated&&lanAddress&&lanAddress!=='192.168.1.46')throw Error('SHARED_TEST_LAN_ADDRESS_REQUIRED');
 const uiOrigins=[endpoints.uiOrigin,...(lanAddress?[`http://${lanAddress}:${endpoints.ui}`]:[])];
 // AI activation is explicit for this TEST session, never inherited from baseline dotenv.
 const salesMode=env.CRM_AI_SALES_MODE==='copilot'?'copilot':'off';
-const terminalPersonnel=env.CRM_TEST_TERMINAL_PERSONNEL_USERNAME||(endpoints.isolated?'crm-ahmet':'');
+const terminalPersonnel=env.CRM_TEST_TERMINAL_PERSONNEL_USERNAME||(endpoints.isolated&&!endpoints.cleanSynthetic?'crm-ahmet':'');
+if(endpoints.cleanSynthetic&&terminalPersonnel)throw Error('CLEAN_TEST_NORMAL_LOGIN_REQUIRED');
 if(terminalPersonnel!==''&&terminalPersonnel!=='crm-ahmet')throw Error('TEST_PERSONNEL_IDENTITY_REQUIRED');
 // Activation belongs to the owner configuration, never inherited from a baseline.
 const requests={CRM_CUSTOMER_PRODUCT_REQUEST_ENABLED:env.CRM_CUSTOMER_PRODUCT_REQUEST_ENABLED==='true'?'true':'false',
@@ -116,6 +118,7 @@ Object.assign(env, {
   CRM_ISOLATED_PREPARATION:String(endpoints.isolated),CRM_PAID_AI_ENABLED:String(paidAi),
 });
 if(endpoints.isolated)Object.assign(env,{WHATSAPP_SEND_ENABLED:'false',WHATSAPP_LIVE_SEND_APPROVED:'false',WAAPI_CHATWOOT_BRIDGE_ENABLED:'false',WAAPI_INCOMING_READER_ENABLED:'false',CRM_AI_SALES_MODE:'off'});
+if(endpoints.cleanSynthetic)Object.assign(env,{CRM_TEST_PROFILE:endpoints.profile,CRM_TEST_TERMINAL_PERSONNEL_USERNAME:'',CRM_CUSTOMER_PRODUCT_REQUEST_ENABLED:'false',CRM_CUSTOMER_PRODUCT_REQUEST_ISSUER_IDS:'',CRM_NORMAL_REFRESH_ENABLED:'false',CRM_SEMIH_TEST_CONTINUE_ENABLED:'false',CHATWOOT_INBOX_READ_ENABLED:'false',CHATWOOT_INBOX_FALLBACK_ENABLED:'false',CRM_PAID_AI_ENABLED:'false',OPENAI_API_KEY:'',WAAPI_API_KEY:'',CHATWOOT_API_ACCESS_TOKEN:'',EVOLUTION_API_KEY:'',CRM_OUTBOUND_NAMESPACE:'melisa-crm:clean-synthetic-20261022'});
 if(requests.CRM_CUSTOMER_PRODUCT_REQUEST_ENABLED==='true')env.CRM_SEMIH_TEST_CONTINUE_ENABLED='false';
 }
 export async function createTestCustomerProductRequestIntegration({environment=process.env,endpoints=resolveTestEndpoints(environment),Router,catalogReader}={}){
@@ -126,9 +129,9 @@ export async function createTestCustomerProductRequestIntegration({environment=p
 async function startTestServer(){
 configureTestServerEnvironment(root);
 const endpoints=resolveTestEndpoints();
-if(endpoints.businessScope){const {installBusinessTestReadBudget}=await import('../apps/gateway/src/services/businessTestReadBudget.mjs');await installBusinessTestReadBudget({executionRoot:root});}
+if(endpoints.businessScope&&!endpoints.cleanSynthetic){const {installBusinessTestReadBudget}=await import('../apps/gateway/src/services/businessTestReadBudget.mjs');await installBusinessTestReadBudget({executionRoot:root});}
 const lanNetwork=resolveTestLanNetwork(process.env.CRM_TEST_LAN_ADDRESS);
-const createTestSession=installTestAdminSession({uiOrigin:process.env.CRM_UI_ORIGIN,gatewayOrigin:endpoints.gatewayOrigin});
+const createTestSession=endpoints.cleanSynthetic?null:installTestAdminSession({uiOrigin:process.env.CRM_UI_ORIGIN,gatewayOrigin:endpoints.gatewayOrigin});
 const {findCrmUserByUsername}=await import('../apps/gateway/src/services/crmAuthService.js');
 const createPersonnelSession=process.env.CRM_TEST_TERMINAL_PERSONNEL_USERNAME?installTestPersonnelSession({uiOrigin:process.env.CRM_UI_ORIGIN,gatewayOrigin:endpoints.gatewayOrigin,username:process.env.CRM_TEST_TERMINAL_PERSONNEL_USERNAME,resolveUser:findCrmUserByUsername}):null;
 // Passive incoming messages use existing identity/journal handling. Outbound and AI stay scoped to 7733.

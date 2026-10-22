@@ -47,7 +47,7 @@ function sanitize(row) {
     sourceUpdatedAt: null, pricedDocumentEligible: false, pricedDocumentBlockReason: 'SOURCE_FRESHNESS_UNVERIFIED' };
 }
 export function isTestCatalogPhotoOrigin(value){
-  try{const url=new URL(value);return url.protocol==='http:'&&['127.0.0.1','localhost','[::1]'].includes(url.hostname)&&(url.port==='62402'||process.env.CRM_ISOLATED_PREPARATION==='true'&&url.hostname==='127.0.0.1'&&['62602','62702'].includes(url.port))&&!url.username&&!url.password&&url.pathname==='/'&&!url.search&&!url.hash}catch{return false}
+  try{const url=new URL(value),clean=process.env.CRM_TEST_PROFILE==='clean-synthetic-20261022'&&process.env.CRM_TEST_PORT_BASE==='62800'&&process.env.CRM_TEST_EXPECTED_DATABASE==='MELISA_ERP_CLEAN_TEST_20261022'&&process.env.CRM_TEST_ERP_ORIGIN==='http://127.0.0.1:4194'&&url.port==='62802';return url.protocol==='http:'&&['127.0.0.1','localhost','[::1]'].includes(url.hostname)&&(url.port==='62402'||process.env.CRM_ISOLATED_PREPARATION==='true'&&url.hostname==='127.0.0.1'&&(['62602','62702'].includes(url.port)||clean))&&!url.username&&!url.password&&url.pathname==='/'&&!url.search&&!url.hash}catch{return false}
 }
 export function createCatalogBridge({ deploymentApproved = false, transport, authorizeCrm, resolveCrmReadSession, now = Date.now, maxReadAgeMs = 15000, photoCrmAuthorization = false } = {}) {
   if(photoCrmAuthorization&&!isTestCatalogPhotoOrigin(ERP_ORIGIN))throw Error('TEST_PHOTO_AUTH_ORIGIN_REQUIRED');

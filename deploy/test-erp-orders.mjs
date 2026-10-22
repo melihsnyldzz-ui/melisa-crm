@@ -1,6 +1,6 @@
 import http from 'node:http';
 import { pathToFileURL } from 'node:url';
-import {resolveTestEndpoints,sharedTestHealthSafe} from './test-endpoints.mjs';
+import {resolveTestEndpoints,sharedTestHealthSafe,cleanSyntheticTestHealthSafe} from './test-endpoints.mjs';
 const endpoints=resolveTestEndpoints();
 export const ERP_TEST_IDENTITY = Object.freeze({ database:endpoints.database, environment: 'CANONICAL_TEST', purpose: 'crm-order-draft-only' });
 const crmOrigin = endpoints.gatewayOrigin;
@@ -15,7 +15,8 @@ function bearer(value) { return typeof value === 'string' && /^Bearer [^\s]+$/.t
 // Only HTTP contracts cross this boundary; no SQL, imported ERP modules or fallback writer.
 export function createTestOrderHandler({ fetchFn = (...args) => fetch(...args),testEndpoints=resolveTestEndpoints(),nativeSourceCommit=process.env.CRM_TEST_NATIVE_SOURCE_COMMIT,nativePackageId=process.env.CRM_TEST_NATIVE_PACKAGE_ID } = {}) {
   const crmOrigin=testEndpoints.gatewayOrigin,nativeOrigin=testEndpoints.nativeOrigin;
-  const expectedIdentity={...ERP_TEST_IDENTITY,database:testEndpoints.database,environment:testEndpoints.isolated?'ISOLATED_TEST_COPY':'CANONICAL_TEST'};
+  const expectedIdentity={...ERP_TEST_IDENTITY,database:testEndpoints.database,environment:testEndpoints.cleanSynthetic?'CLEAN_SYNTHETIC_TEST':testEndpoints.isolated?'ISOLATED_TEST_COPY':'CANONICAL_TEST'};
+  const healthSafe=testEndpoints.cleanSynthetic?cleanSyntheticTestHealthSafe:sharedTestHealthSafe;
   const loginAttempts = new Map();
   async function call(origin, path, options = {}) {
     let response;
@@ -32,7 +33,7 @@ export function createTestOrderHandler({ fetchFn = (...args) => fetch(...args),t
   async function identity() {
     const health = await call(nativeOrigin, '/test-health');
     if (!Object.entries(expectedIdentity).every(([key, value]) => health[key] === value)) fail('ERP_TEST_IDENTITY_MISMATCH', 503);
-    if(testEndpoints.isolated&&(!sharedTestHealthSafe(health)||health.automaticJobs!==false||health.reservationEffect!==false))fail('ERP_TEST_IDENTITY_MISMATCH',503);
+    if(testEndpoints.isolated&&(!healthSafe(health)||health.automaticJobs!==false||health.reservationEffect!==false))fail('ERP_TEST_IDENTITY_MISMATCH',503);
     if(testEndpoints.isolated||nativeSourceCommit||nativePackageId){
       if(!/^[a-f0-9]{40}$/.test(nativeSourceCommit||'')||typeof nativePackageId!=='string'||!nativePackageId||health.sourceCommit!==nativeSourceCommit||health.packageId!==nativePackageId||health.port!==testEndpoints.native||health.stockEffect!==false||health.ledgerEffect!==false)fail('ERP_TEST_IDENTITY_MISMATCH',503);
     }
@@ -87,7 +88,7 @@ export function createTestOrderHandler({ fetchFn = (...args) => fetch(...args),t
         if(scopedCreate)await conversationAccess(authorization,input?.conversationId,input?.peer);
         await identity();
         const sharedLogin=testEndpoints.isolated&&nativePath==='/api/auth/login';
-        if(sharedLogin){const health=await call(testEndpoints.erpOrigin,'/test-health');if(!health.ok||!sharedTestHealthSafe(health)||health.databaseName!==testEndpoints.database||health.port!==testEndpoints.erpPort||health.mode!=='erp'||health.writes!==true)fail('ERP_TEST_IDENTITY_MISMATCH',503);}
+        if(sharedLogin){const health=await call(testEndpoints.erpOrigin,'/test-health');if(!health.ok||!healthSafe(health)||health.databaseName!==testEndpoints.database||health.port!==testEndpoints.erpPort||health.mode!=='erp'||health.writes!==true)fail('ERP_TEST_IDENTITY_MISMATCH',503);}
         data = await call(sharedLogin?testEndpoints.erpOrigin:nativeOrigin, nativePath, {
           method: req.method,
           headers: { ...(sharedLogin?{origin:testEndpoints.erpUiOrigin}:{}),'X-CRM-Authorization': authorization, ...(nativeToken ? { Authorization: `Bearer ${nativeToken}` } : {}), ...(input ? { 'Content-Type': 'application/json' } : {}) },

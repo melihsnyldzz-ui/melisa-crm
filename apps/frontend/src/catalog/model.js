@@ -4,7 +4,8 @@ export const languages = [{ id: 'tr', label: 'Türkçe' }, { id: 'en', label: 'E
 export const currencies = ['EUR', 'USD', 'TRY'];
 export function verifiedBusinessCurrencies(scope){
  if(scope===undefined)return null;
- if(!scope||Object.keys(scope).sort().join()!=='database,scopeKind,supportedCurrencies'||scope.scopeKind!=='VERIFIED_BUSINESS_TEST'||scope.database!=='MELISA_ERP_CRM_SHARED_TEST_20261009_02'||JSON.stringify(scope.supportedCurrencies)!==JSON.stringify(['TRY','USD','EUR']))throw Error('Katalog işletme kapsamı doğrulanamadı.');
+ const known=scope?.scopeKind==='VERIFIED_BUSINESS_TEST'&&scope.database==='MELISA_ERP_CRM_SHARED_TEST_20261009_02'||scope?.scopeKind==='VERIFIED_CLEAN_SYNTHETIC_TEST'&&scope.database==='MELISA_ERP_CLEAN_TEST_20261022';
+ if(!scope||Object.keys(scope).sort().join()!=='database,scopeKind,supportedCurrencies'||!known||JSON.stringify(scope.supportedCurrencies)!==JSON.stringify(['TRY','USD','EUR']))throw Error('Katalog işletme kapsamı doğrulanamadı.');
  return scope.supportedCurrencies;
 }
 export function availableCurrencies(products=[],businessScope){const provided=new Set(products.flatMap(p=>Object.keys(p.prices||{})));const page=provided.size?[...currencies.filter(c=>provided.has(c)),...[...provided].filter(c=>!currencies.includes(c)).sort()]:currencies;const supported=verifiedBusinessCurrencies(businessScope);return supported?[...new Set([...page,...supported])]:page;}
