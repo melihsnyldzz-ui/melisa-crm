@@ -1,6 +1,14 @@
 # 22 Ekim — CRM06/E02 temiz kaynak → paket → runtime eşlemesi
 
-## Güncel — 22 Ekim aynı siparişten tek satış ve CRM sonucu
+## Ara eşleme — 22 Ekim mağaza günü; nihai makbuz bekleniyor
+
+[RO snapshot](store-day-ro-mapping.json),18:23TR'de kurulu ERP **7dc6fac / CLEAN-ERP-20261022-7dc6fac0898a** ile CRM **c8d0e28** kaynaklarını ayrı kaydeder. Cleanclone diff0;7loopbackport/6PID, canlı sağlık/DB/ortam ve ERP4194 işlem/native4196 yalnız taslak ayrımı uyumlu. Eski16listener actualOS fark0; CRM3/ERP11 dosyanın disk/HTTP SHA256'sı aynı. Pin launcher/health kaynağı eşlendi, yeni yetkili CRM sipariş çağrısı çalıştırılmadı.7dc exact PR39802467273 ve push39802457830 SUCCESS; bu sonuç henüz sonraki dar okuma düzeltmesinin CI'si değildir.
+
+Owner'ın normalGUI kanıtı count3/kabul3/fatura4,2×60=120TRY; kabulde stok21→23, kesinleştirmede tedarikçi0→120 ve ikinci stok etkisi yok. CRM mevcut kabul/fatura görsellerini inceledi; tarayıcıda akışı tekrarlamadı. Fatura görseli kayıtlı-kur düzeltmesinden **öncedir**, kur bilgisinin bu görünümde doğrulanamadığını açıkça gösterir. HTTP kaydı3replay200+6negatif ve ayrıca nativewrite403 içerir;9negatif diye sayılmaz.12koruma kapsamından11'i aynı; eski sipariş/satış hashleri korunmuş. `old_users` farkının normal login `last_login_at` yazısından geldiği owner açıklamasıdır; hash tek başına yalnız bu alanın değiştiğini kanıtlamaz.
+
+Sonraki9satırlık kayıtlı-kur okuma düzeltmesi kaynakta review0; bu snapshot'ta kurulu değildir. Yeni nihai makbuz, son paket/normal-kur ekranı ve native8/SALE12/compat2/aktif guard son hashleri beklenir. Bu dosyalar kaynak/API/SQL/GUI veya insan kabulünü birbirinin yerine koymaz. CRM yalnız dosya/HTTP/OS okumaları ve belge kaydı yaptı; SQL/runtime/servis veya uygulama kodu değiştirmedi.25/12/13/0 ve özgün74 aynı.
+
+## Önceki tamamlanmış eşleme — 22 Ekim aynı siparişten tek satış ve CRM sonucu
 
 CRM uygulama/frontend **c8d0e28f0ea6cf16133c87dd548a4281381abfb7**; ERP uygulama **3db0830df16d36d59cc69b1a19feb593357aaf35**, paket **CLEAN-ERP-20261022-3db0830df16d**. ERP frontend9f build'i ve uygulama farkı0 ayrı; CRM'de bağımsız packageId health alanı yok/null, source/bundle/PID delili vardır. Nihai [makbuz](installation-receipt-order-sale.json) SHA256 **f9231d810a7140f2816ca0ec3edea99be3ccbbe3a675e5b5cc335742f2e19c82**. Önceki495221a1 snapshot'ından yalnız yeni alt-sonuç görselinin eklenmesiyle değişti; rawlistentry çıkarılınca önceki hash birebir yeniden oluşur.
 

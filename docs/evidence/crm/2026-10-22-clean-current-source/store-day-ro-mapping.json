@@ -1,0 +1,405 @@
+{
+  "schemaVersion": "melisa-crm.store-day-read-only-mapping.v1",
+  "observedAt": "2026-10-22T15:23:48.3447733Z",
+  "mode": "READ_ONLY_PRELIMINARY_NOT_FINAL_INSTALLATION_ACCEPTANCE",
+  "sources": {
+    "crmApplication": "c8d0e28f0ea6cf16133c87dd548a4281381abfb7",
+    "crmCanonicalDocumentationHead": "5342b4358d8cd7e0ffb606a93fa532e3049e6f55",
+    "erpApplicationAtObservation": "7dc6fac0898a163a6447f52daafe9cf3d4f571d9",
+    "erpPackageAtObservation": "CLEAN-ERP-20261022-7dc6fac0898a",
+    "cleanCloneTrackedDiffFiles": 0,
+    "cleanCloneDirtyFiles": 0,
+    "crmStandalonePackageId": null,
+    "limit": "Source checkout identity, public health, served bytes and process identity are separate observations; checkout alone is not deployment proof."
+  },
+  "environment": {
+    "database": "MELISA_ERP_CLEAN_TEST_20261022",
+    "environmentId": "e662fd94-d797-4b3b-938a-d143ad758b67",
+    "synthetic": true,
+    "actualT1": false,
+    "externalOperations": false,
+    "loopbackOnly": true
+  },
+  "observation": {
+    "observedAt": "2026-10-22T15:23:48.3447733Z",
+    "mode": "READ_ONLY_PRELIMINARY",
+    "health": [
+      {
+        "port": 4194,
+        "data": {
+          "ok": true,
+          "environment": "CLEAN_SYNTHETIC_TEST",
+          "environmentId": "e662fd94-d797-4b3b-938a-d143ad758b67",
+          "database": "MELISA_ERP_CLEAN_TEST_20261022",
+          "crmOrigin": "http://127.0.0.1:62801",
+          "synthetic": true,
+          "actualT1": false,
+          "externalOperations": false,
+          "databaseName": "MELISA_ERP_CLEAN_TEST_20261022",
+          "serverName": "Semih\\MELISADEV",
+          "originalDatabaseAccess": 0,
+          "liveDatabaseAccess": 0,
+          "sysadmin": 0,
+          "databaseControl": 0,
+          "port": 4194,
+          "mode": "erp",
+          "writes": true,
+          "purpose": "clean-store-day-inbound-and-sales",
+          "automaticJobs": false,
+          "stockEffect": true,
+          "ledgerEffect": true,
+          "reservationEffect": false,
+          "sourceCommit": "7dc6fac0898a163a6447f52daafe9cf3d4f571d9",
+          "packageId": "CLEAN-ERP-20261022-7dc6fac0898a"
+        }
+      },
+      {
+        "port": 4196,
+        "data": {
+          "ok": true,
+          "environment": "CLEAN_SYNTHETIC_TEST",
+          "environmentId": "e662fd94-d797-4b3b-938a-d143ad758b67",
+          "database": "MELISA_ERP_CLEAN_TEST_20261022",
+          "crmOrigin": "http://127.0.0.1:62801",
+          "synthetic": true,
+          "actualT1": false,
+          "externalOperations": false,
+          "databaseName": "MELISA_ERP_CLEAN_TEST_20261022",
+          "serverName": "Semih\\MELISADEV",
+          "originalDatabaseAccess": 0,
+          "liveDatabaseAccess": 0,
+          "sysadmin": 0,
+          "databaseControl": 0,
+          "port": 4196,
+          "mode": "erp",
+          "writes": true,
+          "purpose": "crm-order-draft-only",
+          "automaticJobs": false,
+          "stockEffect": false,
+          "ledgerEffect": false,
+          "reservationEffect": false,
+          "sourceCommit": "7dc6fac0898a163a6447f52daafe9cf3d4f571d9",
+          "packageId": "CLEAN-ERP-20261022-7dc6fac0898a"
+        }
+      }
+    ],
+    "listeners": [
+      {
+        "port": 4194,
+        "address": "127.0.0.1",
+        "pid": 24996,
+        "creationUtc": "2026-10-22T15:12:39.9352474Z",
+        "executable": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe"
+      },
+      {
+        "port": 4196,
+        "address": "127.0.0.1",
+        "pid": 18576,
+        "creationUtc": "2026-10-22T15:12:39.9502832Z",
+        "executable": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe"
+      },
+      {
+        "port": 5244,
+        "address": "127.0.0.1",
+        "pid": 27896,
+        "creationUtc": "2026-10-22T15:12:39.9613216Z",
+        "executable": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe"
+      },
+      {
+        "port": 62800,
+        "address": "127.0.0.1",
+        "pid": 65784,
+        "creationUtc": "2026-10-22T15:12:45.6092218Z",
+        "executable": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe"
+      },
+      {
+        "port": 62801,
+        "address": "127.0.0.1",
+        "pid": 65784,
+        "creationUtc": "2026-10-22T15:12:45.6092218Z",
+        "executable": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe"
+      },
+      {
+        "port": 62802,
+        "address": "127.0.0.1",
+        "pid": 48532,
+        "creationUtc": "2026-10-22T15:12:45.6181051Z",
+        "executable": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe"
+      },
+      {
+        "port": 62803,
+        "address": "127.0.0.1",
+        "pid": 35760,
+        "creationUtc": "2026-10-22T15:12:45.6302250Z",
+        "executable": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe"
+      }
+    ],
+    "oldListenerCount": 16,
+    "oldListenerProcessCreationToleranceMicroseconds": 1,
+    "oldListenerDifferences": [],
+    "artifacts": [
+      {
+        "app": "crm",
+        "root": "C:\\Sirket\\ERP\\clean\\20261022\\crm\\apps\\frontend\\dist\\client",
+        "url": "http://127.0.0.1:62800",
+        "allEqual": true,
+        "files": [
+          {
+            "path": "assets/index-CCqRXctr.js",
+            "status": 200,
+            "diskSha256": "24311F7C9A67E852978E767902BB1FD80DEDAC4675AD955EF82D0C4D151D5825",
+            "httpSha256": "24311F7C9A67E852978E767902BB1FD80DEDAC4675AD955EF82D0C4D151D5825",
+            "equal": true
+          },
+          {
+            "path": "assets/index-D7F-go5Z.css",
+            "status": 200,
+            "diskSha256": "EAC3BFB694425777F621B3D45CDBE3B16A857017D1BF09E9EF883FA73932EFC3",
+            "httpSha256": "EAC3BFB694425777F621B3D45CDBE3B16A857017D1BF09E9EF883FA73932EFC3",
+            "equal": true
+          },
+          {
+            "path": "index.html",
+            "status": 200,
+            "diskSha256": "B7FEA2410D4F9846282B0F13E1EA9DFDEC8BA726258CAF4B38ACA815B2D68095",
+            "httpSha256": "B7FEA2410D4F9846282B0F13E1EA9DFDEC8BA726258CAF4B38ACA815B2D68095",
+            "equal": true
+          }
+        ]
+      },
+      {
+        "app": "erp",
+        "root": "C:\\Sirket\\ERP\\clean\\20261022\\erp\\apps\\sites-workflow\\dist",
+        "url": "http://127.0.0.1:5244",
+        "allEqual": true,
+        "files": [
+          {
+            "path": "assets/modulepreload-polyfill-B5Qt9EMX.js",
+            "status": 200,
+            "diskSha256": "D2A32840421496E872ADE591618D2FA5C33797605D1AEC04301717E5A90757D0",
+            "httpSha256": "D2A32840421496E872ADE591618D2FA5C33797605D1AEC04301717E5A90757D0",
+            "equal": true
+          },
+          {
+            "path": "assets/preload-helper-BXl3LOEh.js",
+            "status": 200,
+            "diskSha256": "D887044E7C17FD90344FC4F74F53CAC686584DAF2A458AB2136D36F1946E9AB6",
+            "httpSha256": "D887044E7C17FD90344FC4F74F53CAC686584DAF2A458AB2136D36F1946E9AB6",
+            "equal": true
+          },
+          {
+            "path": "assets/testAdminSession-DXF3XzQa.js",
+            "status": 200,
+            "diskSha256": "A08C4F5E5F35740556EB5F8199D91C810FEBF8ACA02B523E0503CA6D180CEABF",
+            "httpSha256": "A08C4F5E5F35740556EB5F8199D91C810FEBF8ACA02B523E0503CA6D180CEABF",
+            "equal": true
+          },
+          {
+            "path": "assets/testProductPriceEditor-BGOfR7-n.css",
+            "status": 200,
+            "diskSha256": "F54CA7EE633E311E1622353BC893E6D17DD0AD9A0B01E9BA26679B9636DE2E07",
+            "httpSha256": "F54CA7EE633E311E1622353BC893E6D17DD0AD9A0B01E9BA26679B9636DE2E07",
+            "equal": true
+          },
+          {
+            "path": "assets/testProductPriceEditor-CUeOniZb.js",
+            "status": 200,
+            "diskSha256": "49F2DDDF3137EDB1F80295FEE87594C264A23762AE5711A41489CD96ADF968A8",
+            "httpSha256": "49F2DDDF3137EDB1F80295FEE87594C264A23762AE5711A41489CD96ADF968A8",
+            "equal": true
+          },
+          {
+            "path": "assets/workflow-BKDA0SdN.css",
+            "status": 200,
+            "diskSha256": "2ED98FAA14BA0E1974423DEAFBC09E5999F789495C7F11D458ACB3F4E81DBD5D",
+            "httpSha256": "2ED98FAA14BA0E1974423DEAFBC09E5999F789495C7F11D458ACB3F4E81DBD5D",
+            "equal": true
+          },
+          {
+            "path": "assets/workflow-C0mlzR-H.js",
+            "status": 200,
+            "diskSha256": "706F84763B3D10142ACB45B0E4E3D410547CEA8772AA97F619AAB210DE690E6F",
+            "httpSha256": "706F84763B3D10142ACB45B0E4E3D410547CEA8772AA97F619AAB210DE690E6F",
+            "equal": true
+          },
+          {
+            "path": "workflow-entry.js",
+            "status": 200,
+            "diskSha256": "F1063C358202BF91385E2CC84A76BC6A6D002EABEA14E535C2D0DB6FA3D88A34",
+            "httpSha256": "F1063C358202BF91385E2CC84A76BC6A6D002EABEA14E535C2D0DB6FA3D88A34",
+            "equal": true
+          },
+          {
+            "path": "workflow-settlement.css",
+            "status": 200,
+            "diskSha256": "540AABEFBE30B7FC2F4C3178379804F52E5F0174B2D70F36BA1ACF283EC6C8E1",
+            "httpSha256": "540AABEFBE30B7FC2F4C3178379804F52E5F0174B2D70F36BA1ACF283EC6C8E1",
+            "equal": true
+          },
+          {
+            "path": "index.html",
+            "status": 200,
+            "diskSha256": "74DEAE2A3F2D8D951A22FFA55E7B6A816D57691938967799DE64321DEF3F6056",
+            "httpSha256": "74DEAE2A3F2D8D951A22FFA55E7B6A816D57691938967799DE64321DEF3F6056",
+            "equal": true
+          },
+          {
+            "path": "is-akisi-taslagi.html",
+            "status": 200,
+            "diskSha256": "7FA8332D39D3D0624563E56633F988A77C89FE41C85D7A54ECB1C44B3CA98766",
+            "httpSha256": "7FA8332D39D3D0624563E56633F988A77C89FE41C85D7A54ECB1C44B3CA98766",
+            "equal": true
+          }
+        ]
+      }
+    ],
+    "ownerEvidence": [
+      {
+        "file": "store-day-installed-health.json",
+        "path": "C:\\Sirket\\ERP\\clean\\20261022\\runtime\\store-day-installed-health.json",
+        "bytes": 1769,
+        "sha256": "B33D015304C0E9C418000E8690D5C2EA6A8142A1B2E08262299BA37F25A1F8D8"
+      },
+      {
+        "file": "store-day-native-rollback.json",
+        "path": "C:\\Sirket\\ERP\\clean\\20261022\\runtime\\store-day-native-rollback.json",
+        "bytes": 1096,
+        "sha256": "00474EFC02F877CAFF2C42E63D5C72DCD4F98799F54C4C44C7C92ACA5BB30C69"
+      },
+      {
+        "file": "store-day-existing-sale-rollback.json",
+        "path": "C:\\Sirket\\ERP\\clean\\20261022\\runtime\\store-day-existing-sale-rollback.json",
+        "bytes": 770,
+        "sha256": "913AEAD049CA7CB17118C62AE38C76FC043B371BDD2749C52329A52A03DF878F"
+      },
+      {
+        "file": "store-day-old-listeners-after.json",
+        "path": "C:\\Sirket\\ERP\\clean\\20261022\\runtime\\store-day-old-listeners-after.json",
+        "bytes": 3086,
+        "sha256": "314669DDAD7CAA19610DC64DAE689D753F3E92A0A8BDE332E4719A1FB18B9525"
+      },
+      {
+        "file": "store-day-protected-before.txt",
+        "path": "C:\\Sirket\\ERP\\clean\\20261022\\runtime\\store-day-protected-before.txt",
+        "bytes": 1151,
+        "sha256": "BAC513C94D26EDF5207409D2018FD027ED31FEA9ADDA95AF3C1AA5560E64DFB7"
+      },
+      {
+        "file": "listeners-before.json",
+        "path": "C:\\Sirket\\ERP\\clean\\20261022\\runtime\\store-day-install-20261022T151226Z\\listeners-before.json",
+        "bytes": 4453,
+        "sha256": "28B27FBF996467A4AED92A4055C3DD048E41740BBFA207D03DFEE437E0501312"
+      }
+    ]
+  },
+  "nativePin": {
+    "expectedSourceAtObservation": "7dc6fac0898a163a6447f52daafe9cf3d4f571d9",
+    "expectedPackageAtObservation": "CLEAN-ERP-20261022-7dc6fac0898a",
+    "provenance": "ERP-owner start-crm.ps1 reads fresh native4196 /test-health; existing CRM order adapter enforces exact source/package/port and zero stock/ledger effects.",
+    "newAuthenticatedCrmOrderCallPerformed": false,
+    "processSecretsInspected": false,
+    "limit": "Launcher/configuration provenance was read; loaded process environment and a new authenticated order roundtrip were not independently inspected."
+  },
+  "ownerEvidence": {
+    "proofsAreOwnerProduced": true,
+    "crmSqlExecuted": false,
+    "crmNewScenarioExecuted": false,
+    "nativeRollback": "Owner native ten-step transaction proof returns to baseline; local path/hash references are in observation.ownerEvidence.",
+    "oldSaleRollback": "Owner existing-sale proof returns to baseline; no new CRM sale replay was executed.",
+    "normalGui": "Owner reports normal staff18 count3/receipt3 and supervisor19 purchase4/TSTB-20261022-GUI3, 2 x 60 = 120 TRY; stock21->23 only at receipt, supplier0->120 only at finalize. CRM inspected two owner screenshots, not the browser or a human acceptance.",
+    "guiScreenshotInspected": [
+      "store-day-office-accepted.jpg",
+      "store-day-purchase-finalized.jpg"
+    ],
+    "screenshotLimit": "The purchase-finalized screenshot precedes the stored-rate read fix and visibly says the recorded rate could not be verified.",
+    "protectedDigests": {
+      "scopes": 12,
+      "unchanged": 11,
+      "changed": [
+        "old_users"
+      ],
+      "oldOrdersLinesNativeReceiptsAndInvoice1HashesEqual": true,
+      "oldUsersChangeAttribution": "Owner attributes old_users change to normal login last_login_at; authService contains that write, but digests alone do not prove that this was the only changed column.",
+      "newTargetedCrmOrderReadbackPerformed": false
+    },
+    "readProjectionFix": {
+      "status": "SOURCE_REVIEW_ONLY_NOT_INSTALLED_AT_OBSERVATION",
+      "reviewer": "existing az_independent_reviewer",
+      "openP1P2": 0,
+      "reviewedStoreSha256BeforeEolNormalization": "50849DDA5278C637AF036535F504378D26CB9541071C7274F78B61FDED6F82D3",
+      "finalNormalizedStoreSha256": "06F0CBF26D24BCDC994C84C362FA65D60D776518E3C73AC6B19731B3E45602D3",
+      "testSha256": "1910AE9D8E1EFD681E2C8C6F4850030B68F36C31D7C69F9355493189BCCD845F",
+      "normalizationCheck": "Parent read final text diff: same nine read-only lines against 7dc; no financial/stock/auth/replay guard change.",
+      "owner55TargetPassNotRerun": true
+    }
+  },
+  "github": {
+    "erpPullRequest": "https://github.com/melihsnyldzz-ui/melisa-erp-v2/pull/54",
+    "sourceCommit": "7dc6fac0898a163a6447f52daafe9cf3d4f571d9",
+    "ci": [
+      {
+        "run": 39802467273,
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "run": 39802457830,
+        "status": "completed",
+        "conclusion": "success"
+      }
+    ],
+    "ciHeadShaVerified": true,
+    "newReadProjectionCommitAndCi": "PENDING"
+  },
+  "finalReceipt": null,
+  "completion": {
+    "finalSourcePackageRuntimeMapping": false,
+    "newNormalGuiAfterReadFix": false,
+    "finalOldSaleAndActiveGuardHashMapping": false,
+    "originalOrder3Invoice1FinalReadbackMapping": false,
+    "realHumanAcceptance": "BEKLIYOR",
+    "physicalPhoneAndReboot": "BEKLIYOR",
+    "crmLeaves": {
+      "total": 25,
+      "green": 12,
+      "partial": 13,
+      "red": 0
+    },
+    "originalTotalLeaves": 74
+  },
+  "next": "ERP owner finishes read-projection package, normal recorded-rate screen and final installation/protection receipt; CRM then maps the final source/package/runtime read-only.",
+  "boundaries": {
+    "crmApplicationChanged": false,
+    "sqlWrites": false,
+    "runtimeWrites": false,
+    "serviceRestart": false,
+    "newLogin": false,
+    "paidApi": false,
+    "liveVegaRealT1": false,
+    "mainMerge": false,
+    "testsRerun": false,
+    "newCustomerMessages": false
+  },
+  "subsequentOwnerEvidenceReadOnlyReview": {
+    "status": "PRELIMINARY",
+    "finalApiChecks": {
+      "replayed200": 3,
+      "negative": 6,
+      "additionalNativeWriteStatus": 403
+    },
+    "sameInvoiceAndReceipt": {
+      "invoiceId": 4,
+      "receiptId": 3,
+      "quantity": 2,
+      "unitPriceTry": 60,
+      "totalTry": 120,
+      "rate": 1
+    },
+    "fileSha256": {
+      "store-day-protected-after.txt": "5D7D3296BF2DC13BEF21D77896A6A6F0AD4149F9D2B85B2F383CC9AEFC4DB521",
+      "store-day-final-api-proof.json": "5684DE3B11AD7345F679A51F7C52B6D64D85AD0D9DB7EAFFF4F7A38669AA55F2",
+      "store-day-recorded-basis-native-read.json": "CB180F4976256C805046B27094D0EC72837F9AF0FA62A6B1B692002E2F55ABC9"
+    },
+    "sqlOrApiRerunByCrm": false
+  }
+}
