@@ -14,6 +14,12 @@ Hedefli kaynak kanıtı: yeni native validator/async/recovery50NodePASS; native 
 
 Sonraki halka ERP tek sahibindedir: kendi source/review/CI ve CRM sourceCI hazır olunca yeni temiz alana tek kurulum; mevcut order3'ü normal onay/satış/stock-cari/readback ve yenileme/yanıt kaybında tek etkiyle doğrular. CRM runtime/SQL/GUI yazmaz. ERP409eski-revision journal kilidi owner dar reconciliation düzeltmesiyle kapandı; son metadata/triggername/health ayrımı RO incelemesinde de açıkP1/P2=0. Owner6SQLnegatif/rollback ve7sourcePASS bildirdi; CRM bunları çalıştırmış sayılmaz. Yeni kurulu satış GUI sonucu henüz yok. İnsan/fiziksel cihaz/reboot ve25/12/13/0/74 korunur.
 
+## 22 Ekim15:52TR — yeni kurulum owner bildirimi, nihai makbuz bekleniyor
+
+ERP sahibi9f541f98/CRMc8d0e28 temiz adaylarını kurduğunu, ERP4194 operasyonel satış yetkisi/native4196 draft-only ayrımının korunduğunu bildirdi. CRM clean frontend build23.56snPASS owner çıktısından RO okundu. Yeni nihai kurulum makbuzu henüz yoktur; eski9407d352 makbuzu bu yeni kaynaklara atanmaz. İlk normalERPpersonel ekranı aynı order3/3adet/376.50TRY kaydını gösterir; bu dönüşüm/onay/tek-etki sonucu değildir. Dört mevcut temiz TEST tablosunda eksik SELECT için owner dar düzeltme yaptı; genel DBcontrol/sysadmin/eskiDB yetkisi açılmadı.
+
+Son ek bağımsız inceleme dört SELECT sınırını uygun buldu fakat service runtime()/transactionbegin yeni hata maskelemesinin dışında kaldığı için1P2 bildirdi. Bulguyu owner'a exact dosya/konumla ilettik; nihai düzeltme/exactsourceCI/makbuz/komple satışGUI bekleniyor. CRM ortak SQL/runtime/servis/GUI yazmadı ve yeni satışPOST'u yapmadı. Kurulum eşlemesi yalnız owner'ın nihai makbuzu hazır olduğunda kapanacak; kaynakc8 ve exact7CIbaşarısı ayrı hazır kanıttır.
+
 ## Tarihsel ilk22Ekim incelemesi — kurulu normal taslak ile onaylı satışın sonuç bağı
 
 CRM-DEC-024 doğrudan kullanıcı mesajından doğrulandı. İnceleme anında kanonik CRM `0064cf2f57cc8b04f4c29e87ad82f96288c1a1ce`, origin/dal doğru, dirty0; kurulu uygulama1dd07d1 ve ERP970cfc2'dir. Güncel temiz alan ve gerçek teknik GUI/kesinti kanıtı [22 Ekim arşivinde](../2026-10-22-clean-current-source/README.md) korunur. Aşağıdaki20Ekim BLOCKED tanısı geçmişteki ayrı kaynak kapsamıdır; yeniden koşulmadı ve normal/native satışa dönüşüm kanıtı sayılmaz.

@@ -187,7 +187,7 @@
     "acceptance": "Technical conversion not yet proven; original human/device/reboot acceptance and 25/12/13/0/74 counts unchanged."
   },
   "saleConsumer20261022": {
-    "stage": "SOURCE_CI_READY_OWNER_INSTALLATION_PENDING",
+    "stage": "SOURCE_CI_READY_OWNER_INSTALLATION_REPORTED_FINAL_RECEIPT_PENDING",
     "sourceBase": "a7d1a2b8beea992c8b03573d1bce01363a3f5209",
     "contract": {
       "schemaVersion": "melisa-order-sale.v1",
@@ -271,7 +271,6 @@
     "runtime": {
       "crm": "1dd07d1f49b01a1847a519a0868294cb05188cd2",
       "erp": "970cfc24b9fdb0017a79c5ca6c03bb4b59a23bbc",
-      "newInstallation": false,
       "sharedSqlConfigServiceWriteByCrm": false,
       "newGuiByCrm": false,
       "latestReceiptCheck": {
@@ -280,10 +279,35 @@
         "sha256": "9407d35235d5b6575706c57d1c624afbc79d3b29f2bac1c0b5705f0906341014",
         "newInstallationReceiptPresent": false,
         "scope": "Existing receipt still identifies CRM1dd/ERP970. Owner is preparing the new combined installation; no fresh shared GUI/SQL/runtime probing by CRM."
+      },
+      "newInstallationIndependentlyMatched": false,
+      "ownerCheckpoint": {
+        "observedAt": "2026-10-22T15:52:15+03:00",
+        "installedReported": true,
+        "reportedSources": {
+          "crm": "c8d0e28f0ea6cf16133c87dd548a4281381abfb7",
+          "erp": "9f541f98bb37872aecf3166f4f379d7f4c5687e3"
+        },
+        "finalNewReceiptAvailable": false,
+        "crmCleanBuildSeconds": 23.56,
+        "crmCleanBuildClaim": "Owner build log; not an independently matched final package/runtime receipt.",
+        "initialPersonnelScreen": "Same original order3,3 units and376.50TRY; not a conversion/finalization/single-effect proof.",
+        "upstreamReadGrants": "Owner-only SELECT on four existing clean TEST tables; reviewed no additional writes or broad database access.",
+        "openSourceFinding": {
+          "priority": "P2",
+          "file": "apps/api/src/services/cleanOrderSaleService.mjs",
+          "lines": [
+            29,
+            34
+          ],
+          "issue": "runtime() and transaction begin outside typed unavailable error boundary.",
+          "reportedToOwner": true
+        },
+        "sharedWritesByCrm": false
       }
     },
     "acceptance": {
-      "newLinkedSaleGui": "NOT_RUN",
+      "newLinkedSaleGui": "IN_PROGRESS_OWNER_NORMAL_UI_NOT_PASSED",
       "physicalDevice": "PENDING",
       "human": "PENDING",
       "windowsReboot": "PENDING",
