@@ -1,6 +1,20 @@
 # CRM06 / P04 — mevcut siparişten tek ERP satış fişine sözleşme incelemesi
 
-## 22 Ekim devamı — kurulu normal taslak ile onaylı satışın sonuç bağı
+## 22 Ekim kaynak tüketicisi — kesin sözleşme hazır, kurulum henüz değil
+
+ERP sahibi mevcut PR54 worktree'sinde native4196 `GET /api/test/crm/orders/v2/drafts/:requestId/sale` / `melisa-order-sale.v1` sözleşmesini kesinleştirdi. Aynı ERP Bearer ve CRM authorization ile eski draftGET önce/sonra, aynı CRM actor/conversation/peer/assignment kontrolü korunur. DTO yalnız doğrulanmış mevcut sipariş için NOT_CONVERTED/sale:null, DRAFT veya FINALIZED döndürür. Eksik draft404, erişim401/403, kurulu olmayan şema/bozuklink503 veya ağ kaybı satışyok değildir. Native draft-only health/effectfalse pini korunur; satışPOST yalnız ERP4194'te owner'dadır.
+
+CRM tüketicisi yalnız clean profile'da bu GET'i aktarır. Önce normal taslak makbuzu, sonra aynı requestId/orderID/documentNo/customerID/TRY/exact4tutar ve ayrı satışID/durum/etki/revision/capabilities doğrulanır. Müşteri adı DTO'da güncel ERP adıdır; kimlik aynı customerID'yle bağlanır, isim değişikliği sahte hata yapılmaz. NOT_CONVERTED/DRAFT/FINALIZED harici durum uydurulmaz. Satışta collection/reservation false, stock/ledger yalnız FINALIZED'ta true olmalıdır; bu bağımsız SQL kanıtı değil, doğrulanmış ERP okuma sözleşmesidir.
+
+- `nativeOrder.js` yeni `readNativeOrderSale` yalnız resolved journal'ın tam envelope'unu okuma öncesi/sonrası karşılaştırır; eski draft/CAS/POST-GET algoritmasına dokunmaz. Satış404 veya belirsiz sonuç draft404→POST recovery koluna hiç girmez. Close/kimlik/ERPactor/journal değişiminde geç sonuç taşınmaz; satış sonucu storage'a yazılmaz.
+- `test-erp-orders.mjs` yalnız cleanGET, exact nativehealth/source/package ve ERP/CRM auth ile orijinal sipariş ve konuşma erişimini önce/sonra kontrol eder. Sonuç requestId/orderID bağı doğrulanır; queryextra/POSTsale/legacyprofil bu yeni yola giremez.
+- Mevcut diyalog ve kart üç doğru satış durumunu veya “satış durumu okunamadı”yı gösterir. Taslak etkisizliği tarihsel “oluşturulurken” açıklamasıdır. “ERP durumunu yenile” yalnız draftGET+saleGET yapar; onay/satış/ödeme düğmesi yoktur. Loading/hata eski satış başarısını temizler; browser yenilenince satış durumu tekrar okunmalıdır.
+
+Hedefli kaynak kanıtı: yeni native validator/async/recovery50NodePASS; native proxy18NodePASS; gerçek JSX SSR+eski kart/ondalık uyumluluğu5PASS. Node parent testleri bu sayılara dahildir; bunlar73gerçek personel senaryosu diye sunulmaz. Son normal frontend build22.22snPASS; mevcut bağımsız reviewer kaynak/test RO incelemesi açıkP1/P2=0. Eski57+7,12+4,4.4gerçek GUI veya SQL kabulleri bu değişiklik için manuel tekrar edilmedi. Exact sourceCI henüz beklenir; kurulu1dd/970 ve önceki makbuz, yeni tüketici kurulumu değildir.
+
+Sonraki halka ERP tek sahibindedir: kendi source/review/CI ve CRM sourceCI hazır olunca yeni temiz alana tek kurulum; mevcut order3'ü normal onay/satış/stock-cari/readback ve yenileme/yanıt kaybında tek etkiyle doğrular. CRM runtime/SQL/GUI yazmaz. ERP409eski-revision journal kilidi bağımsız review'de bulundu, owner dar reconciliation düzeltmesini hazırladı; yeni gerçek TEST sonucu henüz yok. İnsan/fiziksel cihaz/reboot ve25/12/13/0/74 korunur.
+
+## Tarihsel ilk22Ekim incelemesi — kurulu normal taslak ile onaylı satışın sonuç bağı
 
 CRM-DEC-024 doğrudan kullanıcı mesajından doğrulandı. İnceleme anında kanonik CRM `0064cf2f57cc8b04f4c29e87ad82f96288c1a1ce`, origin/dal doğru, dirty0; kurulu uygulama1dd07d1 ve ERP970cfc2'dir. Güncel temiz alan ve gerçek teknik GUI/kesinti kanıtı [22 Ekim arşivinde](../2026-10-22-clean-current-source/README.md) korunur. Aşağıdaki20Ekim BLOCKED tanısı geçmişteki ayrı kaynak kapsamıdır; yeniden koşulmadı ve normal/native satışa dönüşüm kanıtı sayılmaz.
 

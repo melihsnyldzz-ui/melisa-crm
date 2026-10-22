@@ -646,6 +646,7 @@ export const liveApi = {
  canonicalCatalogPhoto(token,id,options={}) {if(!canonicalId(id))throw Error('ERP ürün kimliği doğrulanamadı.');return catalogPhoto(token,id,options);},
  erpV2Customers:(token,erpToken,conversationId,phone,search='')=>request('/crm/erp/v2/customers?'+new URLSearchParams({conversationId:String(conversationId),phone,search}),token,{headers:{'x-erp-token':erpToken}}),
  erpV2DraftDetail:(token,erpToken,id)=>request('/crm/erp/v2/drafts/'+encodeURIComponent(id),token,{headers:{'x-erp-token':erpToken},timeoutMs:45000}),
+ erpV2DraftSale:(token,erpToken,id)=>request('/crm/erp/v2/drafts/'+encodeURIComponent(id)+'/sale',token,{headers:{'x-erp-token':erpToken},timeoutMs:45000}),
  erpV2Draft:(token,erpToken,body)=>request('/crm/erp/v2/drafts',token,{method:'POST',headers:{'x-erp-token':erpToken},body:JSON.stringify(body),timeoutMs:45000}),
   erpDrafts: token => request('/crm/erp/drafts',token),
   erpLogin: (token,credentials) => request('/crm/erp/login',token,{method:'POST',body:JSON.stringify(credentials)}),

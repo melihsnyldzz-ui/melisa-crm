@@ -38,6 +38,40 @@ export function validateNativeReceipt(receipt,body,expectedSource){
  if(!equal(receipt?.request,body)||receipt.status!=='draft'||receipt.erpPersisted!==true||receipt.testOnly!==true||['stockEffect','ledgerEffect','collectionEffect','reservationEffect'].some(k=>receipt[k]!==false)||!Array.isArray(receipt.items)||receipt.items.length!==body.items.length)fail('ERP ayrı geri okuma seçimle eşleşmedi. Aynı taslağı kontrol edin.');
  let total=0n;for(const line of body.items){const rows=receipt.items.filter(r=>r.productId===line.productId&&r.stockCode===line.stockCode&&r.quantity===line.quantity&&r.currency===line.currency);if(rows.length!==1)fail();const row=rows[0],price=round4(exact8(line.priceExact8)),lineTotal=price*BigInt(line.quantity);if(exact4(row.unitPriceExact4)!==price||exact4(row.lineTotalExact4)!==lineTotal)fail('ERP satır fiyatı veya toplamı değişti.');total+=lineTotal;}if(exact4(receipt.grandTotalExact4)!==total||exact4(receipt.amountTryExact4)!==(total*exact8(body.exchangeRateExact8)+50000000n)/100000000n)fail('ERP toplamı seçimle eşleşmedi.');return receipt;
 }
+// The immutable draft receipt and the current ERP sale are separate contracts.
+export function validateNativeOrderSale(value,receipt){
+ const invalid=()=>fail('ERP satış sonucu bu siparişle doğrulanamadı.');
+ validateNativeReceipt(receipt,receipt?.request);
+ const identifier=v=>typeof v==='string'&&/^[1-9]\d{0,18}$/.test(v)&&BigInt(v)<=9223372036854775807n;
+ const text=v=>typeof v==='string'&&v.trim().length>0&&v.length<=500&&!/[\u0000-\u001f\u007f]/.test(v);
+ if(!keys(value,['schemaVersion','environment','environmentId','requestId','order','state','sale','revision','capabilities'])||value.schemaVersion!=='melisa-order-sale.v1'||value.environment!=='CLEAN_SYNTHETIC_TEST'||value.environmentId!=='e662fd94-d797-4b3b-938a-d143ad758b67'||value.requestId!==receipt.request.requestId.toLowerCase()||typeof value.revision!=='string'||!/^[a-f0-9]{64}$/.test(value.revision)||!['NOT_CONVERTED','DRAFT','FINALIZED'].includes(value.state))invalid();
+ const order=value.order;
+ if(!keys(order,['id','documentNo','documentDate','customerId','customerName','currency','totalExact4'])||!identifier(order.id)||!identifier(order.customerId)||order.id!==String(receipt.id)||order.documentNo!==receipt.documentNo||!text(order.documentNo)||order.customerId!==String(receipt.request.customerId)||!text(order.customerName)||order.currency!=='TRY'||order.currency!==receipt.request.documentCurrency||order.totalExact4!==receipt.grandTotalExact4||typeof order.documentDate!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(order.documentDate)||!Number.isFinite(Date.parse(order.documentDate))||new Date(order.documentDate).toISOString().slice(0,10)!==order.documentDate)invalid();
+ const capabilities=value.capabilities;
+ if(!keys(capabilities,['canConvert','canFinalize'])||typeof capabilities.canConvert!=='boolean'||typeof capabilities.canFinalize!=='boolean'||value.state!=='NOT_CONVERTED'&&capabilities.canConvert||value.state!=='DRAFT'&&capabilities.canFinalize)invalid();
+ if(value.state==='NOT_CONVERTED'){if(value.sale!==null)invalid();return value;}
+ const sale=value.sale,finalized=value.state==='FINALIZED';
+ if(!keys(sale,['id','documentNo','status','customerId','currency','totalExact4','stockEffect','ledgerEffect','collectionEffect','reservationEffect'])||!identifier(sale.id)||!text(sale.documentNo)||sale.status!==(finalized?'finalized':'draft')||sale.customerId!==order.customerId||sale.currency!==order.currency||sale.totalExact4!==order.totalExact4||sale.stockEffect!==finalized||sale.ledgerEffect!==finalized||sale.collectionEffect!==false||sale.reservationEffect!==false)invalid();
+ return value;
+}
+export const nativeOrderSaleLabel=value=>({NOT_CONVERTED:'Henüz satışa aktarılmadı',DRAFT:'ERP satış taslağı hazır',FINALIZED:'ERP satışı tamamlandı'})[value.state];
+
+export async function readNativeOrderSale({store,receipt,nativeActorId,readSale,isCurrent}){
+ if(!isCurrent())return null;
+ const record=store.assertActor(store.read(),nativeActorId);
+ store.assertCurrent(record,nativeActorId);
+ if(!record.resolved)fail('Önce sipariş taslağını ERP’den yeniden doğrulayın.');
+ validateNativeReceipt(receipt,record.payload,record.expectedSource);
+ let value;
+ try{value=await readSale(record.payload.requestId);}catch(error){
+  if(!isCurrent())return null;
+  store.assertCurrent(record,nativeActorId);
+  throw error;
+ }
+ if(!isCurrent())return null;
+ store.assertCurrent(record,nativeActorId);
+ return validateNativeOrderSale(value,receipt);
+}
 export function createNativeOrderStore(actor,conversationId,storage){
  const key=`melisa-crm-native-order-v2:${encodeURIComponent(actor)}:${encodeURIComponent(String(conversationId))}`;
  let verifiedRecord=null;

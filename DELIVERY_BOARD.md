@@ -1,6 +1,6 @@
 ## 22 Ekim — E02 / CRM06 aynı siparişin bağlı ERP satış sonucunu okuma
 
-CRM-DEC-024 ile ilk teknik hedef mevcut yapay CRM siparişi→ERP yetkili onay→tek satış/tek stok-cari etkisidir. ERP sahibi uygulama/SQL/kurulum/normal GUI'yi; CRM kesin sözleşmeye bağlı read-only sonuç tüketimini sahiplenir. Çalışan1dd taslak/UUID/body/reopen/katalog/fotoğraf korunur. Şu an normal native makbuz taslak-only'dir; bağlı satış durum/belge geri okuması ERP sözleşmesi bağımlılığıdır. [Mevcut E02 kaynak bulgusu](docs/evidence/crm/2026-10-20-sales-bridge/README.md); etkin adım CRM_STATUS'tadır. Yeni satış/ödeme yolu veya ikinci tracker açılmaz; teknik/kurulum/insan ayrımı ve25/12/13/0/74 korunur. Aşağıdaki eski checkpoint'ler tarihsel sıradır.
+CRM-DEC-024 ile ilk hedef mevcut yapay CRM siparişi→ERP yetkili onay→tek satış/tek stok-cari etkisidir. Native4196 `melisa-order-sale.v1` GET sözleşmesi owner kaynağında kesinleşti; CRM yalnız doğrulanmış durum/makbuz/kart/yenile tüketicisini hazırladı.50native/18proxy/5SSR-history hedefPASS, buildPASS/review0; sourceCI ve tek sahipli kurulum/normalGUI henüz yok, kurulu1dd/970 değişmedi. [Aynı E02 kanıtı](docs/evidence/crm/2026-10-20-sales-bridge/README.md); etkin adım CRM_STATUS'tadır. ERP uygulama/SQL/kurulum/GUI tek sahibi, CRM satışPOST'u eklemez. Yeni tracker/sayaç yok;25/12/13/0/74 ve insan kabulü korunur. Aşağıdaki checkpoint'ler tarihsel sıradır.
 
 ## 13 Ekim — E02 fiyat-witness tüketicisi
 

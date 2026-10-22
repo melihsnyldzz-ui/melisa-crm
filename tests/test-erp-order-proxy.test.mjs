@@ -23,6 +23,49 @@ function fixture({health=ERP_TEST_IDENTITY,permissions=['crm.send'],nativeStatus
   }});
   return {handler,calls};
 }
+test('clean linked sale GET keeps source pins and fresh conversation access without any write route',async t=>{
+ const endpoints=resolveTestEndpoints({CRM_TEST_PROFILE:'clean-synthetic-20261022',CRM_TEST_PORT_BASE:'62800',CRM_ISOLATED_PREPARATION:'true',CRM_TEST_ERP_ORIGIN:'http://127.0.0.1:4194',CRM_TEST_EXPECTED_DATABASE:'MELISA_ERP_CLEAN_TEST_20261022'});
+ const source='c'.repeat(40),packageId='clean-sale-read-fixture',path=`/crm/erp/v2/drafts/${requestId}/sale`,nativePath=`/api/test/crm/orders/v2/drafts/${requestId}`;
+ const health={environment:'CLEAN_SYNTHETIC_TEST',synthetic:true,serverName:'Semih\\MELISADEV',originalDatabaseAccess:0,liveDatabaseAccess:0,sysadmin:0,databaseControl:0,externalOperations:false,automaticJobs:false,actualT1:false,database:endpoints.database,port:4196,purpose:'crm-order-draft-only',sourceCommit:source,packageId,stockEffect:false,ledgerEffect:false,reservationEffect:false};
+ function cleanFixture({saleStatus=200,badBinding=false,deniedRead=0,badHealth=false}={}){
+  const calls=[];let conversationReads=0;
+  const handler=createTestOrderHandler({testEndpoints:endpoints,nativeSourceCommit:source,nativePackageId:packageId,fetchFn:async(url,options)=>{
+   calls.push({url:String(url),options});
+   if(url.pathname==='/auth/me')return Response.json({data:{id:'synthetic-staff',permissions:['crm.send']}});
+   if(url.pathname==='/test-health')return Response.json({data:{...health,...(badHealth?{sourceCommit:'d'.repeat(40)}:{})}});
+   if(url.pathname==='/crm/conversations/55'){if(++conversationReads===deniedRead)return Response.json({success:false,error:{code:'CRM_ACCESS_DENIED'}},{status:403});return Response.json({data:{id:55,phone:'905550000001'}});}
+   if(url.pathname===nativePath)return Response.json({data:{id:3,request:{requestId,conversationId:'55',peer:'905550000001'}}});
+   if(url.pathname===nativePath+'/sale')return saleStatus===200?Response.json({data:{requestId,order:{id:badBinding?'4':'3'},state:'NOT_CONVERTED',sale:null}}):Response.json({success:false,error:{code:'CLEAN_SALE_UNAVAILABLE'}},{status:saleStatus});
+   throw Error('unexpected synthetic route');
+  }});
+  return {handler,calls};
+ }
+ await t.test('GET forwards separate native/CRM credentials with pre/post assignment checks',async()=>{
+  const f=cleanFixture(),result=await invoke(f.handler,'GET',path,undefined,{'x-erp-token':'synthetic-native'});
+  assert.equal(result.status,200);assert.equal(result.data.state,'NOT_CONVERTED');
+  const reads=f.calls.filter(c=>c.url.includes(nativePath));assert.equal(reads.length,2);
+  assert.equal(reads[1].url,'http://127.0.0.1:4196'+nativePath+'/sale');assert.equal(reads[1].options.method,'GET');
+  for(const call of reads){assert.equal(call.options.headers.Authorization,'Bearer synthetic-native');assert.equal(call.options.headers['X-CRM-Authorization'],'Bearer synthetic-crm');assert.equal(call.options.body,undefined);}
+  assert.equal(f.calls.filter(c=>c.url.endsWith('/crm/conversations/55')).length,2);assert(f.calls.every(c=>c.options.method!=='POST'));
+ });
+ for(const saleStatus of [404,401,403,503])await t.test(`sale error ${saleStatus} is not NOT_CONVERTED and never writes`,async()=>{
+  const f=cleanFixture({saleStatus}),result=await invoke(f.handler,'GET',path,undefined,{'x-erp-token':'synthetic-native'});
+  assert.equal(result.status,saleStatus);assert.equal(result.data,undefined);assert(f.calls.every(c=>c.options.method!=='POST'));
+ });
+ for(const deniedRead of [1,2])await t.test(`assignment denied at read ${deniedRead} exposes no sidecar`,async()=>{
+  const f=cleanFixture({deniedRead}),result=await invoke(f.handler,'GET',path,undefined,{'x-erp-token':'synthetic-native'});
+  assert.equal(result.status,403);assert.equal(result.data,undefined);assert(f.calls.every(c=>c.options.method!=='POST'));
+ });
+ await t.test('wrong linked order and source drift fail closed',async()=>{
+  const binding=cleanFixture({badBinding:true});assert.equal((await invoke(binding.handler,'GET',path,undefined,{'x-erp-token':'synthetic-native'})).status,502);
+  const target=cleanFixture({badHealth:true});assert.equal((await invoke(target.handler,'GET',path,undefined,{'x-erp-token':'synthetic-native'})).status,503);assert.equal(target.calls.length,2);
+ });
+ await t.test('sale POST, query extras and legacy profile never route to a sale service',async()=>{
+  const f=cleanFixture();for(const [method,url] of [['POST',path],['GET',path+'?x=1'],['POST','/crm/erp/v2/drafts/'+requestId+'/finalize-linked-sale']])assert.equal((await invoke(f.handler,method,url,undefined,{'x-erp-token':'synthetic-native'})).status,404);
+  assert.equal(f.calls.length,3);const legacy=fixture();assert.equal((await invoke(legacy.handler,'GET',path,undefined,{'x-erp-token':'synthetic-native'})).status,404);assert.equal(legacy.calls.length,1);
+ });
+});
+
 test('wrong target identity prevents native login and draft writes',async()=>{
   for(const health of [{...ERP_TEST_IDENTITY,database:'OTHER'},{...ERP_TEST_IDENTITY,environment:'LIVE'},{...ERP_TEST_IDENTITY,purpose:'other'}]){
     const f=fixture({health});

@@ -57,6 +57,7 @@ export function createTestOrderHandler({ fetchFn = (...args) => fetch(...args),t
         data = { orders: [], loginRequired: true };
       } else {
         let nativePath, input;
+        const saleRead=testEndpoints.cleanSynthetic&&req.method==='GET'&&/^\/crm\/erp\/v2\/drafts\/[0-9a-f-]{36}\/sale$/i.test(url.pathname)&&!url.search;
         if (req.method === 'POST' && url.pathname === '/crm/erp/login') {
           const recent = (loginAttempts.get(actor.id) || []).filter(at => at > Date.now() - 900000);
           if (recent.length >= 5) fail('ERP_LOGIN_RATE_LIMIT', 429);
@@ -70,6 +71,8 @@ export function createTestOrderHandler({ fetchFn = (...args) => fetch(...args),t
           nativePath='/api/test/crm/orders/v2/customers?'+url.searchParams;
         } else if(req.method==='POST'&&url.pathname==='/crm/erp/v2/drafts'){
           input=await readBody(req);nativePath='/api/test/crm/orders/v2/drafts';
+        } else if(saleRead){
+          nativePath='/api/test/crm/orders/v2/drafts/'+url.pathname.split('/').at(-2)+'/sale';
         } else if(req.method==='GET'&&/^\/crm\/erp\/v2\/drafts\/[0-9a-f-]{36}$/i.test(url.pathname)&&!url.search){
           nativePath='/api/test/crm/orders/v2/drafts/'+url.pathname.split('/').at(-1);
         } else if (req.method === 'GET' && ['/crm/erp/context', '/crm/erp/customers'].includes(url.pathname)) {
@@ -89,12 +92,17 @@ export function createTestOrderHandler({ fetchFn = (...args) => fetch(...args),t
         await identity();
         const sharedLogin=testEndpoints.isolated&&nativePath==='/api/auth/login';
         if(sharedLogin){const health=await call(testEndpoints.erpOrigin,'/test-health');if(!health.ok||!healthSafe(health)||health.databaseName!==testEndpoints.database||health.port!==testEndpoints.erpPort||health.mode!=='erp'||health.writes!==true)fail('ERP_TEST_IDENTITY_MISMATCH',503);}
+        const saleDraft=saleRead?await call(nativeOrigin,nativePath.slice(0,-5),{headers:{'X-CRM-Authorization':authorization,Authorization:`Bearer ${nativeToken}`}}):null;
+        if(saleRead)await conversationAccess(authorization,saleDraft?.request?.conversationId,saleDraft?.request?.peer);
         data = await call(sharedLogin?testEndpoints.erpOrigin:nativeOrigin, nativePath, {
           method: req.method,
           headers: { ...(sharedLogin?{origin:testEndpoints.erpUiOrigin}:{}),'X-CRM-Authorization': authorization, ...(nativeToken ? { Authorization: `Bearer ${nativeToken}` } : {}), ...(input ? { 'Content-Type': 'application/json' } : {}) },
           ...(input ? { body: JSON.stringify(input) } : {}),
         });
-        if(testEndpoints.businessScope&&/^\/crm\/erp\/v2\/drafts\//.test(url.pathname))await conversationAccess(authorization,data?.request?.conversationId,data?.request?.peer);
+        if(saleRead){
+          if(data?.requestId!==url.pathname.split('/').at(-2).toLowerCase()||data?.order?.id!==String(saleDraft.id))fail('ERP_TEST_RESPONSE_INVALID',502);
+          await conversationAccess(authorization,saleDraft.request.conversationId,saleDraft.request.peer);
+        }else if(testEndpoints.businessScope&&/^\/crm\/erp\/v2\/drafts\//.test(url.pathname))await conversationAccess(authorization,data?.request?.conversationId,data?.request?.peer);
         if(scopedCustomerRead)await conversationAccess(authorization,url.searchParams.get('conversationId'),url.searchParams.get('phone'));
         if(scopedCreate)await conversationAccess(authorization,input?.conversationId,input?.peer);
         if (nativePath === '/api/auth/login') {

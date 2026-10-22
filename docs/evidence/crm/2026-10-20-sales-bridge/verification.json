@@ -185,5 +185,99 @@
     "newGuiSqlRuntimeWrite": false,
     "installationOwner": "Existing ERP main agent only",
     "acceptance": "Technical conversion not yet proven; original human/device/reboot acceptance and 25/12/13/0/74 counts unchanged."
+  },
+  "saleConsumer20261022": {
+    "stage": "SOURCE_READY_INSTALLATION_AND_EXACT_CI_PENDING",
+    "sourceBase": "a7d1a2b8beea992c8b03573d1bce01363a3f5209",
+    "contract": {
+      "schemaVersion": "melisa-order-sale.v1",
+      "upstreamPath": "/api/test/crm/orders/v2/drafts/:requestId/sale",
+      "crmPath": "/crm/erp/v2/drafts/:requestId/sale",
+      "nativeOrigin": "http://127.0.0.1:4196",
+      "environment": "CLEAN_SYNTHETIC_TEST",
+      "environmentId": "e662fd94-d797-4b3b-938a-d143ad758b67",
+      "supportedCurrency": "TRY",
+      "states": [
+        "NOT_CONVERTED",
+        "DRAFT",
+        "FINALIZED"
+      ],
+      "authority": "Existing ERP owner PR54 worktree typed view()/route. Candidate was read before ERP source commit; final ERP application pin must be matched at owner installation.",
+      "candidateServiceSha256": "a0ec34259f0143ad1810a7250788527fb551c4de8b7f8c83c4bbf94ce52603d2",
+      "candidateServerSha256": "db2e4749538316d2a973692507b9d20551c6770709d6aeb073bb4b212bd33fae",
+      "snapshotScope": "Read-only candidate snapshot; subsequent owner guard/index fixes were independently reviewed. Not an immutable package/deployment proof."
+    },
+    "behavior": {
+      "immutableDraftAlgorithmChanged": false,
+      "saleWriteRouteAdded": false,
+      "linkedStatusPersistedOrCached": false,
+      "cleanOnly": true,
+      "originalActorConversationAndFullJournalBound": true,
+      "errorsAreNotSaleAbsence": [
+        404,
+        401,
+        403,
+        503,
+        "network"
+      ],
+      "unknownUiIsNotAnInventedDtoState": true,
+      "linkedCustomerName": "Current ERP name may differ from the immutable creation receipt; customerId stays exact.",
+      "refresh": "Original draft GET plus sidecar GET only; invalid/error clears stale success.",
+      "amountEffectBinding": "Same requestId/orderId/documentNo/customerId/TRY/exact4 total; sale ID/status and effect flags verified.",
+      "nativeAuthPinAssignmentChecksPreserved": true,
+      "installedCatalogPhotoAndMediaSourceChanged": false
+    },
+    "verification": {
+      "nativeModelAndAsync": {
+        "passed": 50,
+        "failed": 0,
+        "command": "node --import ./tests/offline-test-guard.mjs --test apps/frontend/tests/native-order-sale.test.mjs"
+      },
+      "proxyAndAffectedLegacy": {
+        "passed": 18,
+        "failed": 0,
+        "command": "node --import ./tests/offline-test-guard.mjs --test tests/test-erp-order-proxy.test.mjs"
+      },
+      "actualJsxSsrAndCardCompatibility": {
+        "passed": 5,
+        "failed": 0,
+        "command": "node --import ../../tests/offline-test-guard.mjs --test tests/erp-receipt-display.test.mjs tests/native-order-history.test.mjs",
+        "cwd": "apps/frontend",
+        "claim": "SSR render and model compatibility, not interactive browser or human acceptance."
+      },
+      "nodeCountsIncludeParentTests": true,
+      "frontendBuild": {
+        "result": "PASS",
+        "seconds": 22.22,
+        "command": "node scripts/ci/build.mjs",
+        "profile": "Sanitized normal production CI build; owner separately builds the clean TEST with the three existing public VITE flags."
+      },
+      "independentCrmSourceReviewOpenP1P2": 0,
+      "independentUpstreamReview": {
+        "previous409P2": "CLOSED_AFTER_OWNER_FIX",
+        "remainingOpenP1P2": 0,
+        "scope": "Read-only source and regression-test review; no test/SQL/GUI execution."
+      }
+    },
+    "runtime": {
+      "crm": "1dd07d1f49b01a1847a519a0868294cb05188cd2",
+      "erp": "970cfc24b9fdb0017a79c5ca6c03bb4b59a23bbc",
+      "newInstallation": false,
+      "sharedSqlConfigServiceWriteByCrm": false,
+      "newGuiByCrm": false
+    },
+    "acceptance": {
+      "newLinkedSaleGui": "NOT_RUN",
+      "physicalDevice": "PENDING",
+      "human": "PENDING",
+      "windowsReboot": "PENDING",
+      "crmCounts": {
+        "total": 25,
+        "green": 12,
+        "partial": 13,
+        "red": 0
+      },
+      "originalTotal": 74
+    }
   }
 }

@@ -1,4 +1,4 @@
-import {createNativeOrderStore} from './nativeOrder.js';
+import {createNativeOrderStore,validateNativeOrderSale,nativeOrderSaleLabel} from './nativeOrder.js';
 import {priceLabelText} from '../catalog/productActions.js';
 
 // This is an index of the current actor's recovery journals, not an ERP archive.
@@ -23,8 +23,10 @@ export function restoreNativeOrderHistory({actor,conversations,storage}) {
 }
 
 export function nativeOrderReceiptCard(receipt,{customer,owner}) {
+ let sale=null;
+ if(receipt.orderSaleReadbackChecked===true){try{sale=validateNativeOrderSale(receipt.orderSaleReadback,receipt);}catch{}}
  return {...receipt,id:receipt.request.requestId,requestId:receipt.request.requestId,
   conversationId:receipt.request.conversationId,customer:receipt.customerName||customer,owner,
   total:`${receipt.request.documentCurrency} ${priceLabelText(receipt.grandTotalExact4+'0000')}`,
-  lines:receipt.items.length,status:'ERP taslağı doğrulandı',updated:'ERP’den yeniden okundu',readbackRequired:false};
+  lines:receipt.items.length,status:sale?nativeOrderSaleLabel(sale):receipt.orderSaleReadbackChecked===true?'ERP satış durumu okunamadı':'ERP taslağı doğrulandı',updated:'ERP’den yeniden okundu',readbackRequired:false};
 }
