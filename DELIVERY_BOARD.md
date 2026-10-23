@@ -1,3 +1,7 @@
+## 24 Ekim — CRM-DEC-025 kişi/hesap ve terminal bağlantısı hazırlığı
+
+Mevcut CRM06/C01/C02/M01'de onaylı kişiler/görevler [karar kaydına](PROJECT_DECISIONS.md), hesap/temsilci/atama durumları ve5244/62800 terminal girişindeki somut eksikler [mevcut CRM-UA11'e](USER_ACCEPTANCE.md#24-ekim--c01c02-kişirol-ve-fiziksel-cihaz-kabul-hazırlığı) işlendi. Mehmet/Turgay/Angela kullanıcı adları isteniyor, varlıkları doğrulanmadı; gerçek Müdür Angela, Semih korunur. Ortak hesap/yetki/SQL/runtime/kurulum ve ERP kaynağı değişmedi. ERP B6 son normal ekran onayı sürerken yalnız kaynak/karar hazırlığı yapıldı; yeni auth mimarisi, plan/ajan/tree yok. Kayıtlı kişi/görevler tekrar sorulmaz; sonraki teknik adım owner uygun pencerede mevcut sırsız hesap/atama envanteri ve makbuz eşlemesidir. Yeni GUI/test/insan PASS veya sayaç artışı yok;25/12/13/0 ve17/74 aynı. Tek etkin yürütme kaydı CRM_STATUS.md'dir.
+
 ## 24 Ekim — CRM06 / C01–C02 personel hazırlığı
 
 Tek etkin yürütme kaydı [CRM_STATUS.md](CRM_STATUS.md) içindedir. ERP B6 ortak TEST'te sürüyor; yeni nihai B6 makbuzu gelmeden CRM ortak GUI/API/SQL/test/kurulum başlatmaz. Son yayımlanmış [B5 Semih kurulumu](https://github.com/melihsnyldzz-ui/melisa-erp-v2/blob/fbec3292694aedd0992e48c7b5ea2b40b919a01e/STATUS.md) APIa930/web982/native035/SQLmetadataa1b ile değişmeyen CRM frontende1/backendbc8 ayrımını korur. CRM mevcut kaynaktaki iki frontend blobunu owner B5 hash'leriyle eşledi; yeni canlı runtime kanıtı saymadı.

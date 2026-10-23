@@ -1,5 +1,11 @@
 # Melisa CRM — etkin çalışma talimatları
 
+## Personel ve terminal hazırlığı — 24 Ekim 2026 / CRM-DEC-025
+
+Onaylı yedi personel (Mehmet, Turgay, Rüstem, İsmail, Yaman, Veronica, Ahmet), Angela'nın kendi hesabıyla ERP/CRM yöneticiliği ve satış/mal toplama, İlker'in muhasebe/kasa görevi, Semih hesabının korunması [CRM-DEC-025](PROJECT_DECISIONS.md) içindedir. Mehmet/Turgay'ın toplama-kolilemesi ayrıca onaylıdır; istenen Mehmet/Turgay/Angela kullanıcı adlarının varlığı kanıtlanmadan hesap hazır denmez. Bu görev/kişi kararlarını yeniden sorma; mevcut hesap/temsilci/atama envanteriyle eksik eşlemeyi ayır.
+
+Bu hazırlık turu yalnız CRM kaynak/karar belgeleri ve salt okunur kaynak/kanıt karşılaştırmasıdır. ERP B6 sürerken ortak runtime/SQL/kullanıcı/yetki/atama/servis/kurulum veya ERP/terminal kaynağı değiştirilmez. Mevcut yeşil sade Melisa Native görseli ve mevcut giriş altyapısı esas; aynı kişiyle Müşterilerim, ikinci parolasız devam, cihaz/uygulama açılışında korumalı yenileme ve açık çıkış/yetki iptalinde kapanış gereken halkalar olarak kaydedilir, uygulanmış sayılmaz. Parola/token taşıma veya güvenlik engeli aşma yok. Tek etkin sıra CRM_STATUS.md, özgün kabul CRM-UA11/C01/C02/M01;17/74 ve25/12/13/0 aynı.
+
 ## Güncel bağlı adım — 22 Ekim 2026 / CRM-DEC-024
 
 Kullanıcının sıralı teknik yürütme kararı mevcut koordinatör sohbetindeki doğrudan insan mesajından doğrulandı. İlk hedef aynı yapay CRM siparişinin ERP'de mevcut yetkili onayla tek satışa, doğru ve tek stok/müşteri hesabı etkisine bağlanmasıdır. CRM önce mevcut E02/CRM06 kaynak eksiklerini ayırır; ERP'nin kesin readback sözleşmesi olmadan satış/ödeme sonucu veya yeni UI/API icat etmez. Çalışan1dd taslak/katalog/fotoğraf/kesinti ve CAS korumaları korunur. Kaynak ve dar tüketici düzeltmesi CRM'de; ortak temiz TEST SQL/runtime/servis/kurulum ve teknik tarayıcı ERP tek sahibindedir. Bu hedefteki yalnız yapay etkiler yetkilidir; LIVE/Vega/T1/gerçek ticari kayıt/mesaj/ücretli servis/main ve insan kabulü sınırları aynı kalır.5.1 politika reddi aşılmaz, yeni altyapı/ajan/Goal/otomasyon/tree yok. [CRM-DEC-024](PROJECT_DECISIONS.md) ve tek etkin [CRM_STATUS.md](CRM_STATUS.md) uygulanır.
