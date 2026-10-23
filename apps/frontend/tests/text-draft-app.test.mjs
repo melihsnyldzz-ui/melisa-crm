@@ -18,7 +18,7 @@ const fakeWindow=sessionStorage=>({location:{pathname:'/',search:''},crypto:{ran
 const settle=async()=>{await Promise.resolve();await Promise.resolve();};
 async function bundle(file,instrument=false,isolated=false){
  await build({absWorkingDir:frontend,tsconfigRaw:{},entryPoints:[frontend+'src/App.jsx'],outfile:file,bundle:true,platform:'node',format:'esm',jsx:'automatic',define:{'import.meta.env.DEV':'false','import.meta.env.VITE_CRM_TEST':'"1"','import.meta.env.VITE_CRM_ISOLATED_PREPARATION':JSON.stringify(isolated?'1':'0')},external:['react','@phosphor-icons/react'],loader:{'.css':'empty'},plugins:instrument?[{name:'isolated-app-handler-harness',setup(build){
-  build.onLoad({filter:/App\.jsx$/},args=>({loader:'jsx',contents:readFileSync(args.path,'utf8').replace(/^import \{ useCallback, useEffect, useMemo, useRef, useState \} from "react";/,'const {useCallback,useEffect,useMemo,useRef,useState}=globalThis.__draftHooks;').replace('  if(liveMode&&!liveSession&&!semihEntry.checked)','  globalThis.__draftHarness.actions={commitLiveSession,setDraft,sendMessage,closeLiveSession,refreshLivePermissions,selectConversation,setQuery,setFilter,loadRemainingConversations,activateTerminal,checkSendStatus,translateDraft,renewExpiredNormalSession,continueSemihSession,connectLive,getConversations:()=>conversations,setHistoryPanel:panel=>chatScrollRef.current=panel};\n  if(liveMode&&!liveSession&&!semihEntry.checked)')}));
+  build.onLoad({filter:/App\.jsx$/},args=>({loader:'jsx',contents:readFileSync(args.path,'utf8').replace(/^import \{ useCallback, useEffect, useMemo, useRef, useState \} from "react";/,'const {useCallback,useEffect,useMemo,useRef,useState}=globalThis.__draftHooks;').replace('  if(liveMode&&!liveSession&&!semihEntry.checked)','  globalThis.__draftHarness.actions={commitLiveSession,openAssignment,confirmAssignment,assignCustomer,setAgents,setSelectedAssigneeId,setDraft,sendMessage,closeLiveSession,refreshLivePermissions,selectConversation,setQuery,setFilter,loadRemainingConversations,activateTerminal,checkSendStatus,translateDraft,renewExpiredNormalSession,continueSemihSession,connectLive,getConversations:()=>conversations,setHistoryPanel:panel=>chatScrollRef.current=panel};\n  if(liveMode&&!liveSession&&!semihEntry.checked)')}));
   build.onLoad({filter:/liveApi\.js$/},args=>({loader:'js',contents:readFileSync(args.path,'utf8')+'\nfor(const name of Object.keys(globalThis.__draftHarness.api))liveApi[name]=(...args)=>globalThis.__draftHarness.api[name](...args);'}));
  }}]:[]});
 }
@@ -31,7 +31,7 @@ async function fixture(run,{compact=false,terminal=false,offline=false,isolated=
  if(compact)globalThis.window.localStorage.getItem=()=> 'terminal';
  globalThis.document={visibilityState:'visible',addEventListener(){},removeEventListener(){}};
  globalThis.__draftHooks={useState(initial){const i=cursor++;if(!(i in values))values[i]=typeof initial==='function'?initial():initial;return [values[i],update=>{values[i]=typeof update==='function'?update(values[i]):update;}];},useRef(initial){const i=cursor++;if(!(i in values))values[i]={current:initial};return values[i];},useMemo:fn=>fn(),useCallback:fn=>fn,useEffect:fn=>effects.push(fn)};
- const harness=globalThis.__draftHarness={api:{login:async()=>({accessToken:'synthetic-normal-access'}),rememberedNormalSession:async()=>remembered??({enabled:false,user:null}),hasNativeNormalSession:()=>false,clearNormalSession:async()=>{},rememberNormalSession:async()=>{},resumeNormalSession:async()=>null,sendStatus:async()=>({}),canonicalCatalogProduct:async()=>({}),erpDrafts:async()=>({orders:[]}),catalogSignOut:async()=>({}),session:async()=>actor(),inbox:async()=>({conversations:[row()],summary:{total:1}}),conversation:async()=>({conversation:row()}),send:async()=>({message:{id:'synthetic-accepted',direction:'outgoing',text:'sent'}})},actions:null};
+ const harness=globalThis.__draftHarness={api:{login:async()=>({accessToken:'synthetic-normal-access'}),rememberedNormalSession:async()=>remembered??({enabled:false,user:null}),hasNativeNormalSession:()=>false,clearNormalSession:async()=>{},rememberNormalSession:async()=>{},resumeNormalSession:async()=>null,assign:async()=>({}),sendStatus:async()=>({}),canonicalCatalogProduct:async()=>({}),erpDrafts:async()=>({orders:[]}),catalogSignOut:async()=>({}),session:async()=>actor(),inbox:async()=>({conversations:[row()],summary:{total:1}}),conversation:async()=>({conversation:row()}),send:async()=>({message:{id:'synthetic-accepted',direction:'outgoing',text:'sent'}})},actions:null};
  try{await bundle(file,true,isolated);const {App}=await import(pathToFileURL(file).href);const render=()=>{cursor=0;effects.length=0;return App();};const connect=(session=actor(),rows=[row(),row('56')],inboxExtra={})=>{harness.actions.commitLiveSession({key:'synthetic-session',session,inbox:{conversations:rows,summary:{total:rows.length},...inboxExtra},agents:{agents:[]}});return render();};
   const checking=render();assert.match(renderToStaticMarkup(checking),/Oturum kontrol ediliyor/);assert.doesNotMatch(renderToStaticMarkup(checking),/Synthetic fixture|Mesajınız/);
   const startup=effects.find(fn=>String(fn).includes('liveApi.rememberedNormalSession'));assert.equal(typeof startup,'function');const stopStartup=startup();
@@ -41,6 +41,74 @@ async function fixture(run,{compact=false,terminal=false,offline=false,isolated=
 }
 function find(tree,predicate){if(!tree||typeof tree!=='object')return null;if(predicate(tree))return tree;for(const child of React.Children.toArray(tree.props?.children)){const found=find(child,predicate);if(found)return found;}return null;}
 const composer=tree=>find(tree,node=>node.type==='textarea'&&node.props['aria-label']==='Mesajınız');
+
+test('B5 clean inbox denial hides assignment controls and rejects direct assignment handlers',async()=>fixture(async h=>{
+ const session={...actor(),assignmentEnabled:true},conversation={...row(),canAssign:true,capabilities:{assign:true}};
+ h.connect(session,[conversation],{capabilities:{assign:false}});
+ h.harness.actions.setAgents([{id:7,name:'Synthetic staff'}]);h.render();
+ let writes=0;h.harness.api.assign=async()=>writes++;
+ h.harness.actions.openAssignment(conversation);h.render();
+ await h.harness.actions.assignCustomer('Synthetic staff');
+ assert.equal(writes,0);
+ const html=renderToStaticMarkup(h.render());assert.doesNotMatch(html,/Atanmamışlar|Atamayı onayla/);
+ const menu=find(h.render(),node=>node.type==='button'&&node.props['aria-label']==='Konuşma menüsünü aç');menu.props.onClick();
+ assert.doesNotMatch(renderToStaticMarkup(h.render()),/Temsilci ata/);
+}));
+
+test('B5 conversation denial overrides a generally supported manager assignment',async()=>fixture(async h=>{
+ const session={...actor(),assignmentEnabled:true},conversation={...row(),canAssign:false,capabilities:{assign:false}};
+ h.connect(session,[conversation],{capabilities:{assign:true}});h.harness.actions.setAgents([{id:7,name:'Synthetic staff'}]);h.render();
+ let writes=0;h.harness.api.assign=async()=>writes++;
+ h.harness.actions.openAssignment(conversation);h.render();await h.harness.actions.assignCustomer('Synthetic staff');
+ assert.equal(writes,0);assert.doesNotMatch(renderToStaticMarkup(h.render()),/Atamayı onayla/);
+ const menu=find(h.render(),node=>node.type==='button'&&node.props['aria-label']==='Konuşma menüsünü aç');menu.props.onClick();
+ assert.doesNotMatch(renderToStaticMarkup(h.render()),/Temsilci ata/);
+}));
+
+test('B5 supported manager assignment keeps its normal confirmation and one API call',async()=>fixture(async h=>{
+ const session={...actor(),assignmentEnabled:true},conversation={...row(),canAssign:true,capabilities:{assign:true}};
+ h.connect(session,[conversation],{capabilities:{assign:true}});h.harness.actions.setAgents([{id:7,name:'Synthetic staff'}]);h.render();
+ const writes=[];h.harness.api.assign=async(...args)=>writes.push(args);
+ h.harness.actions.openAssignment(conversation);h.render();assert.match(renderToStaticMarkup(h.render()),/Atamayı onayla/);
+ h.harness.actions.setSelectedAssigneeId('7');h.render();await h.harness.actions.confirmAssignment();
+ assert.deepEqual(writes,[['synthetic-session','55',7]]);assert.doesNotMatch(renderToStaticMarkup(h.render()),/Atamayı onayla/);
+}));
+
+test('B5 a captured confirmation cannot write after the current inbox forbids assignment',async()=>fixture(async h=>{
+ const session={...actor(),assignmentEnabled:true},conversation={...row(),canAssign:true,capabilities:{assign:true}};
+ h.connect(session,[conversation],{capabilities:{assign:true}});h.harness.actions.setAgents([{id:7,name:'Synthetic staff'}]);h.render();
+ let writes=0;h.harness.api.assign=async()=>writes++;
+ h.harness.actions.openAssignment(conversation);h.render();h.harness.actions.setSelectedAssigneeId('7');h.render();
+ const captured=h.harness.actions.confirmAssignment;
+ h.connect(session,[conversation],{capabilities:{assign:false}});await captured();
+ assert.equal(writes,0);assert.doesNotMatch(renderToStaticMarkup(h.render()),/Atamayı onayla/);
+}));
+
+test('B5 personnel cannot assign even when the source supports assignment',async()=>fixture(async h=>{
+ const session={...actor(),role:'personel',assignmentEnabled:false,canAssign:false},conversation={...row(),canAssign:true};
+ h.connect(session,[conversation],{capabilities:{assign:true}});h.harness.actions.setAgents([{id:7,name:'Synthetic staff'}]);h.render();
+ let writes=0;h.harness.api.assign=async()=>writes++;
+ h.harness.actions.openAssignment(conversation);h.render();await h.harness.actions.assignCustomer('Synthetic staff');
+ assert.equal(writes,0);assert.doesNotMatch(renderToStaticMarkup(h.render()),/Atamayı onayla|Atanmamışlar/);
+}));
+
+test('B5 supported legacy manager without source flags retains assignment',async()=>fixture(async h=>{
+ h.connect({...actor(),assignmentEnabled:true},[row()]);h.harness.actions.openAssignment(row());
+ assert.match(renderToStaticMarkup(h.render()),/Atamayı onayla/);
+}));
+
+test('B5 a captured confirmation rejects a newly denied conversation or personnel role',async()=>{
+ for(const denied of ['conversation','role'])await fixture(async h=>{
+  const session={...actor(),assignmentEnabled:true},conversation={...row(),canAssign:true};
+  h.connect(session,[conversation],{capabilities:{assign:true}});h.harness.actions.setAgents([{id:7,name:'Synthetic staff'}]);h.render();
+  let writes=0;h.harness.api.assign=async()=>writes++;
+  h.harness.actions.openAssignment(conversation);h.render();h.harness.actions.setSelectedAssigneeId('7');h.render();
+  const captured=h.harness.actions.confirmAssignment;
+  h.connect(denied==='role'?{...session,role:'personel',assignmentEnabled:false}:session,
+    [denied==='conversation'?{...conversation,canAssign:false}:conversation],{capabilities:{assign:true}});
+  await captured();assert.equal(writes,0,denied);assert.doesNotMatch(renderToStaticMarkup(h.render()),/Atamayı onayla/);
+ });
+});
 const dedicatedSession=()=>({accountIdentity:{id:'crm-agent-test-20261011',username:'crm-agent-test'},id:'crm-agent-test-20261011',username:'crm-agent-test',role:'personel',chatwootAgentId:3,permissions:['crm.view'],canSend:false,liveSendEnabled:false,displayName:'TEST personeli',normalTestScope:{database:'MELISA_ERP_CRM_SHARED_TEST_20261009_02',isolatedPreparation:true,draftOnly:true,chatwootAgentId:3}});
 const semihSession=()=>({accountIdentity:{id:'crm-semih-test-20261012',username:'crm-semih-test',role:'patron'},id:'crm-semih-test-20261012',username:'crm-semih-test',displayName:'Semih TEST',role:'patron',canSend:true,canAssign:false,liveSendEnabled:false,permissions:['crm.view','crm.send','crm.assign','crm.agents','crm.manage'],normalTestScope:{semihTestContinue:true,isolatedPreparation:true,draftOnly:true,database:'MELISA_ERP_CRM_SHARED_TEST_20261009_02'}});
 test('actual App shows only the verified Semih continue action, then loads profile and real inbox before showing the account',async()=>fixture(async h=>{

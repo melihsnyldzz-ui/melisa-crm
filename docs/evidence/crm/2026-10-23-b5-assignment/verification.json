@@ -1,0 +1,211 @@
+{
+  "scope": "B5 existing C01/C02 CRM06/CRM-UA11; read-only installed access audit plus narrow frontend assignment capability fix",
+  "recordedAt": "2026-10-23T10:06:59Z",
+  "decisionSources": [
+    {
+      "repository": "melihsnyldzz-ui/melisa-crm",
+      "ref": "5342b4358d8cd7e0ffb606a93fa532e3049e6f55",
+      "path": "PROJECT_DECISIONS.md",
+      "decision": "CRM-DEC-017",
+      "blob": "5af72bb23996b7770ef2efcd18b72216acadb5ae"
+    },
+    {
+      "repository": "melihsnyldzz-ui/melisa-os",
+      "ref": "bfa3b00f221f33c3a101a112adc34dbf82fb83f0",
+      "path": "docs/operations/ecosystem-decisions.md",
+      "blob": "b142efe39cabccd686f00e1551b1b4221946ec93"
+    },
+    {
+      "path": "C:\\Sirket\\ERP\\worktrees\\erp-p03-pr53-candidate-20261018\\AGENTS.md",
+      "decision": "ERP-DEC-069",
+      "read": true,
+      "meaning": "Owner's normal safe CUA login succeeded on new clean target; not a blanket unsupported-login claim."
+    }
+  ],
+  "canonical": {
+    "root": "C:\\Sirket\\CRM\\melisa-crm",
+    "fetchOrigin": "https://github.com/melihsnyldzz-ui/melisa-crm.git",
+    "pushOrigin": "https://github.com/melihsnyldzz-ui/melisa-crm.git",
+    "branch": "codex/crm-agents-on-completion-20261003",
+    "baseHead": "9830bef5ceeb6e7859173c5f195a13e62659a7ed",
+    "initialDirtyFiles": 0
+  },
+  "installedReadOnlyObservation": {
+    "crmCloneSource": "bc8c307ee29f115b2bb7fd4e61f87e9bf482ba54",
+    "crmServerPhysicalSha256": "12ea8954d92356e7d3065dde32f961e9c6d9a16eae8f932bd291123a826c44e8",
+    "uiAndGatewayPid": 49984,
+    "uiListenerAddresses": [
+      "127.0.0.1",
+      "192.168.1.46",
+      "100.87.188.3"
+    ],
+    "uiPort": 62800,
+    "gatewayAddress": "127.0.0.1",
+    "gatewayPort": 62801,
+    "erpApi": {
+      "port": 4194,
+      "source": "7b3d9b8b0c9198dc6eeb04de1db697b1d22271e9",
+      "package": "CLEAN-ERP-20261022-7b3d9b8b0c91"
+    },
+    "erpNative": {
+      "port": 4196,
+      "source": "035fcc08d8f56cdd0cbc437a290285328fce1ec9",
+      "package": "CLEAN-ERP-20261022-035fcc08d8f5"
+    },
+    "sharedDatabase": "MELISA_ERP_CLEAN_TEST_20261022",
+    "environmentId": "e662fd94-d797-4b3b-938a-d143ad758b67",
+    "synthetic": true,
+    "actualT1": false,
+    "snapshotBoundary": "ERP owner B4 work is active; previous035/035 snapshot is historical. This audit did not install or pin a new shared runtime."
+  },
+  "unauthenticatedChecks": {
+    "origin": "http://192.168.1.46:62800",
+    "method": "GET",
+    "paths": [
+      "/api/live/crm/inbox",
+      "/api/live/crm/conversations/55",
+      "/api/live/crm/conversations/56",
+      "/api/live/crm/agents"
+    ],
+    "statuses": [
+      401,
+      401,
+      401,
+      401
+    ],
+    "error": "WHATSAPP_CRM_AUTH_TOKEN_REQUIRED",
+    "dataReturned": false,
+    "proves": "Anonymous access only; not personnel403 or manager200"
+  },
+  "roles": {
+    "personnel": {
+      "declaredBasePermissions": [
+        "crm.view"
+      ],
+      "assignmentFilter": "agent equality required",
+      "currentAuthenticatedGui": "NOT_RUN",
+      "newInstalledWrongPersonnelCheck": "NOT_RUN"
+    },
+    "manager": {
+      "declaredPermissions": [
+        "crm.view",
+        "crm.send",
+        "crm.assign",
+        "crm.agents",
+        "crm.manage"
+      ],
+      "currentAuthenticatedGui": "NOT_RUN",
+      "assignmentCapabilityInCleanProjection": false
+    },
+    "semihOwner": {
+      "role": "patron",
+      "acceptedNormalLogin": "REUSE owner handoff; not repeated",
+      "currentIndependentLogin": "NOT_RUN"
+    },
+    "previousEvidence": {
+      "path": "../2026-10-22-clean-current-source/verification.json",
+      "kind": "Historical owner normalpersonnel/catalog/same-draft and stranger403",
+      "rerun": false
+    },
+    "fixtureCaveat": "tests/clean-synthetic-profile.test.mjs fixture named manager has patron role, not actual mudur GUI evidence"
+  },
+  "guiAccess": {
+    "browser": "Own independent IAB tab at LAN62800",
+    "observed": "Normal username/password form; login button disabled with empty fields",
+    "availableDocumentedTabCapabilities": [
+      "pageAssets",
+      "webmcp",
+      "cdp"
+    ],
+    "protectedSecretReferenceFormTransferSupportedInThisTool": false,
+    "ownerErpDecision069SuccessfulNormalCuaLoginAcknowledged": true,
+    "otherOwnerChromeOrErpTabsModified": false,
+    "passwordReadOrRequested": false,
+    "tokenOrCookieInjected": false,
+    "normalPersonnelManagerGui": "GUI DENENMEDİ",
+    "singleMissingLink": "Supported secret-safe normal personnel/manager session in this CRM browser",
+    "humanAcceptance": "BEKLİYOR"
+  },
+  "sourceFix": {
+    "changedApplicationPaths": [
+      "apps/frontend/src/App.jsx",
+      "apps/frontend/src/liveApi.js"
+    ],
+    "behavior": "Role permission intersected with explicit session/inbox/conversation assignment denial; current refs guard stale confirmations",
+    "supportedManagerAssignmentPreserved": true,
+    "legacyMissingCapabilityContractPreserved": true,
+    "backendOrRoleEngineChanged": false,
+    "realChatwootWriteEnabled": false,
+    "installed": false,
+    "packageBuilt": false,
+    "localFrontendBuildOnly": true
+  },
+  "verification": {
+    "initialNewTests": 11,
+    "initialPass": 2,
+    "initialFail": 9,
+    "sameFirst11AfterFixPass": 11,
+    "extendedFinalTests": 13,
+    "extendedPass": 13,
+    "extendedFail": 0,
+    "additionalTwoTestsHadPreFixRedEvidence": false,
+    "compatibilityTests": 7,
+    "compatibilityPass": 7,
+    "syntax": "PASS",
+    "offlineBuild": "PASS",
+    "independentSourceReviewOpenP1P2": 0,
+    "method": "Offline request guard plus actual App hook/SSR fixture; not normal GUI",
+    "reviewPhysicalSha256": [
+      {
+        "path": "apps/frontend/src/App.jsx",
+        "sha256": "3eee563bb3ece0aaea8d7c85f86b7352ce215ad2de750c4aa4ddf8237a226099"
+      },
+      {
+        "path": "apps/frontend/src/liveApi.js",
+        "sha256": "3cb8af04e375077e23594db93dd2a7552a51588cc673c009368856006faf9910"
+      },
+      {
+        "path": "apps/frontend/tests/text-draft-app.test.mjs",
+        "sha256": "6bb8883bc3ce780ea0301d1729cc18579223d90d7d97ebe5605d58fde942cc55"
+      },
+      {
+        "path": "apps/frontend/tests/assignment-capability.test.mjs",
+        "sha256": "65525e421661f0da483e0edc089729fe01c8f7513d3c89e38f98da35ce35bf98"
+      }
+    ]
+  },
+  "sourceDelivery": {
+    "sourceCommit": null,
+    "ci": "PENDING exact-source GitHub run",
+    "pr": "https://github.com/melihsnyldzz-ui/melisa-crm/pull/3",
+    "state": "SOURCE_UNAPPLIED"
+  },
+  "acceptance": {
+    "crmLeaves": 25,
+    "green": 12,
+    "yellow": 13,
+    "red": 0,
+    "headings": 17,
+    "originalLeaves": 74,
+    "ids": [
+      "C01",
+      "C02",
+      "CRM-UA04",
+      "CRM-UA11"
+    ],
+    "human": "BEKLİYOR",
+    "physicalPhoneTc21": "BEKLİYOR",
+    "windowsRebootLogon": "BEKLİYOR"
+  },
+  "operationsPerformed": {
+    "sharedRuntimeOrServiceMutation": false,
+    "sqlMutation": false,
+    "accountPasswordRoleChange": false,
+    "conversationAssignmentMutation": false,
+    "realOrSyntheticMessage": false,
+    "orderCreation": false,
+    "paidApi": false,
+    "live": false,
+    "mainMerge": false
+  }
+}

@@ -238,10 +238,20 @@ export function sessionPermissionSignals(value = {}) {
   }));
 }
 
+function assignmentDenied(value) {
+  return [value?.assignmentEnabled,value?.canAssign,value?.assign,value?.capabilities?.assign]
+    .some(flag=>[false,0,'false','0'].includes(flag));
+}
+
+export function canAssignConversation(session, ...sources) {
+  return session?.assignmentEnabled === true && ![session,...sources].some(assignmentDenied);
+}
+
 export function normalizePermissions(value = {}) {
   const source = value.permissions || value.effectivePermissions || {};
   const includes = (permission) => Array.isArray(source) ? source.includes(permission) : enabledFlag(source[permission] ?? source[permission.replace("crm.", "")]);
   const role = normalizeRole(value.role);
+  const canAssign = (includes("crm.assign") || ["patron", "mudur"].includes(role.code)) && !assignmentDenied(value);
   const canSend = includes("crm.send") || ["patron", "mudur"].includes(role.code);
   const sendFlag = value.liveSendEnabled ?? value.sendEnabled ?? value.features?.liveSendEnabled ?? value.features?.sendEnabled ?? value.flags?.sendEnabled;
   const sendFlagKnown = [true, false, 0, 1, "true", "false", "0", "1"].includes(sendFlag);
@@ -250,10 +260,10 @@ export function normalizePermissions(value = {}) {
     accountIdentity: normalizeAccountIdentity(value),
     role: role.code,
     displayName: value.displayName || role.displayName,
-    canAssign: includes("crm.assign") || ["patron", "mudur"].includes(role.code),
+    canAssign,
     canSend,
     paidAiEnabled: value.paidAiEnabled === true,
-    assignmentEnabled: includes("crm.assign") || ["patron", "mudur"].includes(role.code),
+    assignmentEnabled: canAssign,
     liveSendEnabled: canSend && enabledFlag(sendFlag),
     liveSendState: !canSend ? "forbidden" : !sendFlagKnown ? "unknown" : enabledFlag(sendFlag) ? "enabled" : "disabled",
     permissionSignals: sessionPermissionSignals(value),
@@ -476,10 +486,12 @@ export function normalizeConversation(value, index = 0) {
 }
 
 export function normalizeInboxPayload(payload) {
+  const sourceCapabilities = payload.capabilities && typeof payload.capabilities === 'object' && !Array.isArray(payload.capabilities)
+    ? {capabilities:{...payload.capabilities}} : {};
   const rows = Array.isArray(payload) ? payload : payload.conversations || payload.items || payload.payload || [];
   const conversations = rows.map(normalizeConversation);
   const source = payload.summary || payload.counts || {};
-  if(source.complete===false)return {conversations,summary:{...source,complete:false,total:null,open:null,unread:null,unassigned:null,pendingHumanReply:null},pagination:payload.pagination||{}};
+  if(source.complete===false)return {...sourceCapabilities,conversations,summary:{...source,complete:false,total:null,open:null,unread:null,unassigned:null,pendingHumanReply:null},pagination:payload.pagination||{}};
   const numberOr = (value, fallback) => Number.isFinite(Number(value)) ? Number(value) : fallback;
   const summary = {
     total: numberOr(source.total ?? payload.total, conversations.length),
@@ -487,7 +499,7 @@ export function normalizeInboxPayload(payload) {
     unassigned: numberOr(source.unassigned ?? payload.unassigned, conversations.filter((item) => item.owner === "Atanmamış").length),
     pendingHumanReply: numberOr(source.pendingHumanReply ?? source.waiting ?? payload.pendingHumanReply ?? payload.waiting, conversations.filter((item) => item.unread > 0).length),
   };
-  return { conversations, summary:{...summary,complete:true}, pagination:payload.pagination||{} };
+  return { ...sourceCapabilities, conversations, summary:{...summary,complete:true}, pagination:payload.pagination||{} };
 }
 
 export function sameConversationHistoryScope(left, right) {
