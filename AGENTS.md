@@ -4,7 +4,9 @@
 
 Onaylı yedi personel (Mehmet, Turgay, Rüstem, İsmail, Yaman, Veronica, Ahmet), Angela'nın kendi hesabıyla ERP/CRM yöneticiliği ve satış/mal toplama, İlker'in muhasebe/kasa görevi, Semih hesabının korunması [CRM-DEC-025](PROJECT_DECISIONS.md) içindedir. Mehmet/Turgay'ın toplama-kolilemesi ayrıca onaylıdır; istenen Mehmet/Turgay/Angela kullanıcı adlarının varlığı kanıtlanmadan hesap hazır denmez. Bu görev/kişi kararlarını yeniden sorma; mevcut hesap/temsilci/atama envanteriyle eksik eşlemeyi ayır.
 
-Bu hazırlık turu yalnız CRM kaynak/karar belgeleri ve salt okunur kaynak/kanıt karşılaştırmasıdır. ERP B6 sürerken ortak runtime/SQL/kullanıcı/yetki/atama/servis/kurulum veya ERP/terminal kaynağı değiştirilmez. Mevcut yeşil sade Melisa Native görseli ve mevcut giriş altyapısı esas; aynı kişiyle Müşterilerim, ikinci parolasız devam, cihaz/uygulama açılışında korumalı yenileme ve açık çıkış/yetki iptalinde kapanış gereken halkalar olarak kaydedilir, uygulanmış sayılmaz. Parola/token taşıma veya güvenlik engeli aşma yok. Tek etkin sıra CRM_STATUS.md, özgün kabul CRM-UA11/C01/C02/M01;17/74 ve25/12/13/0 aynı.
+**24 Ekim B serisi yürütme sınırı:** ERP B6 örnek TEST'te teknik tamamlandı, sahibi B7'ye ilerliyor. CRM'nin tek paralel hedefi **B5 kişi–hesap–temsilci–müşteri atama eşlemesi ve ERP'ye dar uygulama devridir**. Hazır sırsız makbuzlar önce kullanılır; örnek rol kanıtı gerçek çalışan envanteri, hesap yokluğu veya uygulanmış yetki diye sunulmaz. Ortak runtime/SQL/kullanıcı/yetki/atama/servis/kurulum ve ERP dosyası değiştirilmez; uygulayıcı yalnız ERP'dir.
+
+Terminal tek giriş/görsel geliştirmesi bu B serisi turunun dışında **BEKLİYOR**; önceki kaynak karşılaştırması ve yeşil sade Melisa Native kararı korunur, B5'e ön koşul yapılmaz. Aynı kişiyle Müşterilerim, ikinci parolasız devam, cihaz/uygulama açılışında korumalı yenileme ve açık çıkış/yetki iptalinde kapanış uygulanmış sayılmaz. Parola/token taşıma veya güvenlik engeli aşma yok. Tek etkin sıra CRM_STATUS.md, özgün kabul CRM-UA11/C01/C02/M01;17/74 ve25/12/13/0 aynı.
 
 ## Güncel bağlı adım — 22 Ekim 2026 / CRM-DEC-024
 

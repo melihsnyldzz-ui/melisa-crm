@@ -1,3 +1,9 @@
+## 24 Ekim — B5 hazır rol makbuzu ve ERP uygulama devri; terminal beklemede
+
+ERP B6 örnek satış teknik kapanışı owner cdf4488b/B40 makbuzunda kayıtlı; ERP B7'ye ilerlerken tek paralel CRM işi B5'tir. CRM owner'ın hazır sırsız b5-existing-roles-api.json dosyasını RO okudu:12448bayt/SHA256 E02FA3EBF34B9DB7E221BB19E358C40B78F1E8105B0CC723FC9347750976FABE, kaynakeeff5381.7örnek aktörün49eski okuması20izinli200/29ret403 ve ayrıca6ret403'tür; yeni test koşulmadı. Bu örnek rol davranışı gerçek personel hesabı/temsilci/müşteri ataması değildir. Semih güncel10018/28/36izin ayrı B5ADMIN/B6 kanıtıyla korunur; gerçek hesapların yokluğu varsayılmadı.
+
+[CRM-UA11 aynı kişi tablosunda makbuz karşılaştırması ve ERP'ye dar uygulama listesi](USER_ACCEPTANCE.md#24-ekim--c01c02-kişirol-ve-fiziksel-cihaz-kabul-hazırlığı) hazır. Eksik bileşen temiz TEST'e ait normal sırsız kişi–hesap–temsilci–atama readback'idir; kullanıcı görev kararı tekrar istenmez. Uygulama ERP tek sahibindedir, CRM ortak dosya/SQL/hesap/rol/atama/runtime/servis yazısı yapmadı. **Tam envanter, uygulanmış yetki ve insan kabulü BEKLİYOR;25/12🟢/13🟡/0🔴 ve17/74 aynı.** Terminal tek giriş/görsel geliştirmesi B serisi dışında bekler; önceki hazırlanmış kapsam korunur, B5'e ön koşul yapılmaz. Tek etkin adım CRM_STATUS.md içindedir.
+
 ## 24 Ekim — CRM-DEC-025 onaylı kişiler ve mevcut terminal girişindeki eksikler
 
 Mevcut C01/C02/M01 ve CRM-UA11 içinde onaylı görevler [CRM-DEC-025](PROJECT_DECISIONS.md) ile kişi bazında işlendi: yedi personel yalnız atanmış CRM; Mehmet/Turgay ayrıca toplama-kolileme, Angela kendi hesabıyla ERP/CRM yönetimi ve satış/mal toplama, İlker muhasebe/kasa, Semih korunur. [Kişi/hesap/atama tablosu ve mevcut giriş kaynak karşılaştırması](USER_ACCEPTANCE.md#24-ekim--c01c02-kişirol-ve-fiziksel-cihaz-kabul-hazırlığı) hazırdır. İstenenMehmet/Turgay/Angela adları hesap varlığı değildir; gerçek Müdür kimliği artık Angela olarak kayıtlı, hesap bağları doğrulanmadı.
