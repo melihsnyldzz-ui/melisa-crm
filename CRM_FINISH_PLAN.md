@@ -1,4 +1,10 @@
-## 23 Ekim — B5 / C01–C02 atama yeteneği kaynak düzeltmesi
+## 23 Ekim — C01–C02/B5 dar frontend düzeltmesi kurulu; kabul BEKLİYOR
+
+[ERP60256fd owner makbuzu ve normal ekran kaydı](https://github.com/melihsnyldzz-ui/melisa-erp-v2/blob/60256fd018e426810875f496c90dbbc3bddaf95c/docs/evidence/erp/2026-10-22-clean-shared-install.md#23-ekim--b5-kapal%C4%B1-atama-frontend-kurulumu-ve-normal-rol-ekranlar%C4%B1) son kurulum sonucudur. **Frontend e1ce12b7218ef003198f4955fc1e5871e7430383 / CLEAN-CRM-FRONTEND-20261023-e1ce12b7218e-CLEAN**, **backend bc8c307ee29f115b2bb7fd4e61f87e9bf482ba54**; makbuzdaki ERP API/web7b3d9b8b/native035fcc08 ayrı bileşenlerdir. Owner verification.json SHA256 **14D4555B25195D0504B8A73D00BE7B5D373EA95E5EF56C96E83EE3E19F30E280**;65dosya/HTTPindex-bundle eşliği,58veri/rol ve37süreç-dinleyici koruması owner kanıtıdır. Bu CRM belge turu yeni GUI/SQL/kurulum veya bağımsız runtime eşlemesi yapmadı.
+
+Owner normal GUI'de atanmış Personel1, diğer Personel0görüşme gördü; kapalı atama menüsü/penceresi açılmadı. **ornek-mudur gerçek rolü Patron** olduğundan gerçek Müdür kabulü sayılmadı; Semih/Patron oturumu korundu, yönetim kısayolu yalnız boş havuzu açtı. e1kaynak13hedef/7uyumluluk/review ve CI7/7 tarihsel teknik kanıttır; izleyen yalnız-belge HEAD'i yeni sourceCI değildir. **C01/C02 sarı; gerçek kişi–rol, gerçek Müdür, fiziksel cihaz ve insan CRM-UA04/UA11 kabulü BEKLİYOR.**25/12🟢/13🟡/0🔴, ERP49+CRM25/toplam74 ve17başlık aynı. Eski SOURCE_UNAPPLIED aşağıda kurulum öncesi tarihsel aşama olarak korunur; B4 WIP ve diğer kapsam değişmez.
+
+## Tarihsel — 23 Ekim B5/C01–C02 kurulum öncesi kaynak düzeltmesi
 
 Backendin assign=false bildirimini müdür/patron rolü artık UI ve eski onay handlerında ezemez; desteklenen yönetici ataması korunur. Yalnız frontend App/liveApi, ilk11hedef2PASS/9FAIL→11PASS, son13PASS/7uyumluluk/build/review0; sourcee1ce12b exactPR39937110494/push39937104202/AI39937110495 SUCCESS/7job, belgeHEAD ayrı. [B5 kanıt/kaynak/rol sınırı](docs/evidence/crm/2026-10-23-b5-assignment/README.md). SOURCE_UNAPPLIED; kuruluCRMbc8, sharedkurulum/SQL/servis/hesap yazısı ERP sahibinde kaldı. Personel/müdür normal GUI ve gerçek kişi-yetki eşlemesi,CRM-UA04/UA11/fizikseltelefon/reboot BEKLİYOR;25/12🟢/13🟡/0🔴 ve17başlık/74yaprak aynı. Yeni gereksinim/ağaç/ajan/Goal yok.
 
