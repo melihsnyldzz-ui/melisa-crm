@@ -175,10 +175,34 @@
     ]
   },
   "sourceDelivery": {
-    "sourceCommit": null,
-    "ci": "PENDING exact-source GitHub run",
+    "sourceCommit": "e1ce12b7218ef003198f4955fc1e5871e7430383",
+    "ci": "completed/success",
     "pr": "https://github.com/melihsnyldzz-ui/melisa-crm/pull/3",
-    "state": "SOURCE_UNAPPLIED"
+    "state": "SOURCE_UNAPPLIED",
+    "ciRuns": [
+      39937110494,
+      39937104202,
+      39937110495
+    ],
+    "successfulJobs": 7,
+    "workflowReceipts": [
+      {
+        "run": 39937110494,
+        "event": "pull_request",
+        "successfulJobs": 3
+      },
+      {
+        "run": 39937104202,
+        "event": "push",
+        "successfulJobs": 3
+      },
+      {
+        "run": 39937110495,
+        "event": "pull_request AI offline",
+        "successfulJobs": 1
+      }
+    ],
+    "followupDocsCommitIsInstalledSource": false
   },
   "acceptance": {
     "crmLeaves": 25,

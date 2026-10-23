@@ -1,6 +1,6 @@
 ## 23 Ekim — B5 / C01–C02 atama yeteneği kaynak düzeltmesi
 
-Backendin assign=false bildirimini müdür/patron rolü artık UI ve eski onay handlerında ezemez; desteklenen yönetici ataması korunur. Yalnız frontend App/liveApi, ilk11hedef2PASS/9FAIL→11PASS, son13PASS/7uyumluluk/build/review0; exactCI makbuzu izler. [B5 kanıt/kaynak/rol sınırı](docs/evidence/crm/2026-10-23-b5-assignment/README.md). SOURCE_UNAPPLIED; kuruluCRMbc8, sharedkurulum/SQL/servis/hesap yazısı ERP sahibinde kaldı. Personel/müdür normal GUI ve gerçek kişi-yetki eşlemesi,CRM-UA04/UA11/fizikseltelefon/reboot BEKLİYOR;25/12🟢/13🟡/0🔴 ve17başlık/74yaprak aynı. Yeni gereksinim/ağaç/ajan/Goal yok.
+Backendin assign=false bildirimini müdür/patron rolü artık UI ve eski onay handlerında ezemez; desteklenen yönetici ataması korunur. Yalnız frontend App/liveApi, ilk11hedef2PASS/9FAIL→11PASS, son13PASS/7uyumluluk/build/review0; sourcee1ce12b exactPR39937110494/push39937104202/AI39937110495 SUCCESS/7job, belgeHEAD ayrı. [B5 kanıt/kaynak/rol sınırı](docs/evidence/crm/2026-10-23-b5-assignment/README.md). SOURCE_UNAPPLIED; kuruluCRMbc8, sharedkurulum/SQL/servis/hesap yazısı ERP sahibinde kaldı. Personel/müdür normal GUI ve gerçek kişi-yetki eşlemesi,CRM-UA04/UA11/fizikseltelefon/reboot BEKLİYOR;25/12🟢/13🟡/0🔴 ve17başlık/74yaprak aynı. Yeni gereksinim/ağaç/ajan/Goal yok.
 
 ## 23 Ekim — CRM06/M01 clean LAN/Tailscale kurulum eşlemesi tamam
 
