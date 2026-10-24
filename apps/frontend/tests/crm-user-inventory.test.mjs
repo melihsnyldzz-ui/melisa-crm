@@ -17,6 +17,8 @@ const data=name=>({accounts:[{userId:name,username:name,displayName:name,role:'p
 class Host {
   constructor(name,doc,type=1){this.nodeType=type;this.nodeName=type===3?'#text':name.toUpperCase();this.tagName=this.nodeName;this.namespaceURI='http://www.w3.org/1999/xhtml';this.ownerDocument=doc;this.parentNode=null;this.childNodes=[];this.attributes=new Map();this.listeners=new Map();this.style={};this.nodeValue='';}
   get firstChild(){return this.childNodes[0]??null;} get lastChild(){return this.childNodes.at(-1)??null;}
+  get options(){return this.childNodes.filter(node=>node.nodeName==='OPTION');}
+  get value(){return this._value??this.attributes.get('value')??this.textContent;}set value(value){this._value=String(value);}
   get nextSibling(){return this.parentNode?.childNodes[this.parentNode.childNodes.indexOf(this)+1]??null;}
   get textContent(){return this.nodeType===3?this.nodeValue:this.childNodes.map(x=>x.textContent).join('');}
   set textContent(value){for(const x of this.childNodes)x.parentNode=null;this.childNodes=[];if(this.nodeType===3)this.nodeValue=String(value);else if(value!=='')this.appendChild(this.ownerDocument.createTextNode(value));}
@@ -37,17 +39,26 @@ async function fixture(run){
   const rootPath=fileURLToPath(new URL('../',import.meta.url)),directory=rootPath+'.sites-runtime/';
   mkdirSync(directory,{recursive:true});const file=directory+'user-inventory-'+randomUUID()+'.mjs';
   const before=new Map(['window','document','IS_REACT_ACT_ENVIRONMENT','__inventoryApi'].map(k=>[k,Object.getOwnPropertyDescriptor(globalThis,k)]));
-  const doc=documentHost(),container=doc.createElement('div'),calls=[],commits=[];let root,current=context('synthetic-a');
+  const doc=documentHost(),container=doc.createElement('div'),calls=[],commits=[],changes=[];let root,current=context('synthetic-a');
   globalThis.document=doc;globalThis.window=doc.defaultView;globalThis.IS_REACT_ACT_ENVIRONMENT=true;
-  globalThis.__inventoryApi={userInventory(token,options){const pending=deferred();calls.push({token,options,...pending});return pending.promise;}};
+  const mutations=[];
+  globalThis.__inventoryApi={userInventory(token,options){const pending=deferred();calls.push({token,options,...pending});return pending.promise;},
+    createCrmUser(token,body,options){const pending=deferred();mutations.push({method:'create',token,body,options,...pending});return pending.promise;},
+    updateCrmUser(token,id,body,options){const pending=deferred();mutations.push({method:'update',token,id,body,options,...pending});return pending.promise;}};
   try{
     await build({absWorkingDir:rootPath,tsconfigRaw:{},entryPoints:[rootPath+'src/CrmUserInventory.jsx'],outfile:file,bundle:true,platform:'node',format:'esm',jsx:'automatic',external:['react'],plugins:[{name:'inert-inventory-read',setup(b){b.onLoad({filter:/[\\/]liveApi\.js$/},()=>({loader:'js',contents:'export const liveApi=globalThis.__inventoryApi;'}));}}]});
     const Panel=(await import(pathToFileURL(file).href)).default;
-    function Observed({label}){useLayoutEffect(()=>{commits.push({label,text:container.textContent});});return React.createElement(Panel,{getContext:()=>current});}
+    function Observed({label}){useLayoutEffect(()=>{commits.push({label,text:container.textContent});});return React.createElement(Panel,{getContext:()=>current,onChanged:()=>changes.push('refresh-agents')});}
     root=createRoot(container);
     const render=async(label,next=current)=>{current=next;await act(async()=>root.render(React.createElement(Observed,{label})));};
     const click=async()=>act(async()=>{const button=nodes(container,'button')[0],props=button[Object.keys(button).find(k=>k.startsWith('__reactProps$'))];props.onClick();});
-    await run({render,click,calls,commits,container,text:()=>container.textContent,resolve:async(i,value)=>act(async()=>calls[i].resolve(value)),reject:async(i,error)=>act(async()=>calls[i].reject(error))});
+    const props=node=>node[Object.keys(node).find(k=>k.startsWith('__reactProps$'))];
+    await run({render,click,calls,mutations,commits,changes,container,text:()=>container.textContent,resolve:async(i,value)=>act(async()=>calls[i].resolve(value)),reject:async(i,error)=>act(async()=>calls[i].reject(error)),
+      button:async text=>act(async()=>{props(nodes(container,'button').find(node=>node.textContent===text)).onClick();}),
+      change:async(name,value)=>act(async()=>{const node=[...nodes(container,'input'),...nodes(container,'select')].find(node=>props(node).name===name);props(node).onChange({target:{value,checked:value}});}),
+      submit:async()=>act(async()=>{props(nodes(container,'form')[0]).onSubmit({preventDefault(){}});}),
+      resolveMutation:async(index,value)=>act(async()=>mutations[index].resolve(value)),rejectMutation:async(index,error)=>act(async()=>mutations[index].reject(error)),
+    });
   }finally{
     if(root)await act(async()=>root.unmount());
     for(const [key,value]of before)if(value)Object.defineProperty(globalThis,key,value);else delete globalThis[key];
@@ -90,3 +101,22 @@ test('B5 inventory transport uses only the authenticated normal GET route',async
     assert.equal(calls[0].options.headers.Authorization,'Bearer synthetic-transport-key');
   }finally{globalThis.fetch=previous;}
 });
+
+const managedData=()=>({...data('Existing baseline'),management:{enabled:true,revision:7,editableAccountIds:['managed-personel'],agentRange:{minimum:1001,maximum:9999},synthetic:true},accounts:[...data('Existing baseline').accounts,{userId:'managed-personel',username:'sentetik-personel',displayName:'Sentetik Personel',role:'personel',active:true,chatwootAgentId:1001,mappingState:'linked',conflicts:[],permissions:['crm.view','crm.send']}]});
+test('B5 management needs server capability and never offers editing a protected baseline account',async()=>fixture(async h=>{
+  await h.render('A');await h.click();await h.resolve(0,managedData());
+  assert.equal(nodes(h.container,'button').filter(node=>node.textContent==='Hesabı düzenle').length,1);
+  await h.button('Yeni TEST hesabı');for(const [name,value]of Object.entries({username:'sentetik-new',displayName:'Sentetik Yeni',chatwootAgentId:'1002',password:'Synthetic UI password only'}))await h.change(name,value);
+  await h.submit();assert.equal(h.mutations.length,1);assert.equal(h.mutations[0].method,'create');assert.equal(h.mutations[0].body.revision,7);assert.equal(h.mutations[0].body.chatwootAgentId,1002);assert.equal(h.mutations[0].body.role,'personel');
+  assert(!h.text().includes('Synthetic UI password only'));await h.resolveMutation(0,{account:{id:'managed-new'},revision:8});assert.equal(h.calls.length,2);assert.deepEqual(h.changes,['refresh-agents']);assert.equal(nodes(h.container,'form').length,0);await h.resolve(1,managedData());assert(h.text().includes('Sentetik Personel'));
+}));
+test('B5 editing carries the current revision, omits an unchanged password and clears the form on role loss',async()=>fixture(async h=>{
+  await h.render('A');await h.click();await h.resolve(0,managedData());await h.button('Hesabı düzenle');await h.change('role','mudur');await h.submit();
+  assert.equal(h.mutations[0].method,'update');assert.equal(h.mutations[0].id,'managed-personel');assert.equal(h.mutations[0].body.role,'mudur');assert(!Object.hasOwn(h.mutations[0].body,'password'));
+  await h.render('B',context('synthetic-b'));assert.equal(h.mutations[0].options.signal.aborted,true);assert.equal(nodes(h.container,'form').length,0);assert(!h.commits.find(row=>row.label==='B').text.includes('Sentetik Personel'));
+  await h.resolveMutation(0,{revision:8});assert.equal(h.calls.length,1);assert.deepEqual(h.changes,[]);assert(!h.text().includes('Sentetik Personel'));
+}));
+test('B5 a conflict or uncertain write is never automatically replayed; permission denial removes metadata',async()=>fixture(async h=>{
+  await h.render('A');await h.click();await h.resolve(0,managedData());await h.button('Hesabı düzenle');await h.submit();await h.rejectMutation(0,Object.assign(Error('conflict'),{status:409}));assert(h.text().includes('Listeyi yeniden okuyun'));assert.equal(h.mutations.length,1);
+  await h.button('Vazgeç');await h.button('Hesabı düzenle');await h.submit();await h.rejectMutation(1,Object.assign(Error('denied'),{status:403}));assert.equal(nodes(h.container,'form').length,0);assert(!h.text().includes('Sentetik Personel'));assert(h.text().includes('güncel yönetici yetkisi gerekli'));
+}));

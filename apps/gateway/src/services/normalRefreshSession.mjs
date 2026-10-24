@@ -63,7 +63,7 @@ export function semihRefreshUserPolicy(config=process.env){
   throw Error('Isolated Semih-session identity is invalid.');
 }
 export function normalSessionFingerprint(user) {
-  return hash(JSON.stringify([user.id,user.username,user.role,user.active,user.chatwootAgentId,[...user.permissions].sort(),user.passwordHash]));
+  return hash(JSON.stringify([user.id,user.username,user.role,user.active,user.chatwootAgentId,[...user.permissions].sort(),user.passwordHash,...(user.managementRevision===undefined?[]:[user.managementRevision])]));
 }
 
 // Opaque refresh secrets never reach disk. Atomic replacement and an exclusive
@@ -141,11 +141,15 @@ export function assertPrivateRefreshJournal(file,config,repoRoot){
     ||!file||!path.isAbsolute(file)||!relative||relative.startsWith('..')||path.isAbsolute(relative)
     ||!repoRelative.startsWith('..'))throw Error('Isolated normal-session configuration is invalid.');
 }
-export function configuredNormalRefreshStore({config=process.env,resolveUser,repoRoot=process.cwd()}={}) {
+export function configuredNormalRefreshStore({config=process.env,resolveUser,repoRoot=process.cwd(),authorizeManagedUser}={}) {
   if(config.CRM_NORMAL_REFRESH_ENABLED!=='true')return null;
   const file=config.CRM_NORMAL_REFRESH_JOURNAL_PATH;
   if(config.CRM_TEST_PROFILE){
-    const authorizeUser=normalRefreshUserPolicy(config);
+    const original=normalRefreshUserPolicy(config),snapshot=cleanNormalRefreshScope(config);
+    const authorizeUser=user=>{
+      try{return original(user)||(cleanNormalRefreshScope(config)===snapshot&&typeof authorizeManagedUser==='function'&&authorizeManagedUser(user)===true);}
+      catch{return false;}
+    };
     const relative=path.win32.relative(path.win32.resolve(repoRoot),CLEAN_NORMAL_REFRESH_JOURNAL);
     if(!relative.startsWith('..')||typeof resolveUser!=='function'||!authorizeUser(resolveUser(CLEAN_NORMAL_TEST_USER_ID)))
       throw Error('Clean normal-session identity is invalid.');

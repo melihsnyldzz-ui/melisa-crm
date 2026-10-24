@@ -2,7 +2,7 @@ import { env } from '../config/env.js';
 import { createHash } from 'node:crypto';
 import { resolvePhoneIdentity } from '../utils/phoneIdentity.js';
 import { chatwootApiRequest } from './chatwootApiService.js';
-import { assertConversationAccess, assertCrmPermission, findCrmUserById, listConfiguredCrmUsers } from './crmAuthService.js';
+import { assertConversationAccess, assertCrmPermission, findCrmUserById, listConfiguredCrmUsers,cleanCrmManagement } from './crmAuthService.js';
 import {resolveTestEndpoints} from '../../../../deploy/test-endpoints.mjs';
 import { normalSessionFingerprint } from './normalRefreshSession.mjs';
 import { waapiSendReady, refreshWaapiReadiness } from './waapiReadiness.js';
@@ -32,7 +32,7 @@ function cleanSyntheticProjection(user=null) {
     ||!Array.isArray(projection.conversations)||projection.conversations.length>2)throw invalid();
   const users=listConfiguredCrmUsers().filter(value=>value.active);
   if(user){const current=findCrmUserById(user.id);if(!current?.active||user.testAdmin||user.testPersonnel||normalSessionFingerprint(current)!==normalSessionFingerprint(user))throw Object.assign(Error('CRM oturumu değişti.'),{code:'AUTH_TOKEN_INVALID',statusCode:401});assertCrmPermission(current,'crm.view');}
-  const ids=new Set();return projection.conversations.map(row=>{
+  const ids=new Set();const baseline=projection.conversations.map(row=>{
     if(!row||typeof row!=='object')throw invalid();const id=String(row.id),phone=id==='55'?'905550000001':id==='56'?'905550000002':null;
     if(!phone||row.phone!==phone||ids.has(id)||typeof row.name!=='string'||!row.name.trim()||row.name.length>120||!Number.isSafeInteger(row.assigneeAgentId)||row.assigneeAgentId<1)throw invalid();
     ids.add(id);const assigned=users.find(value=>value.chatwootAgentId===row.assigneeAgentId);if(!assigned)throw invalid();
@@ -41,6 +41,16 @@ function cleanSyntheticProjection(user=null) {
       preview:'Yapay TEST: ürün ve sipariş taslağı',lastMessageAt:'2026-10-22T00:00:00.000Z',messages:[{id:Number(id)*100,direction:'incoming',text:'Yapay TEST: ürün ve sipariş taslağı',createdAt:'2026-10-22T00:00:00.000Z'}],
       detailLoaded:true,messagesLoaded:true,history:{complete:true,hasMore:false,nextBefore:null},canSend:false,canAssign:false,capabilities:{read:true,send:false,assign:false}};
   });
+  if(!cleanCrmManagement)return baseline;
+  const managed=cleanCrmManagement.conversations().map(row=>{
+    const assigned=row.assigneeAgentId===null?null:users.find(value=>value.chatwootAgentId===row.assigneeAgentId);
+    const canAssign=Boolean(user?.permissions?.includes('crm.assign'));
+    return {id:row.id,name:row.name,phone:'+'+row.phone,contactId:row.id,backend:'clean-synthetic',provider:'synthetic',synthetic:true,channel:'whatsapp',language:'Türkçe',status:'open',unread:0,
+      assignedUserId:assigned?.id||null,assignedUserName:assigned?.displayName||'',chatwootAgentId:row.assigneeAgentId,
+      preview:'Yapay TEST: personel atama denemesi',lastMessageAt:'2026-10-24T00:00:00.000Z',messages:[{id:Number(row.id)*100,direction:'incoming',text:'Yapay TEST: personel atama denemesi',createdAt:'2026-10-24T00:00:00.000Z'}],
+      detailLoaded:true,messagesLoaded:true,history:{complete:true,hasMore:false,nextBefore:null},canSend:false,canAssign,capabilities:{read:true,send:false,assign:canAssign}};
+  });
+  return [...baseline,...managed];
 }
 
 // Management metadata only: reuse the exact existing TEST identity/assignment
@@ -514,7 +524,7 @@ async function listChatwootInboxBootstrap({ limit, user }) {
 
 export async function listChatwootInboxOverview({ limit = 25, offset = 0, user = null, view } = {}) {
   const seeded=cleanSyntheticProjection(user);
-  if(seeded){assertCrmPermission(user,'crm.view');const rows=seeded.filter(row=>user?.role!=='personel'||row.chatwootAgentId===user.chatwootAgentId),safeLimit=Math.min(Math.max(Number(limit)||25,1),500),safeOffset=Math.max(Number(offset)||0,0),conversations=rows.slice(safeOffset,safeOffset+safeLimit),total=rows.length;return {conversations,summary:{total,complete:true,open:total,unread:0,unassigned:0,pendingHumanReply:total,source:'clean-synthetic-projection'},pagination:{limit:safeLimit,offset:safeOffset,total,hasNext:safeOffset+conversations.length<total,nextOffset:safeOffset+conversations.length<total?safeOffset+conversations.length:null},capabilities:{read:true,send:false,assign:false},boundaries:['Only the conversation is synthetic seed metadata; products, prices and drafts are read from the separate clean ERP SQL application.']};}
+  if(seeded){assertCrmPermission(user,'crm.view');const rows=seeded.filter(row=>user?.role!=='personel'||Boolean(user.chatwootAgentId)&&row.chatwootAgentId===user.chatwootAgentId),safeLimit=Math.min(Math.max(Number(limit)||25,1),500),safeOffset=Math.max(Number(offset)||0,0),conversations=rows.slice(safeOffset,safeOffset+safeLimit),total=rows.length;return {conversations,summary:{total,complete:true,open:total,unread:0,unassigned:rows.filter(row=>!row.chatwootAgentId).length,pendingHumanReply:total,source:'clean-synthetic-projection'},pagination:{limit:safeLimit,offset:safeOffset,total,hasNext:safeOffset+conversations.length<total,nextOffset:safeOffset+conversations.length<total?safeOffset+conversations.length:null},capabilities:{read:true,send:false,assign:Boolean(cleanCrmManagement&&user?.permissions?.includes('crm.assign'))},boundaries:['Only the conversation is synthetic seed metadata; products, prices and drafts are read from the separate clean ERP SQL application.']};}
   if (view === 'bootstrap' && ['patron', 'mudur'].includes(user?.role)) {
     return listChatwootInboxBootstrap({ limit, user });
   }

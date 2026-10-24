@@ -9,6 +9,7 @@ import {configuredCustomerRequestIssuerStore,customerRequestSharedConfig} from '
 import {configuredAssignedStaffRefreshStore,DEDICATED_ASSIGNED_STAFF_TEST_USER_ID} from './assignedStaffRefreshSession.mjs';
 import {configuredTerminalHandoffPeer,isTerminalPeerProof} from './terminalHandoffPeer.mjs';
 import {reject as terminalReject,validateTerminalRequest,terminalIdentityKey} from '../../../../packages/contracts/terminal-handoff.mjs';
+import {configuredCleanCrmManagement} from './cleanCrmManagement.mjs';
 
 const ROLE_PERMISSIONS = Object.freeze({
   patron: ['crm.view', 'crm.send', 'crm.assign', 'crm.agents', 'crm.manage'],
@@ -60,7 +61,7 @@ function rolePermissions(role) {
   return [...base];
 }
 
-function normalizeUser(entry = {}) {
+function normalizeUser(entry = {},{managed=false}={}) {
   const role = String(entry.role || '').trim().toLocaleLowerCase('tr-TR');
   const id = String(entry.id || '').trim();
   const username = normalizeUsername(entry.username);
@@ -76,12 +77,17 @@ function normalizeUser(entry = {}) {
     chatwootAgentId: Number.isInteger(chatwootAgentId) && chatwootAgentId > 0 ? chatwootAgentId : null,
     permissions: rolePermissions(role),
     passwordHash: entry.passwordHash,
+    ...(managed?{managementRevision:entry.managementRevision}:{}),
   };
 }
 
 export function listConfiguredCrmUsers() {
-  return env.auth.users.map(normalizeUser).filter(Boolean);
+  return [...env.auth.users.map(entry=>normalizeUser(entry)).filter(Boolean),...(cleanCrmManagement?.records()||[]).map(entry=>normalizeUser(entry,{managed:true})).filter(Boolean)];
 }
+
+export const cleanCrmManagement=configuredCleanCrmManagement({baseline:()=>env.auth.users.map(entry=>normalizeUser(entry))});
+export const cleanCrmManagementEnabled=()=>Boolean(cleanCrmManagement?.overview().enabled);
+const managedUserAllowed=user=>Boolean(cleanCrmManagement?.isManaged(user));
 
 export function publicCrmUser(user) {
   return {
@@ -122,7 +128,7 @@ export function findCrmUserByUsername(username) {
   return listConfiguredCrmUsers().find((user) => user.username === normalized) || null;
 }
 
-const normalRefreshStore = configuredNormalRefreshStore({resolveUser:findCrmUserById});
+const normalRefreshStore = configuredNormalRefreshStore({resolveUser:findCrmUserById,authorizeManagedUser:managedUserAllowed});
 const cleanNormalRefreshStore = process.env.CRM_TEST_PROFILE==='clean-synthetic-20261022'?normalRefreshStore:null;
 const semihRefreshStore = configuredSemihTestRefreshStore({resolveUser:findCrmUserById});
 const assignedStaffRefreshStore = configuredAssignedStaffRefreshStore({resolveUser:findCrmUserById});
@@ -141,7 +147,7 @@ export function semihTestContinueEnabled(){
     &&process.env.CRM_NORMAL_REFRESH_USER_ID===DEDICATED_NORMAL_TEST_USER_ID);
 }
 function normalRefreshUserAllowed(user){
-  try{return user.id===process.env.CRM_NORMAL_REFRESH_USER_ID&&normalRefreshUserPolicy()(user);}catch{return false;}
+  try{return user.id===process.env.CRM_NORMAL_REFRESH_USER_ID&&normalRefreshUserPolicy()(user)||managedUserAllowed(user);}catch{return false;}
 }
 function semihRefreshUserAllowed(user){
   try{return semihTestContinueEnabled()&&semihRefreshUserPolicy()(user);}catch{return false;}
@@ -194,7 +200,7 @@ export function authenticateCrmUser({ username, password }) {
   const store=customerRequestIssuer?.includes(user.id)?customerRequestIssuer.store
     :assignedStaffRefreshStore&&user.id===DEDICATED_ASSIGNED_STAFF_TEST_USER_ID?assignedStaffRefreshStore
     :user.id===DEDICATED_SEMIH_TEST_USER_ID?semihRefreshStore
-    :normalRefreshStore&&user.id===process.env.CRM_NORMAL_REFRESH_USER_ID?normalRefreshStore:null;
+    :normalRefreshStore&&(user.id===process.env.CRM_NORMAL_REFRESH_USER_ID||managedUserAllowed(user))?normalRefreshStore:null;
   const grant=store?store.issue(user):null;
   return normalLoginResult(user,grant);
 }
@@ -230,7 +236,7 @@ function logoutAccessSession(accessToken,{allowAssignedStaff=false}={}){
   const {user,authority}=captureNormalCrmAuthority(accessToken);
   const store=customerRequestIssuer?.includes(user.id)&&customerRequestIssuer.allows(user)?customerRequestIssuer.store
     :allowAssignedStaff&&assignedStaffRefreshStore&&user.id===DEDICATED_ASSIGNED_STAFF_TEST_USER_ID?assignedStaffRefreshStore
-    :allowAssignedStaff&&cleanNormalRefreshStore&&user.id===CLEAN_NORMAL_TEST_USER_ID?cleanNormalRefreshStore:null;
+    :allowAssignedStaff&&cleanNormalRefreshStore&&(user.id===CLEAN_NORMAL_TEST_USER_ID||managedUserAllowed(user))?cleanNormalRefreshStore:null;
   if(!store)throw authError('AUTH_TOKEN_INVALID','Yeniden giriş yapın.');
   return store.revokeSession(authority.normalSessionId,user);
 }
@@ -266,6 +272,7 @@ export function verifyCrmAccessToken(token, { includeContext = false } = {}) {
   if(user.id===DEDICATED_SEMIH_TEST_USER_ID&&(!semihRefreshUserAllowed(user)||!payload.normalSessionId))throw authError('AUTH_TOKEN_INVALID','Yeniden giriş yapın.');
   if(assignedStaffRefreshStore&&user.id===DEDICATED_ASSIGNED_STAFF_TEST_USER_ID&&!payload.normalSessionId)throw authError('AUTH_TOKEN_INVALID','Yeniden giriş yapın.');
   if(cleanNormalRefreshStore&&user.id===CLEAN_NORMAL_TEST_USER_ID&&!payload.normalSessionId)throw authError('AUTH_TOKEN_INVALID','Yeniden giriş yapın.');
+  if(user.managementRevision!==undefined&&!payload.normalSessionId)throw authError('AUTH_TOKEN_INVALID','Yeniden giriş yapın.');
   if(payload.normalSessionId){
     const store=refreshStoreForUser(user);
     if(!store)throw authError('AUTH_TOKEN_INVALID','Yeniden giriş yapın.');

@@ -1,5 +1,5 @@
 import {env} from '../config/env.js';
-import {listConfiguredCrmUsers} from './crmAuthService.js';
+import {listConfiguredCrmUsers,cleanCrmManagement} from './crmAuthService.js';
 import {readCleanCrmAssignmentInventory} from './chatwootInboxService.js';
 
 function groupBy(rows,key) {
@@ -38,7 +38,8 @@ export function getCrmUserInventory(user) {
     const linked = accounts.filter(account=>account.active && account.chatwootAgentId===row.assigneeAgentId);
     return {...row,accountIds,state:accountIds.length===1 && linked.every(account=>!account.conflicts.length)?'linked':accountIds.length?'conflict':'unmapped'};
   });
-  const configuredAccountCount = env.auth.users.length;
+  const management=cleanCrmManagement?.overview();
+  const configuredAccountCount = env.auth.users.length+(management?.editableAccountIds.length||0);
   return {
     observedAt:new Date().toISOString(),
     context:{database:'MELISA_ERP_CLEAN_TEST_20261022',environmentId:'e662fd94-d797-4b3b-938a-d143ad758b67',synthetic:true},
@@ -52,5 +53,6 @@ export function getCrmUserInventory(user) {
     assignments,
     summary:{accounts:accounts.length,active:accounts.filter(row=>row.active).length,inactive:accounts.filter(row=>!row.active).length,unlinked:accounts.filter(row=>!row.chatwootAgentId).length,conflicting:accounts.filter(row=>row.conflicts.length).length,conversations:assignments.length},
     readOnly:true,
+    ...(management?{management}:{}),
   };
 }

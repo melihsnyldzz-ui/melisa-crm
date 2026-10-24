@@ -1,7 +1,7 @@
 import { env } from '../config/env.js';
 import { assignChatwootConversationToAgent } from '../services/chatwootConversationService.js';
 import { getChatwootConversationDetail, getChatwootConversationAccess, assertChatwootAssignedInboxCurrent, listChatwootAgents } from '../services/chatwootInboxService.js';
-import { verifyCrmAccessToken, assertCrmPermission } from '../services/crmAuthService.js';
+import { verifyCrmAccessToken, assertCrmPermission, cleanCrmManagement } from '../services/crmAuthService.js';
 import { sendCrmTextMessage, readCrmOutboundStatus } from '../services/sendService.js';
 import { ok } from '../utils/response.js';
 import { normalSessionFingerprint } from '../services/normalRefreshSession.mjs';
@@ -55,6 +55,12 @@ export function createTestPersonnelRequestGuard(req, {
 
 export async function patchConversationAssignment(req, res, next) {
   try {
+    if(process.env.CRM_TEST_PROFILE==='clean-synthetic-20261022'){
+      if(!cleanCrmManagement||!req.body||Object.keys(req.body).length!==1||!Object.hasOwn(req.body,'agentId'))
+        throw Object.assign(Error('TEST ataması kapalı veya geçersiz.'),{statusCode:403,code:'CRM_BASELINE_ASSIGNMENT_PROTECTED'});
+      const result=cleanCrmManagement.assign(req.user,req.params.conversationId,req.body.agentId);
+      res.set('Cache-Control','no-store');return ok(res,result,{source:'clean-synthetic-management',persistent:true});
+    }
     const value = Object.hasOwn(req.body || {}, 'agentId') ? req.body.agentId : req.body?.chatwootAgentId;
     const requestedAgentId = value === null ? null : Number(value);
     const agents = requestedAgentId === null ? [] : await listChatwootAgents();

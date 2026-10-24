@@ -11,11 +11,12 @@ export function createSessionLoader({api,onCommit,onError,onBusy,onAgents=()=>{}
   function readAgents(operation) {
     if(!current(operation)||!operation.key||!operation.session?.canAssign)return Promise.resolve(null);
     if(operation.agentsPending)return operation.agentsPending;
+    const revision=operation.agentsRevision||0;
     onAgentsState({busy:true,error:''});
     operation.agentsPending=(async()=>{
-      try{const result=await api.agents(operation.key,{signal:operation.controller.signal});if(current(operation))onAgents(result);return result;}
-      catch(error){if(current(operation)){if([401,403].includes(error.status))onError(error);else onAgentsState({error:error.message||'Temsilciler alınamadı. Yeniden deneyin.'});}return null;}
-      finally{operation.agentsPending=null;if(current(operation))onAgentsState({busy:false});}
+      try{const result=await api.agents(operation.key,{signal:operation.controller.signal});if(current(operation)&&revision===(operation.agentsRevision||0))onAgents(result);return result;}
+      catch(error){if(current(operation)){if([401,403].includes(error.status))onError(error);else if(revision===(operation.agentsRevision||0))onAgentsState({error:error.message||'Temsilciler alınamadı. Yeniden deneyin.'});}return null;}
+      finally{operation.agentsPending=null;if(current(operation)&&revision===(operation.agentsRevision||0))onAgentsState({busy:false});}
     })();return operation.agentsPending;
   }
   function start({token='',credentials=null,resume=false,requireResume=false}={}) {
@@ -42,7 +43,15 @@ export function createSessionLoader({api,onCommit,onError,onBusy,onAgents=()=>{}
     })();
     return operation.promise;
   }
-  return {start,invalidate,refreshAgents:()=>active?readAgents(active):Promise.resolve(null),isPending:()=>Boolean(active?.pending)};
+  async function refreshAgents({afterMutation=false}={}) {
+    const operation=active;if(!operation||!current(operation)||!operation.key||!operation.session?.canAssign)return null;
+    if(!afterMutation)return readAgents(operation);
+    operation.agentsRevision=(operation.agentsRevision||0)+1;
+    onAgentsState({busy:true,error:''});
+    if(operation.agentsPending)await operation.agentsPending;
+    return current(operation)?readAgents(operation):null;
+  }
+  return {start,invalidate,refreshAgents,isPending:()=>Boolean(active?.pending)};
 }
 export function sessionReadIsCurrent({active=true,key,currentKey,epochCurrent=true,recipientId,currentRecipientId}) {
   return Boolean(active && key && currentKey===key && epochCurrent && (recipientId===undefined || String(recipientId)===String(currentRecipientId)));

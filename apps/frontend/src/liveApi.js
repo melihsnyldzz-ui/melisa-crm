@@ -784,6 +784,12 @@ export const liveApi = {
   async userInventory(token, options = {}) {
     return request('/crm/users',token,options);
   },
+  async createCrmUser(token,body,options={}) {
+    return request('/crm/users',token,{...options,method:'POST',body:JSON.stringify(body),preserveAuthDenial:true,redirect:'error'});
+  },
+  async updateCrmUser(token,id,body,options={}) {
+    return request(`/crm/users/${encodeURIComponent(id)}`,token,{...options,method:'PATCH',body:JSON.stringify(body),preserveAuthDenial:true,redirect:'error'});
+  },
   async send(token, id, text, clientRequestId, media = null) {
     const payload = { text, media, clientRequestId };
     validateSendPayload(payload);

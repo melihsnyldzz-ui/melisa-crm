@@ -43,3 +43,12 @@ test('explicit clean owner handoff settings survive baseline but require their o
  for(const changes of [{CRM_NORMAL_REFRESH_ENABLED:'false'},{CRM_TERMINAL_PEER_KEY:''},{WHATSAPP_CRM_AUTH_JWT_SECRET:key}])
   assert.throws(()=>configureTestServerEnvironment(root,{env:{...clean,...opted,...settings,...changes},loadBaseline:()=>({parsed:{}})}));
 });
+
+test('clean management cannot inherit activation/file from baseline, and explicit activation is bound to existing normal journal',()=>{
+ const settings={CRM_CLEAN_ACCOUNT_MANAGEMENT_ENABLED:'true',CRM_CLEAN_ACCOUNT_MANAGEMENT_FILE:'C:/Sirket/ERP/clean/20261022/runtime/crm-managed-users.json'};
+ let env={...clean,...opted};configureTestServerEnvironment(root,{env,loadBaseline:()=>{Object.assign(env,settings);return {parsed:{}};}});
+ assert.equal(env.CRM_CLEAN_ACCOUNT_MANAGEMENT_ENABLED,'false');assert.equal(env.CRM_CLEAN_ACCOUNT_MANAGEMENT_FILE,'');
+ env={...clean,...opted,...settings};configureTestServerEnvironment(root,{env,loadBaseline:()=>{Object.assign(env,{CRM_CLEAN_ACCOUNT_MANAGEMENT_ENABLED:'false',CRM_CLEAN_ACCOUNT_MANAGEMENT_FILE:'C:/foreign.json'});return {parsed:{}};}});
+ assert.equal(env.CRM_CLEAN_ACCOUNT_MANAGEMENT_ENABLED,'true');assert.equal(env.CRM_CLEAN_ACCOUNT_MANAGEMENT_FILE,settings.CRM_CLEAN_ACCOUNT_MANAGEMENT_FILE);
+ for(const change of [{CRM_NORMAL_REFRESH_ENABLED:'false'},{CRM_CLEAN_ACCOUNT_MANAGEMENT_FILE:'C:/foreign.json'}])assert.throws(()=>configureTestServerEnvironment(root,{env:{...clean,...opted,...settings,...change},loadBaseline:()=>({parsed:{}})}));
+});

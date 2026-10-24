@@ -70,6 +70,19 @@ test('agent failures are truthful and retryable; a late old-account 401 cannot e
  assert.equal(commits.length,2);assert.equal(errors.length,0);assert(states.some(s=>s.error==='Synthetic offline roster'));freshFailure=false;await loader.refreshAgents();assert.deepEqual(results,[{agents:[{id:7}]}]);
 });
 
+test('B5 mutation refresh suppresses the pending old roster and performs a fresh read after it settles',async()=>{
+ const pending=defer(),fresh=defer(),calls=[],results=[],states=[];
+ const loader=createSessionLoader({api:{session:async()=>({canAssign:true}),inbox:async()=>({conversations:[]}),agents:async key=>{calls.push(key);return calls.length===1?pending.promise:fresh.promise;}},onCommit:()=>{},onAgents:value=>results.push(value),onAgentsState:value=>states.push(value),onError:error=>{throw error;},onBusy:()=>{}});
+ await loader.start({token:'same-normal-manager'});const reload=loader.refreshAgents({afterMutation:true});pending.resolve({agents:[{id:2,name:'Old roster'}]});for(let index=0;index<5;index++)await Promise.resolve();
+ assert.equal(calls.length,2,'a successful mutation requires a new GET');assert.deepEqual(results,[],'pre-mutation response cannot publish the old roster');
+ fresh.resolve({agents:[{id:2},{id:1001,name:'New synthetic personel'}]});await reload;assert.deepEqual(results,[{agents:[{id:2},{id:1001,name:'New synthetic personel'}]}]);assert.equal(states.at(-1).busy,false);
+});
+test('B5 queued mutation refresh cannot follow an old account into a replacement session',async()=>{
+ const pending=defer(),calls=[],results=[];
+ const loader=createSessionLoader({api:{session:async key=>({canAssign:key==='old'}),inbox:async()=>({conversations:[]}),agents:async key=>{calls.push(key);return pending.promise;}},onCommit:()=>{},onAgents:value=>results.push(value),onError:error=>{throw error;},onBusy:()=>{}});
+ await loader.start({token:'old'});const reload=loader.refreshAgents({afterMutation:true});loader.invalidate();await loader.start({token:'new'});pending.resolve({agents:[{id:1001}]});assert.equal(await reload,null);assert.deepEqual(calls,['old']);assert.deepEqual(results,[]);
+});
+
 test('current agent authorization loss expires its owning session after first-page commit',async()=>{
  const agents=defer(),errors=[];const loader=createSessionLoader({api:{session:async()=>({canAssign:true}),inbox:async()=>({conversations:[{id:'55'}]}),agents:()=>agents.promise},onCommit:()=>{},onError:x=>errors.push(x),onBusy:()=>{}});
  await loader.start({token:'synthetic'});agents.reject(Object.assign(new Error('revoked'),{status:401}));await Promise.resolve();await Promise.resolve();assert.equal(errors[0].status,401);
