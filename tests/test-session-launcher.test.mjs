@@ -1,0 +1,385 @@
+import './offline-test-guard.mjs';
+import nodeTest from 'node:test';
+import assert from 'node:assert/strict';
+import {execFileSync} from 'node:child_process';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+import fs from 'node:fs';
+import os from 'node:os';
+import {createHash} from 'node:crypto';
+
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+const ps=path.join(process.env.SystemRoot || 'C:\\Windows','System32/WindowsPowerShell/v1.0/powershell.exe');
+const test=(name,body)=>nodeTest(name,{skip:process.platform !== 'win32' ? 'Windows PowerShell 5 launcher acceptance runs in the Windows CI job' : false},body);
+function run(body,launcher=path.join(root,'deploy/test-session-launcher.ps1')){
+  const script=launcher.replaceAll("'","''");
+  return execFileSync(ps,['-NoProfile','-NonInteractive','-Command',`. '${script}' -Library; ${body}`],{encoding:'utf8',stdio:['ignore','pipe','pipe']}).trim();
+}
+test('PS5 library mode is inert and private state cannot overlap checkout',()=>{
+  assert.equal(run(`if (!(Same-Path 'C:\\fixture\\repo\\' 'C:\\fixture\\repo')) { throw 'path' }; if (Outside-Checkout 'C:\\fixture\\repo\\runtime' 'C:\\fixture\\repo') { throw 'inside' }; if (!(Outside-Checkout 'C:\\fixture\\runtime' 'C:\\fixture\\repo')) { throw 'outside' }; 'PASS'`),'PASS');
+});
+test('native and supervisor recovery share bounded backoff; stable run alone resets circuit budget',()=>{
+  assert.equal(run(`$count=0;foreach($delay in @(5,10,20,40,60)){$result=Get-TestRecoveryDecision $count 1;if($result.DelaySeconds -ne $delay -or $result.State -ne 'restart-wait'){throw 'delay'};$count=$result.Failures};if((Get-TestRecoveryDecision $count 1).State -ne 'circuit-open'){throw 'circuit'};if((Get-TestRecoveryDecision $count 120).Failures -ne 1){throw 'stable'};'PASS'`),'PASS');
+});
+test('equivalent checkout spellings share the same mutex identity',()=>{
+  assert.equal(run(`$sid='S-1-5-21-fixture'; $first=Get-TestMutexName 'C:\\fixture\\repo' $sid; foreach ($root in @('C:\\fixture\\repo\\','c:/FIXTURE/repo/','C:\\fixture\\repo\\.','C:\\fixture\\temporary\\..\\repo')) { if ((Get-TestMutexName $root $sid) -ne $first) {throw 'split mutex'} }; if ((Get-TestMutexName 'C:\\fixture\\other' $sid) -eq $first) {throw 'different roots share mutex'}; 'PASS'`),'PASS');
+});
+test('listener ownership is fail closed, including partial foreign and non-loopback bindings',()=>{
+  assert.equal(run(`$expected=@{62400=101;62401=101}; Assert-TestListeners @([pscustomobject]@{LocalPort=62400;LocalAddress='127.0.0.1';OwningProcess=101}) $expected; foreach ($listener in @([pscustomobject]@{LocalPort=62401;LocalAddress='127.0.0.1';OwningProcess=999},[pscustomobject]@{LocalPort=62400;LocalAddress='0.0.0.0';OwningProcess=101},[pscustomobject]@{LocalPort=62404;LocalAddress='127.0.0.1';OwningProcess=101})) { $rejected=$false; try { Assert-TestListeners @($listener) $expected } catch { $rejected=$_.Exception.Message -eq 'TEST_FOREIGN_PORT_OWNER' }; if (!$rejected) { throw 'foreign accepted' } }; 'PASS'`),'PASS');
+});
+
+test('optional LAN config preserves defaults and only permits owned62400 on exact private address',()=>{
+  assert.equal(run(`if ((Get-TestLanAddress ([pscustomobject]@{})) -ne '') {throw 'default changed'}; foreach ($address in @('192.168.1.46','10.2.3.4','172.16.1.2','172.31.1.2')) {if ((Resolve-TestLanAddress $address) -cne $address) {throw 'private rejected'}}; foreach ($address in @('0.0.0.0','8.8.8.8','100.64.1.2','127.0.0.1','172.32.1.2','192.168.01.46','192.168.1.256',$null)) {$rejected=$false; try {Resolve-TestLanAddress $address | Out-Null} catch {$rejected=$_.Exception.Message -eq 'TEST_LAN_ADDRESS_INVALID'}; if (!$rejected) {throw 'invalid accepted'}}; $expected=@{62400=101;62401=101}; Assert-TestListeners @([pscustomobject]@{LocalPort=62400;LocalAddress='127.0.0.1';OwningProcess=101},[pscustomobject]@{LocalPort=62400;LocalAddress='192.168.1.46';OwningProcess=101}) $expected '192.168.1.46'; foreach ($listener in @([pscustomobject]@{LocalPort=62401;LocalAddress='192.168.1.46';OwningProcess=101},[pscustomobject]@{LocalPort=62400;LocalAddress='192.168.1.47';OwningProcess=101},[pscustomobject]@{LocalPort=62400;LocalAddress='192.168.1.46';OwningProcess=999},[pscustomobject]@{LocalPort=62400;LocalAddress='0.0.0.0';OwningProcess=101})) {$rejected=$false; try {Assert-TestListeners @($listener) $expected '192.168.1.46'} catch {$rejected=$_.Exception.Message -eq 'TEST_FOREIGN_PORT_OWNER'}; if (!$rejected) {throw 'unsafe listener accepted'}}; 'PASS'`),'PASS');
+});
+
+test('validated LAN environment is restored from config and absent option clears inherited binding',()=>{
+  assert.equal(run(`$env:CRM_TEST_LAN_ADDRESS='8.8.8.8'; Set-TestLanEnvironment ([pscustomobject]@{}); if ($env:CRM_TEST_LAN_ADDRESS) {throw 'ambient inherited'}; Set-TestLanEnvironment ([pscustomobject]@{LanAddress='192.168.1.46'}); if ($env:CRM_TEST_LAN_ADDRESS -cne '192.168.1.46') {throw 'binding missing'}; $bad=$false; try {Set-TestLanEnvironment ([pscustomobject]@{LanAddress='0.0.0.0'})} catch {$bad=$_.Exception.Message -eq 'TEST_LAN_ADDRESS_INVALID'}; if (!$bad -or $env:CRM_TEST_LAN_ADDRESS -cne '192.168.1.46') {throw 'invalid changed env'}; 'PASS'`),'PASS');
+});
+
+test('LAN config requires one preferred address on an active physical interface before startup',()=>{
+  assert.equal(run(`function Get-NetAdapter {$script:adapters}; function Get-NetIPAddress {$script:addresses}; $script:adapters=@([pscustomobject]@{Status='Up';InterfaceIndex=7}); $script:addresses=@([pscustomobject]@{IPAddress='192.168.1.46';AddressState='Preferred';PrefixLength=24;InterfaceIndex=7}); Assert-TestLanInterface ''; Assert-TestLanInterface '192.168.1.46'; foreach ($case in @('missing','virtual','down','duplicate','broad','host')) {$script:adapters=@([pscustomobject]@{Status='Up';InterfaceIndex=7}); $script:addresses=@([pscustomobject]@{IPAddress='192.168.1.46';AddressState='Preferred';PrefixLength=24;InterfaceIndex=7}); if ($case -eq 'missing') {$script:addresses=@()}; if ($case -eq 'virtual') {$script:addresses[0].InterfaceIndex=8}; if ($case -eq 'down') {$script:adapters[0].Status='Down'}; if ($case -eq 'duplicate') {$script:addresses[0].AddressState='Duplicate'}; if ($case -eq 'broad') {$script:addresses[0].PrefixLength=8}; if ($case -eq 'host') {$script:addresses[0].PrefixLength=32}; $rejected=$false; try {Assert-TestLanInterface '192.168.1.46'} catch {$rejected=$_.Exception.Message -eq 'TEST_LAN_INTERFACE_REQUIRED'}; if (!$rejected) {throw ('unsafe interface '+$case)}}; 'PASS'`),'PASS');
+});
+test('process adoption requires configured SID, exact executable, script and parent',()=>{
+  assert.equal(run(`$script='C:\\fixture\\repo\\deploy\\test-server.mjs'; $cfg=[pscustomobject]@{OwnerSid='S-1-5-21-fixture';NodePath='C:\\fixture\\node.exe'}; $script:mock=[pscustomobject]@{ProcessId=101;CreationDate=[datetime]'2026-10-04T00:00:00Z';ExecutablePath=$cfg.NodePath;CommandLine='"C:\\fixture\\node.exe" "C:\\fixture\\repo\\deploy\\test-server.mjs"';ParentProcessId=100}; function Get-TestProcess($ProcessId) { $script:mock }; function Invoke-CimMethod { [pscustomobject]@{ReturnValue=0;Sid='S-1-5-21-fixture'} }; Assert-OwnedProcess 101 $cfg $script 100 | Out-Null; foreach ($case in @('node','script','parent','owner')) { $oldNode=$script:mock.ExecutablePath; $oldCmd=$script:mock.CommandLine; $oldParent=$script:mock.ParentProcessId; if ($case -eq 'node') {$script:mock.ExecutablePath='C:\\foreign\\node.exe'}; if ($case -eq 'script') {$script:mock.CommandLine='node.exe LIVE.mjs'}; if ($case -eq 'parent') {$script:mock.ParentProcessId=999}; if ($case -eq 'owner') {$cfg.OwnerSid='S-1-5-foreign'}; $rejected=$false; try {Assert-OwnedProcess 101 $cfg $script 100 | Out-Null} catch {$rejected=$true}; if (!$rejected) {throw 'foreign adopted'}; $script:mock.ExecutablePath=$oldNode; $script:mock.CommandLine=$oldCmd; $script:mock.ParentProcessId=$oldParent }; 'PASS'`),'PASS');
+});
+
+const ownerRaceFixture=String.raw`
+$entryPath='C:\fixture\repo\deploy\test-server.mjs'
+$cfg=[pscustomobject]@{OwnerSid='S-1-5-21-fixture';NodePath='C:\fixture\node.exe'}
+$snapshot=[pscustomobject]@{ProcessId=101;CreationDate=[datetime]'2026-10-04T00:00:00Z';ExecutablePath=$cfg.NodePath;CommandLine=('node "'+$entryPath+'"');ParentProcessId=100}
+function New-CimLookupFailure($Status=6) {
+    $data=New-Object Microsoft.Management.Infrastructure.CimInstance('CIM_Error')
+    $data.CimInstanceProperties.Add([Microsoft.Management.Infrastructure.CimProperty]::Create('CIMStatusCode',[uint32]$Status,[Microsoft.Management.Infrastructure.CimType]::UInt32,[Microsoft.Management.Infrastructure.CimFlags]::Property))
+    return (New-Object Microsoft.Management.Infrastructure.CimException($data))
+}
+$script:current=$snapshot; $script:reads=0; $script:lookups=0; $script:mode='gone'
+function Get-TestProcess($ProcessId) {if ($ProcessId -ne 101) {throw 'FOREIGN_PID_LOOKUP'}; $script:reads++; $script:current}
+function Invoke-CimMethod {
+    param($InputObject,$MethodName)
+    if ($MethodName -ne 'GetOwnerSid' -or $InputObject.ProcessId -ne 101) {throw 'FOREIGN_OWNER_LOOKUP'}
+    $script:lookups++
+    if ($script:mode -in @('gone','unexpected-gone','access-denied-gone')) {$script:current=$null}
+    if ($script:mode -eq 'reused') {$script:current=$snapshot.PSObject.Copy(); $script:current.CreationDate=$snapshot.CreationDate.AddMinutes(1)}
+    if ($script:mode -eq 'unexpected-gone') {throw 'FIXTURE_UNEXPECTED_OWNER_LOOKUP'}
+    if ($script:mode -eq 'access-denied-gone') {throw (New-CimLookupFailure 2)}
+    throw (New-CimLookupFailure)
+}
+`;
+const ownerRaceAssertions=String.raw`
+if (Assert-OwnedProcess 101 $cfg $entryPath 100) {throw 'GONE_PROCESS_RETURNED'}
+if ($script:reads -ne 2 -or $script:lookups -ne 1) {throw 'MISSING_PID_NOT_RECHECKED'}
+foreach ($mode in @('alive','reused','unexpected-gone','access-denied-gone')) {
+    $script:mode=$mode; $script:current=$snapshot; $script:reads=0; $script:lookups=0; $rejected=$false
+    try {Assert-OwnedProcess 101 $cfg $entryPath 100 | Out-Null}
+    catch {
+        if ($mode -eq 'reused') {$rejected=$_.Exception.Message -eq 'TEST_PROCESS_PID_REUSED'}
+        elseif ($mode -eq 'unexpected-gone') {$rejected=$_.Exception.Message -eq 'FIXTURE_UNEXPECTED_OWNER_LOOKUP'}
+        elseif ($mode -eq 'access-denied-gone') {$rejected=$_.Exception -is [Microsoft.Management.Infrastructure.CimException] -and $_.Exception.StatusCode -eq 2}
+        else {$rejected=$_.Exception -is [Microsoft.Management.Infrastructure.CimException] -and $_.Exception.StatusCode -eq 6}
+    }
+    $expectedReads=if ($mode -in @('unexpected-gone','access-denied-gone')) {1} else {2}
+    if (!$rejected -or $script:reads -ne $expectedReads -or $script:lookups -ne 1) {throw ('UNSAFE_OWNER_FAILURE_'+$mode)}
+}
+$script:current=$null; $script:reads=0; $script:lookups=0
+if (Assert-OwnedProcess 101 $cfg $entryPath 100) {throw 'MISSING_PROCESS_RETURNED'}
+if ($script:reads -ne 1 -or $script:lookups -ne 0) {throw 'OWNER_LOOKUP_FOR_MISSING_PID'}
+'PASS'
+`;
+test('owner NotFound race returns gone only after fresh missing PID; live, reused and unexpected failures remain closed',()=>{
+  assert.equal(run(ownerRaceFixture+ownerRaceAssertions),'PASS');
+});
+
+test('owner disappearance accepts MI, CIM and exact WBEM NotFound records without masking other CIM errors',()=>{
+  assert.equal(run(ownerRaceFixture+String.raw`
+function Invoke-CimMethod {
+    [CmdletBinding()]
+    param($InputObject,$MethodName)
+    $script:current=$null
+    if ($script:mode -eq 'wbem') {
+        $record=New-Object Management.Automation.ErrorRecord($script:failure,'HRESULT 0x80041002,Microsoft.Management.Infrastructure.CimCmdlets.InvokeCimMethodCommand',[Management.Automation.ErrorCategory]::ObjectNotFound,$null)
+        $PSCmdlet.ThrowTerminatingError($record)
+    }
+    throw $script:failure
+}
+foreach ($mode in @('mi','cim','wbem')) {
+    $script:mode=$mode; $script:current=$snapshot; $script:reads=0
+    $status=if ($mode -eq 'cim') {6} else {0}
+    $script:failure=New-CimLookupFailure $status
+    if ($mode -eq 'mi') {
+        # Set only the synthetic exception's MI status; no CIM provider is contacted.
+        $setter=[Microsoft.Management.Infrastructure.CimException].GetProperty('NativeErrorCode').GetSetMethod($true)
+        $setter.Invoke($script:failure,@([Microsoft.Management.Infrastructure.NativeErrorCode]::NotFound)) | Out-Null
+    }
+    if (Assert-OwnedProcess 101 $cfg $entryPath 100) {throw ('NOT_FOUND_PROCESS_RETURNED_'+$mode)}
+    if ($script:reads -ne 2) {throw ('NOT_FOUND_NOT_RECHECKED_'+$mode)}
+}
+'PASS'
+`),'PASS');
+});
+
+const ownerRefreshAssertions=String.raw`
+function Invoke-CimMethod {
+    param($InputObject,$MethodName)
+    $script:current=$snapshot.PSObject.Copy()
+    if ($script:mode -eq 'gone') {$script:current=$null}
+    if ($script:mode -eq 'reused') {$script:current.CreationDate=$snapshot.CreationDate.AddMinutes(1)}
+    if ($script:mode -eq 'node') {$script:current.ExecutablePath='C:\foreign\node.exe'}
+    if ($script:mode -eq 'script') {$script:current.CommandLine='node LIVE.mjs'}
+    if ($script:mode -eq 'parent') {$script:current.ParentProcessId=999}
+    $status=if ($script:mode -eq 'nonzero') {9} else {0}
+    $sid=if ($script:mode -eq 'owner') {'S-1-5-foreign'} else {$cfg.OwnerSid}
+    [pscustomobject]@{ReturnValue=$status;Sid=$sid}
+}
+foreach ($mode in @('good','gone','reused','node','script','parent','owner','nonzero')) {
+    $script:mode=$mode; $script:current=$snapshot; $script:reads=0; $caught=''; $result=$null
+    try {$result=Assert-OwnedProcess 101 $cfg $entryPath 100} catch {$caught=$_.Exception.Message}
+    if ($script:reads -ne 2) {throw 'SUCCESSFUL_LOOKUP_NOT_RECHECKED'}
+    if ($mode -eq 'good') {if (!$result -or ![object]::ReferenceEquals($result,$script:current) -or $caught) {throw 'FRESH_PROCESS_NOT_RETURNED'}}
+    elseif ($mode -eq 'gone') {if ($result -or $caught) {throw 'GONE_SUCCESS_NOT_HANDLED'}}
+    else {
+        $expected=switch ($mode) {'reused' {'TEST_PROCESS_PID_REUSED'} 'script' {'TEST_PROCESS_SCRIPT_MISMATCH'} 'parent' {'TEST_PROCESS_PARENT_MISMATCH'} default {'TEST_PROCESS_OWNER_OR_NODE_MISMATCH'}}
+        if ($result -or $caught -ne $expected) {throw ('UNSAFE_FRESH_PROCESS_'+$mode)}
+    }
+}
+'PASS'
+`;
+test('successful owner lookup uses a fresh identical creation and rechecks executable, script and parent',()=>{
+  assert.equal(run(ownerRaceFixture+ownerRefreshAssertions),'PASS');
+});
+
+test('owner race tests reject missing-PID, identity, stale-snapshot and unexpected-error mutants',()=>{
+  const directory=fs.mkdtempSync(path.join(os.tmpdir(),'crm-launcher-owner-race-mutants-'));
+  try {
+    const source=fs.readFileSync(path.join(root,'deploy/test-session-launcher.ps1'),'utf8');
+    const mutants=[
+      ['missing-pid', 'if (!$after) { return $null }', 'if (!$after) { throw }', ownerRaceAssertions, /CimException/],
+      ['catch-reused-pid', "if ($after.CreationDate -ne $p.CreationDate) { throw 'TEST_PROCESS_PID_REUSED' }", 'if ($false) {}', ownerRaceAssertions, /UNSAFE_OWNER_FAILURE_reused/],
+      ['success-reused-pid', "if ($verified.CreationDate -ne $p.CreationDate) { throw 'TEST_PROCESS_PID_REUSED' }", 'if ($false) {}', ownerRefreshAssertions, /UNSAFE_FRESH_PROCESS_reused/],
+      ['unexpected-error', "if ($_.Exception.NativeErrorCode -ne [Microsoft.Management.Infrastructure.NativeErrorCode]::NotFound -and $_.Exception.StatusCode -ne 6 -and $_.FullyQualifiedErrorId -notlike 'HRESULT 0x80041002,*') { throw }", 'if ($false) {}', ownerRaceAssertions, /UNSAFE_OWNER_FAILURE_access-denied-gone/],
+      ['stale-snapshot', '$p = $verified', '# stale snapshot retained', ownerRefreshAssertions, /FRESH_PROCESS_NOT_RETURNED/],
+    ];
+    for (const [name,needle,replacement,body,diagnostic] of mutants) {
+      assert.equal(source.split(needle).length,2,`unique mutant site ${name}`);
+      const mutant=path.join(directory,`${name}.ps1`);
+      fs.writeFileSync(mutant,source.replace(needle,replacement));
+      assert.throws(()=>run(ownerRaceFixture+body,mutant),error=>error.status !== 0 && diagnostic.test(error.stderr),`mutant escaped ${name}`);
+    }
+  } finally {
+    assert.equal(path.dirname(path.resolve(directory)),path.resolve(os.tmpdir()));
+    assert.match(path.basename(directory),/^crm-launcher-owner-race-mutants-/);
+    fs.rmSync(directory,{recursive:true,force:true});
+  }
+});
+
+test('session loop replaces a native process lost during owner lookup without stopping the CRM or a foreign PID',()=>{
+  assert.equal(run(ownerRaceFixture+String.raw`
+$cfg=[pscustomobject]@{RepoRoot='C:\fixture\repo';RuntimeDir='C:\fixture\runtime';LogDir='C:\fixture\logs';NodePath=$cfg.NodePath;OwnerSid=$cfg.OwnerSid;BaselineEnv='fixture';ErpApiRoot='fixture';ErpBaselineEnv='fixture';PhotoRoot='fixture';AISalesMode='off';NativeRelease='C:\fixture\native';NativeConfig='C:\fixture\native-config.json'}
+$nativeEntry=Join-Path $cfg.NativeRelease 'apps/api/start-crm-order-test.mjs'
+$script:current=$null; $script:starts=0; $script:race=$false; $script:healthChecks=0; $script:writtenPid=0
+function New-Item {}
+function Test-Path {return $false}
+function Get-TestProcess($ProcessId) {if ($script:current -and $ProcessId -ne $script:current.ProcessId) {throw 'FOREIGN_PID_LOOKUP'}; $script:current}
+function Read-SupervisorIdentity {return @{Supervisor=[pscustomobject]@{ProcessId=100};Children=@{}}}
+function Get-TestListeners {return @()}
+function Assert-TestSessionListeners($Listeners,$Expected,$Identity) {return @{Identity=$Identity;Listeners=$Listeners;Expected=$Expected}}
+function Start-TestNode($Config,$Script,$WorkingDirectory,$Arguments,$Label) {
+    if ($Label -ne 'native-draft' -or $Script -ne $nativeEntry -or $Arguments.Count -ne 1 -or $Arguments[0] -ne $cfg.NativeConfig) {throw 'UNEXPECTED_START'}
+    $script:starts++; $script:current=$snapshot.PSObject.Copy(); $script:current.ProcessId=100+$script:starts; $script:current.CreationDate=$snapshot.CreationDate.AddSeconds($script:starts); $script:current.CommandLine=('node "'+$nativeEntry+'" "'+$cfg.NativeConfig+'"')
+    [pscustomobject]@{Id=$script:current.ProcessId}
+}
+function Start-Sleep {}
+function Stop-Process {throw 'UNEXPECTED_PROCESS_STOP'}
+function Invoke-CimMethod {
+    param($InputObject,$MethodName)
+    if ($script:race -and $InputObject.ProcessId -eq 101) {$script:current=$null; throw (New-CimLookupFailure)}
+    [pscustomobject]@{ReturnValue=0;Sid=$cfg.OwnerSid}
+}
+function Write-TestIdentityAtomic($Path,$Identity) {if($Identity.ContainsKey('pid')){$script:writtenPid=$Identity.pid}}
+function Assert-NativeHealth {
+    $script:healthChecks++
+    if ($script:healthChecks -eq 2) {throw 'FIXTURE_RECOVERY_COMPLETE'}
+    $script:race=$true
+}
+$completed=$false
+try {Invoke-TestSession $cfg} catch {$completed=$_.Exception.Message -eq 'FIXTURE_RECOVERY_COMPLETE'}
+if (!$completed -or $script:starts -ne 2 -or $script:healthChecks -ne 2 -or $script:writtenPid -ne 102) {throw 'SESSION_RECOVERY_MISSING'}
+'PASS'
+`),'PASS');
+});
+const listenerOwnerRaceFixture=ownerRaceFixture+String.raw`
+$cfg=[pscustomobject]@{RepoRoot='C:\fixture\repo';RuntimeDir='C:\fixture\runtime';LogDir='C:\fixture\logs';NodePath=$cfg.NodePath;OwnerSid=$cfg.OwnerSid;BaselineEnv='fixture';ErpApiRoot='fixture';ErpBaselineEnv='fixture';PhotoRoot='fixture';AISalesMode='off';NativeRelease='C:\fixture\native';NativeConfig='C:\fixture\native-config.json'}
+$nativeEntry=Join-Path $cfg.NativeRelease 'apps/api/start-crm-order-test.mjs'
+$script:fixtureNative=$snapshot.PSObject.Copy(); $script:fixtureNative.CommandLine=('node "'+$nativeEntry+'" "'+$cfg.NativeConfig+'"')
+function New-Item {}
+function Test-Path {return $false}
+function Get-TestProcess($ProcessId) {if ($script:current -and $ProcessId -ne $script:current.ProcessId) {throw 'FOREIGN_PID_LOOKUP'}; $script:current}
+function Read-SupervisorIdentity {return @{Supervisor=[pscustomobject]@{ProcessId=100};Children=@{}}}
+function Get-TestListeners {
+    $script:listenerReads++
+    if ($script:listenerReads -eq 1) {return @([pscustomobject]@{LocalPort=62404;LocalAddress='127.0.0.1';OwningProcess=101})}
+    if ($script:mode -eq 'rebound-foreign') {
+        $script:current=$script:fixtureNative.PSObject.Copy(); $script:current.ProcessId=103; $script:current.CreationDate=$snapshot.CreationDate.AddMinutes(1)
+        return @([pscustomobject]@{LocalPort=62404;LocalAddress='127.0.0.1';OwningProcess=103})
+    }
+    return @()
+}
+function Start-TestNode($Config,$Script,$WorkingDirectory,$Arguments,$Label) {
+    if ($script:listenerReads -lt 2 -or $Label -ne 'native-draft' -or $Script -ne $nativeEntry -or $Arguments.Count -ne 1 -or $Arguments[0] -ne $cfg.NativeConfig) {throw 'UNSAFE_STALE_LISTENER_START'}
+    $script:starts++; $script:current=$script:fixtureNative.PSObject.Copy(); $script:current.ProcessId=102; $script:current.CreationDate=$snapshot.CreationDate.AddSeconds(1)
+    [pscustomobject]@{Id=102}
+}
+function Start-Sleep {}
+function Stop-Process {throw 'UNEXPECTED_PROCESS_STOP'}
+function Invoke-CimMethod {
+    param($InputObject,$MethodName)
+    if ($InputObject.ProcessId -eq 101 -and $script:mode -in @('gone','reused','rebound-foreign')) {
+        if ($script:mode -eq 'reused') {$script:current=$script:fixtureNative.PSObject.Copy(); $script:current.CreationDate=$snapshot.CreationDate.AddMinutes(1)}
+        else {$script:current=$null}
+        throw (New-CimLookupFailure)
+    }
+    $sid=if ($InputObject.ProcessId -eq 103) {'S-1-5-foreign'} else {$cfg.OwnerSid}
+    [pscustomobject]@{ReturnValue=0;Sid=$sid}
+}
+function Write-TestIdentityAtomic($Path,$Identity) {$script:writtenPid=$Identity.pid}
+function Assert-NativeHealth {throw 'FIXTURE_LISTENER_RECOVERY_COMPLETE'}
+foreach ($mode in @('gone','reused','foreign-config','rebound-foreign')) {
+    $script:mode=$mode; $script:current=$script:fixtureNative.PSObject.Copy(); $script:starts=0; $script:listenerReads=0; $script:writtenPid=0; $caught=''
+    if ($mode -eq 'foreign-config') {$script:current.CommandLine=$script:current.CommandLine.Replace('native-config.json','foreign-config.json')}
+    try {Invoke-TestSession $cfg} catch {$caught=$_.Exception.Message}
+    $expected=switch ($mode) {'gone' {'FIXTURE_LISTENER_RECOVERY_COMPLETE'} 'reused' {'TEST_PROCESS_PID_REUSED'} 'foreign-config' {'TEST_NATIVE_CONFIG_ARGUMENT_MISMATCH'} 'rebound-foreign' {'TEST_PROCESS_OWNER_OR_NODE_MISMATCH'}}
+    if ($caught -ne $expected) {throw ('LISTENER_RACE_RESULT_'+$mode+'_'+$caught)}
+    $expectedReads=if ($mode -in @('gone','rebound-foreign')) {2} else {1}
+    $expectedStarts=if ($mode -eq 'gone') {1} else {0}
+    if ($script:listenerReads -ne $expectedReads -or $script:starts -ne $expectedStarts -or ($mode -eq 'gone' -and $script:writtenPid -ne 102)) {throw ('UNSAFE_LISTENER_RECOVERY_'+$mode)}
+}
+'PASS'
+`;
+test('listener-to-owner disappearance refreshes before native-only recovery and refuses reuse, foreign config and rebound owners',()=>{
+  assert.equal(run(listenerOwnerRaceFixture),'PASS');
+});
+test('listener owner-race fixture rejects a restored fail-fast null check',()=>{
+  const directory=fs.mkdtempSync(path.join(os.tmpdir(),'crm-launcher-listener-race-mutant-'));
+  try {
+    const source=fs.readFileSync(path.join(root,'deploy/test-session-launcher.ps1'),'utf8');
+    const needle=String.raw`if (!$native) {
+                    # The listener snapshot may outlive its process. Re-read all
+                    # listeners before recovering; never start against stale ports.
+                    $nativeId=0; $nativeUnavailableSince=$null
+                    continue
+                }`;
+    // Match either checkout newline style without changing the mutation scope.
+    const normalized=source.replaceAll('\r\n','\n');
+    assert.equal(normalized.split(needle).length,2,'unique listener-race mutant site');
+    const mutant=path.join(directory,'stale-listener-fail-fast.ps1');
+    fs.writeFileSync(mutant,normalized.replace(needle,"if (!$native) { throw 'TEST_NATIVE_CONFIG_ARGUMENT_MISMATCH' }"));
+    assert.throws(()=>run(listenerOwnerRaceFixture,mutant),error=>error.status !== 0 && /LISTENER_RACE_RESULT_gone_TEST_NATIVE_CONFIG_ARGUMENT_MISMATCH/.test(error.stderr));
+  } finally {
+    assert.equal(path.dirname(path.resolve(directory)),path.resolve(os.tmpdir()));
+    assert.match(path.basename(directory),/^crm-launcher-listener-race-mutant-/);
+    fs.rmSync(directory,{recursive:true,force:true});
+  }
+});
+
+test('pending supervisor waits without another start and bounded timeout selects recovery',()=>{
+  assert.equal(run(`$starts=1; foreach ($elapsed in @(0,5,15,59)) { $decision=Get-ReadinessDecision $true $false $elapsed 60; if ($decision -ne 'wait') { $starts++ } }; if ($starts -ne 1) {throw 'duplicate launch'}; if ((Get-ReadinessDecision $true $false 60 60) -ne 'recover') {throw 'unbounded wait'}; if ((Get-ReadinessDecision $false $false 3 60) -ne 'restart') {throw 'dead pending'}; if ((Get-ReadinessDecision $true $true 70 60) -ne 'ready') {throw 'record not adopted'}; 'PASS'`),'PASS');
+});
+test('readiness recovery stops only a revalidated identical creation and config argument',()=>{
+  assert.equal(run(`$script:snapshot=[pscustomobject]@{ProcessId=101;CreationDate=[datetime]'2026-10-04T00:00:00Z';CommandLine='node "C:\\fixture\\private.json"'}; $script:current=$script:snapshot; $script:stops=0; function Assert-OwnedProcess { $script:current }; function Stop-Process { $script:stops++; $script:current=$null }; function Get-TestProcess { $script:current }; Stop-VerifiedTestProcess $script:snapshot @{} 'unused' 'C:\\fixture\\private.json'; if ($script:stops -ne 1) {throw 'owned stop missing'}; $script:current=[pscustomobject]@{ProcessId=101;CreationDate=[datetime]'2026-10-04T01:00:00Z';CommandLine='node "C:\\fixture\\private.json"'}; $rejected=$false; try {Stop-VerifiedTestProcess $script:snapshot @{} 'unused' 'C:\\fixture\\private.json'} catch {$rejected=$_.Exception.Message -eq 'TEST_RECOVERY_PID_REUSED'}; if (!$rejected -or $script:stops -ne 1) {throw 'reused pid stopped'}; $script:current=[pscustomobject]@{ProcessId=101;CreationDate=$script:snapshot.CreationDate;CommandLine='node "C:\\foreign\\private.json"'}; $rejected=$false; try {Stop-VerifiedTestProcess $script:snapshot @{} 'unused' 'C:\\fixture\\private.json'} catch {$rejected=$_.Exception.Message -eq 'TEST_RECOVERY_CONFIG_MISMATCH'}; if (!$rejected -or $script:stops -ne 1) {throw 'foreign config stopped'}; 'PASS'`),'PASS');
+});
+test('only transport failures are recovery evidence; wrong database health fails closed',()=>{
+  assert.equal(run(`$timeout=New-Object Net.WebException('synthetic',[Net.WebExceptionStatus]::Timeout); $protocol=New-Object Net.WebException('synthetic',[Net.WebExceptionStatus]::ProtocolError); if (!(Test-NetworkFailure $timeout) -or (Test-NetworkFailure $protocol) -or (Test-NetworkFailure (New-Object Exception('TEST_NATIVE_HEALTH_IDENTITY_MISMATCH')))) {throw 'unsafe classification'}; function Invoke-RestMethod { [pscustomobject]@{ok=$true;environment='CANONICAL_TEST';purpose='crm-order-draft-only';database='FOREIGN';sourceCommit='fixture';packageId='fixture';port=62404;stockEffect=$false;ledgerEffect=$false} }; $cfg=[pscustomobject]@{ExpectedDatabase='EXPECTED';NativeSourceCommit='fixture';NativePackageId='fixture'}; $rejected=$false; try {Assert-NativeHealth $cfg} catch {$rejected=$_.Exception.Message -eq 'TEST_NATIVE_HEALTH_IDENTITY_MISMATCH'; if (Test-NetworkFailure $_.Exception) {throw 'identity recoverable'}}; if (!$rejected) {throw 'foreign database accepted'}; 'PASS'`),'PASS');
+});
+test('identity writer creates and atomically replaces valid JSON without leftover temp files',()=>{
+  const directory=fs.mkdtempSync(path.join(os.tmpdir(),'crm-identity-fixture-'));
+  try {
+    const file=path.join(directory,'identity.json').replaceAll("'","''");
+    assert.equal(run(`$file='${file}'; Write-TestIdentityAtomic $file @{pid=101;label='first'}; $first=Get-Content -LiteralPath $file -Raw | ConvertFrom-Json; if ($first.pid -ne 101) {throw 'first invalid'}; Write-TestIdentityAtomic $file @{pid=202;label='second'}; $second=Get-Content -LiteralPath $file -Raw | ConvertFrom-Json; if ($second.pid -ne 202 -or $second.label -ne 'second') {throw 'replace invalid'}; if (@(Get-ChildItem -LiteralPath (Split-Path $file) -Filter '*.tmp').Count) {throw 'leftover temp'}; 'PASS'`),'PASS');
+    assert.equal(JSON.parse(fs.readFileSync(path.join(directory,'identity.json'),'utf8')).pid,202);
+  } finally {fs.rmSync(directory,{recursive:true,force:true});}
+});
+test('actual manage CLI retains ConfigPath through library import before any task operation',()=>{
+  const manager=path.join(root,'deploy/manage-test-startup.ps1').replaceAll("'","''");
+  const body=`$fixturePath='C:\\fixture\\private\\startup.json'; function Get-Content {param($LiteralPath,[switch]$Raw) if ($LiteralPath -eq $fixturePath) {throw 'EXPECTED_CONFIG_PATH'}; throw 'CONFIG_PATH_LOST'}; function Get-ScheduledTask {throw 'UNEXPECTED_TASK_CALL'}; function Register-ScheduledTask {throw 'UNEXPECTED_TASK_WRITE'}; $verified=$false; try {& '${manager}' -Action Install -ConfigPath $fixturePath} catch {$verified=$_.Exception.Message -eq 'EXPECTED_CONFIG_PATH'}; if (!$verified) {throw 'CLI parameter not preserved'}; 'PASS'`;
+  assert.equal(execFileSync(ps,['-NoProfile','-NonInteractive','-Command',body],{encoding:'utf8'}).trim(),'PASS');
+});
+test('Windows canonical account and SID resolve to the same owner, foreign and invalid principals are rejected',()=>{
+  assert.equal(run(`$identity=[Security.Principal.WindowsIdentity]::GetCurrent(); $owner=$identity.User.Value; if ((Resolve-TestPrincipalSid $identity.Name) -ne $owner -or (Resolve-TestPrincipalSid $env:USERNAME) -ne $owner -or (Resolve-TestPrincipalSid $owner) -ne $owner) {throw 'account alias rejected'}; if ((Resolve-TestPrincipalSid 'S-1-5-18') -eq $owner) {throw 'foreign owner accepted'}; $rejected=$false; try {Resolve-TestPrincipalSid 'S-1-invalid'} catch {$rejected=$_.Exception.Message -eq 'TEST_TASK_PRINCIPAL_INVALID'}; if (!$rejected) {throw 'invalid principal accepted'}; 'PASS'`),'PASS');
+});
+
+test('source execution root stays compatible, package process scripts and cwd use the effective root',()=>{
+  assert.equal(run(String.raw`$source='C:\fixture\repo'; $package='C:\fixture\package'; $cfg=[pscustomobject]@{RepoRoot=$source;NodePath='fixture-node';LogDir='C:\fixture\logs'}; if (!(Same-Path (Get-TestExecutionRoot $cfg) $source)) {throw 'source changed'}; $cfg | Add-Member PackageRoot $package; $script:verified=0; function Assert-TestPackage { $script:verified++ }; function Start-Process {param($FilePath,$ArgumentList,$WorkingDirectory,$WindowStyle,$RedirectStandardOutput,$RedirectStandardError,[switch]$PassThru) if ($WindowStyle -ne 'Hidden' -or !(Same-Path $WorkingDirectory $package) -or $ArgumentList -ne ('"'+$package+'\deploy\test-supervisor.mjs"')) {throw 'execution root wrong'}; [pscustomobject]@{Id=100} }; $root=Get-TestExecutionRoot $cfg; Start-TestNode $cfg (Join-Path $root 'deploy/test-supervisor.mjs') $root @() 'supervisor' | Out-Null; if ($script:verified -ne 1 -or !(Same-Path $cfg.RepoRoot $source)) {throw 'package verification/source root wrong'}; 'PASS'`),'PASS');
+});
+
+test('package environment is taken only from validated config and source mode clears inherited package scope',()=>{
+  assert.equal(run(`$env:CRM_TEST_PACKAGE_ROOT='UNAPPROVED_INHERITED_ROOT'; $env:CRM_TEST_PACKAGE_MANIFEST_SHA256='UNAPPROVED_INHERITED_PIN'; $cfg=[pscustomobject]@{RepoRoot='C:/fixture/repo'}; Set-TestPackageEnvironment $cfg; if ($env:CRM_TEST_PACKAGE_ROOT -or $env:CRM_TEST_PACKAGE_MANIFEST_SHA256) {throw 'source inherited package'}; $cfg | Add-Member PackageRoot 'C:/fixture/package'; $cfg | Add-Member PackageManifestSha256 ('a'*64); Set-TestPackageEnvironment $cfg; if (!(Same-Path $env:CRM_TEST_PACKAGE_ROOT $cfg.PackageRoot) -or $env:CRM_TEST_PACKAGE_MANIFEST_SHA256 -ne $cfg.PackageManifestSha256) {throw 'validated pair not propagated'}; 'PASS'`),'PASS');
+});
+
+test('package verifier uses canonical script and configured manifest pin; nonzero cannot fall back to source',()=>{
+  assert.equal(run(String.raw`$cfg=[pscustomobject]@{RepoRoot='C:\fixture\repo';PackageRoot='C:\fixture\package';PackageManifestSha256=('a'*64);NodePath='FixtureNode'}; function Test-Path {param($LiteralPath) return $LiteralPath -eq 'C:\fixture\repo\deploy\test-package.mjs'}; $script:fail=$false; function FixtureNode { if ($args.Count -ne 6 -or $args[0] -ne 'C:\fixture\repo\deploy\test-package.mjs' -or $args[1] -ne 'verify' -or $args[2] -ne '--package-root' -or $args[3] -ne $cfg.PackageRoot -or $args[4] -ne '--manifest-sha256' -or $args[5] -ne $cfg.PackageManifestSha256) {throw 'wrong verifier arguments'}; $global:LASTEXITCODE=0; if ($script:fail) {$global:LASTEXITCODE=1}; '{"verified":true}' }; Assert-TestPackage $cfg; $script:fail=$true; $rejected=$false; try {Assert-TestPackage $cfg} catch {$rejected=$_.Exception.Message -eq 'TEST_PACKAGE_VERIFICATION_FAILED'}; if (!$rejected) {throw 'verification fallback'}; 'PASS'`),'PASS');
+});
+
+test('package runtime identity adopts exact package scripts, rejects source and relative package commands',()=>{
+  assert.equal(run(String.raw`$cfg=[pscustomobject]@{RepoRoot='C:\fixture\repo';PackageRoot='C:\fixture\package';RuntimeDir='C:\fixture\runtime';LogDir='C:\fixture\logs';NodePath='C:\fixture\node.exe';OwnerSid='S-1-5-fixture'}; $script:record=[pscustomobject]@{root=$cfg.PackageRoot;executable=$cfg.NodePath;runtime=$cfg.RuntimeDir;logs=$cfg.LogDir;supervisor=100;startedAt='2026-10-04T00:00:00Z';children=[pscustomobject]@{'test-server.mjs'=101}}; $script:super=[pscustomobject]@{ProcessId=100;ExecutablePath=$cfg.NodePath;CommandLine='node "C:\fixture\package\deploy\test-supervisor.mjs"';ParentProcessId=99;CreationDate=[datetime]'2026-10-04T00:00:00Z'}; $script:child=[pscustomobject]@{ProcessId=101;ExecutablePath=$cfg.NodePath;CommandLine='node "C:\fixture\package\deploy\test-server.mjs"';ParentProcessId=100;CreationDate=[datetime]'2026-10-04T00:00:01Z'}; function Test-Path {return $true}; function Get-Content {$script:record | ConvertTo-Json -Depth 8}; function Get-TestProcess($ProcessId) {if ($ProcessId -eq 100) {return $script:super}; if ($ProcessId -eq 101) {return $script:child}}; function Invoke-CimMethod {[pscustomobject]@{ReturnValue=0;Sid=$cfg.OwnerSid}}; $r=Read-SupervisorIdentity $cfg; if ($r.Supervisor.ProcessId -ne 100 -or $r.Children['test-server.mjs'].ProcessId -ne 101) {throw 'package not adopted'}; $script:record.root=$cfg.RepoRoot; $rejected=$false; try {Read-SupervisorIdentity $cfg | Out-Null} catch {$rejected=$_.Exception.Message -eq 'TEST_SUPERVISOR_RECORD_MISMATCH'}; if (!$rejected) {throw 'source record adopted'}; $script:record.root=$cfg.PackageRoot; $script:super.CommandLine='node deploy/test-supervisor.mjs'; $rejected=$false; try {Read-SupervisorIdentity $cfg | Out-Null} catch {$rejected=$_.Exception.Message -eq 'TEST_PROCESS_SCRIPT_MISMATCH'}; if (!$rejected) {throw 'relative package accepted'}; 'PASS'`),'PASS');
+});
+
+test('pending child listener validation uses package root and still checks parent and loopback ownership',()=>{
+  assert.equal(run(String.raw`$cfg=[pscustomobject]@{RepoRoot='C:\fixture\repo';PackageRoot='C:\fixture\package'}; $snapshot=[pscustomobject]@{ProcessId=100;CreationDate=[datetime]'2026-10-04T00:00:00Z'}; function Assert-OwnedProcess($ProcessId,$Config,$Script,$ParentId) {if ($ParentId -ne 100 -or $Script -ne 'C:\fixture\package\deploy\test-server.mjs') {throw 'source child path used'}; [pscustomobject]@{ProcessId=$ProcessId;CreationDate=[datetime]'2026-10-04T00:00:01Z'}}; Assert-PendingSupervisorPorts @([pscustomobject]@{LocalPort=62400;LocalAddress='127.0.0.1';OwningProcess=101},[pscustomobject]@{LocalPort=62404;LocalAddress='127.0.0.1';OwningProcess=202}) $snapshot $cfg 202; $rejected=$false; try {Assert-PendingSupervisorPorts @([pscustomobject]@{LocalPort=62400;LocalAddress='0.0.0.0';OwningProcess=101}) $snapshot $cfg 202} catch {$rejected=$_.Exception.Message -eq 'TEST_FOREIGN_PORT_OWNER'}; if (!$rejected) {throw 'foreign listener accepted'}; 'PASS'`),'PASS');
+});
+
+test('package fields require an outside root and paired pin; private config and state stay outside both roots',()=>{
+  const directory=fs.mkdtempSync(path.join(os.tmpdir(),'crm-startup-package-fixture-'));
+  const source=path.join(directory,'source'),packageRoot=path.join(directory,'package'),privateRoot=path.join(directory,'private'),native=path.join(directory,'native');
+  try {
+    for(const folder of [path.join(source,'deploy'),packageRoot,privateRoot,native])fs.mkdirSync(folder,{recursive:true});
+    fs.writeFileSync(path.join(source,'deploy/test-supervisor.mjs'),'fixture');
+    fs.writeFileSync(path.join(source,'deploy/test-package.mjs'),'fixture');
+    fs.writeFileSync(path.join(native,'release-manifest.json'),JSON.stringify({sourceCommit:'fixture-commit',packageId:'CRM-ORDER-DRAFT-TEST-fixture'}));
+    for(const name of ['node.fixture','baseline.fixture','erp-baseline.fixture','native-config.fixture'])fs.writeFileSync(path.join(privateRoot,name),'fixture');
+    const values={RepoRoot:source,NodePath:path.join(privateRoot,'node.fixture'),BaselineEnv:path.join(privateRoot,'baseline.fixture'),
+      ErpApiRoot:privateRoot,ErpBaselineEnv:path.join(privateRoot,'erp-baseline.fixture'),PhotoRoot:privateRoot,RuntimeDir:path.join(privateRoot,'runtime'),
+      LogDir:path.join(privateRoot,'logs'),NativeRelease:native,NativeConfig:path.join(privateRoot,'native-config.fixture'),
+      NodeSha256:'fixture-placeholder',NativeSourceCommit:'fixture-commit',NativePackageId:'CRM-ORDER-DRAFT-TEST-fixture',ExpectedDatabase:'MELISA_ERP_SIRKET_TEST_20260929_01',TaskName:'Melisa-CRM-TEST-fixture'};
+    const file=path.join(privateRoot,'startup.json');fs.writeFileSync(file,JSON.stringify(values));
+    const literal=value=>value.replaceAll("'","''");
+    assert.equal(run(String.raw`$file='${literal(file)}'; $source='${literal(source)}'; $package='${literal(packageRoot)}'; $c=Get-Content -LiteralPath $file -Raw | ConvertFrom-Json; $c | Add-Member OwnerSid ([Security.Principal.WindowsIdentity]::GetCurrent().User.Value); $c.NodeSha256=Get-TestFileSha256 $c.NodePath; function git {$global:LASTEXITCODE=0; 'https://github.com/melihsnyldzz-ui/melisa-crm.git'}; $script:verifications=0; function Assert-TestPackage {$script:verifications++}; function Save-Fixture {$c | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $file}; Save-Fixture; $sourceConfig=Read-TestConfig $file; function Get-NetAdapter {@()}; function Get-NetIPAddress {@()}; $c | Add-Member LanAddress '192.168.1.46'; Save-Fixture; $missing=$false; try {Read-TestConfig $file | Out-Null} catch {$missing=$_.Exception.Message -eq 'TEST_LAN_INTERFACE_REQUIRED'}; if(!$missing) {throw 'missing interface accepted'}; Read-TestConfig $file -DeferLanInterface | Out-Null; $c.LanAddress='8.8.8.8'; Save-Fixture; $bad=$false; try {Read-TestConfig $file -DeferLanInterface | Out-Null} catch {$bad=$_.Exception.Message -eq 'TEST_LAN_ADDRESS_INVALID'}; if(!$bad) {throw 'defer bypassed address format'}; $c.LanAddress='192.168.1.46'; $savedOwner=$c.OwnerSid; $c.OwnerSid='S-1-5-18'; Save-Fixture; $bad=$false; try {Read-TestConfig $file -DeferLanInterface | Out-Null} catch {$bad=$_.Exception.Message -eq 'TEST_OWNER_MISMATCH'}; if(!$bad) {throw 'defer bypassed owner'}; $c.OwnerSid=$savedOwner; $c.PSObject.Properties.Remove('LanAddress'); Save-Fixture; if (!(Same-Path (Get-TestExecutionRoot $sourceConfig) $source)) {throw 'default source changed'}; $c | Add-Member PackageRoot $package; Save-Fixture; $rejected=$false; try {Read-TestConfig $file | Out-Null} catch {$rejected=$_.Exception.Message -eq 'CONFIG_PACKAGE_PAIR_REQUIRED'}; if (!$rejected) {throw 'unpaired root accepted'}; $c | Add-Member PackageManifestSha256 ('b'*64); Save-Fixture; $valid=Read-TestConfig $file; if (!(Same-Path (Get-TestExecutionRoot $valid) $package)) {throw 'package ignored'}; foreach ($case in @('hash','root','runtime','config')) {$oldRoot=$c.PackageRoot; $oldHash=$c.PackageManifestSha256; $oldRuntime=$c.RuntimeDir; $candidate=$file; if ($case -eq 'hash') {$c.PackageManifestSha256='bad'}; if ($case -eq 'root') {$c.PackageRoot=$source}; if ($case -eq 'runtime') {$c.RuntimeDir=Join-Path $package 'runtime'}; if ($case -eq 'config') {$candidate=Join-Path $package 'startup.json'}; $c | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $candidate; $rejected=$false; try {Read-TestConfig $candidate | Out-Null} catch {$rejected=$_.Exception.Message -in @('CONFIG_PACKAGE_IDENTITY_REQUIRED','CONFIG_PACKAGE_INSIDE_CHECKOUT','PRIVATE_STATE_INSIDE_PACKAGE')}; if (!$rejected) {throw ('unsafe package '+$case)}; $c.PackageRoot=$oldRoot; $c.PackageManifestSha256=$oldHash; $c.RuntimeDir=$oldRuntime}; if ($script:verifications -ne 3) {throw 'invalid config reached verification'}; 'PASS'`),'PASS');
+  } finally {
+    assert.equal(path.dirname(path.resolve(directory)),path.resolve(os.tmpdir()));
+    assert.match(path.basename(directory),/^crm-startup-package-fixture-/);
+    fs.rmSync(directory,{recursive:true,force:true});
+  }
+});
+
+test('scheduled task wrapper and working directory remain canonical in package mode',()=>{
+  const manager=path.join(root,'deploy/manage-test-startup.ps1').replaceAll("'","''");
+  // Read-TestConfig stops the actual manager before task access; static assertions cover unchanged action binding.
+  assert.equal(run(String.raw`$script='${manager}'; $text=Get-Content -LiteralPath $script -Raw; if ($text -notmatch [regex]::Escape('$launcher=Join-Path $config.RepoRoot') -or $text -notmatch [regex]::Escape('-WorkingDirectory $config.RepoRoot') -or $text -match '\$config\.PackageRoot') {throw 'task wrapper moved to package'}; 'PASS'`),'PASS');
+});
+
+test('pinned file SHA256 uses exact bytes without PowerShell module autoload',()=>{
+  const directory=fs.mkdtempSync(path.join(os.tmpdir(),'crm-launcher-hash-fixture-'));
+  try {
+    const file=path.join(directory,'node.fixture'),bytes=Buffer.from([0,255,13,10,65]);fs.writeFileSync(file,bytes);
+    const expected=createHash('sha256').update(bytes).digest('hex').toUpperCase();
+    assert.equal(run(`Get-TestFileSha256 '${file.replaceAll("'","''")}'`),expected);
+  } finally {
+    assert.equal(path.dirname(path.resolve(directory)),path.resolve(os.tmpdir()));
+    fs.rmSync(directory,{recursive:true,force:true});
+  }
+});
+
+test('launcher error record stores only safe code and time after validated config, never raw error text',()=>{
+  const directory=fs.mkdtempSync(path.join(os.tmpdir(),'crm-launcher-error-fixture-'));
+  try {
+    const literal=directory.replaceAll("'","''");
+    assert.equal(run(`$cfg=[pscustomobject]@{LogDir='${literal}'}; $code=Write-TestSessionFailure $cfg (New-Object Exception('TEST_FOREIGN_PORT_OWNER')); if ($code -ne 'TEST_FOREIGN_PORT_OWNER') {throw 'code lost'}; $file=Join-Path $cfg.LogDir 'test-session-last-error.json'; $first=Get-Content -LiteralPath $file -Raw | ConvertFrom-Json; if ($first.code -ne $code -or !$first.occurredAt) {throw 'log invalid'}; $code=Write-TestSessionFailure $cfg (New-Object Exception('RAW_PRIVATE_CREDENTIAL_SENTINEL at C:/private')); $text=Get-Content -LiteralPath $file -Raw; if ($text -match 'SENTINEL|private|credential' -or ($text | ConvertFrom-Json).code -ne 'Exception') {throw 'raw error retained'}; Write-TestSessionFailure $null (New-Object Exception('NO_VALID_CONFIG')) | Out-Null; 'PASS'`),'PASS');
+    assert.deepEqual(Object.keys(JSON.parse(fs.readFileSync(path.join(directory,'test-session-last-error.json'),'utf8'))).sort(),['code','occurredAt']);
+    assert.deepEqual(fs.readdirSync(directory),['test-session-last-error.json']);
+  } finally {
+    assert.equal(path.dirname(path.resolve(directory)),path.resolve(os.tmpdir()));
+    fs.rmSync(directory,{recursive:true,force:true});
+  }
+});
+
+test('one listener refresh accepts a verified child restart but rejects foreign, dead or reused supervisors and native changes',()=>{
+  assert.equal(run(`$cfg=[pscustomobject]@{RepoRoot='C:/fixture/repo';PackageRoot='C:/fixture/package';RuntimeDir='C:/fixture/runtime';LogDir='C:/fixture/logs';NodePath='C:/fixture/node.exe';OwnerSid='S-1-5-fixture';NativeRelease='C:/fixture/native';NativeConfig='C:/fixture/native-config.json'}; function Cmd($Path) { return 'node "'+[IO.Path]::GetFullPath($Path)+'"' }; $created=[datetime]'2026-10-04T00:00:00Z'; $script:record=[pscustomobject]@{root=$cfg.PackageRoot;executable=$cfg.NodePath;runtime=$cfg.RuntimeDir;logs=$cfg.LogDir;supervisor=100;startedAt=$created.ToString('o');children=[pscustomobject]@{'test-server.mjs'=101}}; $script:super=[pscustomobject]@{ProcessId=100;ExecutablePath=$cfg.NodePath;CommandLine=(Cmd (Join-Path $cfg.PackageRoot 'deploy/test-supervisor.mjs'));ParentProcessId=99;CreationDate=$created}; $script:child=[pscustomobject]@{ProcessId=102;ExecutablePath=$cfg.NodePath;CommandLine=(Cmd (Join-Path $cfg.PackageRoot 'deploy/test-server.mjs'));ParentProcessId=100;CreationDate=$created.AddSeconds(1)}; $script:native=[pscustomobject]@{ProcessId=201;ExecutablePath=$cfg.NodePath;CommandLine=((Cmd (Join-Path $cfg.NativeRelease 'apps/api/start-crm-order-test.mjs'))+' "'+$cfg.NativeConfig+'"');ParentProcessId=99;CreationDate=$created}; $nativeSnapshot=$script:native.PSObject.Copy(); $script:foreign=$false; $script:dead=$false; $script:listenerPid=102; function Test-Path {return $true}; function Get-Content {$script:record | ConvertTo-Json -Depth 8}; function Get-TestProcess($ProcessId) {if ($ProcessId -eq 100 -and !$script:dead) {return $script:super}; if ($ProcessId -eq 102) {return $script:child}; if ($ProcessId -eq 201) {return $script:native}}; function Invoke-CimMethod {param($InputObject,$MethodName) $sid=$cfg.OwnerSid; if ($script:foreign -and $InputObject.ProcessId -eq 102) {$sid='S-1-5-foreign'}; [pscustomobject]@{ReturnValue=0;Sid=$sid}}; $script:listenerReads=0; function Get-TestListeners {$script:listenerReads++; return @([pscustomobject]@{LocalPort=62400;LocalAddress='127.0.0.1';OwningProcess=$script:listenerPid},[pscustomobject]@{LocalPort=62404;LocalAddress='127.0.0.1';OwningProcess=201})}; $initial=@{Record=$script:record;Supervisor=$script:super.PSObject.Copy();Children=@{'test-server.mjs'=[pscustomobject]@{ProcessId=101}}}; $expected=@{62400=101;62401=101;62404=201}; $script:record.children.'test-server.mjs'=102; $r=Assert-TestSessionListeners (Get-TestListeners) $expected $initial $cfg $nativeSnapshot; if ($r.Expected[62400] -ne 102 -or $script:listenerReads -ne 2) {throw 'owned restart not refreshed once'}; foreach ($case in @('foreign','dead','reused','second-mismatch','native')) {$script:foreign=$false; $script:dead=$false; $script:super.CreationDate=$created; $script:record.startedAt=$created.ToString('o'); $script:listenerPid=102; $script:native.CreationDate=$created; if ($case -eq 'foreign') {$script:foreign=$true}; if ($case -eq 'dead') {$script:dead=$true}; if ($case -eq 'reused') {$script:super.CreationDate=$created.AddMinutes(1);$script:record.startedAt=$script:super.CreationDate.ToString('o')}; if ($case -eq 'second-mismatch') {$script:listenerPid=999}; if ($case -eq 'native') {$script:native.CreationDate=$created.AddMinutes(1)}; $rejected=$false; try {Assert-TestSessionListeners (Get-TestListeners) $expected $initial $cfg $nativeSnapshot | Out-Null} catch {$rejected=$true}; if (!$rejected) {throw ('unsafe refresh '+$case)}}; 'PASS'`),'PASS');
+});

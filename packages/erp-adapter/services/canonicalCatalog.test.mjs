@@ -1,0 +1,89 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {canonicalProduct,canonicalMeta} from './canonicalCatalog.mjs';
+import {createCanonicalCatalogReader,assertCatalogTestIdentity} from './canonicalCatalogReader.mjs';
+import {recordedProduct,recordedCatalogFacts,validateRecordedSnapshot} from '../../../apps/gateway/src/services/salesAgent/recordedCatalog.mjs';
+import {staffSalesContext} from '../../../apps/gateway/src/services/salesAgent/staffContext.mjs';
+import {createCatalogBridge,CATALOG_RESPONSE_GUARD} from '../../../apps/gateway/src/services/catalogBridge.mjs';
+import {containsUnsupportedStockPromise,prepareSalesDraft} from '../../../apps/gateway/src/services/salesAgent/agent.mjs';
+const row=()=>({id:'17',stockCode:'000123 MARKA',displayCode:'000123',productName:'TEST ürün',isActive:true,hold:{blocked:false,reasons:[]},provenance:{verified:true,kind:'accepted-opening',sourceKey:'source/17'},classification:{verified:true,brand:'MARKA',productType:'TAKIM'},unit:null,barcodes:[{value:'00099',isPrimary:true}],stockQuantityExact:null,salePrices:[{id:'21',type:'sale',tier:1,currency:'TRY',unitSourceId:'11',isMainUnit:true,priceExact:'196.00000000',sourceKey:'source/17/PRICE/sale/11/1/TRY'}],photo:{status:'missing',verified:false,url:null}});
+const rawMeta=()=>({schemaVersion:'melisa-catalog.v1',readOnly:true,freshLive:false,readAt:new Date().toISOString(),sourceAsOf:'2026-09-30',scopeCounts:{syntheticTest:0},total:1,page:1,limit:24,filters:{brands:['MARKA'],productTypes:['TAKIM']}});
+const actor={id:15,role:'personel',permissions:['crm.view']};
+const health={environment:'CANONICAL_TEST',databaseName:'MELISA_ERP_SIRKET_TEST_20260929_01',serverName:'Semih\\MELISADEV',port:4144,mode:'erp',liveDatabaseAccess:0,sysadmin:0,databaseControl:0,writes:true,externalOperations:false};
+test('legacy SOURCE price keeps its exact field order, output and revision',()=>{
+ const p=canonicalProduct(row());
+ assert.deepEqual(p.salePrices,[{id:'21',type:'sale',tier:1,currency:'TRY',isMainUnit:true,sourceKey:'source/17/PRICE/sale/11/1/TRY',unitSourceId:'11',priceExact:'196.00000000'}]);
+ assert.deepEqual(Object.keys(p.salePrices[0]),['id','type','tier','currency','isMainUnit','sourceKey','unitSourceId','priceExact']);
+ assert.equal(p.revision,'a2b5228397cae3bc847de1ec0828a614fb805768ba2c2fa0e716140029f07df3');
+});
+test('MANUAL pricing survives mapping and same-price version changes alter the revision',()=>{
+ const r=row(),pricing={origin:'MANUAL',versionId:'9007199254740993',sourcePriceExact:'15.78000000'};r.salePrices[0].pricing=pricing;
+ const first=canonicalProduct(r);assert.deepEqual(first.salePrices[0].pricing,pricing);assert.notEqual(first.salePrices[0].pricing,pricing);assert.equal(first.priceExact,'196.00000000');
+ r.salePrices[0].pricing.versionId='9007199254740994';const second=canonicalProduct(r);assert.notEqual(first.revision,second.revision);assert.equal(first.priceExact,second.priceExact);
+ r.salePrices[0].pricing.versionId='9223372036854775807';assert.equal(canonicalProduct(r).salePrices[0].pricing.versionId,'9223372036854775807');
+});
+test('immutable MANUAL SOURCE fact preserves null, zero and existing exact8 bounds',()=>{
+ for(const sourcePriceExact of [null,'0.00000000','1000001.00000000','99999999999999999999.12345678','-1.00000000']){
+  const r=row();r.salePrices[0].pricing={origin:'MANUAL',versionId:'1',sourcePriceExact};assert.equal(canonicalProduct(r).salePrices[0].pricing.sourcePriceExact,sourcePriceExact);
+ }
+});
+test('MANUAL zero and null effective price stay represented without SOURCE quote fallback',()=>{
+ for(const priceExact of ['0.00000000',null]){
+  const r=row();Object.assign(r.salePrices[0],{priceExact,pricing:{origin:'MANUAL',versionId:'1',sourcePriceExact:'196.00000000'}});
+  const p=canonicalProduct(r);assert.equal(p.salePrices[0].priceExact,priceExact);assert.equal(p.salePrices[0].pricing.origin,'MANUAL');assert.equal(p.salePrice,null);assert.equal(p.priceExact,null);assert.equal(p.currency,null);
+ }
+});
+test('explicit SOURCE pricing is valid only with null version and matching immutable fact',()=>{
+ for(const priceExact of ['196.00000000','0.00000000',null]){
+  const r=row();Object.assign(r.salePrices[0],{priceExact,pricing:{origin:'SOURCE',versionId:null,sourcePriceExact:priceExact}});assert.deepEqual(canonicalProduct(r).salePrices[0].pricing,r.salePrices[0].pricing);
+ }
+ for(const pricing of [{origin:'SOURCE',versionId:'1',sourcePriceExact:'196.00000000'},{origin:'SOURCE',versionId:null,sourcePriceExact:null},{origin:'SOURCE',versionId:null,sourcePriceExact:'0.00000000'}]){const r=row();r.salePrices[0].pricing=pricing;assert.throws(()=>canonicalProduct(r),/ERP_CATALOG_PRODUCT_CONTRACT/);}
+});
+test('unknown or malformed pricing cannot disappear or become a SOURCE fallback',()=>{
+ const valid={origin:'MANUAL',versionId:'1',sourcePriceExact:'196.00000000'};
+ const invalid=[undefined,null,[],{},'MANUAL',{...valid,origin:'OTHER'},{...valid,extra:true},{origin:'MANUAL',versionId:'1'},
+  ...['0','01','+1','1.0','1e3',' 1','1 ','-1','9223372036854775808',1,Number.MAX_SAFE_INTEGER+1,null].map(versionId=>({...valid,versionId})),
+  ...[undefined,0,'1.0000000','1.000000000','01.00000000','100000000000000000000.00000000'].map(sourcePriceExact=>({...valid,sourcePriceExact}))];
+ for(const pricing of invalid){const r=row();r.salePrices[0].pricing=pricing;assert.throws(()=>canonicalProduct(r),/ERP_CATALOG_PRODUCT_CONTRACT/);}
+});
+test('canonical exact native identity/full code/barcode/null quantities, no photo remains selectable',()=>{const p=canonicalProduct(row());assert.equal(p.id,'erp-17');assert.equal(p.erpProductId,17);assert.equal(p.stockCode,'000123 MARKA');assert.equal(p.barcode,'00099');assert.equal(p.stockQuantity,null);assert.equal(p.unit,null);assert.equal(p.photoPath,null);assert.equal(p.priceExact,'196.00000000');assert.equal(p.currency,'TRY');assert.match(p.revision,/^[a-f0-9]{64}$/);});
+test('unknown price and ambiguous currency never become fallback price; quarantine never becomes a price/photo',()=>{for(const change of [r=>r.salePrices[0].priceExact=null,r=>r.salePrices.push({...r.salePrices[0],id:'22',currency:'EUR'}),r=>r.hold.blocked=true]){const r=row();change(r);const p=canonicalProduct(r);assert.equal(p.salePrice,null);assert.equal(p.currency,null);assert.equal(p.photoPath,null);}});
+test('photo requires confirmed exact native identity and provenance; wrong identity cannot escape',()=>{const r=row();r.photo={status:'available',verified:true,url:'/api/catalog/products/17/photo?variant=preview',sourceKey:'source/17',sha256:'a'.repeat(64)};assert.equal(canonicalProduct(r).photoPath,'/crm/catalog/products/erp-17/photo');r.photo.sourceKey='other';assert.equal(canonicalProduct(r).photoPath,null);});
+test('AI exact ERP IDs and prices survive bounded snapshot; blocked product rejected',()=>{const p=canonicalProduct(row()),meta=canonicalMeta(rawMeta(),{},actor),recorded=recordedProduct(p);assert.equal(recorded.erpProductId,17);assert.equal(recorded.priceExact,'196.00000000');assert.equal(validateRecordedSnapshot({products:[recorded],facts:recordedCatalogFacts(meta)}).products[0].id,'erp-17');assert.throws(()=>recordedProduct({...p,hold:{blocked:true}}));});
+test('native TEST identity rejects LIVE-like boundaries',()=>{assert.doesNotThrow(()=>assertCatalogTestIdentity(health));for(const key of ['environment','databaseName','port','serverName','externalOperations','liveDatabaseAccess'])assert.throws(()=>assertCatalogTestIdentity({...health,[key]:'wrong'}));});
+test('HTTP adapter uses fresh health plus native auth, all-photo default and barcode search; outage explicit',async()=>{const reads=[];const transport=async(url,options)=>{url=new URL(url);reads.push({url,options});if(url.pathname==='/auth/me')return Response.json({data:actor});if(url.pathname==='/test-health')return Response.json(health);return Response.json({success:true,data:[row()],meta:rawMeta()});};const reader=createCanonicalCatalogReader({transport,getErpAuthorization:async()=> 'Bearer synthetic-native'});const response=await reader(new Request('http://localhost/api/crm-catalog/products?search=00099',{headers:{authorization:'Bearer synthetic-crm'}}));assert.equal(response.status,200);assert.equal((await response.json()).data[0].id,'erp-17');assert.equal(reads.at(-1).url.pathname,'/api/catalog/products');assert.equal(reads.at(-1).url.searchParams.get('search'),'00099');assert.equal(reads.at(-1).options.headers.authorization,'Bearer synthetic-native');const outage=createCanonicalCatalogReader({transport:async()=>{throw Error('RAW_SECRET_TEST');},getErpAuthorization:async()=>''});const result=await outage(new Request('http://localhost/api/crm-catalog/products',{headers:{authorization:'Bearer synthetic-crm'}}));assert.equal(result.status,503);assert.equal((await result.json()).error.message,'ERP ürün bilgisine şu anda ulaşılamıyor.');});
+test('A05 explicit language/composer/draft context is bounded and contains no invented price',()=>{const p=staffSalesContext({customerLanguage:'en',currentComposer:'İnsan taslağı',draftContext:{customerId:593,items:[{erpProductId:17,stockCode:'000123 MARKA',quantity:2}]}});assert.equal(p.customerLanguage,'en');assert.equal(p.currentComposer,'İnsan taslağı');assert.equal(p.draftContext.items[0].erpProductId,17);assert.throws(()=>staffSalesContext({customerLanguage:'invented'}));assert.throws(()=>staffSalesContext({currentComposer:'x'.repeat(2001)}));assert.throws(()=>staffSalesContext({draftContext:{items:[{erpProductId:17,stockCode:'x',quantity:2,price:1}]}}));});
+test('canonical gateway preserves fresh actor read lease and authenticated thumbnail bytes',async()=>{
+ let current=true;const controller=new AbortController(),r=row();r.photo={status:'available',verified:true,url:'/api/catalog/products/17/photo?variant=preview',sourceKey:'source/17',sha256:'a'.repeat(64)};const product=canonicalProduct(r),meta=canonicalMeta(rawMeta(),{},actor),calls=[];
+ const bridge=createCatalogBridge({deploymentApproved:true,authorizeCrm:async()=>({...actor,catalogReadApproved:true}),resolveCrmReadSession:async()=>({crmActorId:actor.id,authorization:'Bearer synthetic-crm',expiresAt:Date.now()+60000,isCurrent:()=>current,signal:controller.signal}),transport:async(url,options)=>{calls.push({url:new URL(url),options});return new URL(url).pathname.endsWith('/photo')?new Response(new Uint8Array([255,216,255,0]),{headers:{'content-type':'image/jpeg'}}):Response.json({success:true,data:product,meta});}});
+ let response;for(const variant of ['thumbnail','preview','original']){response=await bridge(new Request(`http://localhost/crm/catalog/products/erp-17/photo?variant=${variant}`));assert.equal(response.status,200);assert.equal(calls.at(-1).url.searchParams.get('variant'),variant);assert.equal(calls.at(-1).options.headers.authorization,'Bearer synthetic-crm');assert.equal((await response.arrayBuffer()).byteLength,4);assert.equal(typeof response[CATALOG_RESPONSE_GUARD],'function');}current=false;assert.throws(()=>response[CATALOG_RESPONSE_GUARD]());
+});
+
+test('original photo passes the existing guarded native reader unchanged; invalid variants and revoked actors cannot read media',async()=>{
+ const r=row();r.photo={status:'available',verified:true,url:'/api/catalog/products/17/photo?variant=preview',sourceKey:'source/17',sha256:'a'.repeat(64)};
+ const bytes=new Uint8Array([255,216,255,42,43,44]),reads=[];let allowed=true;
+ const reader=createCanonicalCatalogReader({getErpAuthorization:async()=> 'Bearer synthetic-native',transport:async(url,options)=>{url=new URL(url);reads.push({url,options});if(url.pathname==='/auth/me')return Response.json({data:actor},{status:allowed?200:403});if(url.pathname==='/test-health')return Response.json(health);if(url.pathname.endsWith('/photo'))return new Response(bytes,{headers:{'content-type':'image/jpeg'}});return Response.json({success:true,data:r,meta:rawMeta()});}});
+ const request=query=>new Request('http://localhost/api/crm-catalog/products/erp-17/photo'+query,{headers:{authorization:'Bearer synthetic-crm'}});
+ const response=await reader(request('?variant=original'));assert.equal(response.status,200);assert.deepEqual(new Uint8Array(await response.arrayBuffer()),bytes);assert.equal(response.headers.get('cache-control'),'no-store');assert.equal(reads.at(-1).url.searchParams.get('variant'),'original');assert.equal(reads.at(-1).options.headers.authorization,'Bearer synthetic-native');assert.equal(reads.at(-1).options.redirect,'error');
+ const mediaReads=()=>reads.filter(c=>c.url.pathname.endsWith('/photo')).length;assert.equal(mediaReads(),1);
+ for(const query of ['?variant=other','?variant=original&variant=thumbnail','?variant=original&path=file'])assert.equal((await reader(request(query))).status,400);
+ allowed=false;assert.equal((await reader(request('?variant=original'))).status,403);assert.equal(mediaReads(),1);
+});
+test('A05 real model input retains explicit staff language/composer/draft and withholds exact numeric price',async()=>{
+ const conversation={id:55,messages:[{id:1,direction:'incoming',text:'Please show the product.'}]},product=recordedProduct(canonicalProduct(row())),facts=recordedCatalogFacts(canonicalMeta(rawMeta(),{},actor)),context=staffSalesContext({customerLanguage:'en',currentComposer:'Personelin mevcut metni',draftContext:{items:[{erpProductId:17,stockCode:'000123 MARKA',quantity:2}]}});let input;
+ const result=await prepareSalesDraft({conversation,recordedCatalog:{products:[product],facts},staffContext:context},{generate:async request=>{input=request;return {action:'recommend',reply:'Please review this product card.',summaryTr:'Ürün kartını inceleyin.',productIds:['erp-17'],lines:[],handoffReason:''};},readCurrentConversation:async()=>conversation});
+ assert.equal(input.context.staffContext.customerLanguage,'en');assert.equal(input.context.staffContext.currentComposer,context.currentComposer);assert.equal(input.context.recordedProducts[0].erpProductId,17);assert.equal(Object.hasOwn(input.context.recordedProducts[0],'priceExact'),false);assert.equal(result.autoSend,false);assert.equal(result.erpWrite,false);
+ assert.equal(containsUnsupportedStockPromise('This product is definitely in stock.'),true);assert.equal(containsUnsupportedStockPromise('This product is in stock.'),true);assert.equal(containsUnsupportedStockPromise('Kesinlikle stokta'),true);
+});
+
+test('business currency marker comes only from exact DB02 adapter identity and never from upstream body metadata',async()=>{
+ for(const [erpOrigin,expectedDatabase,crmOrigin,business]of [['http://127.0.0.1:4144','MELISA_ERP_SIRKET_TEST_20260929_01','http://127.0.0.1:62401',false],['http://127.0.0.1:4174','MELISA_ERP_CRM_SHARED_TEST_20261009_01','http://127.0.0.1:62601',false],['http://127.0.0.1:4184','MELISA_ERP_CRM_SHARED_TEST_20261009_02','http://127.0.0.1:62701',true]]){
+  const shared=expectedDatabase.includes('SHARED'),h={...health,ok:true,databaseName:expectedDatabase,port:Number(new URL(erpOrigin).port),...(shared?{environment:'ISOLATED_TEST_COPY',originalDatabaseAccess:0,actualT1:false,automaticJobs:false}:{})};
+  const transport=async url=>new URL(url).pathname==='/auth/me'?Response.json({data:actor}):new URL(url).pathname==='/test-health'?Response.json(h):Response.json({success:true,data:[row()],meta:{...rawMeta(),businessScope:{scopeKind:'FORGED',database:'LIVE',supportedCurrencies:['GBP']}}});
+  const reader=createCanonicalCatalogReader({transport,erpOrigin,expectedDatabase,crmOrigin,getErpAuthorization:async()=> 'Bearer synthetic-native'}),response=await reader(new Request('http://localhost/api/crm-catalog/products',{headers:{authorization:'Bearer synthetic-crm'}}));
+  assert.equal(response.status,200);const m=(await response.json()).meta;assert.deepEqual(m.businessScope,business?{scopeKind:'VERIFIED_BUSINESS_TEST',database:expectedDatabase,supportedCurrencies:['TRY','USD','EUR']}:undefined);
+ }
+ const transport=async url=>new URL(url).pathname==='/auth/me'?Response.json({data:actor}):Response.json({...health,environment:'ISOLATED_TEST_COPY',port:4184});
+ const reader=createCanonicalCatalogReader({transport,erpOrigin:'http://127.0.0.1:4184',expectedDatabase:'MELISA_ERP_CRM_SHARED_TEST_20261009_02',crmOrigin:'http://127.0.0.1:62701',getErpAuthorization:async()=> 'Bearer synthetic-native'});
+ assert.equal((await reader(new Request('http://localhost/api/crm-catalog/products',{headers:{authorization:'Bearer synthetic-crm'}}))).status,503);
+});

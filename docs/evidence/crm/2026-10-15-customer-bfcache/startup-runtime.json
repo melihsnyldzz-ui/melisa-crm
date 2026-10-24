@@ -1,0 +1,143 @@
+{
+  "schemaVersion": "crm06-automatic-test-startup-public-summary.v1",
+  "observedAt": "2026-10-14T23:11:40.564Z",
+  "localDate": "2026-10-15",
+  "attribution": "ERP sole runtime writer performed the controlled two-task transition and readback. CRM checked exact receipt, settings and supervisor-manifest byte hashes and whitelisted metadata only.",
+  "ownerDelivery": "https://github.com/melihsnyldzz-ui/melisa-erp-v2/pull/23#issuecomment-6180554618",
+  "ownerDocumentationSource": "a70953e50f38ab093add8551a5d16e5ad08beb69",
+  "ownerReceipts": [
+    {
+      "name": "installed-readback.json",
+      "sha256": "b1e11c189d9d2371f9188ff905c578c1632229abadebacb589d47b9b3a2b3c73"
+    },
+    {
+      "name": "final-preservation.json",
+      "sha256": "287989454d865c8403a69b4056b4f5613e857f12e43e3871cd3813bae2e2fc34"
+    },
+    {
+      "name": "automatic ERP prerequisite barrier",
+      "sha256": "e425d089622e9bc397cf50d794fc72c3f3a725003e495bc714bfcee0264d384c"
+    }
+  ],
+  "installed": {
+    "installed": true,
+    "settingsSha256": "c61a2edbb99e06c3f5e6db0346ceae0cbeef3f355ebcecf7abdafe66d41f4405",
+    "supervisorSource": "7fd5c0b7d253fd72f5d0c475adfccf301893f51d",
+    "supervisorManifestSha256": "a2abdb894700c4fde348fe6a972c67155506df205241dafd17db125cafa6fe6b",
+    "crmSource": "da82fc6644c1d9dba0c10eaa861773534d43c288",
+    "crmManifest": "9c6f013599dea1c6d7062ce9179d5d115c6022d3f95296a7be3276d3bdc900a2",
+    "crmIndexSha256": "e23229de145ca53f5e2f4b662530431ac101737640b0c043dcd35b7bd4dbfdf4",
+    "erpApplicationSource": "7a41f6492273dd1ec0bcb086f820be5575372be8",
+    "database": "MELISA_ERP_CRM_SHARED_TEST_20261009_02",
+    "copyId": "e16b70f0-4057-428b-9abc-6bbcaf35fe82",
+    "actualT1": false,
+    "originalFilesPreserved": true,
+    "sourceAccountsAndRolesUnchanged": true,
+    "authenticatedOperationsVerified": false,
+    "normalGuiFirstLoginVerified": false,
+    "humanAccepted": false,
+    "commercialWrites": 0
+  },
+  "coreProcessReceipts": {
+    "count": 6,
+    "pidCreationCopyAndT1MetadataMatched": true
+  },
+  "heartbeat": {
+    "observedAt": "2026-10-14T23:11:14.645Z",
+    "state": "running",
+    "supervisorPid": 28808
+  },
+  "hub": {
+    "pid": 45668,
+    "sourceCommit": "7a41f6492273dd1ec0bcb086f820be5575372be8",
+    "port": 5234,
+    "startedAt": "2026-10-14T23:10:51.5321124Z",
+    "checkedAt": "2026-10-14T23:11:39.598Z",
+    "states": {
+      "erp": "reachable",
+      "crm": "reachable",
+      "terminal": "reachable",
+      "training": "unknown",
+      "test125": "unreachable",
+      "live": "unknown"
+    }
+  },
+  "automaticHubCoordination": {
+    "passed": true,
+    "readyAt": "2026-10-14T23:10:37.090Z",
+    "coreSupervisorPid": 28808,
+    "wrapperPid": 31692,
+    "hubPid": 45668,
+    "hubBornAfterPrerequisites": true,
+    "hubInitialAttempt": 0,
+    "manualHubStart": false,
+    "actualWindowsRebootOrLogon": false
+  },
+  "preservation": {
+    "observedAt": "2026-10-14T23:11:44.155Z",
+    "taskMetadataPreserved": true,
+    "currentActionsExact": true,
+    "twoTasksRunning": true,
+    "sqlAndTest125ProcessIdentitiesPreserved": true,
+    "immutableBeforeFilesPreserved": 24,
+    "rolesAndCredentialFilesUnchanged": true,
+    "applicationJournalsAndPriorRequestByteIdentical": true,
+    "newAuthOrInterestRequests": 0,
+    "freshStaffJournalPhysical": "READY",
+    "references": 12,
+    "normalGUI": false,
+    "humanAccepted": false
+  },
+  "previousApiAndNoSaleEvidence": {
+    "decision": "REUSE",
+    "evidenceRef": "docs/evidence/crm/2026-10-15-customer-bfcache/installed-runtime.json",
+    "basis": "Unchanged CRM and ERP application packages, owner-verified activation policy, preserved roles and credentials, and byte-identical prior journals/request store.",
+    "originalSingleRequestReplayAssignedStaffEvidenceReused": true,
+    "originalActualFullRowHashTablesUnchanged": 14,
+    "optionalAbsentTablesNotCounted": 4,
+    "newApiOrSqlAcceptanceRun": false,
+    "previousDatabaseComparison": "bounded sequential, not atomic whole-database snapshot"
+  },
+  "rollback": {
+    "latestGoodSupervisorSource": "2662f3e934f4e409a7f4a45f4106cb887fb80223",
+    "latestGoodSettingsSha256": "020b3bdba7e15f9884ff41891baf79999dddffb4d5c355f8b78531d15f2cbc24",
+    "previousAndOriginalAncestorPreservedSeparately": true
+  },
+  "supervisorSourceCi": [
+    {
+      "id": 38651258785,
+      "event": "pull_request",
+      "headSha": "7fd5c0b7d253fd72f5d0c475adfccf301893f51d",
+      "conclusion": "success"
+    },
+    {
+      "id": 38651252715,
+      "event": "push",
+      "headSha": "7fd5c0b7d253fd72f5d0c475adfccf301893f51d",
+      "conclusion": "success"
+    }
+  ],
+  "acceptance": {
+    "userReply": "Henüz denemedim",
+    "replyLocalDate": "2026-10-15",
+    "plannedTransitionPending": false,
+    "normalGuiFirstLoginVerified": false,
+    "realBrowserBfcacheVerified": false,
+    "physicalMobileVerified": false,
+    "humanAccepted": false,
+    "crm06Closed": false,
+    "actualWindowsRebootOrLogonAccepted": false,
+    "automatedGuiBlocker": "CUA_PROTECTED_CREDENTIAL_TRANSPORT_UNSUPPORTED",
+    "next": "Existing CRM-UA11 normal personnel and physical mobile acceptance; no repeated acceptance request."
+  },
+  "urls": {
+    "desktop": "http://127.0.0.1:62700/",
+    "sameLanMobile": "http://192.168.1.46:62700/",
+    "hub": "http://127.0.0.1:5234/melisa-hub/",
+    "erp": "http://127.0.0.1:5234/ornek-akis.html"
+  },
+  "crmSharedRuntimeWrites": 0,
+  "crmNewCredentialAttempts": 0,
+  "liveDeployed": false,
+  "mainMerged": false
+}

@@ -1,0 +1,223 @@
+{
+  "measuredAt": "2026-10-05T13:50:00.211Z",
+  "runtimeSource": "f1899b0e0828f23010af75b1731682c749e596cc",
+  "scope": "existing-handler-fixed-SELECT-fresh-child",
+  "samples": [
+    {
+      "index": 1,
+      "scenario": "first-page",
+      "variant": "baseline",
+      "authMs": [
+        5.01,
+        4.51
+      ],
+      "imagePoolMs": 56.62,
+      "identityParameterCount": 0,
+      "identitySqlLength": 33,
+      "identityBindMs": 0,
+      "identityQueryMs": 9.89,
+      "imagesParameterCount": 0,
+      "imagesSqlLength": 303,
+      "imagesBindMs": 0,
+      "imagesQueryMs": 10.05,
+      "eligibleIdCount": 1085,
+      "worker": {
+        "workerModuleImportMs": 1.7,
+        "databaseModuleImportMs": 486.9,
+        "driverImportMs": 0.34,
+        "planUntilPoolMs": 1.26,
+        "connectMs": 48.55,
+        "stockParameterCount": 1091,
+        "stockSqlLength": 68535,
+        "stockBindMs": 2.95,
+        "stockQueryMs": 6699.29,
+        "projectValidateMs": 0.93,
+        "executeReadMs": 6755.09,
+        "totalBeforeCleanupMs": 7249.25
+      },
+      "workerTotalMs": 7374.92,
+      "status": 200,
+      "bytes": 10102,
+      "totalMs": 7491.77,
+      "count": 12
+    },
+    {
+      "index": 2,
+      "scenario": "first-page",
+      "variant": "baseline",
+      "authMs": [
+        4.62,
+        103.87
+      ],
+      "imagePoolMs": 0.01,
+      "identityParameterCount": 0,
+      "identitySqlLength": 33,
+      "identityBindMs": 0,
+      "identityQueryMs": 2.21,
+      "imagesParameterCount": 0,
+      "imagesSqlLength": 303,
+      "imagesBindMs": 0,
+      "imagesQueryMs": 10.13,
+      "eligibleIdCount": 1085,
+      "worker": {
+        "workerModuleImportMs": 1.49,
+        "databaseModuleImportMs": 486.8,
+        "driverImportMs": 0.37,
+        "planUntilPoolMs": 1.14,
+        "connectMs": 45.39,
+        "stockParameterCount": 1091,
+        "stockSqlLength": 68535,
+        "stockBindMs": 2.42,
+        "stockQueryMs": 6022.55,
+        "projectValidateMs": 0.9,
+        "executeReadMs": 6073.86,
+        "totalBeforeCleanupMs": 6567.33
+      },
+      "workerTotalMs": 6679.5,
+      "status": 200,
+      "bytes": 10102,
+      "totalMs": 6823.89,
+      "count": 12
+    },
+    {
+      "index": 3,
+      "scenario": "first-page",
+      "variant": "baseline",
+      "authMs": [
+        2.16,
+        5.94
+      ],
+      "imagePoolMs": 0.01,
+      "identityParameterCount": 0,
+      "identitySqlLength": 33,
+      "identityBindMs": 0,
+      "identityQueryMs": 2.39,
+      "imagesParameterCount": 0,
+      "imagesSqlLength": 303,
+      "imagesBindMs": 0,
+      "imagesQueryMs": 9.67,
+      "eligibleIdCount": 1085,
+      "worker": {
+        "workerModuleImportMs": 2.54,
+        "databaseModuleImportMs": 440.86,
+        "driverImportMs": 0.33,
+        "planUntilPoolMs": 0.81,
+        "connectMs": 56.81,
+        "stockParameterCount": 1091,
+        "stockSqlLength": 68535,
+        "stockBindMs": 2.63,
+        "stockQueryMs": 6094.07,
+        "projectValidateMs": 0.75,
+        "executeReadMs": 6156.88,
+        "totalBeforeCleanupMs": 6609.42
+      },
+      "workerTotalMs": 6725.14,
+      "status": 200,
+      "bytes": 10102,
+      "totalMs": 6768.78,
+      "count": 12
+    },
+    {
+      "index": 1,
+      "scenario": "first-page",
+      "variant": "candidate",
+      "authMs": [
+        2.17,
+        2.01
+      ],
+      "imagePoolMs": 0.01,
+      "identityParameterCount": 0,
+      "identitySqlLength": 33,
+      "identityBindMs": 0,
+      "identityQueryMs": 2.68,
+      "imagesParameterCount": 0,
+      "imagesSqlLength": 303,
+      "imagesBindMs": 0,
+      "imagesQueryMs": 11.86,
+      "eligibleIdCount": 1085,
+      "workerTotalMs": 708.05,
+      "workerPool": {
+        "workers": 1,
+        "queued": 0,
+        "active": 0,
+        "stopping": false,
+        "terminal": false
+      },
+      "status": 200,
+      "bytes": 10102,
+      "totalMs": 749.68,
+      "count": 12,
+      "fullEnvelopeEqualExceptFetchTimestamp": true
+    },
+    {
+      "index": 2,
+      "scenario": "first-page",
+      "variant": "candidate",
+      "authMs": [
+        2.37,
+        1.95
+      ],
+      "imagePoolMs": 0.01,
+      "identityParameterCount": 0,
+      "identitySqlLength": 33,
+      "identityBindMs": 0,
+      "identityQueryMs": 2.76,
+      "imagesParameterCount": 0,
+      "imagesSqlLength": 303,
+      "imagesBindMs": 0,
+      "imagesQueryMs": 13.52,
+      "eligibleIdCount": 1085,
+      "workerTotalMs": 40.68,
+      "workerPool": {
+        "workers": 1,
+        "queued": 0,
+        "active": 0,
+        "stopping": false,
+        "terminal": false
+      },
+      "status": 200,
+      "bytes": 10102,
+      "totalMs": 84.75,
+      "count": 12,
+      "fullEnvelopeEqualExceptFetchTimestamp": true
+    },
+    {
+      "index": 3,
+      "scenario": "first-page",
+      "variant": "candidate",
+      "authMs": [
+        2.31,
+        1.81
+      ],
+      "imagePoolMs": 0.01,
+      "identityParameterCount": 0,
+      "identitySqlLength": 33,
+      "identityBindMs": 0,
+      "identityQueryMs": 1.91,
+      "imagesParameterCount": 0,
+      "imagesSqlLength": 303,
+      "imagesBindMs": 0,
+      "imagesQueryMs": 10.86,
+      "eligibleIdCount": 1085,
+      "workerTotalMs": 46.47,
+      "workerPool": {
+        "workers": 1,
+        "queued": 0,
+        "active": 0,
+        "stopping": false,
+        "terminal": false
+      },
+      "status": 200,
+      "bytes": 10102,
+      "totalMs": 79.41,
+      "count": 12,
+      "fullEnvelopeEqualExceptFetchTimestamp": true
+    }
+  ],
+  "limitations": [
+    "No server execution plan; SQL batch timing includes server compile/execute/network.",
+    "Worker uses exact executeRead in a fresh profiler child through original runner spawn dependency.",
+    "planUntilPool includes only exact executeRead plan construction; projection is post-query residual."
+  ],
+  "workerShutdownConfirmed": true
+}

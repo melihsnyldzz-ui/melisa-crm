@@ -1,0 +1,74 @@
+{
+  "schemaVersion": "crm-sales-bridge-contract-probe.v1",
+  "taskId": "DOT-CRM-BRIDGE-20261020-0945-1",
+  "result": "BLOCKED_UPSTREAM_CONTRACT",
+  "bridgeReady": false,
+  "applicationChanged": false,
+  "source": {
+    "erpCommit": "d78474ae0eb45146790e608979fc3e06c9741adb",
+    "crmCloudCommit": "f5ad566b852425ed21d3ec9e87b783b85e90b890",
+    "files": [
+      {
+        "name": "application.mjs",
+        "sha256": "9f3fca9dd654a5886f259724958167735b40f4877d592fd6d697e4f0476f99d9",
+        "bytes": 24910
+      },
+      {
+        "name": "store.mjs",
+        "sha256": "d9841b00819c508f872a4bf498b01cf4c9266016cb0ed48374ff1d1badfe48d9",
+        "bytes": 20963
+      },
+      {
+        "name": "marker.mjs",
+        "sha256": "76cc9b8ec07c954135b5291c5348d5278a40e8a285f67945fd2327de55e28019",
+        "bytes": 65
+      },
+      {
+        "name": "crm-cloud-api.mjs",
+        "sha256": "8a7a8064eadeeb30e254c480b17c5bdcf8f1d99f8218d4e96db0822d3e6ac40b",
+        "bytes": 5269
+      }
+    ]
+  },
+  "scope": "One new changed-price negative case; prerequisite draft setup is not another baseline acceptance. Actual pinned Cloud modules and current CRM native payload/receipt validation; no normal Windows/native runtime.",
+  "observation": {
+    "productId": 101,
+    "quantity": 2,
+    "orderPriceExact8": "25.00000000",
+    "currentPriceExact8": "30.00000000",
+    "storedOrderTotalExact4": "50.0000",
+    "currentPriceTotalExact4": "60.0000",
+    "draftRevisionReturned": false,
+    "endpoint": "/api/cloud-test/erp/orders/:id/sale",
+    "withExpectedRevision": {
+      "status": 400,
+      "code": "INVALID_FIELDS",
+      "salesCreated": 0
+    },
+    "sentRevisionKind": "unchanged order revision, not a current product/quote price witness",
+    "withoutExpectedRevision": {
+      "status": 200,
+      "totalExact4": "50.0000"
+    },
+    "finalize": {
+      "status": 200,
+      "totalExact4": "50.0000"
+    },
+    "requestedBridgeBehavior": "Server contract for current price/stock check and the existing reviewed-price policy before linking the same order to one sale; reject stale state (for example 409) or explicitly preserve an authorized quoted price",
+    "actual": "400 for the extra order-revision field; bare request creates/finalizes a sale retaining the stored order price after catalog price changed",
+    "conclusion": "The requested price/quote freshness or reviewed-price decision is not represented by this endpoint. Retaining an order price is not itself proved to be an ERP pricing bug; no automatic repricing is requested."
+  },
+  "boundaries": {
+    "directRequestDispatches": 18,
+    "listenersStarted": 0,
+    "externalHttpOrSqlServer": false,
+    "sqlite": "new disposable synthetic fixture only",
+    "erpRepositoryWrites": false,
+    "sharedRuntimeWrites": false,
+    "liveOrVegaOrT1": false,
+    "realCustomerMessages": false,
+    "paidApi": false,
+    "guiOrHumanAcceptance": false
+  },
+  "fixtureRemoved": true
+}

@@ -100,6 +100,11 @@ export function resetOutboundAttemptsForTests() {
 
 export function createMemoryOutboundAttemptStore() {
   return {
+    get: async (clientRequestId) => {
+      cleanup();
+      const attempt = attempts.get(validateClientRequestId(clientRequestId));
+      return attempt ? { ...attempt } : null;
+    },
     begin: async (input) => beginOutboundAttempt(input),
     update: async (clientRequestId, changes) => updateOutboundAttempt(clientRequestId, changes),
     reset: () => resetOutboundAttemptsForTests(),
@@ -151,6 +156,12 @@ async function redisCommand(work) {
 
 export function createRedisOutboundAttemptStore(command = redisCommand) { return {
   backend: command !== redisCommand || env.redis.url ? 'redis' : 'unavailable',
+  async get(clientRequestId) {
+    return command(async client => {
+      const raw = await client.get(redisKey(clientRequestId));
+      return raw ? JSON.parse(raw) : null;
+    });
+  },
   async begin({ clientRequestId, fingerprint, conversationId, provider }) {
     const key = redisKey(clientRequestId);
     const now = Date.now();

@@ -1,0 +1,568 @@
+{
+  "mode": "synthetic-loopback-browser",
+  "origin": "http://127.0.0.1:37683",
+  "startedAt": "2026-10-16T13:14:41.132Z",
+  "status": "PASS",
+  "scenarios": [
+    {
+      "name": "Normal CRM login and explicit synthetic customer selection",
+      "status": "PASS"
+    },
+    {
+      "name": "Catalog photo display; select two products; remove and re-add a product",
+      "status": "PASS"
+    },
+    {
+      "name": "ERP customer match and invalid zero/fraction quantity guards; valid quantities 3 + 2",
+      "status": "PASS"
+    },
+    {
+      "name": "One ERP draft saved through real UI and independently read back",
+      "status": "PASS",
+      "requestId": "1ea0dd15-9a95-43cf-933f-dde8f9f7a1d4",
+      "documentNo": "SYN-DRAFT-0001",
+      "total": "759.0000"
+    },
+    {
+      "name": "Close → choose customer B → Taslak Siparişler → reopen original customer A with normal ERP login; same UUID and no duplicate POST",
+      "status": "PASS"
+    },
+    {
+      "name": "Browser refresh → persisted draft list → same UUID, customer, two lines and total; one POST",
+      "status": "PASS"
+    },
+    {
+      "name": "390px browser viewport receipt remains visible without page horizontal overflow (physical device not tested)",
+      "status": "PASS"
+    },
+    {
+      "name": "Customer issued-link catalog: remove/re-add, invalid quantity rejected, saved 3 + 2 draft survives refresh",
+      "status": "PASS"
+    },
+    {
+      "name": "Customer submit → refresh → same request; manager sees 2 products / 5 units in assigned conversation",
+      "status": "PASS"
+    },
+    {
+      "name": "Normal assigned staff login sees the request; unrelated staff login sees neither customer nor request",
+      "status": "PASS"
+    },
+    {
+      "name": "Unauthenticated ERP draft detail denied with HTTP 401",
+      "status": "PASS"
+    },
+    {
+      "name": "No page exceptions, unexpected request failures, external requests, or normal-flow console errors",
+      "status": "PASS"
+    }
+  ],
+  "screenshots": [
+    "01-customer-selected.png",
+    "02-catalog-two-products.png",
+    "03-order-customer-quantities.png",
+    "04-order-saved-readback.png",
+    "05-saved-orders-list.png",
+    "06-order-reopened-after-refresh.png",
+    "07-order-mobile-viewport.png",
+    "08-customer-request-review.png",
+    "09-customer-request-submitted.png",
+    "10-staff-request-visible.png",
+    "11-assigned-staff-request.png",
+    "12-unrelated-staff-no-customer.png"
+  ],
+  "errors": [],
+  "console": [],
+  "failedRequests": [
+    {
+      "stage": "CRM login and customer selection",
+      "url": "http://127.0.0.1:37683/api/customer-product-request-state",
+      "method": "GET",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "stage": "CRM login and customer selection",
+      "url": "http://127.0.0.1:37683/api/live/auth/remembered",
+      "method": "GET",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "stage": "CRM login and customer selection",
+      "url": "http://127.0.0.1:37683/api/live/crm/customer-product-requests?conversationId=55",
+      "method": "GET",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "stage": "Catalog selection, remove and quantities",
+      "url": "http://127.0.0.1:37683/api/live/crm/catalog/products?page=1&limit=50&hasImage=true&search=&brand=&category=&barcode=",
+      "method": "GET",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "stage": "Close, list and reopen same saved draft",
+      "url": "http://127.0.0.1:37683/api/live/crm/customer-product-requests?conversationId=56",
+      "method": "GET",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "stage": "Browser refresh and persisted draft recovery",
+      "url": "http://127.0.0.1:37683/api/customer-product-request-state",
+      "method": "GET",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "stage": "Browser refresh and persisted draft recovery",
+      "url": "http://127.0.0.1:37683/api/live/auth/remembered",
+      "method": "GET",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "stage": "Browser refresh and persisted draft recovery",
+      "url": "http://127.0.0.1:37683/api/live/crm/customer-product-requests?conversationId=55",
+      "method": "GET",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "stage": "Customer product request normal issued link",
+      "url": "http://127.0.0.1:37683/api/live/crm/customer-product-requests?conversationId=55",
+      "method": "GET",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "stage": "Customer product request normal issued link",
+      "url": "http://127.0.0.1:37683/api/live/customer-product-requests/session",
+      "method": "GET",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "stage": "Customer product request normal issued link",
+      "url": "http://127.0.0.1:37683/api/live/customer-product-requests/session",
+      "method": "GET",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "stage": "Customer product request normal issued link",
+      "url": "http://127.0.0.1:37683/api/live/customer-product-requests/session",
+      "method": "GET",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "stage": "Customer product request normal issued link",
+      "url": "http://127.0.0.1:37683/api/live/crm/catalog/products/erp-9044/photo?variant=original",
+      "method": "GET",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "stage": "Assigned and unrelated staff visibility",
+      "url": "http://127.0.0.1:37683/api/customer-product-request-state",
+      "method": "GET",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "stage": "Assigned and unrelated staff visibility",
+      "url": "http://127.0.0.1:37683/api/live/auth/remembered",
+      "method": "GET",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "stage": "Assigned and unrelated staff visibility",
+      "url": "http://127.0.0.1:37683/api/live/crm/customer-product-requests?conversationId=55",
+      "method": "GET",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "stage": "Assigned and unrelated staff visibility",
+      "url": "http://127.0.0.1:37683/api/customer-product-request-state",
+      "method": "GET",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "stage": "Assigned and unrelated staff visibility",
+      "url": "http://127.0.0.1:37683/api/live/auth/remembered",
+      "method": "GET",
+      "error": "net::ERR_ABORTED"
+    }
+  ],
+  "blockedRequests": [],
+  "httpErrors": [],
+  "nativePosts": [
+    {
+      "requestId": "1ea0dd15-9a95-43cf-933f-dde8f9f7a1d4",
+      "conversationId": "55",
+      "peer": "905550000001",
+      "customerId": 701,
+      "customerMatch": {
+        "basis": "exact-phone",
+        "phone": "905550000001",
+        "revision": "3532d852d63fcf9370cff8cc169d0354ba661d4f26f4dd491890bdd08ce9b037",
+        "reason": null
+      },
+      "documentCurrency": "TRY",
+      "exchangeRateExact8": "1.00000000",
+      "items": [
+        {
+          "productId": 8023,
+          "stockCode": "SYN-8023",
+          "quantity": 3,
+          "priceId": 900,
+          "unitSourceId": 1,
+          "tier": 1,
+          "currency": "TRY",
+          "priceExact8": "196.00000000",
+          "priceSourceKey": "[synthetic]"
+        },
+        {
+          "productId": 9044,
+          "stockCode": "SYN-9044",
+          "quantity": 2,
+          "priceId": 901,
+          "unitSourceId": 1,
+          "tier": 1,
+          "currency": "TRY",
+          "priceExact8": "85.50000000",
+          "priceSourceKey": "[synthetic]"
+        }
+      ]
+    }
+  ],
+  "nativeReadbacks": [
+    {
+      "request": {
+        "requestId": "1ea0dd15-9a95-43cf-933f-dde8f9f7a1d4",
+        "conversationId": "55",
+        "peer": "905550000001",
+        "customerId": 701,
+        "customerMatch": {
+          "basis": "exact-phone",
+          "phone": "905550000001",
+          "revision": "3532d852d63fcf9370cff8cc169d0354ba661d4f26f4dd491890bdd08ce9b037",
+          "reason": null
+        },
+        "documentCurrency": "TRY",
+        "exchangeRateExact8": "1.00000000",
+        "items": [
+          {
+            "productId": 8023,
+            "stockCode": "SYN-8023",
+            "quantity": 3,
+            "priceId": 900,
+            "unitSourceId": 1,
+            "tier": 1,
+            "currency": "TRY",
+            "priceExact8": "196.00000000",
+            "priceSourceKey": "[synthetic]"
+          },
+          {
+            "productId": 9044,
+            "stockCode": "SYN-9044",
+            "quantity": 2,
+            "priceId": 901,
+            "unitSourceId": 1,
+            "tier": 1,
+            "currency": "TRY",
+            "priceExact8": "85.50000000",
+            "priceSourceKey": "[synthetic]"
+          }
+        ]
+      },
+      "documentNo": "SYN-DRAFT-0001",
+      "customerName": "Sentetik Müşteri A",
+      "status": "draft",
+      "erpPersisted": true,
+      "testOnly": true,
+      "stockEffect": false,
+      "ledgerEffect": false,
+      "collectionEffect": false,
+      "reservationEffect": false,
+      "items": [
+        {
+          "productId": 8023,
+          "stockCode": "SYN-8023",
+          "quantity": 3,
+          "priceId": 900,
+          "unitSourceId": 1,
+          "tier": 1,
+          "currency": "TRY",
+          "priceExact8": "196.00000000",
+          "priceSourceKey": "[synthetic]",
+          "unitPriceExact4": "196.0000",
+          "lineTotalExact4": "588.0000"
+        },
+        {
+          "productId": 9044,
+          "stockCode": "SYN-9044",
+          "quantity": 2,
+          "priceId": 901,
+          "unitSourceId": 1,
+          "tier": 1,
+          "currency": "TRY",
+          "priceExact8": "85.50000000",
+          "priceSourceKey": "[synthetic]",
+          "unitPriceExact4": "85.5000",
+          "lineTotalExact4": "171.0000"
+        }
+      ],
+      "grandTotalExact4": "759.0000",
+      "amountTryExact4": "759.0000",
+      "sourceMetadataStatus": "sealed-current-source",
+      "currentSource": {
+        "runId": "PRODUCT-00000000-0000-4000-8000-000000000016",
+        "sourceAsOf": "2026-10-16",
+        "sourceHash": "096632831f6c0a7a46f12bc03713b25f0cfaaf49bd775088221c2d00cbf5a27b",
+        "planHash": "42fa695eb607508e7875c327874c84b2952b9745e712191668111835d20099ed",
+        "bindingsHash": "2fd080d5ed1d21690bf0f286e1a6ef923f614e2f5fb8c7d198214b044d2e8192",
+        "snapshotHash": "5baa39fbfb25139252458f52889128acd8a6987f277e97bb4ee88a3dc57b66c7",
+        "actualT1": false,
+        "counts": {
+          "products": 2,
+          "prices": 2
+        }
+      },
+      "synthetic": true,
+      "persistenceBoundary": "local-file-journal-no-erp-database"
+    },
+    {
+      "request": {
+        "requestId": "1ea0dd15-9a95-43cf-933f-dde8f9f7a1d4",
+        "conversationId": "55",
+        "peer": "905550000001",
+        "customerId": 701,
+        "customerMatch": {
+          "basis": "exact-phone",
+          "phone": "905550000001",
+          "revision": "3532d852d63fcf9370cff8cc169d0354ba661d4f26f4dd491890bdd08ce9b037",
+          "reason": null
+        },
+        "documentCurrency": "TRY",
+        "exchangeRateExact8": "1.00000000",
+        "items": [
+          {
+            "productId": 8023,
+            "stockCode": "SYN-8023",
+            "quantity": 3,
+            "priceId": 900,
+            "unitSourceId": 1,
+            "tier": 1,
+            "currency": "TRY",
+            "priceExact8": "196.00000000",
+            "priceSourceKey": "[synthetic]"
+          },
+          {
+            "productId": 9044,
+            "stockCode": "SYN-9044",
+            "quantity": 2,
+            "priceId": 901,
+            "unitSourceId": 1,
+            "tier": 1,
+            "currency": "TRY",
+            "priceExact8": "85.50000000",
+            "priceSourceKey": "[synthetic]"
+          }
+        ]
+      },
+      "documentNo": "SYN-DRAFT-0001",
+      "customerName": "Sentetik Müşteri A",
+      "status": "draft",
+      "erpPersisted": true,
+      "testOnly": true,
+      "stockEffect": false,
+      "ledgerEffect": false,
+      "collectionEffect": false,
+      "reservationEffect": false,
+      "items": [
+        {
+          "productId": 8023,
+          "stockCode": "SYN-8023",
+          "quantity": 3,
+          "priceId": 900,
+          "unitSourceId": 1,
+          "tier": 1,
+          "currency": "TRY",
+          "priceExact8": "196.00000000",
+          "priceSourceKey": "[synthetic]",
+          "unitPriceExact4": "196.0000",
+          "lineTotalExact4": "588.0000"
+        },
+        {
+          "productId": 9044,
+          "stockCode": "SYN-9044",
+          "quantity": 2,
+          "priceId": 901,
+          "unitSourceId": 1,
+          "tier": 1,
+          "currency": "TRY",
+          "priceExact8": "85.50000000",
+          "priceSourceKey": "[synthetic]",
+          "unitPriceExact4": "85.5000",
+          "lineTotalExact4": "171.0000"
+        }
+      ],
+      "grandTotalExact4": "759.0000",
+      "amountTryExact4": "759.0000",
+      "sourceMetadataStatus": "sealed-current-source",
+      "currentSource": {
+        "runId": "PRODUCT-00000000-0000-4000-8000-000000000016",
+        "sourceAsOf": "2026-10-16",
+        "sourceHash": "096632831f6c0a7a46f12bc03713b25f0cfaaf49bd775088221c2d00cbf5a27b",
+        "planHash": "42fa695eb607508e7875c327874c84b2952b9745e712191668111835d20099ed",
+        "bindingsHash": "2fd080d5ed1d21690bf0f286e1a6ef923f614e2f5fb8c7d198214b044d2e8192",
+        "snapshotHash": "5baa39fbfb25139252458f52889128acd8a6987f277e97bb4ee88a3dc57b66c7",
+        "actualT1": false,
+        "counts": {
+          "products": 2,
+          "prices": 2
+        }
+      },
+      "synthetic": true,
+      "persistenceBoundary": "local-file-journal-no-erp-database"
+    },
+    {
+      "request": {
+        "requestId": "1ea0dd15-9a95-43cf-933f-dde8f9f7a1d4",
+        "conversationId": "55",
+        "peer": "905550000001",
+        "customerId": 701,
+        "customerMatch": {
+          "basis": "exact-phone",
+          "phone": "905550000001",
+          "revision": "3532d852d63fcf9370cff8cc169d0354ba661d4f26f4dd491890bdd08ce9b037",
+          "reason": null
+        },
+        "documentCurrency": "TRY",
+        "exchangeRateExact8": "1.00000000",
+        "items": [
+          {
+            "productId": 8023,
+            "stockCode": "SYN-8023",
+            "quantity": 3,
+            "priceId": 900,
+            "unitSourceId": 1,
+            "tier": 1,
+            "currency": "TRY",
+            "priceExact8": "196.00000000",
+            "priceSourceKey": "[synthetic]"
+          },
+          {
+            "productId": 9044,
+            "stockCode": "SYN-9044",
+            "quantity": 2,
+            "priceId": 901,
+            "unitSourceId": 1,
+            "tier": 1,
+            "currency": "TRY",
+            "priceExact8": "85.50000000",
+            "priceSourceKey": "[synthetic]"
+          }
+        ]
+      },
+      "documentNo": "SYN-DRAFT-0001",
+      "customerName": "Sentetik Müşteri A",
+      "status": "draft",
+      "erpPersisted": true,
+      "testOnly": true,
+      "stockEffect": false,
+      "ledgerEffect": false,
+      "collectionEffect": false,
+      "reservationEffect": false,
+      "items": [
+        {
+          "productId": 8023,
+          "stockCode": "SYN-8023",
+          "quantity": 3,
+          "priceId": 900,
+          "unitSourceId": 1,
+          "tier": 1,
+          "currency": "TRY",
+          "priceExact8": "196.00000000",
+          "priceSourceKey": "[synthetic]",
+          "unitPriceExact4": "196.0000",
+          "lineTotalExact4": "588.0000"
+        },
+        {
+          "productId": 9044,
+          "stockCode": "SYN-9044",
+          "quantity": 2,
+          "priceId": 901,
+          "unitSourceId": 1,
+          "tier": 1,
+          "currency": "TRY",
+          "priceExact8": "85.50000000",
+          "priceSourceKey": "[synthetic]",
+          "unitPriceExact4": "85.5000",
+          "lineTotalExact4": "171.0000"
+        }
+      ],
+      "grandTotalExact4": "759.0000",
+      "amountTryExact4": "759.0000",
+      "sourceMetadataStatus": "sealed-current-source",
+      "currentSource": {
+        "runId": "PRODUCT-00000000-0000-4000-8000-000000000016",
+        "sourceAsOf": "2026-10-16",
+        "sourceHash": "096632831f6c0a7a46f12bc03713b25f0cfaaf49bd775088221c2d00cbf5a27b",
+        "planHash": "42fa695eb607508e7875c327874c84b2952b9745e712191668111835d20099ed",
+        "bindingsHash": "2fd080d5ed1d21690bf0f286e1a6ef923f614e2f5fb8c7d198214b044d2e8192",
+        "snapshotHash": "5baa39fbfb25139252458f52889128acd8a6987f277e97bb4ee88a3dc57b66c7",
+        "actualT1": false,
+        "counts": {
+          "products": 2,
+          "prices": 2
+        }
+      },
+      "synthetic": true,
+      "persistenceBoundary": "local-file-journal-no-erp-database"
+    }
+  ],
+  "customerSubmits": [
+    {
+      "revision": 6,
+      "operationId": "6d90de3a-8051-42c6-8115-cefd12bb0971"
+    }
+  ],
+  "customerRequests": [
+    {
+      "id": "dc640e7d-e342-401c-becd-e9c25772a073",
+      "status": "interest",
+      "submittedAt": 1792156504737,
+      "items": [
+        {
+          "id": "erp-8023",
+          "productId": "erp-8023",
+          "quantity": 3,
+          "stockCode": "SYN-8023",
+          "productName": "Sentetik bebek takımı",
+          "category": "Takım",
+          "age": null,
+          "photoPath": "/api/live/customer-product-requests/products/erp-8023/photo"
+        },
+        {
+          "id": "erp-9044",
+          "productId": "erp-9044",
+          "quantity": 2,
+          "stockCode": "SYN-9044",
+          "productName": "Sentetik battaniye",
+          "category": "Battaniye",
+          "age": null,
+          "photoPath": "/api/live/customer-product-requests/products/erp-9044/photo"
+        }
+      ],
+      "modelCount": 2,
+      "quantityTotal": 5
+    }
+  ],
+  "order": {
+    "requestId": "1ea0dd15-9a95-43cf-933f-dde8f9f7a1d4",
+    "documentNo": "SYN-DRAFT-0001",
+    "grandTotalExact4": "759.0000"
+  },
+  "customerRequest": {
+    "id": "dc640e7d-e342-401c-becd-e9c25772a073",
+    "quantityTotal": 5,
+    "modelCount": 2
+  },
+  "finishedAt": "2026-10-16T13:15:23.248Z",
+  "publishedEvidenceSanitization": {
+    "field": "priceSourceKey",
+    "occurrences": 14,
+    "replacement": "[synthetic]",
+    "reason": "fictional price-source identifiers only; raw local result unchanged"
+  }
+}

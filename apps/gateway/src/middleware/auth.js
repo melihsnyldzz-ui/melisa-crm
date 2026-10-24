@@ -1,4 +1,8 @@
-import { assertCrmPermission, verifyCrmAccessToken } from '../services/crmAuthService.js';
+import { assertCrmPermission, verifyCrmAccessToken, verifyTerminalCrmSession } from '../services/crmAuthService.js';
+
+// Only duplicate middleware in this exact HTTP request shares the completed
+// proof. No user/role/permission result is reused across requests.
+const verifiedRequests=new WeakMap();
 
 function authError(code, message, statusCode = 401) {
   const error = new Error(message);
@@ -7,7 +11,7 @@ function authError(code, message, statusCode = 401) {
   return error;
 }
 
-export function requireCrmAuth(req, res, next) {
+export async function requireCrmAuth(req, res, next) {
   try {
     const authorization = req.get('authorization') || '';
     const [type, token] = authorization.split(' ');
@@ -16,7 +20,12 @@ export function requireCrmAuth(req, res, next) {
       throw authError('WHATSAPP_CRM_AUTH_TOKEN_REQUIRED', 'Access token is required', 401);
     }
 
-    req.user = verifyCrmAccessToken(token);
+    const prior=verifiedRequests.get(req);
+    if(prior?.token===token){req.user=prior.user;return next();}
+    const user=verifyCrmAccessToken(token);
+    await verifyTerminalCrmSession(user);
+    if(req.get('authorization')!==authorization)throw authError('AUTH_TOKEN_INVALID','Oturum doğrulanamadı.');
+    req.user=user;verifiedRequests.set(req,{token,user});
     return next();
   } catch (error) {
     return next(error);

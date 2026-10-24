@@ -1,0 +1,40 @@
+{
+  "capturedAt": "2026-10-13T13:23:26+03:00",
+  "testUrl": "http://127.0.0.1:62700/",
+  "runtimeSource": "09ca1dac346e42037fd02901baf3240aa6ce6285",
+  "packageManifestSha256": "9de545b7c06197d628234c67d6ace60780acde4c02685780207abde677cacc4a",
+  "productCode": "8023 CONCEPT",
+  "dom": {
+    "complete": true,
+    "naturalWidth": 1206,
+    "naturalHeight": 1500,
+    "renderedWidth": 279.4444580078125,
+    "renderedHeight": 279.4444580078125
+  },
+  "query": {
+    "search": "8023",
+    "photoOnly": true,
+    "resultCount": 1,
+    "page": 1,
+    "pageCount": 1
+  },
+  "price": {
+    "currency": "USD",
+    "display": "15,78 / ADET",
+    "converted": false
+  },
+  "acceptance": "technical-screen-verified-human-sharpness-pending",
+  "scope": "evidence-only-no-application-or-runtime-change",
+  "files": [
+    {
+      "name": "8023-original.jpg",
+      "bytes": 90759,
+      "sha256": "deab88d5bdbd66c2edb399c8671acc70ba346b8b3d8ecce5077a4812d8826d9c"
+    },
+    {
+      "name": "README.md",
+      "bytes": 2275,
+      "sha256": "a70b3819b6fb08c016391c8151c5f0f934f6dac793cf09991cb11cb5abc8179c"
+    }
+  ]
+}

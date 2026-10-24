@@ -1,0 +1,50 @@
+{
+  "measuredAt": "2026-10-05T13:41:26.644Z",
+  "runtimeSource": "f1899b0e0828f23010af75b1731682c749e596cc",
+  "scope": "existing-handler-fixed-SELECT-fresh-child",
+  "samples": [
+    {
+      "index": 1,
+      "scenario": "first-page",
+      "variant": "candidate",
+      "authMs": [
+        5.68,
+        3.49
+      ],
+      "imagePoolMs": 60.27,
+      "identityParameterCount": 0,
+      "identitySqlLength": 33,
+      "identityBindMs": 0,
+      "identityQueryMs": 10.46,
+      "imagesParameterCount": 0,
+      "imagesSqlLength": 303,
+      "imagesBindMs": 0,
+      "imagesQueryMs": 15.7,
+      "eligibleIdCount": 1085,
+      "worker": {
+        "workerModuleImportMs": 1.98,
+        "databaseModuleImportMs": 600.95,
+        "driverImportMs": 0.39,
+        "planUntilPoolMs": 0.84,
+        "connectMs": 60.44,
+        "stockParameterCount": 7,
+        "stockSqlLength": 4259,
+        "stockBindMs": 0.38,
+        "stockQueryMs": 122.01,
+        "projectValidateMs": 0.72,
+        "executeReadMs": 185.06,
+        "totalBeforeCleanupMs": 795.07
+      },
+      "workerTotalMs": 971.54,
+      "status": 200,
+      "bytes": 10102,
+      "totalMs": 1102.88,
+      "count": 12
+    }
+  ],
+  "limitations": [
+    "No server execution plan; SQL batch timing includes server compile/execute/network.",
+    "Worker uses exact executeRead in a fresh profiler child through original runner spawn dependency.",
+    "planUntilPool includes only exact executeRead plan construction; projection is post-query residual."
+  ]
+}

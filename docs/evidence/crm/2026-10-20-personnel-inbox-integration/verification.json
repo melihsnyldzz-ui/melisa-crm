@@ -1,0 +1,202 @@
+{
+  "date": "2026-10-20",
+  "taskId": "DOT-CRM-INBOX-INTEGRATE-20261020-1119",
+  "root": "C:/Sirket/CRM/melisa-crm",
+  "fetchOrigin": "https://github.com/melihsnyldzz-ui/melisa-crm.git",
+  "pushOrigin": "https://github.com/melihsnyldzz-ui/melisa-crm.git",
+  "branch": "codex/crm-agents-on-completion-20261003",
+  "sourceBase": "ce071f19e347dbe6efd8d6219e85602af76a7401",
+  "pr19": {
+    "url": "https://github.com/melihsnyldzz-ui/melisa-crm/pull/19",
+    "commit": "03a86097c3fd25551f1faab34881f60ec0fea75b",
+    "parent": "af84b6da962f85dab1d76a75cf23c1799e4acb69",
+    "mergeableAtRead": true,
+    "scope": "Six exact source/test blobs only; no blind cherry-pick or copying historical status."
+  },
+  "fileProof": [
+    {
+      "file": "apps/gateway/src/controllers/conversationController.js",
+      "baseBlob": "acad659db937cc016f0520121e95e6f0171ff0ab",
+      "parentBlob": "acad659db937cc016f0520121e95e6f0171ff0ab",
+      "importedBlob": "2f9efb230011ae05714d35f068e59e720415af7d",
+      "currentBlob": "2f9efb230011ae05714d35f068e59e720415af7d"
+    },
+    {
+      "file": "apps/gateway/src/controllers/inboxController.js",
+      "baseBlob": "edaad95b810f407bfadeeead1d6d266af640573d",
+      "parentBlob": "edaad95b810f407bfadeeead1d6d266af640573d",
+      "importedBlob": "07f2c45ea124084be69d1ad3df7fc2e601ac2528",
+      "currentBlob": "07f2c45ea124084be69d1ad3df7fc2e601ac2528"
+    },
+    {
+      "file": "apps/gateway/src/controllers/inboxController.test.js",
+      "baseBlob": "d9a165b00b3c4f7447f31dffe01f362cf4134f85",
+      "parentBlob": "d9a165b00b3c4f7447f31dffe01f362cf4134f85",
+      "importedBlob": "76c4931df5db1214de2a345f143dde5823c2f0bc",
+      "currentBlob": "76c4931df5db1214de2a345f143dde5823c2f0bc"
+    },
+    {
+      "file": "apps/gateway/src/services/chatwootInboxService.js",
+      "baseBlob": "df11c95432b3dcecf5b1c9d4b05ad04f2f77b8dc",
+      "parentBlob": "df11c95432b3dcecf5b1c9d4b05ad04f2f77b8dc",
+      "importedBlob": "3e46bd87720c83c09f23b952982df1597c76f378",
+      "currentBlob": "3e46bd87720c83c09f23b952982df1597c76f378"
+    },
+    {
+      "file": "apps/gateway/src/services/chatwootInboxService.test.js",
+      "baseBlob": "1fb4b56a978b2d7f4aa3941723a2b9ab7c394945",
+      "parentBlob": "1fb4b56a978b2d7f4aa3941723a2b9ab7c394945",
+      "importedBlob": "2d01213acf1d8d506f9f748427bb305e093c3097",
+      "currentBlob": "2d01213acf1d8d506f9f748427bb305e093c3097"
+    },
+    {
+      "file": "apps/gateway/src/services/inboxService.js",
+      "baseBlob": "2c04f7c9897cd754804ae8cd6ee82e1802524c3f",
+      "parentBlob": "2c04f7c9897cd754804ae8cd6ee82e1802524c3f",
+      "importedBlob": "98bcee6f1552b403289d4d8f8d3e593950e75b0c",
+      "currentBlob": "98bcee6f1552b403289d4d8f8d3e593950e75b0c"
+    }
+  ],
+  "eligibility": {
+    "initialDirty": false,
+    "existingWorktrees": 8,
+    "allWorktreesInitiallyClean": true,
+    "worktreesCreatedOrRemoved": false,
+    "otherLiveSubagentOwnerAtStart": false,
+    "otherVisibleRelevantCrmConversation": "idle",
+    "hiddenQueue": "UNKNOWN",
+    "rootSoleWriter": true,
+    "existingReviewerReadOnly": true
+  },
+  "nativeGoal": "paused; unchanged",
+  "preflight": {
+    "executedOnce": true,
+    "status": "CHECK_REQUIRED",
+    "processExitCode": 3,
+    "changed": false,
+    "cacheSaved": true,
+    "crm": "two REUSE; existing normal GUI prerequisite BLOCKED",
+    "wholeClosureGranted": false,
+    "repeatAcceptedTests": false
+  },
+  "verification": {
+    "testResults": "test-results.json",
+    "testResultsSha256": "ea27af9cca9616eae98e4b8d97671f1f98d643bab820b1aa3f35f2c63835efc1",
+    "syntaxChecked": [
+      "apps/gateway/src/controllers/inboxController.js",
+      "apps/gateway/src/services/chatwootInboxService.js",
+      "apps/gateway/src/services/inboxService.js"
+    ],
+    "diffCheck": true,
+    "review": {
+      "agent": "existing az_independent_reviewer",
+      "mode": "read-only source review, not independent test execution",
+      "openP1P2": 0,
+      "allSixFilesMatchPr19": true
+    }
+  },
+  "guarantee": "Fresh normal session verifier/expiry/fingerprint at response and current assignment of returned conversation IDs after hydration/readiness; not an atomic global assignment/count snapshot.",
+  "preserved": {
+    "managementCacheAndFallback": true,
+    "testPersonnelGuard": true,
+    "normalAuthContract": true,
+    "frontendDesignAndMessaging": true,
+    "priorBrowserProofs": true,
+    "crmCounts": {
+      "total": 25,
+      "green": 12,
+      "partial": 13,
+      "red": 0
+    },
+    "originalTotal": 74
+  },
+  "runtime": {
+    "installedApplicationSource": "6bc82e6fe9726261ef1d0171d97e5d9da9f5398a",
+    "claimSource": "Published19October ERP owner evidence, not fresh health in this task",
+    "ownerEvidence": "https://github.com/melihsnyldzz-ui/melisa-erp-v2/blob/d74ace8afa43e4a7a721e79ab36435512645e022/docs/evidence/erp/2026-10-19-light-hub-rehearsal.md",
+    "newPackage": false,
+    "integrationInstalled": false,
+    "servicesChanged": false,
+    "sharedWrites": false
+  },
+  "acceptance": {
+    "normalGui": "GUI DENENMEDİ",
+    "physicalDevice": "BEKLİYOR",
+    "human": "BEKLİYOR"
+  },
+  "separateDependency": "Existing order-to-sale upstream contract handoff remains open; this inbox integration does not close it.",
+  "delivery": {
+    "pr": "https://github.com/melihsnyldzz-ui/melisa-crm/pull/3",
+    "sourceCommit": "6e47fb8d91d0eb7299c0d13c22c597859bf72f91",
+    "ci": [
+      {
+        "conclusion": "success",
+        "event": "pull_request",
+        "headSha": "6e47fb8d91d0eb7299c0d13c22c597859bf72f91",
+        "jobs": [
+          {
+            "conclusion": "success",
+            "name": "quality-build-test"
+          },
+          {
+            "conclusion": "success",
+            "name": "windows-startup-test"
+          },
+          {
+            "conclusion": "success",
+            "name": "secret-scan"
+          }
+        ],
+        "status": "completed",
+        "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/39416211155"
+      },
+      {
+        "conclusion": "success",
+        "event": "push",
+        "headSha": "6e47fb8d91d0eb7299c0d13c22c597859bf72f91",
+        "jobs": [
+          {
+            "conclusion": "success",
+            "name": "quality-build-test"
+          },
+          {
+            "conclusion": "success",
+            "name": "secret-scan"
+          },
+          {
+            "conclusion": "success",
+            "name": "windows-startup-test"
+          }
+        ],
+        "status": "completed",
+        "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/39416205183"
+      },
+      {
+        "conclusion": "success",
+        "event": "pull_request",
+        "headSha": "6e47fb8d91d0eb7299c0d13c22c597859bf72f91",
+        "jobs": [
+          {
+            "conclusion": "success",
+            "name": "ai-sales-offline"
+          }
+        ],
+        "status": "completed",
+        "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/39416211186"
+      }
+    ],
+    "ciScope": "Exact integration source CI, seven successful jobs; old PR19 CI not reused. Documentation-only receipt follow-up uses skip ci and does not claim these as its own runs.",
+    "stagedSecretScan": "Zero findings before source commit; no ignore or rule change",
+    "finalEvidenceReview": "Existing independent reviewer read-only source/evidence review; open P1/P2 zero, hashes and preserved counts/preflight confirmed; no reviewer execution claimed",
+    "mainMerged": false
+  },
+  "boundaries": {
+    "erpRepositoryWrites": false,
+    "erpB264OwnerMessagedOrReassigned": false,
+    "sharedSqlRuntimeConfigOrServiceWrites": false,
+    "realCustomerMessages": false,
+    "liveVegaT1OrCommercialRecords": false,
+    "paidApi": false,
+    "newGoalAutomationAgentOrTestEnvironment": false
+  }
+}

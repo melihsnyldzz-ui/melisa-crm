@@ -1,0 +1,163 @@
+[
+  {
+    "port": 62803,
+    "address": "127.0.0.1",
+    "pid": 54828,
+    "created": "2026-10-22T10:40:42.3163330Z",
+    "executable": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe"
+  },
+  {
+    "port": 62802,
+    "address": "127.0.0.1",
+    "pid": 2808,
+    "created": "2026-10-22T10:40:42.3050390Z",
+    "executable": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe"
+  },
+  {
+    "port": 62801,
+    "address": "127.0.0.1",
+    "pid": 35108,
+    "created": "2026-10-22T10:40:42.2896270Z",
+    "executable": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe"
+  },
+  {
+    "port": 62800,
+    "address": "127.0.0.1",
+    "pid": 35108,
+    "created": "2026-10-22T10:40:42.2896270Z",
+    "executable": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe"
+  },
+  {
+    "port": 62704,
+    "address": "127.0.0.1",
+    "pid": 53000,
+    "created": "2026-10-21T14:33:33.2786970Z",
+    "executable": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe"
+  },
+  {
+    "port": 62703,
+    "address": "127.0.0.1",
+    "pid": 61536,
+    "created": "2026-10-21T14:33:58.1087620Z",
+    "executable": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe"
+  },
+  {
+    "port": 62702,
+    "address": "127.0.0.1",
+    "pid": 34992,
+    "created": "2026-10-21T14:33:50.4330810Z",
+    "executable": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe"
+  },
+  {
+    "port": 62701,
+    "address": "127.0.0.1",
+    "pid": 34620,
+    "created": "2026-10-21T14:34:06.3515320Z",
+    "executable": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe"
+  },
+  {
+    "port": 62700,
+    "address": "192.168.1.46",
+    "pid": 34620,
+    "created": "2026-10-21T14:34:06.3515320Z",
+    "executable": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe"
+  },
+  {
+    "port": 62700,
+    "address": "127.0.0.1",
+    "pid": 34620,
+    "created": "2026-10-21T14:34:06.3515320Z",
+    "executable": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe"
+  },
+  {
+    "port": 5244,
+    "address": "127.0.0.1",
+    "pid": 64760,
+    "created": "2026-10-22T09:22:26.5215770Z",
+    "executable": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe"
+  },
+  {
+    "port": 5234,
+    "address": "192.168.1.46",
+    "pid": 23340,
+    "created": "2026-10-21T14:33:52.7418090Z",
+    "executable": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe"
+  },
+  {
+    "port": 5234,
+    "address": "127.0.0.1",
+    "pid": 23340,
+    "created": "2026-10-21T14:33:52.7418090Z",
+    "executable": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe"
+  },
+  {
+    "port": 5194,
+    "address": "192.168.1.46",
+    "pid": 20796,
+    "created": "2026-10-20T08:51:28.6426800Z",
+    "executable": "C:\\Program Files\\nodejs\\node.exe"
+  },
+  {
+    "port": 5194,
+    "address": "127.0.0.1",
+    "pid": 20796,
+    "created": "2026-10-20T08:51:28.6426800Z",
+    "executable": "C:\\Program Files\\nodejs\\node.exe"
+  },
+  {
+    "port": 4196,
+    "address": "127.0.0.1",
+    "pid": 62132,
+    "created": "2026-10-22T10:39:31.1282490Z",
+    "executable": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe"
+  },
+  {
+    "port": 4194,
+    "address": "127.0.0.1",
+    "pid": 52940,
+    "created": "2026-10-22T10:39:31.1147210Z",
+    "executable": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe"
+  },
+  {
+    "port": 4186,
+    "address": "127.0.0.1",
+    "pid": 63880,
+    "created": "2026-10-21T14:30:30.3859690Z",
+    "executable": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe"
+  },
+  {
+    "port": 4184,
+    "address": "192.168.1.46",
+    "pid": 30764,
+    "created": "2026-10-21T14:30:59.7757660Z",
+    "executable": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe"
+  },
+  {
+    "port": 4184,
+    "address": "127.0.0.1",
+    "pid": 30764,
+    "created": "2026-10-21T14:30:59.7757660Z",
+    "executable": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe"
+  },
+  {
+    "port": 4146,
+    "address": "127.0.0.1",
+    "pid": 25480,
+    "created": "2026-10-20T08:51:32.2930010Z",
+    "executable": "C:\\Program Files\\nodejs\\node.exe"
+  },
+  {
+    "port": 4144,
+    "address": "192.168.1.46",
+    "pid": 24696,
+    "created": "2026-10-20T08:51:35.6747050Z",
+    "executable": "C:\\Program Files\\nodejs\\node.exe"
+  },
+  {
+    "port": 4144,
+    "address": "127.0.0.1",
+    "pid": 24696,
+    "created": "2026-10-20T08:51:35.6747050Z",
+    "executable": "C:\\Program Files\\nodejs\\node.exe"
+  }
+]

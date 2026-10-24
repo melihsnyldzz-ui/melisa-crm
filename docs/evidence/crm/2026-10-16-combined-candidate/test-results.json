@@ -1,0 +1,68 @@
+{
+  "sourceCommit": "5ecf39fedf960ba090255359ccb4292caa625b00",
+  "integrationCommit": "4a0d7328af31ac33bd6fbbcf6b78f9daa4e8cdea",
+  "environment": "synthetic-cloud-only",
+  "regression": {
+    "frontendPass": 620,
+    "gatewayPass": 583,
+    "gatewaySkip": 3,
+    "contractPass": 127,
+    "contractSkip": 48,
+    "totalPass": 1330,
+    "totalSkip": 51,
+    "totalFail": 0
+  },
+  "targeted": {
+    "pr13": 16,
+    "pr14": 18,
+    "pr15": 10,
+    "targetTotal": 44,
+    "withRecovery": 51,
+    "note": "44 and 51 are subsets of the full 1330; do not sum them."
+  },
+  "chromium": {
+    "pr17OriginalScriptPass": 12,
+    "extraProbePass": 4,
+    "nativePosts": 1,
+    "nativeGetReadbacks": 3,
+    "customerSubmitPosts": 1,
+    "sameOrder": {
+      "requestId": "1ea0dd15-9a95-43cf-933f-dde8f9f7a1d4",
+      "documentNo": "SYN-DRAFT-0001",
+      "grandTotalExact4": "759.0000"
+    },
+    "extraMutationCount": 0,
+    "unexpectedErrors": 0,
+    "outsideOriginAttempts": 0,
+    "expectedAbortedReads": {
+      "flow": 18,
+      "fixes": 15
+    }
+  },
+  "build": "PASS",
+  "syntax": {
+    "modules": 347,
+    "result": "PASS"
+  },
+  "secretFindings": 0,
+  "review": {
+    "openP1": 0,
+    "openP2": 0
+  },
+  "runtime": [
+    {
+      "suite": "flow",
+      "pid": 11587,
+      "origin": "http://127.0.0.1:37683"
+    },
+    {
+      "suite": "three-fixes",
+      "pid": 16068,
+      "origin": "http://127.0.0.1:33627"
+    }
+  ],
+  "realDataUsed": false,
+  "windowsTestInstall": "not performed",
+  "realStaffOrPhysicalDeviceAcceptance": "BEKLIYOR",
+  "ci": "Final delivery HEAD is evaluated in PR18 Checks; previous separate PR checks are not reused."
+}

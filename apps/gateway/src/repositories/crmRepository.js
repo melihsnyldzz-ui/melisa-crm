@@ -230,6 +230,8 @@ export async function getMessageMediaSource(messageId) {
   const result = await query(`
     SELECT
       message.id,
+      conversation.id AS conversation_id,
+      conversation.assigned_user_id,
       CASE
         WHEN COALESCE(
           message.raw_payload #> '{data,message,message,stickerMessage}',

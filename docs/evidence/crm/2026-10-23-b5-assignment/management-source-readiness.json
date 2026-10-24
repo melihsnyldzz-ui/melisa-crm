@@ -1,0 +1,1195 @@
+{
+  "currentErpRecoveryReadback": {
+    "observedAt": "2026-10-24T10:41:21.591Z",
+    "status": "ERP_INSTALLED_CRM_PRESERVED_PERSONNEL_NORMAL_WRITE_FAILED_OWNER_FIXING",
+    "readOnlyReconciliation": true,
+    "installation": {
+      "path": "C:/Sirket/ERP/clean/20261022/runtime/semih-access-20261023/b5-startup-recovery.json",
+      "bytes": 1096,
+      "sha256": "2f031ab4c5dad30e8b9212bc23a0d5817fb31cf837ebf1c16133a001ede59151",
+      "record": {
+        "rollbackBoundary": "Preserved old starters and immutable packages; no DB restore or repeated failed f4 startup",
+        "changedPorts": [
+          4194,
+          5244
+        ],
+        "files": 3442,
+        "manifestSha": "DD2BD6C6873E74A277CA3023C98E1C3B427A04EEA14CF3FE9B074B4217D58C60",
+        "commercialWrites": 0,
+        "durationSeconds": 38.65,
+        "database": "MELISA_ERP_CLEAN_TEST_20261022",
+        "frontendSource": "3cee44d02e674f842c88aed5517f8ab726defc80",
+        "crmStatus": 200,
+        "actualT1": false,
+        "nativeSource": "035fcc08d8f56cdd0cbc437a290285328fce1ec9",
+        "source": "3cee44d02e674f842c88aed5517f8ab726defc80",
+        "protectedFilesUnchanged": true,
+        "installedAt": "2026-10-24T13:33:06.6171905+03:00",
+        "synthetic": true,
+        "allOldRoleRowsUnchanged": true,
+        "preservedListeners": 18,
+        "root": "C:/Sirket/ERP/releases/CLEAN-ERP-20261024-3cee44d02e67-B5RECOVERY",
+        "stoppedProcesses": 0,
+        "environmentId": "e662fd94-d797-4b3b-938a-d143ad758b67",
+        "package": "CLEAN-ERP-20261022-3cee44d02e67",
+        "status": "INSTALLED",
+        "existingContributionScopesUnchanged": 53,
+        "accountsCreated": 0
+      }
+    },
+    "candidateReceipt": {
+      "path": "C:/Sirket/ERP/clean/20261022/runtime/semih-access-20261023/b5-startup-current-erp-package.json",
+      "bytes": 307,
+      "sha256": "f6f0900a031f53f9192ff43e6fa47eb0cebb9a28a6876f6529721ceb99f9c4f3",
+      "record": {
+        "source": "3cee44d02e674f842c88aed5517f8ab726defc80",
+        "root": "C:/Sirket/ERP/releases/CLEAN-ERP-20261024-3cee44d02e67-B5RECOVERY",
+        "files": 3442,
+        "manifestSha": "DD2BD6C6873E74A277CA3023C98E1C3B427A04EEA14CF3FE9B074B4217D58C60",
+        "installed": false,
+        "guardKept": true,
+        "envDiscovery": false
+      },
+      "interpretation": "Earlier installed=false is passive candidate history; later recovery receipt proves installation."
+    },
+    "manifest": {
+      "path": "C:/Sirket/ERP/releases/CLEAN-ERP-20261024-3cee44d02e67-B5RECOVERY/release-manifest.json",
+      "bytes": 578301,
+      "sha256": "dd2bd6c6873e74a277ca3023c98e1c3b427a04eea14cf3fe9b074b4217d58c60",
+      "sourceCommit": "3cee44d02e674f842c88aed5517f8ab726defc80",
+      "frontendSourceCommit": "3cee44d02e674f842c88aed5517f8ab726defc80",
+      "packageId": "CLEAN-ERP-20261022-3cee44d02e67",
+      "files": 3442,
+      "synthetic": true,
+      "actualT1": false,
+      "environmentId": "e662fd94-d797-4b3b-938a-d143ad758b67"
+    },
+    "ci": {
+      "path": "C:/Sirket/ERP/clean/20261022/runtime/semih-access-20261023/b5-startup-recovery-ci.json",
+      "bytes": 1279,
+      "sha256": "3d06d2f36dd6a547e52750f3d42cf5f88e4fa5d08855679c620e07240390c8b6",
+      "record": [
+        {
+          "name": "quality-build-test",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/melihsnyldzz-ui/melisa-erp-v2/actions/runs/40085896989/job/120848666114"
+        },
+        {
+          "name": "secret-scan",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/melihsnyldzz-ui/melisa-erp-v2/actions/runs/40085896989/job/120848640403"
+        },
+        {
+          "name": "windows-startup-test",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/melihsnyldzz-ui/melisa-erp-v2/actions/runs/40085896989/job/120848640208"
+        },
+        {
+          "name": "windows-startup-test",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/melihsnyldzz-ui/melisa-erp-v2/actions/runs/40085892954/job/120848629241"
+        },
+        {
+          "name": "quality-build-test",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/melihsnyldzz-ui/melisa-erp-v2/actions/runs/40085892954/job/120848629192"
+        },
+        {
+          "name": "secret-scan",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/melihsnyldzz-ui/melisa-erp-v2/actions/runs/40085892954/job/120848629064"
+        }
+      ],
+      "sourceOwnerReported": "3cee44d02e674f842c88aed5517f8ab726defc80",
+      "freshGithubChecksByCrm": false,
+      "testsRerunByCrm": false
+    },
+    "crmRuntime": {
+      "source": "acb2a3a0ce917d68221372e5f21bb788e90475aa",
+      "files": 787,
+      "manifestSha256": "55ffbc1a70d9ade3aa7c8270e445b07575fe3817f24bc3e591e2f14daf197c92",
+      "previousSourcePackageNormalApiAndBrowserProof": "REUSE",
+      "newPayloadScan": false,
+      "unchangedDuringErpRecoveryOwnerReported": true
+    },
+    "nativeRuntimeSource": "035fcc08d8f56cdd0cbc437a290285328fce1ec9",
+    "runtimeBinding": "ERP owner installation/source readback receipt plus matching immutable manifest. No new CRM API or OS CWD proof.",
+    "normalErpManagement": {
+      "ownerExistingSemihSession": true,
+      "screenshot": {
+        "sourcePath": "C:/Sirket/ERP/clean/20261022/runtime/semih-access-20261023/b5-erp-recovered-normal-management.png",
+        "file": "installed-erp-b5-management-recovered.jpg",
+        "bytes": 95313,
+        "sha256": "7fc29cb96f2c482a9185670a959687c2974b063803cc4bb329364b2d3f7ba402",
+        "format": "JPEG",
+        "sourceExtension": "png",
+        "copiedUnchanged": true,
+        "pixelsViewedByCrm": true
+      },
+      "visibleActiveUsers": 11,
+      "visibleRoles": 17,
+      "personnelOverviewHttpStatusFromOwner": 200,
+      "source": "Owner normal browser screenshot and saved request cases; not CRM login or API."
+    },
+    "failedPersonnelApi": {
+      "path": "C:/Sirket/ERP/clean/20261022/runtime/semih-access-20261023/b5-erp-normal-personnel-proof.json",
+      "bytes": 1301,
+      "sha256": "a1c6a074bf2d1ed1252a9c96498a6e4392ee6feb50c094fcd81bc4e0b4f0bcc3",
+      "observedAt": "2026-10-24T13:36:22.9374083+03:00",
+      "status": "FAILED",
+      "cases": [
+        {
+          "method": "POST",
+          "path": "/api/auth/login",
+          "status": 200,
+          "elapsedMs": 278,
+          "expected": true
+        },
+        {
+          "method": "GET",
+          "path": "/api/auth-admin/overview",
+          "status": 200,
+          "elapsedMs": 193,
+          "expected": true
+        },
+        {
+          "method": "GET",
+          "path": "/api/personnel/overview",
+          "status": 200,
+          "elapsedMs": 54,
+          "expected": true
+        },
+        {
+          "method": "POST",
+          "path": "/api/auth-admin/users",
+          "status": 503,
+          "elapsedMs": 10054,
+          "expected": false
+        },
+        {
+          "method": "POST",
+          "path": "/api/auth/logout",
+          "status": 200,
+          "elapsedMs": 13,
+          "expected": true
+        }
+      ],
+      "failure": "Unexpected status at /api/auth-admin/users: 503 EABORT",
+      "accountsCreated": 0,
+      "employeeBindingsCreated": 0,
+      "realPeopleCreated": 0,
+      "commercialWrites": 0,
+      "ownSessionCloseFailure": false,
+      "incompleteComparisonFlags": {
+        "originalUsersUnchanged": false,
+        "nonUserBusinessScopesUnchanged": false
+      },
+      "flagInterpretation": "Abort left comparison stages incomplete. These false fields are not interpreted as proof of corruption or as completed acceptance; the later owner count and byte-equal protection files are separate evidence.",
+      "diagnosisOwnerReported": "bind/final verification full integrity check exceeds default10s request budget; current ERP source owner handles a narrow timeout regression/fix, no replay by CRM.",
+      "zeroRowsReadback": {
+        "path": "C:/Sirket/ERP/clean/20261022/runtime/semih-access-20261023/b5-personnel-failure-readback.txt",
+        "sha256": "862e78c665a7de317acfd88484552a866a0d16be89cf6d5bbc231801de13a01b",
+        "counts": {
+          "prepared_actor_rows": 0,
+          "employee_rows": 0,
+          "personnel_intents": 0
+        }
+      }
+    },
+    "protections": {
+      "comparisons": [
+        {
+          "before": "b5-startup-protected.before.txt",
+          "after": "b5-startup-protected.after.txt",
+          "bytes": 5356,
+          "beforeSha256": "096bc59e260d7323293cb680d4d50b2202c908ede07093c8e2c04d97929c39fb",
+          "afterSha256": "096bc59e260d7323293cb680d4d50b2202c908ede07093c8e2c04d97929c39fb",
+          "byteEqual": true
+        },
+        {
+          "before": "b5-startup-roles.before.txt",
+          "after": "b5-startup-roles.after.txt",
+          "bytes": 157,
+          "beforeSha256": "6737102202401ca8e1f53912ed2adb084a8494156d5908940751eeae32a01ba9",
+          "afterSha256": "6737102202401ca8e1f53912ed2adb084a8494156d5908940751eeae32a01ba9",
+          "byteEqual": true
+        },
+        {
+          "before": "b5-personnel-protected.before.txt",
+          "after": "b5-personnel-failure-protected.txt",
+          "bytes": 5356,
+          "beforeSha256": "096bc59e260d7323293cb680d4d50b2202c908ede07093c8e2c04d97929c39fb",
+          "afterSha256": "096bc59e260d7323293cb680d4d50b2202c908ede07093c8e2c04d97929c39fb",
+          "byteEqual": true
+        }
+      ],
+      "ownerReportedProtectedScopes": 53,
+      "crossPhaseOld5359ComparisonAttempted": false,
+      "protectedFilesUnchangedOwnerReported": true,
+      "preservedOtherListenersOwnerReported": 18
+    },
+    "remaining": {
+      "erpPersonalAccountEmployeeBindNormalPositiveNegativeProof": "OWNER_FIXING",
+      "realPeopleCrmErpTaskIdentityMapping": "BEKLIYOR",
+      "installedCrmCreateFormAndIndependentMudur": "BEKLIYOR",
+      "nativePhysicalWindowsHumanAcceptance": "BEKLIYOR"
+    },
+    "crmActivity": {
+      "appCodeChanges": 0,
+      "buildRuns": 0,
+      "applicationTestRuns": 0,
+      "httpCalls": 0,
+      "sqlCalls": 0,
+      "loginCalls": 0,
+      "sharedWrites": 0,
+      "credentialsRead": false,
+      "newAgents": 0,
+      "finishCountersChanged": false
+    },
+    "recordCheck": {
+      "status": "CHECK_REQUIRED",
+      "structuralIssues": 0,
+      "crmRequirements": [
+        {
+          "id": "required[0]",
+          "decision": "REUSE",
+          "code": null
+        },
+        {
+          "id": "required[1]",
+          "decision": "BLOCKED",
+          "code": "PROOF_BLOCKED"
+        },
+        {
+          "id": "required[2]",
+          "decision": "BLOCKED",
+          "code": "PROOF_BLOCKED"
+        }
+      ],
+      "wholeClosureGranted": false,
+      "repeatAcceptedTests": false,
+      "ownCrmCacheOnly": true
+    }
+  },
+  "currentNormalManagementReadback": {
+    "observedAt": "2026-10-24T09:00:00.465Z",
+    "status": "INSTALLED_SYNTHETIC_NORMAL_API_AND_BROWSER_VERIFIED",
+    "readOnlyReconciliation": true,
+    "sourceCommit": "acb2a3a0ce917d68221372e5f21bb788e90475aa",
+    "packageManifestSha256": "55ffbc1a70d9ade3aa7c8270e445b07575fe3817f24bc3e591e2f14daf197c92",
+    "payloadFiles": 787,
+    "priorPayloadAnd14SourceProofReused": true,
+    "currentErpRuntimeSource": "f4db4884c3a85f799c98e955b43d6c6745d7db55",
+    "currentNativeRuntimeSource": "035fcc08d8f56cdd0cbc437a290285328fce1ec9",
+    "api": {
+      "path": "C:/Sirket/ERP/clean/20261022/runtime/semih-access-20261023/b5-crm-normal-management-proof.json",
+      "bytes": 2126,
+      "sha256": "7c08f7504cbd317760ba5511edc378a048de572369c12d9217654ff0b371c78c",
+      "record": {
+        "status": "PASS",
+        "source": "acb2a3a0ce917d68221372e5f21bb788e90475aa",
+        "cases": [
+          {
+            "path": "/auth/login",
+            "status": 200,
+            "verified": true
+          },
+          {
+            "path": "/crm/users",
+            "status": 200,
+            "verified": true
+          },
+          {
+            "path": "/crm/users",
+            "status": 201,
+            "verified": true
+          },
+          {
+            "path": "/crm/users",
+            "status": 200,
+            "verified": true
+          },
+          {
+            "path": "/crm/conversations/155/assign",
+            "status": 200,
+            "verified": true
+          },
+          {
+            "path": "/auth/login",
+            "status": 200,
+            "verified": true
+          },
+          {
+            "path": "/auth/me",
+            "status": 200,
+            "verified": true
+          },
+          {
+            "path": "/crm/inbox",
+            "status": 200,
+            "verified": true
+          },
+          {
+            "path": "/crm/conversations/155",
+            "status": 200,
+            "verified": true
+          },
+          {
+            "path": "/crm/conversations/156",
+            "status": 403,
+            "verified": true
+          },
+          {
+            "path": "/crm/users",
+            "status": 403,
+            "verified": true
+          },
+          {
+            "path": "/auth/refresh",
+            "status": 200,
+            "verified": true
+          },
+          {
+            "path": "/auth/refresh",
+            "status": 401,
+            "verified": true
+          },
+          {
+            "path": "/auth/me",
+            "status": 200,
+            "verified": true
+          },
+          {
+            "path": "/crm/users",
+            "status": 200,
+            "verified": true
+          },
+          {
+            "path": "/auth/logout",
+            "status": 200,
+            "verified": true
+          },
+          {
+            "path": "/auth/logout",
+            "status": 200,
+            "verified": true
+          }
+        ],
+        "caseCount": 17,
+        "ownSyntheticAccountId": "clean-managed-70e410ea-f275-4f39-af29-cc6b5e1c127c",
+        "accountCreated": true,
+        "assignedSyntheticConversation": 155,
+        "protectedBaselineFourUnchanged": true,
+        "protectedSql53Unchanged": true,
+        "normalGui": "PENDING",
+        "realPeopleCreated": 0,
+        "realMessages": 0,
+        "paidAi": 0,
+        "failure": null,
+        "cleanupFailure": false,
+        "observedAt": "2026-10-24T11:53:37.7901540+03:00"
+      }
+    },
+    "gui": {
+      "path": "C:/Sirket/ERP/clean/20261022/runtime/semih-access-20261023/b5-crm-management-normal-gui-proof.json",
+      "bytes": 996,
+      "sha256": "11eb4388b24304d3bc63095d68d75eb8f5c0d5d49b06d47f882367c7c1491035",
+      "record": {
+        "disabledAccountSameIdAfterReload": true,
+        "status": "NORMAL_BROWSER_AND_API_VERIFIED",
+        "protectedFourBaselineAccountsPreserved": true,
+        "disabledNormalLoginStatus": 401,
+        "normalManagerUiDeactivation": true,
+        "realMessages": 0,
+        "assignedOnlyConversation155": true,
+        "screenshots": [
+          "b5-crm-managed-person-assigned.png",
+          "b5-crm-managed-person-reloaded.png",
+          "b5-crm-managed-account-disabled.png"
+        ],
+        "managedStorePrivateAcl": true,
+        "humanAcceptance": "PENDING",
+        "protectedSql53Unchanged": true,
+        "normalOwnLogout": true,
+        "normalActorLogin": true,
+        "fullReloadSameIdentity": true,
+        "paidAi": 0,
+        "managedStoreRevision": 3,
+        "realPeopleCreated": 0,
+        "normalCreationUiSubmit": "NOT_TESTED",
+        "normalManagerInventory": true,
+        "source": "acb2a3a0ce917d68221372e5f21bb788e90475aa",
+        "accountCreation": "SUPPORTED_NORMAL_API",
+        "observedAt": "2026-10-24T11:55:51.8632224+03:00"
+      }
+    },
+    "screenshots": [
+      {
+        "file": "installed-b5-crm-managed-person-assigned.jpg",
+        "sourcePath": "C:/Sirket/ERP/clean/20261022/runtime/semih-access-20261023/b5-crm-managed-person-assigned.png",
+        "bytes": 47146,
+        "sha256": "e4d8cc3caec6324677498bbcb4e04e843caf5939a265336b5205e94acb4effcc",
+        "width": 1280,
+        "height": 720,
+        "format": "JPEG",
+        "sourceExtension": "png",
+        "extensionCorrectedWithoutByteModification": true,
+        "copiedUnchanged": true,
+        "pixelsViewedByCrm": true,
+        "physicalDeviceAcceptance": false
+      },
+      {
+        "file": "installed-b5-crm-managed-person-reloaded.jpg",
+        "sourcePath": "C:/Sirket/ERP/clean/20261022/runtime/semih-access-20261023/b5-crm-managed-person-reloaded.png",
+        "bytes": 29160,
+        "sha256": "1ceb13c9511b3caae011ab7a326614e55b2f7e6cb2a8226d86c089f4bf066566",
+        "width": 1280,
+        "height": 720,
+        "format": "JPEG",
+        "sourceExtension": "png",
+        "extensionCorrectedWithoutByteModification": true,
+        "copiedUnchanged": true,
+        "pixelsViewedByCrm": true,
+        "physicalDeviceAcceptance": false
+      },
+      {
+        "file": "installed-b5-crm-managed-account-disabled.jpg",
+        "sourcePath": "C:/Sirket/ERP/clean/20261022/runtime/semih-access-20261023/b5-crm-managed-account-disabled.png",
+        "bytes": 63026,
+        "sha256": "ca89cfb7b4e5bbdd801aa82c2ef61151643c0fbb2789febe75bcd3009abdc7ba",
+        "width": 1280,
+        "height": 720,
+        "format": "JPEG",
+        "sourceExtension": "png",
+        "extensionCorrectedWithoutByteModification": true,
+        "copiedUnchanged": true,
+        "pixelsViewedByCrm": true,
+        "physicalDeviceAcceptance": false
+      }
+    ],
+    "protection": {
+      "installedBeforeSha256": "034bd4bd5447900e4eea94f96be130dc492013a0d01219667a75073ef9988bcd",
+      "ownerReportedUnchangedSummaries": 53,
+      "comparisons": [
+        {
+          "name": "b5-crm-normal-management-data.after.txt",
+          "bytes": 5359,
+          "sha256": "034bd4bd5447900e4eea94f96be130dc492013a0d01219667a75073ef9988bcd",
+          "byteEqualToInstalledBefore": true
+        },
+        {
+          "name": "b5-crm-management-normal-gui-data.after.txt",
+          "bytes": 5359,
+          "sha256": "034bd4bd5447900e4eea94f96be130dc492013a0d01219667a75073ef9988bcd",
+          "byteEqualToInstalledBefore": true
+        },
+        {
+          "name": "b5-management-ed815-metadata-data.after.txt",
+          "bytes": 5359,
+          "sha256": "034bd4bd5447900e4eea94f96be130dc492013a0d01219667a75073ef9988bcd",
+          "byteEqualToInstalledBefore": true
+        }
+      ]
+    },
+    "erpMetadataProbe": {
+      "path": "C:/Sirket/ERP/clean/20261022/runtime/semih-access-20261023/b5-management-ed815-metadata-probe.json",
+      "bytes": 369,
+      "sha256": "926936284c9e4be730f46bd8e115c22f727109d12620a40b142539447470f95f",
+      "record": {
+        "observedAt": "2026-10-24T11:56:53.1897970+03:00",
+        "protected53Unchanged": true,
+        "metadataAndGrantsUnchanged": true,
+        "probeExit": 0,
+        "runtimeRestarted": false,
+        "probeSqlSha": "69B061C113ADB9E08E6F308B71BC16F80456C9D5FCC801C5AC8D932729E1C0CC",
+        "accountsCreated": 0,
+        "status": "PASS",
+        "source": "ed81568f2b9e2f254b6355a8e8edef1d0fc1a123"
+      },
+      "rollbackOnly": true,
+      "metadataBytes": 941663,
+      "metadataBeforeSha256": "dec0ccaf670b3e7136319fdd0e34388af7b47805e1a096b4cd9f263fd9bf4974",
+      "metadataAfterSha256": "dec0ccaf670b3e7136319fdd0e34388af7b47805e1a096b4cd9f263fd9bf4974",
+      "metadataByteEqual": true,
+      "installedByThisReceipt": false,
+      "previousC4AndB98FailuresPreserved": true
+    },
+    "acceptanceScope": {
+      "accountCreatedByOwnerSupportedNormalApi": true,
+      "normalCreationFormSubmittedInInstalledBrowser": false,
+      "normalPersonelLoginOwn155AndReload": true,
+      "normalManagerReadAndDeactivate": true,
+      "managerFixtureActualRole": "Patron",
+      "independentMudurRoleGuiAcceptance": "BEKLIYOR",
+      "disabledIdPreservedAfterReload": "clean-managed-70e410ea-f275-4f39-af29-cc6b5e1c127c",
+      "disabledNormalLoginStatus": 401,
+      "finalInventoryOwnerReported": {
+        "total": 5,
+        "active": 4,
+        "inactive": 1,
+        "managedStoreRevision": 3
+      },
+      "baselineFourPreserved": true,
+      "realPersonalErpCrmIdentityTaskMapping": "BEKLIYOR",
+      "nativeKeystorePhysicalWindowsAcceptance": "BEKLIYOR",
+      "humanAcceptance": "BEKLIYOR"
+    },
+    "crmActivity": {
+      "codeChanges": 0,
+      "buildRuns": 0,
+      "applicationTestRuns": 0,
+      "newPayloadScans": 0,
+      "httpCalls": 0,
+      "sqlCalls": 0,
+      "loginCalls": 0,
+      "sharedWrites": 0,
+      "credentialsRead": false,
+      "finishCountersChanged": false
+    },
+    "recordCheck": {
+      "status": "CHECK_REQUIRED",
+      "structuralIssues": 0,
+      "crmRequirements": [
+        {
+          "id": "required[0]",
+          "decision": "REUSE",
+          "code": null
+        },
+        {
+          "id": "required[1]",
+          "decision": "BLOCKED",
+          "code": "PROOF_BLOCKED"
+        },
+        {
+          "id": "required[2]",
+          "decision": "BLOCKED",
+          "code": "PROOF_BLOCKED"
+        }
+      ],
+      "wholeClosureGranted": false,
+      "repeatAcceptedTests": false,
+      "cacheScope": "Only own CRM agent-check path"
+    }
+  },
+  "currentInstalledManagementReadback": {
+    "observedAt": "2026-10-24T08:54:39.876Z",
+    "status": "INSTALLED_NORMAL_READBACK_PENDING",
+    "readOnly": true,
+    "installation": {
+      "path": "C:\\Sirket\\ERP\\clean\\20261022\\runtime\\semih-access-20261023\\b5-management-crm-installation.json",
+      "sha256": "86cbdb6779144e53c497ec9a04c59b93b8d3ef9c35962742ba5ce29be71f02db",
+      "record": {
+        "status": "INSTALLED",
+        "source": "acb2a3a0ce917d68221372e5f21bb788e90475aa",
+        "frontendSource": "acb2a3a0ce917d68221372e5f21bb788e90475aa",
+        "backendSource": "acb2a3a0ce917d68221372e5f21bb788e90475aa",
+        "root": "C:/Sirket/ERP/releases/CLEAN-CRM-20261024-acb2a3a0ce91-B5MGMT",
+        "manifestSha": "55FFBC1A70D9ADE3AA7C8270E445B07575FE3817F24BC3E591E2F14DAF197C92",
+        "files": 787,
+        "changedPorts": [
+          62800,
+          62801,
+          62802,
+          62803
+        ],
+        "preservedListeners": 16,
+        "erpSource": "f4db4884c3a85f799c98e955b43d6c6745d7db55",
+        "nativeSource": "035fcc08d8f56cdd0cbc437a290285328fce1ec9",
+        "database": "MELISA_ERP_CLEAN_TEST_20261022",
+        "environmentId": "e662fd94-d797-4b3b-938a-d143ad758b67",
+        "synthetic": true,
+        "actualT1": false,
+        "dataSummariesUnchanged": 53,
+        "installedAt": "2026-10-24T11:51:30.3878881+03:00"
+      }
+    },
+    "packageReuse": {
+      "packageId": "CLEAN-CRM-20261022-acb2a3a0ce91",
+      "manifestSha256": "55ffbc1a70d9ade3aa7c8270e445b07575fe3817f24bc3e591e2f14daf197c92",
+      "payloadFiles": 787,
+      "previousPayloadAnd14SourceProofReused": true,
+      "newPayloadScan": false,
+      "previousSourceNormalization": "CRLF/LF only"
+    },
+    "protection": {
+      "before": "b5-management-crm-data.before.txt",
+      "after": "b5-management-crm-data.after.txt",
+      "beforeSha256": "034bd4bd5447900e4eea94f96be130dc492013a0d01219667a75073ef9988bcd",
+      "afterSha256": "034bd4bd5447900e4eea94f96be130dc492013a0d01219667a75073ef9988bcd",
+      "equal": true,
+      "ownerReportsUnchangedSummaries": 53,
+      "preservedOtherListenersOwnerReported": 16
+    },
+    "statePreparation": {
+      "path": "C:\\Sirket\\ERP\\clean\\20261022\\runtime\\semih-access-20261023\\b5-management-crm-state-preparation.json",
+      "sha256": "3087ac6019b3d93e9af2ba8806519e74bb32814a01ae6bc0340c3b32fff0b847",
+      "record": {
+        "normalJournalPreserved": true,
+        "existingJournalOverwritten": false,
+        "rawCredentialsPersisted": false,
+        "actorCreated": false,
+        "parentReparseRejected": true
+      }
+    },
+    "activation": {
+      "ownerReported": true,
+      "enabled": true,
+      "managedFile": "C:/Sirket/ERP/clean/20261022/runtime/crm-managed-users.json",
+      "source": "existing server parent hook",
+      "hookSecretContentsRead": false,
+      "noManagedAccountAtInstallationOwnerReported": true,
+      "managedStoreContentsRead": false
+    },
+    "osReadback": {
+      "ObservedAt": "2026-10-24T08:53:36.8448176Z",
+      "Rows": [
+        {
+          "Port": 62800,
+          "LocalAddress": "192.168.1.46",
+          "Pid": 43644,
+          "Name": "node.exe",
+          "CreatedUtc": "2026-10-24T08:51:19.4766360Z",
+          "CommandHasCandidateRoot": false
+        },
+        {
+          "Port": 62800,
+          "LocalAddress": "127.0.0.1",
+          "Pid": 43644,
+          "Name": "node.exe",
+          "CreatedUtc": "2026-10-24T08:51:19.4766360Z",
+          "CommandHasCandidateRoot": false
+        },
+        {
+          "Port": 62800,
+          "LocalAddress": "100.87.188.3",
+          "Pid": 43644,
+          "Name": "node.exe",
+          "CreatedUtc": "2026-10-24T08:51:19.4766360Z",
+          "CommandHasCandidateRoot": false
+        },
+        {
+          "Port": 62801,
+          "LocalAddress": "127.0.0.1",
+          "Pid": 43644,
+          "Name": "node.exe",
+          "CreatedUtc": "2026-10-24T08:51:19.4766360Z",
+          "CommandHasCandidateRoot": false
+        },
+        {
+          "Port": 62802,
+          "LocalAddress": "127.0.0.1",
+          "Pid": 16656,
+          "Name": "node.exe",
+          "CreatedUtc": "2026-10-24T08:51:19.4948430Z",
+          "CommandHasCandidateRoot": false
+        },
+        {
+          "Port": 62803,
+          "LocalAddress": "127.0.0.1",
+          "Pid": 17804,
+          "Name": "node.exe",
+          "CreatedUtc": "2026-10-24T08:51:19.5090610Z",
+          "CommandHasCandidateRoot": false
+        }
+      ],
+      "CwdProven": false,
+      "HttpCalls": 0,
+      "SqlCalls": 0,
+      "SharedWrites": 0
+    },
+    "runtimeSourceBinding": "Owner installation receipt plus unchanged manifest; OS command is relative, CWD independently unproven.",
+    "erpDependency": {
+      "c4Source": "c4d4eb81f16e68787f1c420aa1d5d5776dfe8043",
+      "c4Status": "FAILED",
+      "b98": {
+        "path": "C:\\Sirket\\ERP\\clean\\20261022\\runtime\\semih-access-20261023\\b5-management-b98-metadata-probe.json",
+        "sha256": "92697e8bde74aae1e01013480d7e9aff4a4b254fe5eede4f7dcf746f1a828665",
+        "record": {
+          "probeSqlSha": "3992B58CCA14C834A9A0CAAF9AA2A99D3C662D2CF60F34B6DF240DE8DA6B0145",
+          "runtimeRestarted": false,
+          "protected53Unchanged": true,
+          "metadataAndGrantsUnchanged": true,
+          "source": "b98b6620e358758bde16f31bb221890af84c3eb4",
+          "accountsCreated": 0,
+          "status": "FAILED",
+          "observedAt": "2026-10-24T11:49:05.8933908+03:00",
+          "probeExit": 1
+        }
+      },
+      "ownerReportedCause": "c4 missing schema; b98 Turkish LOWER metadata filter. Existing ERP source owner handles0013/0014.",
+      "newSqlQueriesByCrm": 0
+    },
+    "normalInstalledB5Api": "OWNER_IN_PROGRESS",
+    "normalInstalledB5Gui": "BEKLIYOR",
+    "realPersonalIdentityTaskAcceptance": "BEKLIYOR",
+    "nativeKeystorePhysicalAcceptance": "BEKLIYOR",
+    "humanAcceptance": "BEKLIYOR",
+    "codeChanges": 0,
+    "buildRuns": 0,
+    "applicationTests": 0,
+    "httpCalls": 0,
+    "sqlCalls": 0,
+    "loginCalls": 0,
+    "sharedWrites": 0,
+    "finishCountersChanged": false,
+    "recordCheck": {
+      "status": "CHECK_REQUIRED",
+      "structuralIssues": 0,
+      "crmRequirements": [
+        {
+          "id": "required[0]",
+          "decision": "BLOCKED",
+          "code": "PROOF_BLOCKED"
+        },
+        {
+          "id": "required[1]",
+          "decision": "BLOCKED",
+          "code": "PROOF_BLOCKED"
+        },
+        {
+          "id": "required[2]",
+          "decision": "BLOCKED",
+          "code": "PROOF_BLOCKED"
+        }
+      ],
+      "wholeClosureGranted": false,
+      "repeatAcceptedTests": false,
+      "cacheScope": "Only own CRM agent-check path"
+    }
+  },
+  "currentOwnerCandidate": {
+    "observedAt": "2026-10-24T08:45:07.730Z",
+    "status": "PASSIVE_PACKAGE_SOURCE_MATCHED_NOT_INSTALLED",
+    "readOnly": true,
+    "sourceCommit": "acb2a3a0ce917d68221372e5f21bb788e90475aa",
+    "receipt": {
+      "path": "C:\\Sirket\\ERP\\clean\\20261022\\runtime\\semih-access-20261023\\b5-management-current-crm-package.json",
+      "sha256": "d7d6fbb31210ac4342ed1d2c21760dbbd57b059329031a571a1b4e6dafb1e7ea",
+      "record": {
+        "source": "acb2a3a0ce917d68221372e5f21bb788e90475aa",
+        "root": "C:/Sirket/ERP/releases/CLEAN-CRM-20261024-acb2a3a0ce91-B5MGMT",
+        "files": 787,
+        "manifestSha": "55FFBC1A70D9ADE3AA7C8270E445B07575FE3817F24BC3E591E2F14DAF197C92",
+        "installed": false,
+        "mainPath": "/assets/index-CeCdOZfo.js",
+        "mainSha": "213d54b16d10c7f984b4e4bb518d093e8778a8ba85ac62d02b77e00210791587",
+        "guardKept": true,
+        "envDiscovery": false
+      }
+    },
+    "manifest": {
+      "path": "C:\\Sirket\\ERP\\releases\\CLEAN-CRM-20261024-acb2a3a0ce91-B5MGMT\\release-manifest.json",
+      "sha256": "55ffbc1a70d9ade3aa7c8270e445b07575fe3817f24bc3e591e2f14daf197c92",
+      "files": 787,
+      "allPayloadHashesEqual": true,
+      "packageId": "CLEAN-CRM-20261022-acb2a3a0ce91"
+    },
+    "sourceBlobs": [
+      {
+        "file": "apps/frontend/src/App.jsx",
+        "exactGitBytes": false,
+        "lineEndingNormalizedGitEqual": true,
+        "packageSha256": "6e1e81feef869c901424050eb1acd4a09a5a741702fceb1388aacf6a73de595b",
+        "gitSha256": "cddfb4e7b5407dc87ef48e815e09dd2c2e0dbc2ff4801eba75c3cd372cf03248"
+      },
+      {
+        "file": "apps/frontend/src/CrmUserInventory.jsx",
+        "exactGitBytes": false,
+        "lineEndingNormalizedGitEqual": true,
+        "packageSha256": "adedd48d56ffad4eba1e4710e0e7db8d56fdb328083bdc86d2135f61e39ff9db",
+        "gitSha256": "05009066da731956c6a732527b488c61f394d54ffcf224285ff838de7fe76f36"
+      },
+      {
+        "file": "apps/frontend/src/liveApi.js",
+        "exactGitBytes": false,
+        "lineEndingNormalizedGitEqual": true,
+        "packageSha256": "8170bbc05d3e742ca68bdce489f1adaee7ea72d17366d7138691f1dc3beb4e71",
+        "gitSha256": "b86d13c35d6110cf533251ac4e4048d48ea98b391287204b62a0b55b758aeb83"
+      },
+      {
+        "file": "apps/frontend/src/sessionLoader.js",
+        "exactGitBytes": false,
+        "lineEndingNormalizedGitEqual": true,
+        "packageSha256": "cf6b8ee56c9f1722d65a53092643c95292a88a0c39c2b179d9b6fe55a5aa570a",
+        "gitSha256": "8468ee3c262e0da3f4fee5bdf5dcfa08fdbbfdc70c127b5bbac3b0e4876e3d9f"
+      },
+      {
+        "file": "apps/gateway/src/app.js",
+        "exactGitBytes": false,
+        "lineEndingNormalizedGitEqual": true,
+        "packageSha256": "42c0c3ccab0211b86cdcaddde53dcd40dbff5b5351e52610f08d130f7af87ada",
+        "gitSha256": "4da4295f1f0014e86aa36f5745c6d4025179023034fe3325cd2ff94b8f3988f0"
+      },
+      {
+        "file": "apps/gateway/src/controllers/agentController.js",
+        "exactGitBytes": false,
+        "lineEndingNormalizedGitEqual": true,
+        "packageSha256": "d842f79ea796c0cdd8157b4b770cd9f4bc63ce19863acf33081a8f93a287d6eb",
+        "gitSha256": "e39404ed1b2ad3441fd3d7f525c09c4a78d18925144aa2e34ad62c1d97db04c4"
+      },
+      {
+        "file": "apps/gateway/src/controllers/conversationController.js",
+        "exactGitBytes": false,
+        "lineEndingNormalizedGitEqual": true,
+        "packageSha256": "af97d7319eec2a02763a10d78ae47f12cd65a0ce8a81925a55aad8472e38987b",
+        "gitSha256": "4fc3108ea0b6ba6a7104330559a5b676745a97ec4b63ceb1366265990f0eda0d"
+      },
+      {
+        "file": "apps/gateway/src/routes/agentRoutes.js",
+        "exactGitBytes": false,
+        "lineEndingNormalizedGitEqual": true,
+        "packageSha256": "e5d50e069ee7863ca129334f9379357bb499945c0c4d79d40123035a27cae52d",
+        "gitSha256": "840974c034afc1b1d0a916559934fd120756f8e7a126c5da5fce84a4ea269672"
+      },
+      {
+        "file": "apps/gateway/src/services/chatwootInboxService.js",
+        "exactGitBytes": false,
+        "lineEndingNormalizedGitEqual": true,
+        "packageSha256": "0cc967da7c1d50270d21ae98da63fa819f54ef9befe70b2f36ec1ff2baf9b772",
+        "gitSha256": "05e43093b19f11e5d505a2ffeb016ec1240680999e5700afbcf5a8e7ee543b23"
+      },
+      {
+        "file": "apps/gateway/src/services/cleanCrmManagement.mjs",
+        "exactGitBytes": false,
+        "lineEndingNormalizedGitEqual": true,
+        "packageSha256": "12d6be80c2cc8e94a436c9f33f799e8e2dccd1e9245940483b27e4a54a995f40",
+        "gitSha256": "50b74133fae2e9d9661d60ca752cf685bd42e2794e7c370041e37bdde977a9a6"
+      },
+      {
+        "file": "apps/gateway/src/services/crmAuthService.js",
+        "exactGitBytes": false,
+        "lineEndingNormalizedGitEqual": true,
+        "packageSha256": "c28d22be0bc01fadcb2c81298b98dcad66f2447d5ab2b01ad0951ae3b600eab4",
+        "gitSha256": "6f976c868526518e654654f18ffb9893118312f5c5629f5d618281a24682c4a0"
+      },
+      {
+        "file": "apps/gateway/src/services/crmUserInventory.js",
+        "exactGitBytes": false,
+        "lineEndingNormalizedGitEqual": true,
+        "packageSha256": "1b32a14f8845faa1d9b365c4df6be4bfab5d4226f31e63304e5d2fd0de7d04bd",
+        "gitSha256": "ca7159dc3c959b6f4e2c9c6114320513652a1dfa94ebbaaf6662079c6dfb321f"
+      },
+      {
+        "file": "apps/gateway/src/services/normalRefreshSession.mjs",
+        "exactGitBytes": false,
+        "lineEndingNormalizedGitEqual": true,
+        "packageSha256": "ac0cd4d1b88230138532fa71c71f27ba8e09d0f50a23e2598131cd8ca3f23194",
+        "gitSha256": "2ee6c4ecb200cdc0c6cd902806b71315a4fde97f474fb077dd5664f0d7087b0b"
+      },
+      {
+        "file": "deploy/test-server.mjs",
+        "exactGitBytes": false,
+        "lineEndingNormalizedGitEqual": true,
+        "packageSha256": "6f8151473ea8cba8d361bc3dbcbebb29e286481494aa7ddc0c5139eabbb8fe52",
+        "gitSha256": "880b9cfdf17392c19bc4ac13d5533bc2f618ce809c3c851615e82f1f4b1ae607"
+      }
+    ],
+    "main": {
+      "path": "/assets/index-CeCdOZfo.js",
+      "bytes": 912719,
+      "sha256": "213d54b16d10c7f984b4e4bb518d093e8778a8ba85ac62d02b77e00210791587",
+      "equalToCrmSourceBuild": true
+    },
+    "css": {
+      "path": "/assets/index-C1zRRMAe.css",
+      "sha256": "3358f7ded98d63dc4e364d2557174490914b08bda7c0016262ed1a8f63e851da",
+      "unchangedFromPreviousCrmBuild": true
+    },
+    "erpDependency": {
+      "receiptPath": "C:\\Sirket\\ERP\\clean\\20261022\\runtime\\semih-access-20261023\\b5-management-metadata-probe.json",
+      "sha256": "929989e6a6ab6260f4474812129dc2b70ffde32c6eca6db8b25b79c9369b4fb5",
+      "record": {
+        "protected53Unchanged": true,
+        "observedAt": "2026-10-24T11:40:23.3387962+03:00",
+        "status": "FAILED",
+        "probeSqlSha": "616EA6D83559543B08F71185EB3092E5CB26596EF9039E9CB0070E0D2A963585",
+        "probeExit": 1,
+        "accountsCreated": 0,
+        "source": "c4d4eb81f16e68787f1c420aa1d5d5776dfe8043",
+        "metadataAndGrantsUnchanged": true,
+        "runtimeRestarted": false
+      },
+      "error": "CLEAN_PERSONNEL_DENIED",
+      "errorLine": 24,
+      "ownerReportedMissingSchema": [
+        "dbo.employees",
+        "terminal assigned_employee_id",
+        "sales employee_id"
+      ],
+      "schemaPresenceIndependentlyQueried": false,
+      "sourceAdaptationOwner": "Existing ERP source owner/PR58;0013/0014 adaptation",
+      "crmChangesRequired": false
+    },
+    "protectionComparisons": [
+      {
+        "before": "b5-management-metadata.before.txt",
+        "after": "b5-management-metadata.after.txt",
+        "beforeSha256": "62f038bcf70260cc656f3e1677be0b26fca3174a1e03247810c7b5aa205ecb55",
+        "afterSha256": "62f038bcf70260cc656f3e1677be0b26fca3174a1e03247810c7b5aa205ecb55",
+        "equal": true
+      },
+      {
+        "before": "e1-link-crm-data.before.txt",
+        "after": "b5-management-metadata-data.after.txt",
+        "beforeSha256": "034bd4bd5447900e4eea94f96be130dc492013a0d01219667a75073ef9988bcd",
+        "afterSha256": "034bd4bd5447900e4eea94f96be130dc492013a0d01219667a75073ef9988bcd",
+        "equal": true
+      }
+    ],
+    "runtime": {
+      "b5Installed": false,
+      "lastVerifiedCrmSource": "59ca114b858f4042e30cd1736825be3d7c68599c",
+      "lastVerifiedErpSource": "f4db4884c3a85f799c98e955b43d6c6745d7db55",
+      "normalInstalledB5Gui": "BEKLIYOR",
+      "humanAcceptance": "BEKLIYOR"
+    },
+    "buildRuns": 0,
+    "applicationTests": 0,
+    "httpCalls": 0,
+    "sqlCalls": 0,
+    "loginCalls": 0,
+    "sharedWrites": 0,
+    "finishCountersChanged": false,
+    "sourceMatch": {
+      "exactGitBytes": 0,
+      "lineEndingNormalizedGitEqual": 14,
+      "normalization": "CRLF/LF only; no other source normalization"
+    }
+  },
+  "observedAt": "2026-10-24T08:32:16.065Z",
+  "sourceCommit": "acb2a3a0ce917d68221372e5f21bb788e90475aa",
+  "implementationCommit": "7d09fdf9d83dbbda8523dbca5ba33465d628809e",
+  "status": "SOURCE_READY_CI_SUCCESS_NOT_INSTALLED",
+  "features": [
+    "normal crm.manage Users UI create/edit; personel/mudur, active, explicit unique synthetic agent1001-9999",
+    "server UUID, scrypt, global revision CAS, immutable baseline accounts, private atomic file and redacted audit",
+    "existing normal grant/refresh/logout engine; managed account revision fingerprint prevents role/active/agent/password flip-back revival",
+    "only separate synthetic155/156 assignment/readback; baseline55/56 and Chatwoot writes remain closed",
+    "post-mutation roster supersedes an old pending read, queues a fresh GET and preserves account generation"
+  ],
+  "activation": {
+    "defaultOff": true,
+    "profile": "clean-synthetic-20261022",
+    "database": "MELISA_ERP_CLEAN_TEST_20261022",
+    "file": "C:/Sirket/ERP/clean/20261022/runtime/crm-managed-users.json",
+    "explicitOwnerSettings": [
+      "CRM_CLEAN_ACCOUNT_MANAGEMENT_ENABLED=true",
+      "CRM_CLEAN_ACCOUNT_MANAGEMENT_FILE=C:/Sirket/ERP/clean/20261022/runtime/crm-managed-users.json"
+    ],
+    "existingNormalRefreshPrerequisite": true,
+    "baselineCannotEnable": true,
+    "baselineAccountsEditable": false,
+    "accountCreationInSharedRuntime": false,
+    "installationOwner": "ERP"
+  },
+  "tests": {
+    "coreUiConfig": {
+      "reports": 20,
+      "passed": 20
+    },
+    "productionNormalRoutes": {
+      "subtests": 9,
+      "parentReports": 1,
+      "totalReports": 10,
+      "passed": 10,
+      "platform": "Windows only exact fixed-path profile; all private file IO in RAM, ephemeral HTTP, no shared calls"
+    },
+    "relatedAuthInventoryNormal": {
+      "reports": 45,
+      "passed": 45,
+      "overlapsCore": true
+    },
+    "rosterAndTerminalIdentity": {
+      "reports": 44,
+      "passed": 44,
+      "overlapsUi": true
+    },
+    "reviewRegression": {
+      "before": {
+        "passed": 0,
+        "failed": 2
+      },
+      "after": "included in44"
+    },
+    "countsMustNotBeAdded": true
+  },
+  "build": {
+    "seconds": 11.24,
+    "profile": "clean-synthetic-20261022",
+    "main": "/assets/index-CeCdOZfo.js",
+    "bytes": 912719,
+    "sha256": "213d54b16d10c7f984b4e4bb518d093e8778a8ba85ac62d02b77e00210791587",
+    "css": "/assets/index-C1zRRMAe.css",
+    "cssSha256": "3358f7ded98d63dc4e364d2557174490914b08bda7c0016262ed1a8f63e851da",
+    "cssChanged": false
+  },
+  "review": {
+    "independent": true,
+    "openP1": 0,
+    "openP2": 0,
+    "fixedP2": "Delayed pre-mutation roster could be reused instead of issuing a fresh GET.",
+    "reviewerDidNotRunTestsOrGui": true
+  },
+  "browser": {
+    "actualProductionApp": true,
+    "actualNormalRoutes": true,
+    "synthetic": true,
+    "privateStoreAdapter": "RAM",
+    "phases": [
+      "normal baseline manager login",
+      "create sentetik-personel with explicit agent1001",
+      "full reload preserves clean-managed-ddecb580-af4c-4762-8e6e-2e9952767312",
+      "manager assigns155, fresh inbox reflects owner and unassigned2→1",
+      "new normal personel login/full reload lists only155, opens conversation",
+      "normal management closes account; normal login receives401 generic error"
+    ],
+    "actual390": {
+      "width": 390,
+      "documentScrollWidth": 390,
+      "formWidth": 312.7083435058594
+    },
+    "consoleWarningsAndErrors": 0,
+    "screenshotsFromPreFinalRosterFixBuilds": [
+      "/assets/index-jK8eh326.js",
+      "/assets/index-DBWwMLAU.js"
+    ],
+    "finalRosterRaceVerifiedByControlledAsyncTests": true,
+    "finalBuildNotClaimedAsInstalledGui": true,
+    "fixturePorts": [
+      57510,
+      52090
+    ],
+    "fixtureClosed": true,
+    "agentCreatedTabClosed": true,
+    "temporaryViewportReset": true,
+    "realPersonOrPhysicalDeviceAcceptance": false
+  },
+  "screenshots": [
+    {
+      "file": "management-account-reloaded.jpg",
+      "bytes": 89872,
+      "sha256": "b21cecf884b9039d1f79f5d04de82a77397ef501e39bfe03172e0d88d605ad7e",
+      "scope": "Real production App/normal HTTP routes in isolated loopback fixture; private files in RAM, synthetic accounts/customers."
+    },
+    {
+      "file": "management-assigned-personel.jpg",
+      "bytes": 56115,
+      "sha256": "a1111ded454d57018656714d557e3984fe67c90160e16fee07ca550475fb158b",
+      "scope": "Real production App/normal HTTP routes in isolated loopback fixture; private files in RAM, synthetic accounts/customers."
+    },
+    {
+      "file": "management-editor-actual390.jpg",
+      "bytes": 46463,
+      "sha256": "9118d58cd7c46810bd820d4545bc0162de810fd76597fdb075aad983fbccdc80",
+      "scope": "Actual window.innerWidth390/document.scrollWidth390; emulator only, not physical phone."
+    },
+    {
+      "file": "management-editor-request390-actual433.jpg",
+      "bytes": 35423,
+      "sha256": "7c4024284dd6e5657cb736fb55b0699471cd046c53caaca355b9a3129ba3d7a3",
+      "scope": "Requested viewport390 produced actual433; retained as a measurement mismatch, not 390 proof."
+    },
+    {
+      "file": "management-inactive-login-denied.jpg",
+      "bytes": 24118,
+      "sha256": "94de913f11760ae2646b3d86d747480b75c549707b0fd9f8f076920454b1cf35",
+      "scope": "Real production App/normal HTTP routes in isolated loopback fixture; private files in RAM, synthetic accounts/customers."
+    },
+    {
+      "file": "management-personel-reloaded.jpg",
+      "bytes": 35768,
+      "sha256": "16745710791c24e37ab77c41f6f6ad842e6c4ffe96061cca992f45ff1f5ef68d",
+      "scope": "Real production App/normal HTTP routes in isolated loopback fixture; private files in RAM, synthetic accounts/customers."
+    }
+  ],
+  "ci": {
+    "sourceCommit": "acb2a3a0ce917d68221372e5f21bb788e90475aa",
+    "status": "SUCCESS",
+    "previousCommit": "7d09fdf9d83dbbda8523dbca5ba33465d628809e",
+    "previousFailure": "Linux config test expected a fixed Windows private path to activate. acb2a3a asserts the existing fail-closed rejection on non-Windows; production code/guards unchanged.",
+    "previousFailedRun": 40078086855,
+    "checks": [
+      {
+        "id": 120826293963,
+        "name": "quality-build-test",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/40078289201/job/120826293963"
+      },
+      {
+        "id": 120826293917,
+        "name": "windows-startup-test",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/40078289201/job/120826293917"
+      },
+      {
+        "id": 120826293733,
+        "name": "secret-scan",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/40078289201/job/120826293733"
+      },
+      {
+        "id": 120826293341,
+        "name": "ai-sales-offline",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/40078289170/job/120826293341"
+      },
+      {
+        "id": 120826279898,
+        "name": "quality-build-test",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/40078284030/job/120826279898"
+      },
+      {
+        "id": 120826279865,
+        "name": "secret-scan",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/40078284030/job/120826279865"
+      },
+      {
+        "id": 120826279770,
+        "name": "windows-startup-test",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/40078284030/job/120826279770"
+      }
+    ],
+    "verifiedAt": "2026-10-24T08:32:45.609Z"
+  },
+  "runtime": {
+    "installedCrm": "59ca114b858f4042e30cd1736825be3d7c68599c",
+    "installedErp": "f4db4884c3a85f799c98e955b43d6c6745d7db55",
+    "b5SourceInstalled": false,
+    "realPersonalAccountsPrepared": false,
+    "realCustomerOwnershipChosen": false,
+    "normalInstalledB5Gui": "BEKLIYOR",
+    "humanAcceptance": "BEKLIYOR"
+  },
+  "sharedWrites": 0,
+  "realCustomerMessages": 0,
+  "paidApiCalls": 0,
+  "mainMerged": false,
+  "recordCheck": {
+    "status": "CHECK_REQUIRED",
+    "structuralIssues": 0,
+    "crm": {
+      "runtimeHealth": "REUSE",
+      "normalNativeRole": "BLOCKED",
+      "normalNativeUi": "BLOCKED"
+    },
+    "erpBlockedProofs": 3,
+    "wholeClosureGranted": false,
+    "cacheSaved": "only own CRM agent-check path; no shared runtime write"
+  }
+}

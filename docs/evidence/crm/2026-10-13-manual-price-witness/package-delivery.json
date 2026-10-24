@@ -1,0 +1,60 @@
+{
+  "date": "2026-10-13",
+  "sourceCommit": "5b6dfe5acf1c0c1ea301f66aea39bf2abcec8f36",
+  "sourceTree": "6768fa525323b02f79ac9c1b0142f083eb1ca227",
+  "packageName": "crm-shared-test-5b6dfe5acf1c0c1ea301f66aea39bf2abcec8f36",
+  "manifestSha256": "8209226b9e4fefc1b788fc4bec328b4071c375d77630d29fff424bd4cc6fee47",
+  "status": "INACTIVE_OWNER_REBASE_AND_NATIVE_PROOF_REQUIRED",
+  "activated": false,
+  "lockedOfflineInstallBuildVerify": true,
+  "candidateSha256": "ebc66d8df2635f5776508a7567b03266dd6e2735431ec3d3cd2cc5e6b6e4f5f3",
+  "handoffSha256": "c46b748d1e0d66990123e30e76560503e202ca6679f8580851cadce677805246",
+  "acl": {
+    "inheritanceDisabled": true,
+    "principals": [
+      "ownerSID",
+      "SYSTEM"
+    ]
+  },
+  "includes": [
+    "CRM06 source1be7277",
+    "I01 source30f78de",
+    "E02 source5b6dfe5"
+  ],
+  "old1bePackageAndCandidateUnchanged": true,
+  "candidateBaseline": "previous INACTIVE1be template, not current owner59c effective config",
+  "changedEnvironmentKeys": [
+    "CRM_TEST_PACKAGE_MANIFEST_SHA256",
+    "CRM_TEST_PACKAGE_ROOT",
+    "CRM_TEST_SOURCE_COMMIT"
+  ],
+  "addedEnvironmentKeys": [],
+  "preservedPaths": [
+    "request store",
+    "issuer journal",
+    "normal personel journal"
+  ],
+  "bridgeCompatibility": {
+    "bodyPassThrough": true,
+    "readbackPassThrough": true,
+    "sourceUnchanged": true,
+    "existingGuardsPreserved": true,
+    "pricingContract": "melisa-crm-draft-pricing.v1"
+  },
+  "sentToAuthorizedErpOwner": true,
+  "ownerReceivedConfirmed": false,
+  "sharedRuntimeConfigMutated": false,
+  "sqlWrites": 0,
+  "serviceRestarts": 0,
+  "credentialsCopied": false,
+  "proofStateCopied": false,
+  "mainMerge": false,
+  "live": false,
+  "ownerPending": [
+    "current config rebase",
+    "registered same-transaction native successor proof",
+    "native source/package/manifest dependency/projection pins",
+    "serialized TEST activation",
+    "normal/mobile/human acceptance"
+  ]
+}

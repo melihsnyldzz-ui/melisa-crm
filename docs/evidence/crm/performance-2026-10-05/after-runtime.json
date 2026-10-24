@@ -1,0 +1,66 @@
+{
+  "ports": [
+    {
+      "port": 62400,
+      "pid": 45028,
+      "started": "2026-10-05T14:23:45.8893760Z",
+      "owner": "SEMIH\\Xaser",
+      "candidatePackage": true
+    },
+    {
+      "port": 62401,
+      "pid": 45028,
+      "started": "2026-10-05T14:23:45.8893760Z",
+      "owner": "SEMIH\\Xaser",
+      "candidatePackage": true
+    },
+    {
+      "port": 62402,
+      "pid": 21384,
+      "started": "2026-10-05T14:23:40.3548570Z",
+      "owner": "SEMIH\\Xaser",
+      "candidatePackage": true
+    },
+    {
+      "port": 62403,
+      "pid": 44928,
+      "started": "2026-10-05T14:23:43.3602330Z",
+      "owner": "SEMIH\\Xaser",
+      "candidatePackage": true
+    },
+    {
+      "port": 62404,
+      "pid": 49220,
+      "started": "2026-10-05T07:05:23.0876580Z",
+      "owner": "SEMIH\\Xaser",
+      "candidatePackage": false
+    },
+    {
+      "port": 4114,
+      "pid": 33624,
+      "started": "2026-09-21T13:32:33.5930350Z",
+      "owner": "SEMIH\\Xaser",
+      "candidatePackage": false
+    },
+    {
+      "port": 4116,
+      "pid": 40828,
+      "started": "2026-09-21T13:32:33.6970310Z",
+      "owner": "SEMIH\\Xaser",
+      "candidatePackage": false
+    },
+    {
+      "port": 5188,
+      "pid": 31820,
+      "started": "2026-09-21T13:32:33.8048010Z",
+      "owner": "SEMIH\\Xaser",
+      "candidatePackage": false
+    }
+  ],
+  "livePidsUnchanged": true,
+  "checkedAt": "2026-10-05T14:52:43.7054322Z",
+  "nativeUnchanged": true,
+  "packageRoot": "C:\\Sirket\\CRM\\releases\\crm-test-f166b0f7db499c68e6cc6718bcf090fcaf457927",
+  "sourceCommit": "f166b0f7db499c68e6cc6718bcf090fcaf457927",
+  "manifestSha256": "47c495de9fa0d1da6a1878b7dfc2b2d6742c976d4541f35944315bacd36b6d4f"
+}

@@ -1,0 +1,30 @@
+{
+  "observedAt": "2026-10-06T20:13:54.889Z",
+  "crmSource": "77a2fa346b4c3653b77e33625e185c1259402af7",
+  "scope": "Controlled real loopback HTTP fixture models late Chatwoot; real ERP/native read-only probes and existing CRM children unchanged. Actual Docker/Chatwoot were never stopped.",
+  "unavailable": {
+    "chatwoot": {
+      "state": "unavailable"
+    },
+    "erp": {
+      "state": "ready"
+    },
+    "native": {
+      "state": "ready"
+    }
+  },
+  "recovered": {
+    "chatwoot": {
+      "state": "ready"
+    },
+    "erp": {
+      "state": "ready"
+    },
+    "native": {
+      "state": "ready"
+    }
+  },
+  "childrenUnchanged": true,
+  "fixtureClosed": true,
+  "realProviderMessages": false
+}

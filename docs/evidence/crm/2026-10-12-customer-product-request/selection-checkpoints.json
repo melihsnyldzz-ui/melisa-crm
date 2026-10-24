@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "events": [
+    {
+      "step": "remove-and-browser-reload",
+      "at": "2026-10-12T01:38:21.275Z",
+      "revision": 5,
+      "items": [
+        {
+          "productId": "erp-36724",
+          "quantity": 3
+        }
+      ],
+      "requestCount": 0
+    },
+    {
+      "step": "submitted-and-browser-reload",
+      "at": "2026-10-12T01:41:19.978Z",
+      "revision": 7,
+      "items": [
+        {
+          "productId": "erp-36724",
+          "quantity": 3
+        },
+        {
+          "productId": "erp-30740",
+          "quantity": 2
+        }
+      ],
+      "requestCount": 1
+    }
+  ]
+}

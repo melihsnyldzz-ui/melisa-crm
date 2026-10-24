@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "scope": "crm-catalog-photos-only",
+  "capturedAt": "2026-10-06T20:23:02.2036421+03:00",
+  "environment": "TEST",
+  "testUrl": "http://127.0.0.1:62400/",
+  "previousApplicationSource": "9ea4dda207d4012776791df9089887c8c3e6015e",
+  "applicationSource": "ad01203b65025408a30854cfed689653c56ef8fc",
+  "packageManifestSha256": "119e7cb974c4d6a022ba50e5945cd9f0655f0206f10acf430bd52338cfd62aaf",
+  "humanAcceptance": "not_claimed",
+  "beforeTotal": 16676,
+  "afterTotal": 3830,
+  "afterTotalPages": 77,
+  "files": [
+    {
+      "path": "after-catalog-page1.jpg",
+      "bytes": 59071,
+      "sha256": "f4ca9171e23624a16a04304f893e8b55cdd0837f2e4d44b5ef95fa854382d80e"
+    },
+    {
+      "path": "after-catalog-page2.jpg",
+      "bytes": 64172,
+      "sha256": "047097764ef4cd4ff89d2b7b2bf6a06a4f822a607c7b12ca8af3939110388bd6"
+    },
+    {
+      "path": "after-no-photo-search.jpg",
+      "bytes": 54822,
+      "sha256": "588515ef797bce9bfd3ab8ec3f16b29f8c6a0f1908a2c283c448725cc3cd2580"
+    },
+    {
+      "path": "after-photo-product-search.jpg",
+      "bytes": 56548,
+      "sha256": "90b4b28d434d3b4680628cd36b565b7cc87e002877530620392d82b1a3551e64"
+    },
+    {
+      "path": "after-reset.jpg",
+      "bytes": 60476,
+      "sha256": "f94f5393774dbcb45621d8c52f7c1b9104db7ed9bed470564487ee55fbf1f2f8"
+    },
+    {
+      "path": "before-catalog.jpg",
+      "bytes": 55694,
+      "sha256": "983180d591872b55ee9c256eff0e10706bcee8ded14d9da3e5ea24a62b9d6763"
+    },
+    {
+      "path": "before-no-photo-search.jpg",
+      "bytes": 55290,
+      "sha256": "e43b7d02a8b60d5773ee992f68775552fc2752817c8be544dc3b291825dcedf5"
+    },
+    {
+      "path": "README.md",
+      "bytes": 4985,
+      "sha256": "452611afa28bc6954913eacd0fee9e7af61e4aa836c16cc030d6b6009a4e7565"
+    }
+  ]
+}

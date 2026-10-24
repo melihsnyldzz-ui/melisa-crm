@@ -17,14 +17,20 @@ export class WaapiProvider {
   constructor({ config = env.waapi, fetchFn = (...args) => fetch(...args), now = Date.now } = {}) {
     this.config = config; this.fetchFn = fetchFn; this.now = now;
     this.cached = null; this.pending = null; this.calls = []; this.generation = 0;
+    this.incomingPhones = new Map(); this.incomingLookups = new Map();
   }
   invalidate() { this.cached = null; this.generation++; }
   connected() { return Boolean(this.cached?.value.providerConnected && this.now() - this.cached.at < 60000); }
   async request(path, body) {
+    if (process.env.CRM_ISOLATED_PREPARATION === 'true') throw waapiError('PREPARATION_PROVIDER_DISABLED');
     if (!this.config.apiToken || this.config.instanceId !== WAAPI_INSTANCE) throw waapiError('WAAPI_NOT_CONFIGURED');
     this.calls = this.calls.filter(t => t > this.now() - 300000);
     // Reserve quota for the operator/panel; never automatically retry provider calls.
-    if (this.calls.length >= 8) throw waapiError('WAAPI_RATE_LIMIT', false, 429);
+    if (this.calls.length >= 8) {
+      const error = waapiError('WAAPI_RATE_LIMIT', false, 429);
+      error.meta.retryAfterMs = Math.max(1, this.calls[0] + 300000 - this.now());
+      throw error;
+    }
     this.calls.push(this.now());
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), this.config.timeoutMs || 15000);
@@ -62,6 +68,31 @@ export class WaapiProvider {
     })();
     try { return await this.pending; } finally { this.pending = null; }
   }
+  async resolveIncomingPhone(jid) {
+    if (typeof jid !== 'string') throw waapiError('WAAPI_INCOMING_IDENTITY_INVALID', false, 400);
+    if (/^[1-9]\d{6,14}@c\.us$/.test(jid)) return jid.slice(0, -5);
+    if (!/^[1-9]\d{9,19}@lid$/.test(jid)) throw waapiError('WAAPI_INCOMING_IDENTITY_INVALID', false, 400);
+    const cached = this.incomingPhones.get(jid);
+    if (cached && this.now() - cached.at < 600000) return cached.phone;
+    if (this.incomingLookups.has(jid)) return this.incomingLookups.get(jid);
+    const lookup = (async () => {
+      // This provider action is a read-only identity lookup. Never trust webhook display names or LID digits as a phone.
+      const result = await this.request('action/get-lid', { contactIds: [jid] });
+      const contacts = result?.data?.data?.contacts;
+      if (result?.status !== 'success' || result.data?.status !== 'success'
+        || String(result.data?.instanceId) !== WAAPI_INSTANCE || !Array.isArray(contacts) || contacts.length !== 1
+        || contacts[0]?.lid !== jid || typeof contacts[0]?.pn !== 'string' || !/^[1-9]\d{6,14}@c\.us$/.test(contacts[0].pn)
+        || (result.data.data.count !== undefined && result.data.data.count !== 1)) {
+        throw waapiError('WAAPI_INCOMING_IDENTITY_UNCONFIRMED', false, 502);
+      }
+      const phone = contacts[0].pn.slice(0, -5);
+      if (this.incomingPhones.size >= 256) this.incomingPhones.delete(this.incomingPhones.keys().next().value);
+      this.incomingPhones.set(jid, { phone, at: this.now() });
+      return phone;
+    })();
+    this.incomingLookups.set(jid, lookup);
+    try { return await lookup; } finally { this.incomingLookups.delete(jid); }
+  }
   async sendMessage({ phone, text, media, remoteJid }) {
     if (phone !== WAAPI_RECIPIENT || /@(g.us|broadcast|newsletter)$/.test(remoteJid || '')) throw waapiError('WAAPI_RECIPIENT_NOT_ALLOWED', false, 403);
     if (media && !this.config.outboundMediaEnabled) throw waapiError('WAAPI_PILOT_TEXT_ONLY', false, 400);
@@ -78,9 +109,10 @@ export class WaapiProvider {
     const id = message?.id || message?._data?.id;
     if (!id?._serialized || id.fromMe !== true || !isWaapiTrialPeer(id.remote, this.config)) throw waapiError('WAAPI_MESSAGE_ID_UNCONFIRMED', true, 502);
     return { provider: 'waapi', providerMessageId: id._serialized, text, direction: 'outgoing',
-      messageType: attachment ? (attachment.mediaType === 'image' ? 'image' : 'file') : 'text',
+      messageType: attachment ? (['image', 'audio', 'video'].includes(attachment.mediaType) ? attachment.mediaType : 'file') : 'text',
       ...(attachment ? { media: { mimeType: attachment.mimeType, fileName: attachment.fileName, byteLength: attachment.byteLength,
-        asDocument: attachment.asDocument, quality: attachment.asDocument ? 'original-file-requested' : 'provider-image-processing' } } : {}),
+        asDocument: attachment.asDocument, quality: attachment.asDocument ? 'original-file-requested'
+          : attachment.mediaType === 'image' ? 'provider-image-processing' : 'provider-media-processing' } } : {}),
       sentAt: new Date(this.now()).toISOString(), status: 'accepted',
       providerAccepted: true, delivered: false, read: false };
   }

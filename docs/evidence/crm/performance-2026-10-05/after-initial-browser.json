@@ -1,0 +1,53 @@
+{
+  "method": "navigation start to first conversation list DOM rendered plus two native animation frames; baseline native trace first Paint after inbox response, ~frame-level criterion difference disclosed",
+  "initial": [
+    {
+      "auth": [
+        {
+          "ms": 17.600000143051147,
+          "start": 166.69999980926514
+        }
+      ],
+      "inbox": [
+        {
+          "end": 18570.199999809265,
+          "ms": 18369.39999985695,
+          "start": 200.79999995231628
+        }
+      ],
+      "ms": 19620
+    },
+    {
+      "auth": [
+        {
+          "ms": 13.400000095367432,
+          "start": 194
+        }
+      ],
+      "inbox": [
+        {
+          "end": 14093.299999952316,
+          "ms": 13882.399999856949,
+          "start": 210.90000009536743
+        }
+      ],
+      "ms": 15141.600000143051
+    },
+    {
+      "auth": [
+        {
+          "ms": 11.399999856948853,
+          "start": 221.20000004768372
+        }
+      ],
+      "inbox": [
+        {
+          "end": 12487.5,
+          "ms": 12244,
+          "start": 243.5
+        }
+      ],
+      "ms": 13523.599999904633
+    }
+  ]
+}

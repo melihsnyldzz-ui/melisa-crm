@@ -1,0 +1,324 @@
+{
+  "measuredAt": "2026-10-05T15:27:49.403Z",
+  "runtimeSource": "f166b0f7db499c68e6cc6718bcf090fcaf457927",
+  "manifestSha256": "47c495de9fa0d1da6a1878b7dfc2b2d6742c976d4541f35944315bacd36b6d4f",
+  "baselineServices": [
+    {
+      "port": 62400,
+      "pid": 45028,
+      "startedAt": "2026-10-05T14:23:45.8893760Z"
+    },
+    {
+      "port": 62401,
+      "pid": 45028,
+      "startedAt": "2026-10-05T14:23:45.8893760Z"
+    },
+    {
+      "port": 62402,
+      "pid": 21384,
+      "startedAt": "2026-10-05T14:23:40.3548570Z"
+    },
+    {
+      "port": 62403,
+      "pid": 44928,
+      "startedAt": "2026-10-05T14:23:43.3602330Z"
+    },
+    {
+      "port": 62404,
+      "pid": 49220,
+      "startedAt": "2026-10-05T07:05:23.0876580Z"
+    }
+  ],
+  "sampleCount": 3,
+  "snapshotMode": "three-independent-cold-shadow-traversals; gateway-management-20s-snapshot-not-used",
+  "hydrationMode": "exact-public-message-mapping-and-private-workflow; receipt-journal-enrichment-excluded",
+  "providerReadinessCalls": 0,
+  "sqlCalls": 0,
+  "writes": 0,
+  "completed": 1,
+  "samples": [
+    {
+      "index": 1,
+      "list": {
+        "calls": 31,
+        "bytes": 2838313,
+        "requestSumMs": 11862.97,
+        "requestMaxMs": 808.02,
+        "wallMs": 11893.7,
+        "rawCount": 751,
+        "cacheable": 1
+      },
+      "messages": {
+        "calls": 100,
+        "bytes": 515172,
+        "requestSumMs": 27915.78,
+        "requestMaxMs": 789.8,
+        "receiptJournalReadsSkipped": 9,
+        "publicMessageCount": 629,
+        "workflowEntryCount": 0,
+        "conversationCount": 100,
+        "wallMs": 5672.13
+      },
+      "team": {
+        "calls": 1,
+        "bytes": 1099,
+        "requestSumMs": 58.2,
+        "requestMaxMs": 58.2,
+        "count": 5,
+        "wallMs": 58.28
+      },
+      "firstProviderListPage": {
+        "ms": 468.04,
+        "bytes": 78514,
+        "status": 200
+      }
+    },
+    {
+      "index": 2,
+      "list": {
+        "calls": 31,
+        "bytes": 2838313,
+        "requestSumMs": 27115.44,
+        "requestMaxMs": 2026.48,
+        "wallMs": 27149.31,
+        "rawCount": 751,
+        "cacheable": 1
+      },
+      "messages": {
+        "calls": 100,
+        "bytes": 515172,
+        "requestSumMs": 27511.62,
+        "requestMaxMs": 678.87,
+        "receiptJournalReadsSkipped": 9,
+        "publicMessageCount": 629,
+        "workflowEntryCount": 0,
+        "conversationCount": 100,
+        "wallMs": 5548.4
+      },
+      "team": {
+        "calls": 1,
+        "bytes": 1099,
+        "requestSumMs": 22.02,
+        "requestMaxMs": 22.02,
+        "count": 5,
+        "wallMs": 22.07
+      },
+      "firstProviderListPage": {
+        "ms": 897.96,
+        "bytes": 78514,
+        "status": 200
+      }
+    },
+    {
+      "index": 3,
+      "list": {
+        "calls": 31,
+        "bytes": 2838313,
+        "requestSumMs": 11858.68,
+        "requestMaxMs": 570.9,
+        "wallMs": 11887.5,
+        "rawCount": 751,
+        "cacheable": 1
+      },
+      "messages": {
+        "calls": 100,
+        "bytes": 515172,
+        "requestSumMs": 20627.67,
+        "requestMaxMs": 747.05,
+        "receiptJournalReadsSkipped": 9,
+        "publicMessageCount": 629,
+        "workflowEntryCount": 0,
+        "conversationCount": 100,
+        "wallMs": 4185.27
+      },
+      "team": {
+        "calls": 1,
+        "bytes": 1099,
+        "requestSumMs": 26.96,
+        "requestMaxMs": 26.96,
+        "count": 5,
+        "wallMs": 27.02
+      },
+      "firstProviderListPage": {
+        "ms": 401.95,
+        "bytes": 78514,
+        "status": 200
+      }
+    }
+  ],
+  "afterServices": [
+    {
+      "port": 62400,
+      "pid": 45028,
+      "startedAt": "2026-10-05T14:23:45.8893760Z"
+    },
+    {
+      "port": 62401,
+      "pid": 45028,
+      "startedAt": "2026-10-05T14:23:45.8893760Z"
+    },
+    {
+      "port": 62402,
+      "pid": 21384,
+      "startedAt": "2026-10-05T14:23:40.3548570Z"
+    },
+    {
+      "port": 62403,
+      "pid": 44928,
+      "startedAt": "2026-10-05T14:23:43.3602330Z"
+    },
+    {
+      "port": 62404,
+      "pid": 49220,
+      "startedAt": "2026-10-05T07:05:23.0876580Z"
+    }
+  ],
+  "sameServiceIdentity": 1,
+  "medians": {
+    "firstProviderPageMs": 468.04,
+    "allPagesWallMs": 11893.7,
+    "messageHydrationWallMs": 5548.4,
+    "teamWallMs": 27.02
+  },
+  "recentFirstPageProbe": {
+    "measuredAt": "2026-10-05T15:31:21.074Z",
+    "beforeServices": [
+      {
+        "port": 62400,
+        "pid": 45028,
+        "startedAt": "2026-10-05T14:23:45.8893760Z"
+      },
+      {
+        "port": 62401,
+        "pid": 45028,
+        "startedAt": "2026-10-05T14:23:45.8893760Z"
+      },
+      {
+        "port": 62402,
+        "pid": 21384,
+        "startedAt": "2026-10-05T14:23:40.3548570Z"
+      },
+      {
+        "port": 62403,
+        "pid": 44928,
+        "startedAt": "2026-10-05T14:23:43.3602330Z"
+      },
+      {
+        "port": 62404,
+        "pid": 49220,
+        "startedAt": "2026-10-05T07:05:23.0876580Z"
+      }
+    ],
+    "completed": 1,
+    "list": {
+      "calls": 32,
+      "bytes": 2918291,
+      "requestSumMs": 32006.79,
+      "requestMaxMs": 2215.66
+    },
+    "messages": {
+      "calls": 25,
+      "bytes": 89686,
+      "requestSumMs": 5365.13,
+      "requestMaxMs": 413.39
+    },
+    "receiptJournalReadsSkipped": 9,
+    "firstProviderListPage": {
+      "ms": 2050.74,
+      "bytes": 79978,
+      "status": 200
+    },
+    "recentFirstPageWallMs": 2052.03,
+    "recentFirstPageCount": 25,
+    "recentFirstPageBytes": 79978,
+    "allPagesWallMs": 29987.93,
+    "allPagesCalls": 31,
+    "allPagesBytes": 2838313,
+    "allPagesCount": 751,
+    "sameGlobalRecentIdOrder": 0,
+    "sameGlobalRecentIdSet": 0,
+    "recentOrderingViolations": 0,
+    "lastNonActivityPresent": 25,
+    "lastNonActivityPrivateRejected": 0,
+    "lastNonActivityActivityRejected": 0,
+    "candidateMissing": 0,
+    "sameLatestId": 25,
+    "latestIdMismatch": 0,
+    "directionMismatch": 0,
+    "textMismatch": 0,
+    "normalizedTimeMismatch": 0,
+    "attachmentCountMismatch": 0,
+    "idMismatchSameText": 0,
+    "idMismatchSameSourceId": 0,
+    "idMismatchProviderTimestampPresent": 0,
+    "idMismatchDifferentNormalizedTime": 0,
+    "messageHydrationWallMs": 1159.71,
+    "afterServices": [
+      {
+        "port": 62400,
+        "pid": 45028,
+        "startedAt": "2026-10-05T14:23:45.8893760Z"
+      },
+      {
+        "port": 62401,
+        "pid": 45028,
+        "startedAt": "2026-10-05T14:23:45.8893760Z"
+      },
+      {
+        "port": 62402,
+        "pid": 21384,
+        "startedAt": "2026-10-05T14:23:40.3548570Z"
+      },
+      {
+        "port": 62403,
+        "pid": 44928,
+        "startedAt": "2026-10-05T14:23:43.3602330Z"
+      },
+      {
+        "port": 62404,
+        "pid": 49220,
+        "startedAt": "2026-10-05T07:05:23.0876580Z"
+      }
+    ],
+    "sameServiceIdentity": 1
+  },
+  "installedOrderingProbe": {
+    "measuredAt": "2026-10-05T15:38:48.317Z",
+    "completed": 1,
+    "list": {
+      "calls": 32,
+      "bytes": 2918291,
+      "requestSumMs": 12468.56,
+      "requestMaxMs": 599.4
+    },
+    "firstProviderListPage": {
+      "ms": 582.78,
+      "bytes": 79978,
+      "status": 200
+    },
+    "firstWallMs": 583.99,
+    "fullWallMs": 11912.94,
+    "recentCount": 25,
+    "fullCount": 751,
+    "recentMinTimestamp": 1790415723,
+    "recentMaxTimestamp": 1791213383,
+    "fullMinTimestamp": 1783089281,
+    "fullMaxTimestamp": 1791213383,
+    "topMinTimestamp": 1790415723,
+    "topMaxTimestamp": 1791213383,
+    "cutoffTimestamp": 1790415723,
+    "fullAboveCutoffCount": 24,
+    "fullAtCutoffCount": 3,
+    "recentAtCutoffCount": 1,
+    "topAtCutoffCount": 1,
+    "onlyRecentCount": 1,
+    "onlyTopCount": 1,
+    "membershipDifferenceAllAtCutoff": 1,
+    "recentAbsentFromFullCount": 0,
+    "sameIdOrder": 0,
+    "sameActivitySequence": 1,
+    "sameTimestampForRecentSharedRows": 1,
+    "recentDescendingViolations": 0,
+    "sameServiceIdentity": 1
+  }
+}

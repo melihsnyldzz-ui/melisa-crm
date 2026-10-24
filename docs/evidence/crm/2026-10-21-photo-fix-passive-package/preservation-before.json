@@ -1,0 +1,3044 @@
+{
+  "createdUtc": "2026-10-21T07:06:02.032Z",
+  "packages": 63,
+  "protectedManifestAndIndexRecords": 126,
+  "protectedFailedStaging": "C:/Sirket/CRM/releases/.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp",
+  "records": [
+    {
+      "path": "C:/Sirket/CRM/releases/.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp",
+      "present": true,
+      "directory": true,
+      "mode": 16822,
+      "mtimeMs": 1792516837280.537
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\.npm-global-config",
+      "present": true,
+      "size": 0,
+      "mtimeMs": 1792516837280.537,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\.npm-user-config",
+      "present": true,
+      "size": 0,
+      "mtimeMs": 1792516837279.4019,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps",
+      "present": true,
+      "directory": true,
+      "mode": 16822,
+      "mtimeMs": 1792516829855.124
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend",
+      "present": true,
+      "directory": true,
+      "mode": 16822,
+      "mtimeMs": 1792516829790.6401
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\.openai",
+      "present": true,
+      "directory": true,
+      "mode": 16822,
+      "mtimeMs": 1792516824335.8005
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\.openai\\hosting.json",
+      "present": true,
+      "size": 63,
+      "mtimeMs": 1792516824336.7986,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "3e6283e8f821a3824a1955f9630fb3a178cf0115b598dba20b10f656cacb86e3"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\index.html",
+      "present": true,
+      "size": 1167,
+      "mtimeMs": 1792516824433.364,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "2a7fa423fc8c8c953b4de489415835842d074cacc88e81913e620494e9151166"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\package-lock.json",
+      "present": true,
+      "size": 67366,
+      "mtimeMs": 1792516824529.023,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "9064a36a0c86464db93cc261ffedbc92a87ea2092315e207301ca8a8aa6d4d24"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\package.json",
+      "present": true,
+      "size": 773,
+      "mtimeMs": 1792516824611.0593,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "e2aa00f71652699007bef6d1c19253b8b0d0e3f9d66f95810a7ddaab28f63d5c"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\public",
+      "present": true,
+      "directory": true,
+      "mode": 16822,
+      "mtimeMs": 1792516824698.649
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\public\\chat-wallpaper.png",
+      "present": true,
+      "size": 1399772,
+      "mtimeMs": 1792516824699.6477,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "d2d0d58bf737f6080e529f122f0b557bb33ec8ff3fcc2c60f6cbfc0ffc6de197"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\scripts",
+      "present": true,
+      "directory": true,
+      "mode": 16822,
+      "mtimeMs": 1792516824782.3364
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\scripts\\prepare-sites-build.mjs",
+      "present": true,
+      "size": 910,
+      "mtimeMs": 1792516824782.3364,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "b6a6adaa4fab3234676116dd1c9cb6611275ab9d92dd26f5bf402393e3744bf6"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src",
+      "present": true,
+      "directory": true,
+      "mode": 16822,
+      "mtimeMs": 1792516829620.4546
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\accountIdentity.js",
+      "present": true,
+      "size": 849,
+      "mtimeMs": 1792516825381.757,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "080c3e6d03618bd0f6697021897e7087c305185d59d67c4e0b3c81a5099f56f5"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\AccountInfo.jsx",
+      "present": true,
+      "size": 753,
+      "mtimeMs": 1792516824874.157,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "1b9a7a8e3982153fe977dedc7cd977d42583e0234ab2367dcbffd57f5a470f09"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\App.jsx",
+      "present": true,
+      "size": 184577,
+      "mtimeMs": 1792516824960.5415,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "bce35597e4252627ea8f12faf29c03a6ff027983941bb6cc76d343cb123a01f3"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\automaticTranslation.js",
+      "present": true,
+      "size": 313,
+      "mtimeMs": 1792516825462.1965,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "7e75454062bb55885d3f2ef6e02fa26ba5385b543c05aa1e62c0b23c46550336"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\browserNormalSession.js",
+      "present": true,
+      "size": 3976,
+      "mtimeMs": 1792516825536.9753,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "6aea10f741aaa4d212d78d5a34dc6ca1edd40bb3109ae8ca060a95ecd9f1f12f"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\catalog",
+      "present": true,
+      "directory": true,
+      "mode": 16822,
+      "mtimeMs": 1792516826761.8042
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\catalog\\canonicalSession.js",
+      "present": true,
+      "size": 3732,
+      "mtimeMs": 1792516825741.5652,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "b4a2d0e41c904a9c6c3ae494864c7c02c6a5450743fc1003b4c8992afa7653ad"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\catalog\\canonicalStock.js",
+      "present": true,
+      "size": 5116,
+      "mtimeMs": 1792516825813.2727,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "32c38ea16f194ff163ad47fced30640f2241fef104a3f9683096e1c5bfc2480b"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\catalog\\catalog.css",
+      "present": true,
+      "size": 18299,
+      "mtimeMs": 1792516825882.4458,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "d60265d925b18f90758b9e41b70ea0d89748b560928d16520a0c1603d9fce23f"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\catalog\\CatalogBuilder.jsx",
+      "present": true,
+      "size": 29858,
+      "mtimeMs": 1792516825608.7722,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "068098d54bb0f6f41982904a6b3c8b2d1c5a95ff760bf900d9c475792ec2c84f"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\catalog\\CatalogWorkspace.jsx",
+      "present": true,
+      "size": 8147,
+      "mtimeMs": 1792516825677.0444,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "16654550bde62852c1a3b4e91b498b096e7706ae1f5f246c15e764248c052498"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\catalog\\existingSession.js",
+      "present": true,
+      "size": 6365,
+      "mtimeMs": 1792516825964.6519,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "9f50a15603433a311eb5d5956d215b4aa12e44ad96ca1fee8cf0d4a9a5a569a5"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\catalog\\existingStock.js",
+      "present": true,
+      "size": 4555,
+      "mtimeMs": 1792516826042.7075,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "48911239b4af138cd9b61fde4d7755c88c71685d352d5f5af5f8648a91c4a270"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\catalog\\exports.js",
+      "present": true,
+      "size": 6979,
+      "mtimeMs": 1792516826111.1538,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "691ee069173716cf7f63c4d74dd91f7a48c7c0ec7e4cf95d66eec33cc9bbfb36"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\catalog\\font.js",
+      "present": true,
+      "size": 1012979,
+      "mtimeMs": 1792516826192.7937,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "1cde08d0272978d93ad7e7c0f386c45200c618058384aabba79449a0147b69ac"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\catalog\\liveFields.js",
+      "present": true,
+      "size": 2221,
+      "mtimeMs": 1792516826260.9563,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "77e9ea307d09cec61c8dcae5869f9a803d90593e16495684470c34edb1be46ba"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\catalog\\logout.js",
+      "present": true,
+      "size": 584,
+      "mtimeMs": 1792516826326.545,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "ffb78c55f65f9bf88701fed8b48596d7515d419a63b5474b301d9d0b16253e05"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\catalog\\model.js",
+      "present": true,
+      "size": 14818,
+      "mtimeMs": 1792516826399.3623,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "750562d1d71b759bac1d47d9af901933561ff33b00f7b74b37031e5c39be478a"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\catalog\\photoCache.js",
+      "present": true,
+      "size": 1267,
+      "mtimeMs": 1792516826488.2556,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "5d1f7373a1a0030f67b7c534f595793680247d3ccceb7097e363e32fdb3eab25"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\catalog\\productActions.js",
+      "present": true,
+      "size": 3545,
+      "mtimeMs": 1792516826592.64,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "023a2d4be27f0681cc5afef402247f2f2ff9aed9d7f1f917adc02fa0d1b06f80"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\catalog\\session.js",
+      "present": true,
+      "size": 9103,
+      "mtimeMs": 1792516826684.0422,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "46a33e840e5395ecad1660c036d33d56fdc9c11bd96329467fef8c9e40791b0e"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\catalog\\source.js",
+      "present": true,
+      "size": 5631,
+      "mtimeMs": 1792516826761.8042,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "72ec8e912da20b6f9aa6635093d135958389f11a586f9fd4f40955a391694d20"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\contactIdentity.js",
+      "present": true,
+      "size": 3403,
+      "mtimeMs": 1792516826838.3943,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "f16149f52b9c829882464b9732d13cf7f6d5095372eaddd2b388ff1d8dd8f3ae"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\CustomerPhone.jsx",
+      "present": true,
+      "size": 3071,
+      "mtimeMs": 1792516825034.6267,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "7aa9196487dd3bb40e7a35624ea6c9d85f1cb2473dd5ecd1b4acda93b3c53298"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\customerProductRequest",
+      "present": true,
+      "directory": true,
+      "mode": 16822,
+      "mtimeMs": 1792516827373.0151
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\customerProductRequest\\api.js",
+      "present": true,
+      "size": 10483,
+      "mtimeMs": 1792516827066.1033,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "3d1bbff992616d54e9011da4cf0d28ea3fdcde7864e9d9bde053e0e02e7002be"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\customerProductRequest\\controller.js",
+      "present": true,
+      "size": 5545,
+      "mtimeMs": 1792516827134.7273,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "f628fffd09f8fc91fe63bb45fe95f032fdbff50f91e57e303ac8be5e7fcab2e5"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\customerProductRequest\\customerProductRequest.css",
+      "present": true,
+      "size": 9493,
+      "mtimeMs": 1792516827211.1433,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "1d94eb6edfe47b648281c7bdf9887ebc810fce14fb0e10d9395d107236d2e5a0"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\customerProductRequest\\CustomerProductRequestPage.jsx",
+      "present": true,
+      "size": 13434,
+      "mtimeMs": 1792516826917.329,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "5b31c2bbc087486362aaad8e2da75994a4f835e1b87009a49e1968a110a27f33"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\customerProductRequest\\lifecycle.js",
+      "present": true,
+      "size": 1426,
+      "mtimeMs": 1792516827294.5332,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "b4d04942c0815795cc5deaeb0534110909f3eb15bed40e87e1ee9ca49c36c214"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\customerProductRequest\\model.js",
+      "present": true,
+      "size": 5390,
+      "mtimeMs": 1792516827373.0151,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "431e7fb9e15020c52bfea9b518d6980a6d82fbde820fe03406c2e6cc07f4743a"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\customerProductRequest\\StaffProductRequests.jsx",
+      "present": true,
+      "size": 5352,
+      "mtimeMs": 1792516826992.225,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "2c41359a31296a300abc0d2aca35a9a8f2dc75dfac141a85aefb9abd8cb63b8e"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\ERPOrderDialog.jsx",
+      "present": true,
+      "size": 10617,
+      "mtimeMs": 1792516825098.5854,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "f11f3e08f900dc393de16d4f4c5285d157f8e64fc5a20ce6f94630e4fc652de9"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\experience.css",
+      "present": true,
+      "size": 36377,
+      "mtimeMs": 1792516827450.723,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "81688ec46aac8746b2ece11b8f537ce5e708a9de9949b4af6c241d3f8e3c39f2"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\lib",
+      "present": true,
+      "directory": true,
+      "mode": 16822,
+      "mtimeMs": 1792516827989.2866
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\lib\\nativeOrder.js",
+      "present": true,
+      "size": 10843,
+      "mtimeMs": 1792516827516.4448,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "f039e8b975cb46c5969a6fcc73a0a19eb2275ebb3743490e4189de1462804100"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\lib\\nativeOrderHistory.js",
+      "present": true,
+      "size": 1823,
+      "mtimeMs": 1792516827584.563,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "aa4c3af9ed649edd9abb8b823b432e62c6d8dc2bdd77efb8bfe0b03c54b5255a"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\lib\\requestId.js",
+      "present": true,
+      "size": 914,
+      "mtimeMs": 1792516827657.084,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "6556d17f87b219c5c079a9d05ab1b3ed2a026b1c701c6f7c8e6f4a59536b6e9b"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\lib\\salesDraft.js",
+      "present": true,
+      "size": 11366,
+      "mtimeMs": 1792516827726.1855,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "1e435e048b62fa23b0eb9fae9f4c5211071181c57a9d7b57e8eb0fbf22ed2c8e"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\lib\\salesPhotos.js",
+      "present": true,
+      "size": 1073,
+      "mtimeMs": 1792516827792.45,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "0cbc48a4c63a0feae1ffe2afb8b984c77b2b16e55520c7bdb3b5d68c6de88420"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\lib\\salesProducts.js",
+      "present": true,
+      "size": 7508,
+      "mtimeMs": 1792516827858.5117,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "3d70e239912362c77648a5779507d43870d5043f78f7a3e774198f57d967de93"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\lib\\salesRules.js",
+      "present": true,
+      "size": 8817,
+      "mtimeMs": 1792516827924.3726,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "028d23d3ed6eac117e9e29bb4acb099875bf54f4df1283091b5793bc1ba43c6e"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\lib\\textDraftStorage.js",
+      "present": true,
+      "size": 7430,
+      "mtimeMs": 1792516827989.2866,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "fa9c848e0c866777e456a2c9589d0c646af60b2fb07db8b746e7b0f13b000fc1"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\liveApi.js",
+      "present": true,
+      "size": 57045,
+      "mtimeMs": 1792516828056.5933,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "40fd321d5bdddf5bb2af6a8ac439e70ccb306a05d19157298a5a49726b5ddd52"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\main.jsx",
+      "present": true,
+      "size": 1439,
+      "mtimeMs": 1792516828122.5735,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "2440d8618deab1e91032b41748161bf0c6912d1cac7bad85883260025accb748"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\nativeSessionBridge.js",
+      "present": true,
+      "size": 4747,
+      "mtimeMs": 1792516828193.8943,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "603f8850b9030700b0fd127bf80caea0fa07d59014516c4f64a87fb66ffa94f4"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\orderPreview.js",
+      "present": true,
+      "size": 4570,
+      "mtimeMs": 1792516828268.01,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "4324c323703e8650e0275e56312af5e75bc2741e21680c7874b16f99b1d28d79"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\outboundMedia.js",
+      "present": true,
+      "size": 7143,
+      "mtimeMs": 1792516828331.2263,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "7d130a080926dba0be3ed659d0f25fbf4b5e01cd4317a7ac74581df4274114b4"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\permissionRefresh.js",
+      "present": true,
+      "size": 1590,
+      "mtimeMs": 1792516828397.1333,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "4378c900687c7a6c3e24079c5e7f05469b25ea2e6f9f0cf52847a04d72c43844"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\releaseCapabilities.js",
+      "present": true,
+      "size": 569,
+      "mtimeMs": 1792516828467.0813,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "71c7d4afb206c182a3839c6c6fcf823d389e0bfcd6491a451a61b6d1c63fcf33"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\requestControl.js",
+      "present": true,
+      "size": 4554,
+      "mtimeMs": 1792516828565.3057,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "e3e9aa8564a4b8295c9d664ec4f6d8ac64f7d4a8b76e5ccf3a361f57b94a74e4"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\SalesProductCards.jsx",
+      "present": true,
+      "size": 2327,
+      "mtimeMs": 1792516825166.534,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "4a51b468d3e2ba5349f1f3172781ac1ca614544d6cef2d5583e5d06324117a09"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\salesRulesSettings.css",
+      "present": true,
+      "size": 1911,
+      "mtimeMs": 1792516828673.8054,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "3a8ce0314babe490f97b490ff9b9853f0faca9e70fc60cc13dee6bb20a3ab52b"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\SalesRulesSettings.jsx",
+      "present": true,
+      "size": 7731,
+      "mtimeMs": 1792516825238.022,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "098b7c71123dccf5000c0ffb4f095eff08934a03434534e7043e854a51dc8e7e"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\salesSuggestion.css",
+      "present": true,
+      "size": 2927,
+      "mtimeMs": 1792516828756.0415,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "0402c5d513f78c6b8bfa75488a23d4bcbcee5ff06e1f633ab87e08bb82d0d37e"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\SalesSuggestion.jsx",
+      "present": true,
+      "size": 3239,
+      "mtimeMs": 1792516825307.8484,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "1984ded118b07ada0cf69aca8b835d3c60b45a121319d4f0c370fc6e40c69846"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\sessionLoader.js",
+      "present": true,
+      "size": 3425,
+      "mtimeMs": 1792516828821.7441,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "5aa46b11a7e8c98b854c94b00954f8952e7a1b4aeed20a7bec1600974863a3b0"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\styles.css",
+      "present": true,
+      "size": 81039,
+      "mtimeMs": 1792516828887.348,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "c244b5fa67436a90a201abf6a98fe3ed0aa1ea2cda32c050e995cc1ad4cdfe00"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\terminal.css",
+      "present": true,
+      "size": 5659,
+      "mtimeMs": 1792516828952.6782,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "84e678140b91773cf8e2964662a8fdcf92089cbed01b201972223caf159d1643"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\terminalNavigation.js",
+      "present": true,
+      "size": 2354,
+      "mtimeMs": 1792516829023.8071,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "65f32c415188c316a76eb2f2ceb59987a1348762fca025df1bb5cd1ea327b684"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\terminalShareProof.js",
+      "present": true,
+      "size": 2171,
+      "mtimeMs": 1792516829151.3184,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "35c1846f74f316261faee12080694b14b28c420f5185d640cf2943d4f64d50db"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\testAdmin.js",
+      "present": true,
+      "size": 1105,
+      "mtimeMs": 1792516829264.5725,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "d58deb5e7717f0408ab7b0f4b8c21953c034a74fc9dc850162895dccc5e8c595"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\video",
+      "present": true,
+      "directory": true,
+      "mode": 16822,
+      "mtimeMs": 1792516829526.9822
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\video\\JitsiPilot.jsx",
+      "present": true,
+      "size": 6637,
+      "mtimeMs": 1792516829360.4182,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "8a2ba583ae8efc566c799568c2502af2b56d71942e096194ca0e4a84fa458bff"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\video\\pilot.js",
+      "present": true,
+      "size": 2610,
+      "mtimeMs": 1792516829446.8198,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "cf1c6c2bcc90a6a52c54bded047b60f2e9b1b311cfec364c66b7da7768087726"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\video\\video.css",
+      "present": true,
+      "size": 2787,
+      "mtimeMs": 1792516829527.5037,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "422068ce483573c1bd0c2111e849374ff8fe23e684dc64d3ba44711199396e79"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\src\\whatsapp.css",
+      "present": true,
+      "size": 15943,
+      "mtimeMs": 1792516829620.9868,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "985d03da8502fb0fd213b45956ba86ca935a7f4177bd2eaf9649e3a1018c6751"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\vite.config.mjs",
+      "present": true,
+      "size": 434,
+      "mtimeMs": 1792516829709.5962,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "e99afc4b68b3133935c2768a3e03aeb289eba6822da3b5730ee3d16b7ebbb1c0"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\worker",
+      "present": true,
+      "directory": true,
+      "mode": 16822,
+      "mtimeMs": 1792516829790.6401
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\frontend\\worker\\index.js",
+      "present": true,
+      "size": 3113,
+      "mtimeMs": 1792516829791.6404,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "cfe7aef1e722a7ed873aa61dd5145c3055af7e610dec364d5ef82e80ea723ebe"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway",
+      "present": true,
+      "directory": true,
+      "mode": 16822,
+      "mtimeMs": 1792516847691.6306
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\package-lock.json",
+      "present": true,
+      "size": 59044,
+      "mtimeMs": 1792516829856.123,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "c487dc65e3a107f5235408fad3523c8242a4c01b62c7475154ad4ae41a627b96"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\package.json",
+      "present": true,
+      "size": 842,
+      "mtimeMs": 1792516829917.8928,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "2b18bbbf23848035e40286b62c3e8ddfda8e00fca81abc3fe16b631901ad4739"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src",
+      "present": true,
+      "directory": true,
+      "mode": 16822,
+      "mtimeMs": 1792516836018.8252
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\app.js",
+      "present": true,
+      "size": 2430,
+      "mtimeMs": 1792516829981.829,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "d87d1897404622942abe70cbf2ea06f2a33eee2a7350f660647bbc673dd23dee"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\config",
+      "present": true,
+      "directory": true,
+      "mode": 16822,
+      "mtimeMs": 1792516830118.7368
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\config\\boundedOwnerMediaActivation.js",
+      "present": true,
+      "size": 279,
+      "mtimeMs": 1792516830049.7842,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "cf1c41d7911df4270ff969e8716bdf6f455fbedc061cf9a2bb8ca97f940828ac"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\config\\env.js",
+      "present": true,
+      "size": 8786,
+      "mtimeMs": 1792516830119.7354,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "704042d458136b0a1ead5373b832a9aa0862cd303307309ad98112d5e9f51078"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\controllers",
+      "present": true,
+      "directory": true,
+      "mode": 16822,
+      "mtimeMs": 1792516831025.063
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\controllers\\agentController.js",
+      "present": true,
+      "size": 671,
+      "mtimeMs": 1792516830189.678,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "5e43cfac039809cd9c6dd0585951bfae48212de294dd159934412534eb390fb8"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\controllers\\authController.js",
+      "present": true,
+      "size": 4332,
+      "mtimeMs": 1792516830254.1755,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "ff3d1743d8cb956bb02e1c0262f92769abf596818a50cb5b2bcfaf8c7ac4914b"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\controllers\\contactController.js",
+      "present": true,
+      "size": 1570,
+      "mtimeMs": 1792516830319.2158,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "3631cf6339cfc2d1f6fccb93fe74062a1f45f87598e316452f0531705d59041f"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\controllers\\conversationController.js",
+      "present": true,
+      "size": 10067,
+      "mtimeMs": 1792516830389.0718,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "4ee1930ad627e708aa52e4baf434eb24da66ffcf88264ede55fb39fba5016309"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\controllers\\healthController.js",
+      "present": true,
+      "size": 289,
+      "mtimeMs": 1792516830461.5974,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "8e5c5266591e06aa381f763205e8b98c3a6e298ff8249bb40e02744df71ee863"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\controllers\\inboxController.js",
+      "present": true,
+      "size": 1660,
+      "mtimeMs": 1792516830533.9656,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "8c075e3661d9539d26358f188b63edf67a2bd692cebd864d82a1721b368ba5f4"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\controllers\\integrationController.js",
+      "present": true,
+      "size": 416,
+      "mtimeMs": 1792516830614.009,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "40816c7c083d8a5667bcf772742777cfd2c187282aac8fce6a6484c7431481c3"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\controllers\\mediaController.js",
+      "present": true,
+      "size": 566,
+      "mtimeMs": 1792516830691.6719,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "0c225f5a632fd66c36a5463f77d3fc29dcc9021254b059a9efadd62f9755ce25"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\controllers\\salesAgentController.js",
+      "present": true,
+      "size": 6827,
+      "mtimeMs": 1792516830766.1565,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "4e39c57bd12bead97965d6ef63c0135156b0eb62e907c66158667b872680dd84"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\controllers\\sendController.js",
+      "present": true,
+      "size": 446,
+      "mtimeMs": 1792516830841.151,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "b97feee968b8f423acaa48438f11e9534a5a67878cc2b97eaeef87e3239699dc"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\controllers\\translationController.js",
+      "present": true,
+      "size": 1256,
+      "mtimeMs": 1792516830950.4573,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "abfe660fafa16701a294f56cb85cf6812a3cecb3ef748126493d780b5eee6d2b"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\controllers\\webhookController.js",
+      "present": true,
+      "size": 1802,
+      "mtimeMs": 1792516831025.063,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "b311f82748a9bd609ae2ca694da144c16bba7ae630eabb82990769de56f91dd0"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\middleware",
+      "present": true,
+      "directory": true,
+      "mode": 16822,
+      "mtimeMs": 1792516831638.2214
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\middleware\\auth.js",
+      "present": true,
+      "size": 904,
+      "mtimeMs": 1792516831107.3826,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "b3d2dd1660f26482f111081901a56c4962d80e49c01c890d3c396b6b7520cda9"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\middleware\\catalogReadBudget.mjs",
+      "present": true,
+      "size": 2412,
+      "mtimeMs": 1792516831185.9775,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "587fb7eb265e66a0bc73150b6d7c335529420a7a97811639462ddbb661c854e5"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\middleware\\errorHandler.js",
+      "present": true,
+      "size": 2038,
+      "mtimeMs": 1792516831261.631,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "a3f85f46bbd9fc18013cdb25efa7abdd90cb16fa5ad3f518c0c6bfee96b66074"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\middleware\\messageUploadParser.js",
+      "present": true,
+      "size": 526,
+      "mtimeMs": 1792516831336.5242,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "c98281a99a75faee924eaddf6cfdb2acd63fb18f500a48a250dccbb03991a5e0"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\middleware\\notFound.js",
+      "present": true,
+      "size": 218,
+      "mtimeMs": 1792516831414.1433,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "2a7ef849d06c477d4d4aeb35b099e45d1deebd6e610bc0a2bd153a4d3b97d1c5"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\middleware\\requestContext.js",
+      "present": true,
+      "size": 626,
+      "mtimeMs": 1792516831492.6526,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "49d18d2caf579f3740374209841873da19d5765dca4533efe2bfd87a2965795c"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\middleware\\security.js",
+      "present": true,
+      "size": 4439,
+      "mtimeMs": 1792516831564.2246,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "afa835b455ffddfab22f29a7ccfecf5e8fd20782c1e56c1d057a2a2e7f2e246b"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\middleware\\webhookSecurity.js",
+      "present": true,
+      "size": 1153,
+      "mtimeMs": 1792516831638.2214,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "9f74e106baabe2f378d38e8b88f7e6a37f894a1e5eb09f635cf763c475da9ad7"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\providers",
+      "present": true,
+      "directory": true,
+      "mode": 16822,
+      "mtimeMs": 1792516831994.937
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\providers\\chatwootProvider.js",
+      "present": true,
+      "size": 4258,
+      "mtimeMs": 1792516831714.0312,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "862fed3723dc3b779d6e52b0bb68d591bceabcbd60bd9235e1643616cd8742b8"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\providers\\evolutionProvider.js",
+      "present": true,
+      "size": 17067,
+      "mtimeMs": 1792516831783.5251,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "c342f983016acb064de26b54cb034bd3ab0625db0e41048b68cb13ce62c0a403"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\providers\\index.js",
+      "present": true,
+      "size": 669,
+      "mtimeMs": 1792516831855.3972,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "7188d51cc0a527a24cb1cc1754b0ac7f869f7499c3c36221034b073f5074cab7"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\providers\\waapiProvider.js",
+      "present": true,
+      "size": 7656,
+      "mtimeMs": 1792516831922.081,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "e9c509c5e0eb5630555a6dc7c8429cda35fd49b9e562520b4b4356b99b00ce3a"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\providers\\whatsappProvider.js",
+      "present": true,
+      "size": 437,
+      "mtimeMs": 1792516831994.937,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "6cac68646850eb47cc6ff1245430d316fb3afc83547ccb2db042d412009621d5"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\repositories",
+      "present": true,
+      "directory": true,
+      "mode": 16822,
+      "mtimeMs": 1792516832060.8594
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\repositories\\crmRepository.js",
+      "present": true,
+      "size": 41172,
+      "mtimeMs": 1792516832060.8594,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "e15da81f1d5d604a22ba8fb27b0c9340d0de1cbcf9b71ffd5a1a7199694e4624"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\routes",
+      "present": true,
+      "directory": true,
+      "mode": 16822,
+      "mtimeMs": 1792516832922.6987
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\routes\\agentRoutes.js",
+      "present": true,
+      "size": 309,
+      "mtimeMs": 1792516832131.522,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "ce911e1a8b2078f0ee193d7e002e56e635304c40b9f65499c57ea617cb574ef2"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\routes\\authRoutes.js",
+      "present": true,
+      "size": 832,
+      "mtimeMs": 1792516832199.7937,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "56d81b44c8fbaa652b2144be56d3d1195000137eff37988305ff4c575b16bbe9"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\routes\\contactRoutes.js",
+      "present": true,
+      "size": 399,
+      "mtimeMs": 1792516832270.3413,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "3a33bb1fe39a477057367855a47fa0cac39d80bdfd0f34604fe01f3ece18521c"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\routes\\conversationRoutes.js",
+      "present": true,
+      "size": 1935,
+      "mtimeMs": 1792516832339.4104,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "3856970fbdaa8c495108fcb728eded0a14664a1f6fa687a4d55451ce8085d283"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\routes\\customerProductRequestRoutes.mjs",
+      "present": true,
+      "size": 3863,
+      "mtimeMs": 1792516832405.1592,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "2d97e519a45068722f4eb651eab8d6506e4a9b744052375cf5c9aa0c049c36f6"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\routes\\healthRoutes.js",
+      "present": true,
+      "size": 198,
+      "mtimeMs": 1792516832468.7776,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "18e7365338d5d992ef1e01295e0231ea6d1e174f84d772817d9105642f9f9be7"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\routes\\inboxRoutes.js",
+      "present": true,
+      "size": 324,
+      "mtimeMs": 1792516832536.5183,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "e7e60b885aa95d3db4a8db1b0f119fe8c8fdbc197549fdcca473eba549ef0de6"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\routes\\index.js",
+      "present": true,
+      "size": 1764,
+      "mtimeMs": 1792516832608.5042,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "e67f14b0c2c16ddb26bed32d575171024a1e7d2f1a8a3a3b92cd1f6a5c2acf94"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\routes\\integrationRoutes.js",
+      "present": true,
+      "size": 423,
+      "mtimeMs": 1792516832680.6877,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "cbb71b9083f1f891538209633a076caaa801017bec0da198cf34b9c05ba642c9"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\routes\\mediaRoutes.js",
+      "present": true,
+      "size": 375,
+      "mtimeMs": 1792516832743.6018,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "cdf63b188206100fb21bd6ce760fa25866d94f6ca7f7f02da5019c08cb3bef92"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\routes\\sendRoutes.js",
+      "present": true,
+      "size": 332,
+      "mtimeMs": 1792516832804.983,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "b10d211dae0c6806f7e08bc36702966f829167cacceeefe23c6d9fc588c9a360"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\routes\\waapiWebhookRoutes.js",
+      "present": true,
+      "size": 941,
+      "mtimeMs": 1792516832863.9258,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "5c0cc63aabdf4528051254fdddd0d2844279d612f9e61bc3ea80559a973416cb"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\routes\\webhookRoutes.js",
+      "present": true,
+      "size": 437,
+      "mtimeMs": 1792516832922.6987,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "41ba2c900ff6dcdd55d8fc489dd7eed5ce3dc5a0172891935d81cb63e9ecb321"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\server.js",
+      "present": true,
+      "size": 1112,
+      "mtimeMs": 1792516832982.0225,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "951c26d7b684334dc0c67414cb3d6243c65ee99368ede37c2ebd17424afe124b"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\services",
+      "present": true,
+      "directory": true,
+      "mode": 16822,
+      "mtimeMs": 1792516835960.2556
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\services\\assignedStaffRefreshSession.mjs",
+      "present": true,
+      "size": 4664,
+      "mtimeMs": 1792516833043.258,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "994175d6020ff634f90f98a43cddc635f37427fc07461cc8b2eb3c75482d24be"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\services\\autoReplyService.js",
+      "present": true,
+      "size": 3309,
+      "mtimeMs": 1792516833107.853,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "ceb12238572556fec5fdd85a72bd818081b0bfdf496e4394a4afc623c9d5c56f"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\services\\businessTestReadBudget.mjs",
+      "present": true,
+      "size": 4360,
+      "mtimeMs": 1792516833168.705,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "20835554519c69602b108671865fde52791521a6b56430b90c4e4d3d1e6e1326"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\services\\catalogBridge.mjs",
+      "present": true,
+      "size": 18511,
+      "mtimeMs": 1792516833234.9824,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "688af9dd267a4a6c276220ecf35f500fb466c530121d1039d3dd3450ec767471"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\services\\catalogConversationScope.mjs",
+      "present": true,
+      "size": 1638,
+      "mtimeMs": 1792516833298.6348,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "75a1854d371baaee9cc9e4cdbc0a501c46f3a1a117150884a9da550816a89261"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\services\\catalogRouter.mjs",
+      "present": true,
+      "size": 5592,
+      "mtimeMs": 1792516833359.5967,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "ebf8a9392be62577b8c63e97a6762e7cdcd221a5323377c66304da492b2d0abd"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\services\\chatwootApiService.js",
+      "present": true,
+      "size": 2371,
+      "mtimeMs": 1792516833426.0303,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "460e7a2583c6fab59f4f78953589ac423c6b8287e6e0520e3932e253f4d8a7fe"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\services\\chatwootConversationService.js",
+      "present": true,
+      "size": 3779,
+      "mtimeMs": 1792516833489.7822,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "d8736d44643b7a83d22ca318ce832e91571d4274c35bfccebe011d1c65beda9f"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\services\\chatwootDeliveryProofService.js",
+      "present": true,
+      "size": 1102,
+      "mtimeMs": 1792516833556.8413,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "59d5340f0e6d497524980b5502bed15dea7de097251198cb72699ff48c264390"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\services\\chatwootInboxService.js",
+      "present": true,
+      "size": 33860,
+      "mtimeMs": 1792516833620.816,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "d09e6aa2cab70b4ee3e485dfe35ec48ded1f71c238248f6043ef14f90a788274"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\services\\chatwootPersonnelMappingService.js",
+      "present": true,
+      "size": 2333,
+      "mtimeMs": 1792516833686.8252,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "a1c8de8811ecfb2165b9e242c138d15490af38895867a0e35877207aa46c563e"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\services\\chatwootWorkflowService.js",
+      "present": true,
+      "size": 7168,
+      "mtimeMs": 1792516833745.993,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "cac4c8a9c8fa4223965fd2d6d56557395c408b90764d43f4b025758bd6fa5a76"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\services\\crmAuthService.js",
+      "present": true,
+      "size": 16713,
+      "mtimeMs": 1792516833801.7798,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "f4fffe649c504117fbe3c488f284cd15a76b73ce7d2ca1a47ee2db96d7254133"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\services\\crmCatalogAccess.mjs",
+      "present": true,
+      "size": 3178,
+      "mtimeMs": 1792516833860.0444,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "e38836799a5d0146186a392a678f02bc6e63215ffddc92bcd81b1ec43cfacaba"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\services\\customerProductRequest.mjs",
+      "present": true,
+      "size": 23470,
+      "mtimeMs": 1792516833914.91,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "ef1c044e04bf6a312752c1fded9364af00af2b8fe57dadc2282460f5dc17efce"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\services\\customerProductRequestIntegration.mjs",
+      "present": true,
+      "size": 7228,
+      "mtimeMs": 1792516833970.8442,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "3f3b498912daa6cef9f832b9d5a9145f6ccab1a497475f2625cfdbcc5bda8951"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\services\\customerRequestIssuerSession.mjs",
+      "present": true,
+      "size": 4405,
+      "mtimeMs": 1792516834027.8804,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "635386e51eef2ba9593c49ec8bbf892bb4d1d99ca12edcc80df934ec54aba736"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\services\\db.js",
+      "present": true,
+      "size": 1251,
+      "mtimeMs": 1792516834085.5693,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "4289628badc99b6a399fcf1db99265156d2b96693bfe2aeb097efe6c51830225"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\services\\erpSourceContract.mjs",
+      "present": true,
+      "size": 268,
+      "mtimeMs": 1792516834141.6277,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "dc49ef7bef7e594373319de8115e887a75c905a211d08f3b91b0b111208741b5"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\services\\fixtures",
+      "present": true,
+      "directory": true,
+      "mode": 16822,
+      "mtimeMs": 1792516834196.8135
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\services\\fixtures\\sessionProcess.mjs",
+      "present": true,
+      "size": 1641,
+      "mtimeMs": 1792516834196.8135,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "816fd1916cde8cbf8caf09725de7f64dd4faacd58f4f85fc4a714a91c56b6257"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\services\\healthService.js",
+      "present": true,
+      "size": 1485,
+      "mtimeMs": 1792516834249.9026,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "1ffb54941ddf1c773915e9f855bf946b8fd2bb42440a8a57087f3ebbda61a4d5"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\services\\idempotencyStore.js",
+      "present": true,
+      "size": 1032,
+      "mtimeMs": 1792516834309.8088,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "360c8fd9b65544f6f1ed92df3b5a8492c3b4acb4cde96d07c547ed400dd740f6"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\services\\inboxService.js",
+      "present": true,
+      "size": 1995,
+      "mtimeMs": 1792516834371.6965,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "706e18bcc0cc539c6a6f8efa3ce66524ea63ae0be044d01d049ed48963852b1e"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\services\\mediaService.js",
+      "present": true,
+      "size": 2033,
+      "mtimeMs": 1792516834430.715,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "62198bd55e8a947501e2ca74c1b90ea8352d2205d3df76029dbdc6226767e482"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\services\\normalRefreshSession.mjs",
+      "present": true,
+      "size": 9270,
+      "mtimeMs": 1792516834498.3735,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "01d019ded9ecb17a27fef3d799eef785abf67e2db586a92e5e453e1f39ce69ef"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\services\\outboundAttemptService.js",
+      "present": true,
+      "size": 7449,
+      "mtimeMs": 1792516834571.1013,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "320c5e3f161fe93f7dd0eba03187fe522da774b952fa5354dabe5057adbbd9c2"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\services\\paidAiPolicy.mjs",
+      "present": true,
+      "size": 646,
+      "mtimeMs": 1792516834640.5178,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "b608ef2525d3f77fff50cb93c84b86d54a05f122f8702a860e55f0c0d4632e9f"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\services\\salesAgent",
+      "present": true,
+      "directory": true,
+      "mode": 16822,
+      "mtimeMs": 1792516835188.2383
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\services\\salesAgent\\agent.mjs",
+      "present": true,
+      "size": 16084,
+      "mtimeMs": 1792516834707.011,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "96678f726194ba968bcc2afb01cfac1bdece3db7d7599ffa9d67ae0974ba2d13"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\services\\salesAgent\\catalogAdapter.mjs",
+      "present": true,
+      "size": 3544,
+      "mtimeMs": 1792516834764.6733,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "648b2d3dca262314be2d4489c2a67208fe06e0b8dc067caed3b1c9a7c5ad23df"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\services\\salesAgent\\policy.mjs",
+      "present": true,
+      "size": 11746,
+      "mtimeMs": 1792516834822.7524,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "f9267aacc4f5c9581cf626966e7524411607701995ffceca3e4a995ec8270699"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\services\\salesAgent\\policyStore.mjs",
+      "present": true,
+      "size": 6266,
+      "mtimeMs": 1792516834886.4773,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "fbe9bed7eb8fcbac86306ff3c6a6dede1526bcf5e2bfed59b81498b1a628669e"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\services\\salesAgent\\preview.mjs",
+      "present": true,
+      "size": 7674,
+      "mtimeMs": 1792516834969.4465,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "bc40c0bb3d2a2b85f5e4cb337ef2b9f7afa03bfa9073fe2c55b4e41d548e3d54"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\services\\salesAgent\\recordedCatalog.mjs",
+      "present": true,
+      "size": 7417,
+      "mtimeMs": 1792516835046.7512,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "eefd6c40342aee17e7fb14f4b2563309de112b52f1e287781574c72772707a4a"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\services\\salesAgent\\responses.mjs",
+      "present": true,
+      "size": 2638,
+      "mtimeMs": 1792516835121.0576,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "7d6169d99f0c3004a57a6ccc3f23e39cb9d848bb5527d36d4b1f740716352757"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\services\\salesAgent\\staffContext.mjs",
+      "present": true,
+      "size": 1803,
+      "mtimeMs": 1792516835188.2383,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "2414a321bbe5380672de0117a9fcb51554382328b5bff4430c8c4abc33523743"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\services\\semihTestCookie.mjs",
+      "present": true,
+      "size": 3028,
+      "mtimeMs": 1792516835247.2402,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "33afb1ed15c6e3164332a706758f65724b9604b624bd0272d0299bee2feb18f0"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\services\\sendService.js",
+      "present": true,
+      "size": 13200,
+      "mtimeMs": 1792516835308.2456,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "2b50d72ab935d2726dfcca635cdc9c9360b8fcf291375875f6357b81de51b5dc"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\services\\testAdminSession.mjs",
+      "present": true,
+      "size": 1616,
+      "mtimeMs": 1792516835374.2783,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "a19f8dd3ed92673aaa3a83ec312846c0199f4d92a82efd0335f74547779cf046"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\services\\testIncomingReader.js",
+      "present": true,
+      "size": 17827,
+      "mtimeMs": 1792516835447.0923,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "215aa7af3252e0b1bbfd6165b48655010c6e9eac976459d94bcaed56dbf342cb"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\services\\testPersonnelSession.mjs",
+      "present": true,
+      "size": 2466,
+      "mtimeMs": 1792516835504.5798,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "e35c99dd02a373a42d817c95a3ace817caadd61c93d56ad3b6dda60107475f18"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\services\\translationService.js",
+      "present": true,
+      "size": 6994,
+      "mtimeMs": 1792516835558.6045,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "720c9f2e26ce87b12ad634912436db3bd042256c1377aa29e2dc0d42fd19dfc2"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\services\\userErpBinding.mjs",
+      "present": true,
+      "size": 6966,
+      "mtimeMs": 1792516835615.9216,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "14056f4ebdfd41ccece9cc136a0f8923be5b01d353583b85970ea8e8e72c1857"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\services\\waapiChatwootBridge.js",
+      "present": true,
+      "size": 13965,
+      "mtimeMs": 1792516835674.9614,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "86cdd1737c993ea41df001488d834d147a7d7a443074248b1fde9d400d654e64"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\services\\waapiInboundIdentityService.js",
+      "present": true,
+      "size": 2027,
+      "mtimeMs": 1792516835736.041,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "fe021bbc5ba731c27dc54661bcbdeec65e60d77f88768c493dc45ce091f42ac4"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\services\\waapiJournal.js",
+      "present": true,
+      "size": 6050,
+      "mtimeMs": 1792516835790.7173,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "ccdc2c9fc3447fe6ad04a55d4b895a2ee2a5bd8202fab915b3ad4eaf1e638507"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\services\\waapiReadiness.js",
+      "present": true,
+      "size": 1152,
+      "mtimeMs": 1792516835846.344,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "21d3e373041f56e49f53f373fe50b61711a3c402c307c9f5ebbf58815007c07a"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\services\\waapiReceiptService.js",
+      "present": true,
+      "size": 890,
+      "mtimeMs": 1792516835906.1697,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "c7f0fbcb269deadc5c0f4c6fcf5bd9831e7aabd1a2db5181201cac0bdba15b3a"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\services\\waapiWebhookService.js",
+      "present": true,
+      "size": 5672,
+      "mtimeMs": 1792516835961.2556,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "68322dc3196359f962f189b6606ac279b33b518a0abfc6d47cf354c88c1e7bac"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\utils",
+      "present": true,
+      "directory": true,
+      "mode": 16822,
+      "mtimeMs": 1792516836362.2693
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\utils\\logger.js",
+      "present": true,
+      "size": 1330,
+      "mtimeMs": 1792516836018.8252,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "8f1ae30270a2adbae081fd6d848f8e174272b4e5504d803876e8f7d2e6b2713c"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\utils\\mediaFormatValidation.js",
+      "present": true,
+      "size": 35859,
+      "mtimeMs": 1792516836076.6045,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "f0069b02535d8827d92b6db32928bf9a4fac5219a3892e4d1d65ab7ab90af452"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\utils\\messageMedia.js",
+      "present": true,
+      "size": 3443,
+      "mtimeMs": 1792516836136.5713,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "a6ad5649d88596503c23bf30a16369af5667e3ec22fd04c7a44dce2ad9195501"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\utils\\phoneIdentity.js",
+      "present": true,
+      "size": 2347,
+      "mtimeMs": 1792516836194.531,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "6c09447815963dea4bfa11ef5ad502af616586d00c24af9102d6165ea6f2bed0"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\utils\\response.js",
+      "present": true,
+      "size": 429,
+      "mtimeMs": 1792516836250.6157,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "32ac96368edc5d005445a2a703c9c3b07bd18e53e807393866581c427edf408f"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\utils\\safeRequestPath.js",
+      "present": true,
+      "size": 185,
+      "mtimeMs": 1792516836308.0818,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "2ad20def94411caf07578db77c08ddeed685e8369f2e9871c669007ff63f328a"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\apps\\gateway\\src\\utils\\validMediaFixtures.js",
+      "present": true,
+      "size": 12055,
+      "mtimeMs": 1792516836362.2693,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "71db37820b00bb75192ee2220dbe7fe7907d27f15be9938a917ff7b200413a0c"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\deploy",
+      "present": true,
+      "directory": true,
+      "mode": 16822,
+      "mtimeMs": 1792516836822.352
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\deploy\\customer-product-request-test.mjs",
+      "present": true,
+      "size": 22836,
+      "mtimeMs": 1792516836425.344,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "98d8db3398a540b57e5cdfc6c37effc64d13a1b6c09a2a12730fff92cc0aec3a"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\deploy\\test-endpoints.mjs",
+      "present": true,
+      "size": 1819,
+      "mtimeMs": 1792516836480.3352,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "06ab327e2d963494af52df40631338fe10beb5082ae1c8453d342cb4a690b56b"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\deploy\\test-erp-catalog.mjs",
+      "present": true,
+      "size": 2714,
+      "mtimeMs": 1792516836536.7651,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "69d5604489d43b4c5965b6092af62910f9e43fa50524be7b85d21e58be241a17"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\deploy\\test-erp-orders.mjs",
+      "present": true,
+      "size": 10825,
+      "mtimeMs": 1792516836593.19,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "f4d7a69b498a89e2d7d8d81eca98dcdd7079db7e7fe5c5f0335978d80c3fb6a4"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\deploy\\test-erp-read-environment.mjs",
+      "present": true,
+      "size": 4798,
+      "mtimeMs": 1792516836652.684,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "a5cf5cc1678447387140496928f2bdde80681266d9521d2b5a39df345c3a6b18"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\deploy\\test-package.mjs",
+      "present": true,
+      "size": 27949,
+      "mtimeMs": 1792516836712.4602,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "25551ee94f8a1cc7bfd8a35fb27c9bd7d28354b10cef8065e3137c49ad61922c"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\deploy\\test-server.mjs",
+      "present": true,
+      "size": 15050,
+      "mtimeMs": 1792516836768.6328,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "5ece7cfc68c191a8167d6a6d8391eef3ec1d53d8c35eeeee4d14a9c0a2d901e7"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\deploy\\test-supervisor.mjs",
+      "present": true,
+      "size": 9794,
+      "mtimeMs": 1792516836823.352,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "b738bdddd29ead99600ccece9776463d772cf8c21e074c6c64513b5911616599"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\package.json",
+      "present": true,
+      "size": 146,
+      "mtimeMs": 1792516836878.3955,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "113bb10e02adb115bcb630ea958702ce8953cbc03fb232ea6e09c4d073ba7199"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\packages",
+      "present": true,
+      "directory": true,
+      "mode": 16822,
+      "mtimeMs": 1792516836997.017
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\packages\\contracts",
+      "present": true,
+      "directory": true,
+      "mode": 16822,
+      "mtimeMs": 1792516836936.7075
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\packages\\contracts\\index.mjs",
+      "present": true,
+      "size": 197,
+      "mtimeMs": 1792516836936.7075,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "288a94e0749eb57636015b4f1f372141e3351af9f081dc2c42b172be6834ea30"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\packages\\erp-adapter",
+      "present": true,
+      "directory": true,
+      "mode": 16822,
+      "mtimeMs": 1792516837272.825
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\packages\\erp-adapter\\services",
+      "present": true,
+      "directory": true,
+      "mode": 16822,
+      "mtimeMs": 1792516837207.9973
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\packages\\erp-adapter\\services\\canonicalCatalog.mjs",
+      "present": true,
+      "size": 6956,
+      "mtimeMs": 1792516836998.0176,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "98e7dc065c46a2aa9098590f0a011e655426b1fc93b3a14eba1c701aa94ff922"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\packages\\erp-adapter\\services\\canonicalCatalogReader.mjs",
+      "present": true,
+      "size": 5512,
+      "mtimeMs": 1792516837054.5996,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "9c5fc39f5d33c0baade23f18b1830c6facf4b6c87c1ff4ff85c4fb45ca5d2328"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\packages\\erp-adapter\\services\\crmCatalogReadSource.mjs",
+      "present": true,
+      "size": 16493,
+      "mtimeMs": 1792516837130.8237,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "abcd7a473a58eabcf221dae984835d08bcc5bca7d57d6b2ae4d4f3a5615fc8bf"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\packages\\erp-adapter\\services\\crmStockWorkerPool.mjs",
+      "present": true,
+      "size": 8041,
+      "mtimeMs": 1792516837208.9973,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "93e4aef8dc6646469b44852d195c26a8b8b7d765a6a687bafa9fc356764d509c"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\packages\\erp-adapter\\workers",
+      "present": true,
+      "directory": true,
+      "mode": 16822,
+      "mtimeMs": 1792516837273.3938
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\.crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1-094fa58b-ae33-45d7-9617-60e53156f7ee.tmp\\packages\\erp-adapter\\workers\\crmExistingStockReadWorker.mjs",
+      "present": true,
+      "size": 14767,
+      "mtimeMs": 1792516837273.3938,
+      "mode": 33206,
+      "nlink": 1,
+      "sha256": "9b3e7284be8783509d2ee6128be2fc3525e8a5a82c10a52fab669e073e868e93"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-stable-test-25db76b548a490d934673202e7089d84f6ba1e4e\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1791675780395.7708,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "524661571ecfc477cde1f61770bf4610cfad72d0b2f6633d5a8abd0f3ffa450a"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-stable-test-25db76b548a490d934673202e7089d84f6ba1e4e\\release-manifest.json",
+      "present": true,
+      "size": 484100,
+      "mtimeMs": 1791675809034.463,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "8809748af2d871988167bc8067228a87666db963df9f20891aacd82da8f813c0"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-stable-test-2a48379c406284d5d9174c67646410f4f55ef364\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1791675215644.3,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "978ef6d763f01c95d285d9b1360d2bb8761ca3b8a6cd8a631fe3d20a55632e52"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-stable-test-2a48379c406284d5d9174c67646410f4f55ef364\\release-manifest.json",
+      "present": true,
+      "size": 483940,
+      "mtimeMs": 1791675242469.89,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "8867626bee13ef898f4bdf01230dbb69e02acc381f40bc17a664a0241a811ee0"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-038cdbcef5a28f6bc62b5c4d8e10efe94369ffe6\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1791757166894.3252,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "601496140afda3fb8071fa966c0e89d7ae2694bd44a3bb241637c9f400dede61"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-038cdbcef5a28f6bc62b5c4d8e10efe94369ffe6\\release-manifest.json",
+      "present": true,
+      "size": 470840,
+      "mtimeMs": 1791757186858.5874,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "373f80b38edc0736c1a8e3177ec5bba8434538ef4c1a5eb673d34c77f71e3344"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-0424ac74efd2e7432f8ad8efcf023ba67002bbda\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1791825371121.9902,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "12b4e35f364e9bbd04506a785a2afadf1f4873a168d5fc4d0f37cc4651f74304"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-0424ac74efd2e7432f8ad8efcf023ba67002bbda\\release-manifest.json",
+      "present": true,
+      "size": 474222,
+      "mtimeMs": 1791825391401.608,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "12c89fcd235ec0da6464b240a5035c7cca65ae9c931d839a075a168242be4080"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-09ca1dac346e42037fd02901baf3240aa6ce6285\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1791739456135.7637,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "3c509987e23f35cb17826828d47d5b4f4d49bc2feb5d944f4ba3a8e162723865"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-09ca1dac346e42037fd02901baf3240aa6ce6285\\release-manifest.json",
+      "present": true,
+      "size": 470217,
+      "mtimeMs": 1791739478713.402,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "9de545b7c06197d628234c67d6ace60780acde4c02685780207abde677cacc4a"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-17ff405a84baed71e71f9d39fb8e8e2b363de280\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1791737599092.5444,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "938baa2248de62fd04c5ec50b4b3698f41640d648c6f6352be2abb2125664f5f"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-17ff405a84baed71e71f9d39fb8e8e2b363de280\\release-manifest.json",
+      "present": true,
+      "size": 470217,
+      "mtimeMs": 1791737621285.5352,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "43960e80b07ef9f109e8a845dfc61a9de196ec1c84397c29a9f4000fa9fefd12"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-1ba4524e2879c1c3a8f4f780ab0c30eac7205fb4\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1791569191957.0735,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "04c10272ff72337f45eb06cc4fb614e4af7cf638cda284723c3a8783b6d3c882"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-1ba4524e2879c1c3a8f4f780ab0c30eac7205fb4\\release-manifest.json",
+      "present": true,
+      "size": 469255,
+      "mtimeMs": 1791569211831.6265,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "e2a9cea85e4454babb5b6318c89ee5ab5261b508b5dba6bde48555aeb6c55859"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-1be727746a22cd6ca3232c74272a93a5749e7dc1\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1791888668219.6155,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "54c389d8b84fb5d2b1aae0bae96b713e21b34813aea02ef68ddb4a95f9a2864e"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-1be727746a22cd6ca3232c74272a93a5749e7dc1\\release-manifest.json",
+      "present": true,
+      "size": 474563,
+      "mtimeMs": 1791888686608.8318,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "f7e193644c5595e942a95457456ac4f54a06957d81da874e9f9defee8b9fbc3a"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-1d01419232fa4c8046a670e64d14c023a0be1791\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1791583947124.2722,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "62dc865d4f87e4df8dda93d81a6c5a403079fe240f34b5854c7b387cebdbe986"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-1d01419232fa4c8046a670e64d14c023a0be1791\\release-manifest.json",
+      "present": true,
+      "size": 469256,
+      "mtimeMs": 1791583972188.5125,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "90c075e3a3e3ca8e3960577ed40f5c52e2736ef227ac7e74095ea8ebcb3354ec"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-20d032cb56decf56577f5165ebeaa88c051832c0\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1791735183131.214,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "153b5b2c37d768d5046d5bbbda07dfb733d92da2037c535f27ab0da6fc05ca93"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-20d032cb56decf56577f5165ebeaa88c051832c0\\release-manifest.json",
+      "present": true,
+      "size": 470217,
+      "mtimeMs": 1791735209527.8164,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "5ea53eeb30ff8c3844c6a42a17cb86b94e7eb42faf1c32625327732c9a9f742b"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-222a95f9a63763c39cb18630373a1f27a55c6f65\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1791664511527.7737,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "be488170c52e7b3417f05e79ec5aee32b9f5b79df8487f8b4f0601c21a80f45a"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-222a95f9a63763c39cb18630373a1f27a55c6f65\\release-manifest.json",
+      "present": true,
+      "size": 469586,
+      "mtimeMs": 1791664532807.0068,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "53f5260aef322024da42f29dce4d6766a58ed191c9a1ad8494bbcd947f2daa0e"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-301b1e131ac0c7e407c9b4fd1f292fb7df952134\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1791588669198.007,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "22d595438da445490b1abfc291d7c21c9586c6ce49a3b5d51c260f3f0ccb0f0a"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-301b1e131ac0c7e407c9b4fd1f292fb7df952134\\release-manifest.json",
+      "present": true,
+      "size": 469585,
+      "mtimeMs": 1791588689324.364,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "f30f08ffdfd5b0f63dd3430c314b34e1ada298b77b2295d9a3b811699893d947"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-38a168c7720de5f1b73bd523a3dff5125fc12097\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1791589658550.4128,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "14a6fa5a53b154bd3eaadede883ec433a720d6eca13941d50d33747d01a4d8d3"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-38a168c7720de5f1b73bd523a3dff5125fc12097\\release-manifest.json",
+      "present": true,
+      "size": 469585,
+      "mtimeMs": 1791589681264.9763,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "6c52e6a6465ad7350d6c5eb555f845485c6fdf0abdc54a6ab054548f19602123"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-3f6741e4f4357c09b2bc72b626a511b33f0fcefb\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1791581671472.3403,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "a4c73f11b68514b0c9fc6909dd00447677c99f4747828eb88a6aec9e4ede06b1"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-3f6741e4f4357c09b2bc72b626a511b33f0fcefb\\release-manifest.json",
+      "present": true,
+      "size": 469256,
+      "mtimeMs": 1791581693267.349,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "6f62aa7cfb1f9fa0be90c16591365b32a2203b3678e13008faf29e2a7a780f7c"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-4142fe6535434622a1d6519310f55d2ee2913c63\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1791583662063.3213,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "a4c73f11b68514b0c9fc6909dd00447677c99f4747828eb88a6aec9e4ede06b1"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-4142fe6535434622a1d6519310f55d2ee2913c63\\release-manifest.json",
+      "present": true,
+      "size": 469256,
+      "mtimeMs": 1791583685853.0598,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "e492170c8450ee560d3d84ad89db03a8cea7aead70884720a86353e275e55fb9"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-439b63db8376a6b9d3ac8baa625ed98367022623\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1792179529051.6287,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "0fcb6b27d9cac1aefa186a41b60962cf18be06154b27b171bb65df99a4dfc5af"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-439b63db8376a6b9d3ac8baa625ed98367022623\\release-manifest.json",
+      "present": true,
+      "size": 475837,
+      "mtimeMs": 1792179535838.011,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "342eb291f570dd4294d50206327d67d895bf2e90944026b56392e498a38aebba"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-5b6dfe5acf1c0c1ea301f66aea39bf2abcec8f36\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1791897409503.668,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "268fbd62dcb486c5b0c1b4b0a987a00775cb4ee7aa9f9fee5e139afc1ee54726"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-5b6dfe5acf1c0c1ea301f66aea39bf2abcec8f36\\release-manifest.json",
+      "present": true,
+      "size": 474563,
+      "mtimeMs": 1791897430032.516,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "8209226b9e4fefc1b788fc4bec328b4071c375d77630d29fff424bd4cc6fee47"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-5bcd5ad136ff7ca35d623d436b8724cc491641be\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1792024390529.4229,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "4915a7033d7753c442f2e89def90932e3d974c5fb281648b8cd79d33fc3ca03c"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-5bcd5ad136ff7ca35d623d436b8724cc491641be\\release-manifest.json",
+      "present": true,
+      "size": 475526,
+      "mtimeMs": 1792024399280.5918,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "93cd90d678ca88bc8202a31f9461e678e448dfe927668f59b8644c0c708e6ce8"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-5ce452b01ef20fc84a09c52b78311db8eb1dd1d8\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1792023870069.486,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "174f622b693cc2626a9c24956ea001b4d5e5e3cf458dc575d0abde00057a73a5"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-5ce452b01ef20fc84a09c52b78311db8eb1dd1d8\\release-manifest.json",
+      "present": true,
+      "size": 475526,
+      "mtimeMs": 1792023878846.893,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "4bb2717c2466ad4996161c2bbaf34e79d18620a84c0ee47e1cb8c62870922010"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-5f8cb2375c8dbc8713c6769da2b5ba65480f2f41\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1791641184111.5002,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "14a6fa5a53b154bd3eaadede883ec433a720d6eca13941d50d33747d01a4d8d3"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-5f8cb2375c8dbc8713c6769da2b5ba65480f2f41\\release-manifest.json",
+      "present": true,
+      "size": 469585,
+      "mtimeMs": 1791641201542.7961,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "f01f6525bc0c37c142d2d0d9e6ff5d68af111237913fbc865601fbb80feaf553"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-630cb346a5243b0114137400f9bf3219e29acae7\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1791571691541.7449,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "914ae721f5ef611b063670a781c9760a86824fd441e21a7309665a5611a75f16"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-630cb346a5243b0114137400f9bf3219e29acae7\\release-manifest.json",
+      "present": true,
+      "size": 469255,
+      "mtimeMs": 1791571713843.4377,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "6bcf14a53299f2637161cc311d8a99cab56b7715b9596a8ff3fcc53ed29f3047"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-631d3666ce228c616acfc806461b8dbe58cb70e7\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1791587081233.2473,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "62dc865d4f87e4df8dda93d81a6c5a403079fe240f34b5854c7b387cebdbe986"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-631d3666ce228c616acfc806461b8dbe58cb70e7\\release-manifest.json",
+      "present": true,
+      "size": 469585,
+      "mtimeMs": 1791587107241.786,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "e2ddb1b82d85a5ec37b6093d689b31b4174f068e8b23d4043aac1b0752a6bf5d"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-6bc82e6fe9726261ef1d0171d97e5d9da9f5398a\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1792248731092.8298,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "e1a8faeabe007b54ecd63dd8bd3dd345f3b5a0144bb6f4f9ce4df037dd76dc04"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-6bc82e6fe9726261ef1d0171d97e5d9da9f5398a\\release-manifest.json",
+      "present": true,
+      "size": 475837,
+      "mtimeMs": 1792248737163.5198,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "e276feb306e84c7af1a042184c2007f19b14191780d9a265edc9196f5766fc83"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1792517491025.4578,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "99f72289c4e1bd5940fd8bbad9a2778641303dd92d1102f0f112a109376eeb2b"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1\\release-manifest.json",
+      "present": true,
+      "size": 475838,
+      "mtimeMs": 1792517500784.0544,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "6c2a1bd98425fbe04f9a97d0555c81a3cc406be019c098fe13de19f7f614693e"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-81754aaefb4eff85420ed491c8656ce3defa5c05\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1791573758592.047,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "c56b15f691a4fa9f3aa39235b8633a74c84272647b163cc980749797fbf4a264"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-81754aaefb4eff85420ed491c8656ce3defa5c05\\release-manifest.json",
+      "present": true,
+      "size": 469255,
+      "mtimeMs": 1791573778761.2622,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "cd58dac48a033b24e1cf31866332e78af9f62930c1258bffae212c05851d2e4c"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-89427492f27caf72c511a27262b55e73d782c407\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1792053269220.2793,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "3bb1ec44de971549f95cb858bb315cdf101d83b3381321c53c2ef477e95a96a6"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-89427492f27caf72c511a27262b55e73d782c407\\release-manifest.json",
+      "present": true,
+      "size": 475526,
+      "mtimeMs": 1792053277503.0283,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "b4f593eb736820577b19a489f104e599be6e3749e3f31db759898733c73ef3a7"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-94453500fc053828003786ed69db108d53f564eb\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1791663660659.648,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "51e4fe8574814d47d05bf7a7c3bb4b7d39220e55620a8de9774ead5c9a9eedc8"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-94453500fc053828003786ed69db108d53f564eb\\release-manifest.json",
+      "present": true,
+      "size": 469586,
+      "mtimeMs": 1791663678509.347,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "724eda99eb0cd1971fbd86310c315f33c0d359d0a2f381b2b5d0c3cd061a455e"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-94f2a75322a3daa695d38010a6f2c8ef23f6c17b\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1792069577360.9995,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "19624f5d0189c5750089b4c50779809f3a381e323ae59541daa5ee4c3efdf3a5"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-94f2a75322a3daa695d38010a6f2c8ef23f6c17b\\release-manifest.json",
+      "present": true,
+      "size": 475526,
+      "mtimeMs": 1792069587348.803,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "16cb075a8734d56afd1f364999ab8f0707255be5c4a042a9c197ccf397eea556"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-957f98773695874ea3d101b7eb4816f9ea080880\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1792046337865.8713,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "8cdf8904557755900d98769df26f6edcd6efa929bc400970b073b48e4d2d1ddd"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-957f98773695874ea3d101b7eb4816f9ea080880\\release-manifest.json",
+      "present": true,
+      "size": 475526,
+      "mtimeMs": 1792046344617.9944,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "a93d2cdd14eafcb021091d98294c41d5e60d31bbc5842d31447f091a843a18af"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-a7243dedf9ca5d1ca1d5aa1cb3dffaee7c18a7e9\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1792099777047.8643,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "6d67b7a335f490715e792a9940e9c1b97f745069cf4049fa5b1d4f597fa8a192"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-a7243dedf9ca5d1ca1d5aa1cb3dffaee7c18a7e9\\release-manifest.json",
+      "present": true,
+      "size": 475526,
+      "mtimeMs": 1792099785388.771,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "82ec0b63849817b8d88fe74097a5a0820c118a78d631cf54cf649b90e1545236"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-a9fc87e2dab0e598e909ff1bf2a00da20986407d\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1791572829589.2275,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "914ae721f5ef611b063670a781c9760a86824fd441e21a7309665a5611a75f16"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-a9fc87e2dab0e598e909ff1bf2a00da20986407d\\release-manifest.json",
+      "present": true,
+      "size": 469255,
+      "mtimeMs": 1791572851316.5037,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "aa01701347ce171a8e1315bf6e1d790ccab767b459064d2704790f6d0950e8ad"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-b2985d2295c022848c769ea5f494012c1eb3fa00\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1791989425680.842,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "3b672c12ed534c2bd3f30e02990a686afef1cef8f36c11af42a6159bd86cceb1"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-b2985d2295c022848c769ea5f494012c1eb3fa00\\release-manifest.json",
+      "present": true,
+      "size": 474902,
+      "mtimeMs": 1791989433860.4612,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "7b44c381975fa54fad1a45dcbd4105ee31df836714ba34afba2f11fac29c01eb"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-bb8966c59a6cfbdc1cc83472cb331e48b720a173\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1792031180446.0564,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "7ea43551750ead26b7bb166e6ccf35bd613e23a1ca888026352966d99cb289d1"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-bb8966c59a6cfbdc1cc83472cb331e48b720a173\\release-manifest.json",
+      "present": true,
+      "size": 475526,
+      "mtimeMs": 1792031188595.3267,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "6a9fe4f40c6e7b852ba62721a6f63dae1030321d9b9f46069405cbcd5d505d7c"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-d1db60c64802352277b50f15e08961e01f96389e\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1791570086533.4011,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "63bad0ac354e05db66d135e8cd6ed9349019a73a05e3fecf334d61a3bcd07908"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-d1db60c64802352277b50f15e08961e01f96389e\\release-manifest.json",
+      "present": true,
+      "size": 469255,
+      "mtimeMs": 1791570105940.2869,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "9d0935c8ca4120d4dd53baa0bead621a6da7f9267e578e30b10add0b2401287c"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-da82fc6644c1d9dba0c10eaa861773534d43c288\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1792015878586.2827,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "e23229de145ca53f5e2f4b662530431ac101737640b0c043dcd35b7bd4dbfdf4"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-da82fc6644c1d9dba0c10eaa861773534d43c288\\release-manifest.json",
+      "present": true,
+      "size": 475233,
+      "mtimeMs": 1792015888475.6711,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "9c6f013599dea1c6d7062ce9179d5d115c6022d3f95296a7be3276d3bdc900a2"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-fb34c293fa58154e00b132d13b8246939ce8cbbb\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1791762173194.9854,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "12b4e35f364e9bbd04506a785a2afadf1f4873a168d5fc4d0f37cc4651f74304"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-shared-test-fb34c293fa58154e00b132d13b8246939ce8cbbb\\release-manifest.json",
+      "present": true,
+      "size": 474222,
+      "mtimeMs": 1791762194816.7988,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "f3818f6cb1925ca652f36bdcc5334a75fb8ce1b4f09a9250011dce30c7498d9f"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-test-0c60c55059c9056b919b7dec9010b3404e7559b9\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1791186383872.1262,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "45cedd483dae0dbe1403c942ea5f73812257ad36a9fbc63965bc62fbe195eef6"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-test-0c60c55059c9056b919b7dec9010b3404e7559b9\\release-manifest.json",
+      "present": true,
+      "size": 464239,
+      "mtimeMs": 1791186407609.8506,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "baf4bc595a2eecf6d667f5dbf34b06e848748e30f53de119050daa7f68ff2dbc"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-test-137122efec67caa89d1ed61220540baf3898d477\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1791300232897.6345,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "53080624129c2fbb6c5058c9cc64295d9e761d6e936d1493e648b3c479d5ef2d"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-test-137122efec67caa89d1ed61220540baf3898d477\\release-manifest.json",
+      "present": true,
+      "size": 467087,
+      "mtimeMs": 1791300252463.8337,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "c5e0812176a2363ce26177ced40f42880146664b3c23fa6d771bbe9d60db7da9"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-test-1d288142aa0b1c465a91826191fc3cac50207498\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1791233093978.427,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "68bfc7ae93be5471dfae585d9427aae4e2d4a9da2e1338d58dc2ddd7a39283cc"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-test-1d288142aa0b1c465a91826191fc3cac50207498\\release-manifest.json",
+      "present": true,
+      "size": 465170,
+      "mtimeMs": 1791233123172.542,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "adc59b3c6af7973125b071239217d61a7d36dbcc1c8d13e8c42ddc26faab9ffe"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-test-2aef938f3f76d8bf4ca95054a5a0f98c19e21001\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1791215319196.3816,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "68bfc7ae93be5471dfae585d9427aae4e2d4a9da2e1338d58dc2ddd7a39283cc"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-test-2aef938f3f76d8bf4ca95054a5a0f98c19e21001\\release-manifest.json",
+      "present": true,
+      "size": 465170,
+      "mtimeMs": 1791215343653.1677,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "4b2ea843df3b51024f0018690871c9ca95cef7b7f12bcea2baa92ac054e3dc01"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-test-48cceed03606d8f423462b2ecf8fe6f1472b800e\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1791293847099.432,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "e06f64c9898a26d4af4cd203715af30eecb5b30925bf9c68582b1b40c9dbfc48"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-test-48cceed03606d8f423462b2ecf8fe6f1472b800e\\release-manifest.json",
+      "present": true,
+      "size": 465170,
+      "mtimeMs": 1791293863777.6206,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "82f58020e51717e2dc2dc32a53a1f928bad6a36081a46f81c2510e09917eb923"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-test-4eadb51f0b1428311e253ac049faa49e8fbf02cf\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1791313223967.4087,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "296507b16648aa4822ae3f92cd546ea58a990f6158fad7b019cc03ce92197247"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-test-4eadb51f0b1428311e253ac049faa49e8fbf02cf\\release-manifest.json",
+      "present": true,
+      "size": 468639,
+      "mtimeMs": 1791313243189.1858,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "b88c2b5cdda0027974b8c78847af64c363744dc010f8660c94ee271176286bf6"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-test-5f8cb2375c8dbc8713c6769da2b5ba65480f2f41\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1791641051120.5352,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "19b20fe25f2ca882f9f86f737221598286a002af49a99e55a7176aa80a9a611c"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-test-5f8cb2375c8dbc8713c6769da2b5ba65480f2f41\\release-manifest.json",
+      "present": true,
+      "size": 469552,
+      "mtimeMs": 1791641071104.935,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "d7f1a1f67d0f36b542d5390b8248b5603955f85e7d07c9c4baa44e2c36c39caf"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-test-630cb346a5243b0114137400f9bf3219e29acae7\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1791571513319.0051,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "b2ddd56bdfc7199cc62a9d1d1fca37de0360224f7c9ec651827489bac5861a63"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-test-630cb346a5243b0114137400f9bf3219e29acae7\\release-manifest.json",
+      "present": true,
+      "size": 469222,
+      "mtimeMs": 1791571535021.1687,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "b3810b7dae14e63d4f9db89a98f04a258c6d86e0698de54b6740f25898fe696c"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-test-77a2fa346b4c3653b77e33625e185c1259402af7\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1791316479030.2847,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "296507b16648aa4822ae3f92cd546ea58a990f6158fad7b019cc03ce92197247"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-test-77a2fa346b4c3653b77e33625e185c1259402af7\\release-manifest.json",
+      "present": true,
+      "size": 468639,
+      "mtimeMs": 1791316500395.5574,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "ccdaab18c33973ef5a7e95e28f696fb8ff0426c41c339faefc00bf9eb9929b31"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-test-88ce868c3b2039097c991cc62f6b3b9a10a39651\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1791301161350.1433,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "618bb671b06e9ba7c25d1e2507d3e8606d8be46401a9c2baa59e71419bb1fcc6"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-test-88ce868c3b2039097c991cc62f6b3b9a10a39651\\release-manifest.json",
+      "present": true,
+      "size": 467087,
+      "mtimeMs": 1791301179917.9272,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "6b98fae073f1e19b654f0ec410d8e208cc3b85acf48a284a4eaa93943029d3b5"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-test-94453500fc053828003786ed69db108d53f564eb\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1791663341669.3896,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "3e1d44c8f6438654e7bd7a2ef80b6ffa7e5e7ba6a369c02114f64d8bdfef0629"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-test-94453500fc053828003786ed69db108d53f564eb\\release-manifest.json",
+      "present": true,
+      "size": 469553,
+      "mtimeMs": 1791663361184.7715,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "ebe39921e99fa900d3f9c763555eb85e5030cfd7f4a7ffc5d8cfeb6347eb0297"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-test-95465dfb02431c56850a1486979d8809d33029b5\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1791311001036.3835,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "150ca477bf56d2a892513250f82059ddbd4be1dd2564d5784538b3381f55219d"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-test-95465dfb02431c56850a1486979d8809d33029b5\\release-manifest.json",
+      "present": true,
+      "size": 468639,
+      "mtimeMs": 1791311021569.7932,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "0a7beb421263e99f0e27b45f0183cbcda207fe7706515e4bf6552671d5a74f72"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-test-9c62702417cceca2f17882721870e6a06b772a2b\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1791312008152.541,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "d09b27ba1817f9ece6817cde455b4bb536b497e31dea25014b6fe5928307b1de"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-test-9c62702417cceca2f17882721870e6a06b772a2b\\release-manifest.json",
+      "present": true,
+      "size": 468639,
+      "mtimeMs": 1791312027396.2683,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "82abc2fdd15f8d0cb16e2f7afcd9c9d6590859ecb7bfcad9e608866daa9857f4"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-test-9ea4dda207d4012776791df9089887c8c3e6015e\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1791302732964.956,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "618bb671b06e9ba7c25d1e2507d3e8606d8be46401a9c2baa59e71419bb1fcc6"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-test-9ea4dda207d4012776791df9089887c8c3e6015e\\release-manifest.json",
+      "present": true,
+      "size": 467087,
+      "mtimeMs": 1791302751386.2534,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "e6d0f29a153caed3c69a4d6ffab7574c5714f66b1c5e5fd83974f07889916528"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-test-9f81529cec557560965e0f40bfb7c2ce53d00ed0\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1791302065725.9326,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "618bb671b06e9ba7c25d1e2507d3e8606d8be46401a9c2baa59e71419bb1fcc6"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-test-9f81529cec557560965e0f40bfb7c2ce53d00ed0\\release-manifest.json",
+      "present": true,
+      "size": 467087,
+      "mtimeMs": 1791302084548.2527,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "f73d82279bc7ec82782f6bc921ae7568f01f98afaa67ee917570ac9c4f5d2c60"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-test-a3944d45d640bacb654cfdd7ef514d92b079cb55\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1791316420426.3308,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "296507b16648aa4822ae3f92cd546ea58a990f6158fad7b019cc03ce92197247"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-test-a3944d45d640bacb654cfdd7ef514d92b079cb55\\release-manifest.json",
+      "present": true,
+      "size": 468639,
+      "mtimeMs": 1791316446642.5725,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "2e70be4a5d57d5cc22883cd353884b54ad96e8d849c8cdca2dc4eb3d1e682649"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-test-aa85448e6959441d19af3adc1ba71759a35064f2\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1791149792505.7498,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "45cedd483dae0dbe1403c942ea5f73812257ad36a9fbc63965bc62fbe195eef6"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-test-aa85448e6959441d19af3adc1ba71759a35064f2\\release-manifest.json",
+      "present": true,
+      "size": 464238,
+      "mtimeMs": 1791149817256.1038,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "91954b4a1378f526cfe1beb725277efa9a9a43b0968b27568b92ac327a7bf084"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-test-ad01203b65025408a30854cfed689653c56ef8fc\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1791306970598.5095,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "cf6a3a10dbd39e07382e127a43bcb9d91655996bbe7a4f27bcb4c4eb78f9fc62"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-test-ad01203b65025408a30854cfed689653c56ef8fc\\release-manifest.json",
+      "present": true,
+      "size": 467087,
+      "mtimeMs": 1791306992551.5952,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "119e7cb974c4d6a022ba50e5945cd9f0655f0206f10acf430bd52338cfd62aaf"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-test-cfb7022b901971c3fd911f51ac161109e8963f39\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1791191476183.467,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "5d3e06a486346f7ed85362ac2d599067ab0987b118d7a2ceeb6dac0152d726bf"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-test-cfb7022b901971c3fd911f51ac161109e8963f39\\release-manifest.json",
+      "present": true,
+      "size": 464841,
+      "mtimeMs": 1791191503815.336,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "abfe37e9a6f89d19617663ffe48620fd79ac408534078fbbfe3fd97450a374d5"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-test-d9985a6ccd0c70ad56a37e8da4efe77728f51873\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1791146771844.9443,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "f5625fd2e5623aead636244dc9a42578786b723dd4ea4cdf8f402344094066a4"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-test-d9985a6ccd0c70ad56a37e8da4efe77728f51873\\release-manifest.json",
+      "present": true,
+      "size": 463659,
+      "mtimeMs": 1791146800712.3958,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "ea8e8f870fcf5870a5586a85e3fa8db1ff788ee25160d741f45aecb50e7447cc"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-test-e019bafd44e9bc9700c4acce0a1d64db8b142258\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1791146853355.27,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "f5625fd2e5623aead636244dc9a42578786b723dd4ea4cdf8f402344094066a4"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-test-e019bafd44e9bc9700c4acce0a1d64db8b142258\\release-manifest.json",
+      "present": true,
+      "size": 463931,
+      "mtimeMs": 1791146876651.5608,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "e099238ff5dc1c8b30dfc285c6cd1a26c4c013ed6462e5d95dd3f1b7a8866e6f"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-test-ebe8e416d92ac2563ead08fa72b5952d82016a27\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1791309603853.9658,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "f46a8b4d0593cb3cdf2b2f1c4fb6b0a49a31788b12d2fc49ff4c1e33559d96e8"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-test-ebe8e416d92ac2563ead08fa72b5952d82016a27\\release-manifest.json",
+      "present": true,
+      "size": 468639,
+      "mtimeMs": 1791309623867.7373,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "af0afcd67c4e88b937c502239e46ad8f44e017edf3a17643db1c34b4b51524f3"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-test-efc2d1fe1ddd452850f7493d41bc7fd9481cba58\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1791309324621.9238,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "f46a8b4d0593cb3cdf2b2f1c4fb6b0a49a31788b12d2fc49ff4c1e33559d96e8"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-test-efc2d1fe1ddd452850f7493d41bc7fd9481cba58\\release-manifest.json",
+      "present": true,
+      "size": 468639,
+      "mtimeMs": 1791309346645.843,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "12a8ee64c799529c78a80fa07a4557cb81a4722ee38240e4cca7a5578c1b4425"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-test-f166b0f7db499c68e6cc6718bcf090fcaf457927\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1791210111550.962,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "244afd087c02631d3f3d7940ce947059891d6dfb071bdc66f07e27d27f8207e3"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-test-f166b0f7db499c68e6cc6718bcf090fcaf457927\\release-manifest.json",
+      "present": true,
+      "size": 465170,
+      "mtimeMs": 1791210134974.2192,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "47c495de9fa0d1da6a1878b7dfc2b2d6742c976d4541f35944315bacd36b6d4f"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-test-f1899b0e0828f23010af75b1731682c749e596cc\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1791191757405.6682,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "4630e6254cea057d4e61d372e0419884422d3198a182cbe9231366fa9ef995d1"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\crm-test-f1899b0e0828f23010af75b1731682c749e596cc\\release-manifest.json",
+      "present": true,
+      "size": 464841,
+      "mtimeMs": 1791191780124.9092,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "152fb6fc89b24493dfced026b594c858addee37f952ff64c7c1f5a36e3d7ea3a"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\node-v24.19.0\\crm-shared-test-439b63db8376a6b9d3ac8baa625ed98367022623\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1792186754573.0737,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "0fcb6b27d9cac1aefa186a41b60962cf18be06154b27b171bb65df99a4dfc5af"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\node-v24.19.0\\crm-shared-test-439b63db8376a6b9d3ac8baa625ed98367022623\\release-manifest.json",
+      "present": true,
+      "size": 475837,
+      "mtimeMs": 1792186761885.9102,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "e85ce261ece92201e24c86ea52e4df7e95b022b0ae6835e80c9b99e5abaec938"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\node-v24.19.0\\crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1\\apps\\frontend\\dist\\client\\index.html",
+      "present": true,
+      "size": 1265,
+      "mtimeMs": 1792520509083.0403,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "99f72289c4e1bd5940fd8bbad9a2778641303dd92d1102f0f112a109376eeb2b"
+    },
+    {
+      "path": "C:\\Sirket\\CRM\\releases\\node-v24.19.0\\crm-shared-test-7ba6e4ebc8b70019136d603e6307741189ba03c1\\release-manifest.json",
+      "present": true,
+      "size": 475838,
+      "mtimeMs": 1792520518109.1812,
+      "mode": 33060,
+      "nlink": 1,
+      "sha256": "820cbf0f0002a7bcd6ce4d2e629d4e1c690027bb3243aa04b19a8ac0aa9edf35"
+    }
+  ]
+}

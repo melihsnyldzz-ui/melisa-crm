@@ -1,0 +1,52 @@
+{
+  "repository": "melihsnyldzz-ui/melisa-crm",
+  "branch": "candidate/crm-cloud-pr13-17-20261016",
+  "pr": "https://github.com/melihsnyldzz-ui/melisa-crm/pull/18",
+  "baselinePr17": "248ab613719727e55af284cb486358624a356d48",
+  "includedPr16Ancestor": "eb8b419e08e64e40c97f503db9f9df02c0c28b32",
+  "pr16AncestorOccurrences": 1,
+  "integratedApplicationCommit": "4a0d7328af31ac33bd6fbbcf6b78f9daa4e8cdea",
+  "deliveredSourceAndTestCommit": "5ecf39fedf960ba090255359ccb4292caa625b00",
+  "originalPrSourceMapping": [
+    {
+      "pr": 13,
+      "originalHead": "df4033e40cd5984784f5fb3b08f7706578a70c6e",
+      "sourceCommit": "bbfe346fad03302526b3d22d8de4affa51d77a10",
+      "candidateCommit": "7ccaf714b035ed56cc002d70420a50831796381f",
+      "targetTests": 16
+    },
+    {
+      "pr": 14,
+      "originalHead": "72d91779e2d532b33332a293ded48b8914007468",
+      "sourceCommit": "dd6c00300ff5510c8ad508b0e6e31bb322980483",
+      "candidateCommit": "f27cf7463f3c29c30b530eb7346625cd5f2e7433",
+      "targetTests": 18
+    },
+    {
+      "pr": 15,
+      "originalHead": "c700c2dacdc66a0539e43a241f15139426c3e509",
+      "sourceCommit": "55300f222626ff280fad7ee7a6c67e2be7a14a08",
+      "candidateCommit": "4a0d7328af31ac33bd6fbbcf6b78f9daa4e8cdea",
+      "targetTests": 10
+    }
+  ],
+  "preservationChecks": {
+    "apps/frontend/src/CustomerPhone.jsx": true,
+    "apps/frontend/src/catalog/CatalogBuilder.jsx": true,
+    "apps/frontend/tests/erp-order-rate-input.test.mjs": true,
+    "apps/frontend/tests/customer-phone-copy.test.mjs": true,
+    "apps/frontend/tests/catalog-photo-output-variant.test.mjs": true,
+    "pr17DialogAfterRemovingOnlyPr13Delta": true,
+    "pr17ChromiumScriptUnchanged": true,
+    "cloudFixtureSourceUnchanged": true,
+    "onlyThreeExpectedProductionFilesChanged": true,
+    "applicationSourceAtBrowserRunEqualsDeliveredSource": true
+  },
+  "equivalentCandidateCheck": {
+    "remoteHeadCount": 22,
+    "equivalentFound": false,
+    "existingHistoricalCandidate": "97061d50028d23210f47296a63b084a117ff23cf",
+    "historicalCandidateBehindBaselineBy": 192
+  },
+  "frontendSourceTree": "4b2b9dbb4295298ec7d6c55843223e1382fb9def"
+}

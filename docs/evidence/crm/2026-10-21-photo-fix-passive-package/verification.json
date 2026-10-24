@@ -1,0 +1,514 @@
+{
+  "date": "2026-10-21",
+  "requirements": [
+    "CRM06",
+    "E02",
+    "A04",
+    "A05"
+  ],
+  "scope": "Existing finish tree; source/profile and inactive package preparation only; ERP installation owner unchanged",
+  "erpReceiptCheck": {
+    "ownerThread": "01a107ef-f13e-73c0-9e08-fd5c4545325e",
+    "title": "Melisa ERP’yi tamamla",
+    "status": "ACTIVE_REHEARSAL_AND_RESTORATION",
+    "finalCandidateInstallReceipt": "NOT_AVAILABLE_AT_INITIAL_CHECK",
+    "readOnlyReview": {
+      "path": "C:/Sirket/ERP/evidence/ERP-P03-DEFENDER-REVIEW-20261021/installation-alternatives-review.json",
+      "sha256": "0e9fa3582ac02f1c146ad4dfb9dd460966f3315ae92c46f8b6e80ae1820cbab9",
+      "observedUtc": "2026-10-21T05:22:23.57Z",
+      "newInstallStarted": false,
+      "runtimeOrDatabaseModified": false,
+      "completedReadOnlyReview": true
+    },
+    "limitation": "This read-only alternatives review and later active rehearsal are not a completed Apply/readback receipt. ERP canonical STATUS is historical; installed runtime identity is not inferred from source checkout.",
+    "coordination": {
+      "directUserAuthorizationViaDot": true,
+      "erpOwnerAcknowledged": true,
+      "ownerStatement": "Installation has not started; old 7ba candidate will not be installed; d1 package tuple must be matched before Apply.",
+      "ownerReportedCurrentRuntime": {
+        "erp": "e59e07ab",
+        "crm": "6bc82e6f",
+        "supervisor": "13bdf75a",
+        "database": "DB02",
+        "copy": "e16b",
+        "t1": false
+      },
+      "runtimeEvidenceLevel": "ERP_OWNER_REPORT_NOT_NEW_CRM_READBACK"
+    },
+    "latestInstallAttempt": {
+      "evidenceLevel": "OWNER_HELD_STATE_REPORT_PLUS_HASH_MATCHED_RECORDED_RECEIPTS; NO_NEW_SQL_CIM_RUNTIME_QUERY",
+      "ownerThread": "01a107ef-f13e-73c0-9e08-fd5c4545325e",
+      "attemptUtc": "2026-10-21T09:28:00Z",
+      "timePrecision": "minute",
+      "attemptIstanbul": "2026-10-21T12:28:00+03:00",
+      "candidate": "CRM d1e / ERP6dc / SUPda5b",
+      "result": "FAILED_HELD_CORE_CUT",
+      "claimAcquiredReported": true,
+      "claimConsumedAndRetainedReported": true,
+      "repeatApplyAllowed": false,
+      "cutDrainWitnessAndNewStartCompletedReported": false,
+      "newApplicationsInstalledReported": false,
+      "queryStoreRestoreReported": {
+        "scope": "QUERY_STORE_NOT_DATABASE_WRITE_PERMISSION",
+        "actualMode": "READ_WRITE",
+        "evidenceLevel": "HASH_MATCHED_OWNER_QUERY_STORE_RECEIPT",
+        "observedUtc": "2026-10-21T09:28:12.9749765Z"
+      },
+      "oldRuntimeContinuityReported": {
+        "pidCreationPathAllSame": true,
+        "apiNative": "e59e07a",
+        "database": "DB02",
+        "evidenceLevel": "OWNER_COLLECTED_HASH_MATCHED_SNAPSHOT_NOT_LIVE_CRM_QUERY",
+        "observedUtc": "2026-10-21T09:36:07.9215794Z"
+      },
+      "diagnosticTimestamps": {
+        "claimUtc": "2026-10-21T09:24:40.9641631Z",
+        "cutIntentUtc": "2026-10-21T09:27:37.442Z",
+        "claimAgeAtIntentSeconds": 176.4778369,
+        "previousRoundedClockDifferenceSeconds": 177,
+        "ownerInvestigatingGuardSeconds": 60,
+        "exactFirstWorkerReason": "NOT_RETAINED",
+        "guardExpiry": "PROVEN_AT_INTENT_IF_EARLIER_GATES_PASSED",
+        "confirmedSoleRootCause": false,
+        "guardRelaxationAuthorized": false
+      },
+      "receiptFiles": {
+        "status": "ALL_FOUR_SHA256_AND_SELECTED_RECORDED_FIELDS_MATCHED",
+        "directory": "C:/Sirket/ERP/evidence/ERP-P03-DEFENDER-REVIEW-20261021",
+        "files": [
+          {
+            "filename": "install-f1a950c0c6624629a1401a02b4138680-07.json",
+            "sha256": "1ba33d67129e68d1fa1a6cc8f0fcf2863c0f908389e2a3863f297e69baa54eaa",
+            "bytes": 192,
+            "observedUtc": "2026-10-21T09:28:11.1300512Z",
+            "phase": "APPLY_ONCE"
+          },
+          {
+            "filename": "install-f1a950c0c6624629a1401a02b4138680-09.json",
+            "sha256": "6e4cabf6b71bc1372f99a5b01b2b2b2706d0fa8e2233b8b3d4d8e51346778fe3",
+            "bytes": 290,
+            "observedUtc": "2026-10-21T09:28:12.9749765Z",
+            "phase": "QUERY_STORE_RESTORED"
+          },
+          {
+            "filename": "install-f1a950c0c6624629a1401a02b4138680-11.json",
+            "sha256": "b238f20b3ba6f34cc0c8e09c2e61b142d9e97562f647775a6ba953ceabe0347b",
+            "bytes": 292,
+            "observedUtc": "2026-10-21T09:28:13.0398120Z",
+            "phase": "FINAL_SUMMARY"
+          },
+          {
+            "filename": "current-failed-precut-readback-20261021-0940.json",
+            "sha256": "28b68b4984ad128799e7853c07914f6203bada06192de6ed8f1da37af77057b2",
+            "bytes": 3422,
+            "observedUtc": "2026-10-21T09:36:07.9215794Z"
+          }
+        ],
+        "apply": {
+          "exitCode": 1,
+          "safeCodes": [
+            "P03_PRIVATE_INSTALL_APPLY_NOT_COMPLETE"
+          ],
+          "result": null
+        },
+        "queryStore": {
+          "databaseName": "MELISA_ERP_CRM_SHARED_TEST_20261009_02",
+          "copyId": "E16B70F0-4057-428B-9ABC-6BBCAF35FE82",
+          "sealed": true,
+          "actualMode": "READ_WRITE",
+          "desiredMode": "READ_WRITE",
+          "scope": "QUERY_STORE_ONLY"
+        },
+        "final": {
+          "installationAttempted": true,
+          "applyComplete": false,
+          "queryStoreRestoreRequired": true,
+          "queryStoreRestored": true,
+          "failed": true
+        },
+        "readback": {
+          "observedUtc": "2026-10-21T09:36:07.9215794Z",
+          "filenameTimeIsNotObservationTime": true,
+          "oldIdentities": {
+            "count": 10,
+            "allPresent": true,
+            "allSameCreation": true,
+            "allSamePath": true
+          },
+          "tasks": {
+            "count": 2,
+            "allOldXmlUnchanged": true,
+            "states": [
+              4,
+              4
+            ]
+          },
+          "health": [
+            {
+              "sourceCommit": "e59e07abf7ae2567cdc2adb93811fe29e0032fe5",
+              "databaseName": "MELISA_ERP_CRM_SHARED_TEST_20261009_02",
+              "copyId": "e16b70f0-4057-428b-9abc-6bbcaf35fe82"
+            },
+            {
+              "sourceCommit": "e59e07abf7ae2567cdc2adb93811fe29e0032fe5",
+              "databaseName": "MELISA_ERP_CRM_SHARED_TEST_20261009_02",
+              "copyId": "e16b70f0-4057-428b-9abc-6bbcaf35fe82"
+            }
+          ],
+          "heldCutIntentPresent": false,
+          "coreCutWitnessPresent": false,
+          "drainWitnessPresent": false,
+          "newInstallationProven": false,
+          "humanAcceptance": "BEKLIYOR",
+          "mutationsExecutedByReadback": false
+        },
+        "limitation": "Recorded owner snapshots were read and hash-matched. No live CIM/SQL/process/task/health or GUI probe was repeated. HELD_CORE_CUT and consumed-claim state remain owner-reported; Apply wrapper preserves only generic failure code."
+      },
+      "recovery": "ERP owner reports no currently supported no-cut resume; consumed claim and old eight immutable files preserved. Only safe Current first-failure diagnostics are being developed. No repeat Apply/claim reset/TTL or guard relaxation.",
+      "successfulInstallReceipt": "NOT_AVAILABLE",
+      "crmRuntimeSqlHealthGuiOr15Checks": "NOT_RUN",
+      "supportedNoCutResume": {
+        "available": false,
+        "evidenceLevel": "ERP_OWNER_REPORT"
+      }
+    },
+    "currentPriority": "Existing item14 safe owner installation first; item15 on the same installed version afterward; no unrelated new source work.",
+    "coordinatorReport": {
+      "directMessageDelivered": true,
+      "threadId": "01a15d42-a70f-7510-9fce-73ce1cb433e9",
+      "scope": "item14 after-claim HELD_CORE_CUT; four receipt hashes and recorded outcomes matched; first worker reason NOT_RETAINED and expiry conditional; owner reports no supported no-cut resume; consumed claim retained/no same Apply; no installed GUI or human acceptance claim"
+    },
+    "previousInstallAttempts": [
+      {
+        "evidenceLevel": "ERP_OWNER_REPORT_PLUS_READ_ONLY_HASH_AND_RECORDED_OUTCOME_MATCH; NO_NEW_SQL_OR_RUNTIME_QUERY",
+        "ownerThread": "01a107ef-f13e-73c0-9e08-fd5c4545325e",
+        "ownerStatusCursor": "a8482fe0-e68b-43ab-91be-73c9b893e84c:145",
+        "attemptUtc": "2026-10-21T08:13:13Z",
+        "attemptIstanbul": "2026-10-21T11:13:13+03:00",
+        "candidate": "CRM d1e / ERP6dc / SUPda5b",
+        "result": "REJECTED_BEFORE_CLAIM_AND_TRANSITION",
+        "code": "P03_OWNER_SUCCESSOR_REJECTED",
+        "oldRuntimeUnchangedReported": true,
+        "qsRestoreReported": {
+          "utc": "2026-10-21T08:13:16Z",
+          "mode": "READ_WRITE",
+          "scope": "QUERY_STORE_NOT_DATABASE_WRITE_PERMISSION"
+        },
+        "healthReported": {
+          "utc": "2026-10-21T08:24:00Z",
+          "timePrecision": "minute",
+          "erp": "e59",
+          "database": "DB02",
+          "copy": "e16b",
+          "t1": false,
+          "healthPorts": [
+            4184,
+            4186
+          ],
+          "http200Ports": [
+            5234,
+            62700
+          ],
+          "acceptedAsGuiOrNewInstall": false
+        },
+        "exactFailedReceiptAndQsPathHash": {
+          "status": "HASH_AND_SELECTED_CONTENT_MATCHED",
+          "directory": "C:/Sirket/ERP/evidence/ERP-P03-DEFENDER-REVIEW-20261021",
+          "failedApply": {
+            "filename": "install-4171083b14874217bdd14dca005be08d-07.json",
+            "sha256": "e08b38f974f2511a246ecb16192130c0c2d575db822feb16e21ca6d88319b7e6",
+            "bytes": 182,
+            "phase": "APPLY_ONCE",
+            "observedUtc": "2026-10-21T08:13:13.7972641Z",
+            "exitCode": 1,
+            "safeCodes": [
+              "P03_OWNER_SUCCESSOR_REJECTED"
+            ],
+            "result": null
+          },
+          "queryStoreRestored": {
+            "filename": "install-4171083b14874217bdd14dca005be08d-09.json",
+            "sha256": "34ddf19eb92b774f67b468ff38896c9be669f6ef53bab203808c56b3e7d91cdf",
+            "bytes": 290,
+            "phase": "QUERY_STORE_RESTORED",
+            "observedUtc": "2026-10-21T08:13:16.2826160Z",
+            "databaseName": "MELISA_ERP_CRM_SHARED_TEST_20261009_02",
+            "copyId": "E16B70F0-4057-428B-9ABC-6BBCAF35FE82",
+            "sealed": true,
+            "actualMode": "READ_WRITE",
+            "desiredMode": "READ_WRITE"
+          },
+          "scope": "Existing two regular single-link files read only; SHA256 and selected recorded fields matched. No repeated Apply/QS/SQL/service/runtime/browser operation. Before-claim and unchanged baseline remain owner-reported facts."
+        },
+        "currentDiagnostic": "ERP owner reported 13 independent diagnostic fixture PASS; extended continuity diagnostic still under review. No successful reinstallation receipt or normal GUI acceptance.",
+        "successfulInstallReceipt": "NOT_AVAILABLE",
+        "crmRuntimeOrGuiAcceptance": "NOT_RUN",
+        "crmSharedProbingOrWrites": "NOT_RUN",
+        "coordinatorReport": {
+          "directMessageDelivered": true,
+          "threadId": "01a15d42-a70f-7510-9fce-73ce1cb433e9",
+          "scope": "new item14 rejection before claim; no success or human acceptance claim"
+        }
+      }
+    ]
+  },
+  "applicationTarget": {
+    "profile": "crm20261021-node-v24.19.0",
+    "commit": "d1e4425206249e38445fb103e03601f86baa84ec",
+    "tree": "ce0e2a95a2d9897aedbd021d79a5c6a5e0371d19",
+    "repoRoot": "C:/Sirket/CRM/melisa-crm",
+    "releasesRoot": "C:/Sirket/CRM/releases/node-v24.19.0",
+    "executable": "C:/Sirket/ERP/tools/node-v24.19.0/node.exe",
+    "version": "v24.19.0",
+    "platform": "win32",
+    "arch": "x64",
+    "nodeSha256": "3602f2bb1a10f2cbab4c36886218a33c1ab3db87290e73b033c46c77147d0237",
+    "npmCliSha256": "3ce7cba6f5128dd5f54c98b6a5036b0f850496878cc2e21044b675fe3c594e3e",
+    "isolatedPreparation": true,
+    "locks": {
+      "gateway": "c487dc65e3a107f5235408fad3523c8242a4c01b62c7475154ad4ae41a627b96",
+      "frontend": "9064a36a0c86464db93cc261ffedbc92a87ea2092315e207301ca8a8aa6d4d24"
+    },
+    "pinEvidence": "Fresh Git tree and raw Git lock bytes plus actual executable/npm CLI digest. Windows checkout CRLF hashes excluded."
+  },
+  "builderDelivery": {
+    "baseCommit": "8e40de980d1c6a162387540d35e2c7d9fa537440",
+    "sourceCommit": "993332154eef2b4995339c8fc25074860021cf3a",
+    "branch": "codex/crm-agents-on-completion-20261003",
+    "pullRequest": "https://github.com/melihsnyldzz-ui/melisa-crm/pull/3",
+    "sourceFiles": [
+      {
+        "path": "deploy/test-package.mjs",
+        "blob": "6bea6bfe96950f3f028a046cb81c57f0d1d9b6bd"
+      },
+      {
+        "path": "tests/test-package-node2419.test.mjs",
+        "blob": "7c6cbdc9068690e91c79962cb9dbaf17e13bc296"
+      }
+    ],
+    "ci": {
+      "headSha": "993332154eef2b4995339c8fc25074860021cf3a",
+      "conclusion": "SUCCESS",
+      "passedJobs": 7,
+      "runs": [
+        {
+          "id": "39559610283",
+          "event": "pull_request",
+          "headSha": "993332154eef2b4995339c8fc25074860021cf3a",
+          "status": "completed",
+          "conclusion": "success",
+          "jobs": [
+            {
+              "name": "secret-scan",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "name": "windows-startup-test",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "name": "quality-build-test",
+              "status": "completed",
+              "conclusion": "success"
+            }
+          ],
+          "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/39559610283"
+        },
+        {
+          "id": "39559605481",
+          "event": "push",
+          "headSha": "993332154eef2b4995339c8fc25074860021cf3a",
+          "status": "completed",
+          "conclusion": "success",
+          "jobs": [
+            {
+              "name": "secret-scan",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "name": "windows-startup-test",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "name": "quality-build-test",
+              "status": "completed",
+              "conclusion": "success"
+            }
+          ],
+          "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/39559605481"
+        },
+        {
+          "id": "39559610357",
+          "event": "pull_request",
+          "headSha": "993332154eef2b4995339c8fc25074860021cf3a",
+          "status": "completed",
+          "conclusion": "success",
+          "jobs": [
+            {
+              "name": "ai-sales-offline",
+              "status": "completed",
+              "conclusion": "success"
+            }
+          ],
+          "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/39559610357"
+        }
+      ]
+    },
+    "stagedSecretScan": {
+      "findings": 0,
+      "exceptionsAdded": 0
+    }
+  },
+  "verification": {
+    "host": "Node v24.19.0 win32/x64",
+    "fixture": "Actual builder in existing synthetic VM to first staging boundary; not a real build",
+    "before": {
+      "tests": 61,
+      "pass": 51,
+      "fail": 10
+    },
+    "after": {
+      "exitCode": 0,
+      "tests": 61,
+      "pass": 61,
+      "fail": 0,
+      "existingTests": 51,
+      "newTests": 10
+    },
+    "beforeMeaning": "New profile unavailable. Negative-case error-code differences are not ten prior security vulnerabilities. An initial added-test syntax error was corrected before this baseline; a broad comparison marker error was corrected before the final section check.",
+    "compatibility": {
+      "exitCode": 0,
+      "tests": 4,
+      "pass": 4,
+      "fail": 0
+    },
+    "protectedSections": [
+      {
+        "section": "legacy-profile",
+        "sha256": "2e79b6820a07c766f8bad0a65115efad79338028199dd8b156118f05c85da9f6",
+        "unchanged": true
+      },
+      {
+        "section": "previous-profile",
+        "sha256": "6d1282d78e295ec9469e5a504f0c5177778c5540cdb59ca701c85d368d0f5b43",
+        "unchanged": true
+      },
+      {
+        "section": "source-payload-and-verifier",
+        "sha256": "7f298eeae5761d3748b3aad036cd06138be99ef70abe95e7315182465c01c76e",
+        "unchanged": true
+      },
+      {
+        "section": "git-source",
+        "sha256": "82959be729258eed8566a2452fd91bc3b738b1715bd3d4e61db7a9b611405208",
+        "unchanged": true
+      },
+      {
+        "section": "offline-and-npm",
+        "sha256": "675fa047946a0f02d2636d19e917062b7d8721c0231370ede9dc8dce33cba918",
+        "unchanged": true
+      },
+      {
+        "section": "node-pins",
+        "sha256": "ff5512084b174ad6cf9227102495bfeff7d8341a6a28e9ff7e46a96bde537701",
+        "unchanged": true
+      },
+      {
+        "section": "immutable-build-and-cli",
+        "sha256": "89a16147f33203522dc7fb7069967e658b83613d4b5ae287c5b226def83937fe",
+        "unchanged": true
+      }
+    ],
+    "independentReview": {
+      "agent": "az_independent_reviewer",
+      "readOnly": true,
+      "openP1": 0,
+      "openP2": 0,
+      "testsOrBuildByReviewer": false
+    }
+  },
+  "inactivePackage": {
+    "status": "READY_INACTIVE_NOT_INSTALLED",
+    "startedUtc": "2026-10-21T07:06:38.898Z",
+    "completedUtc": "2026-10-21T07:08:42.611Z",
+    "builderSourceCommit": "993332154eef2b4995339c8fc25074860021cf3a",
+    "createCalls": 1,
+    "officialVerifier": {
+      "packageRoot": "C:\\Sirket\\CRM\\releases\\node-v24.19.0\\crm-shared-test-d1e4425206249e38445fb103e03601f86baa84ec",
+      "manifestSha256": "a0e86fccbdb95eeb97e4dc08e383db7bf8f12a29b040f34a78f6c37e3093b5ef",
+      "sourceCommit": "d1e4425206249e38445fb103e03601f86baa84ec",
+      "sourceTree": "ce0e2a95a2d9897aedbd021d79a5c6a5e0371d19",
+      "supervisor": "deploy/test-supervisor.mjs",
+      "environment": "TEST"
+    },
+    "index": {
+      "path": "apps/frontend/dist/client/index.html",
+      "size": 1265,
+      "sha256": "20c54be38615a81f327a27939a5318d09c2ac5dd4a720e159f61a9b6eeba6f77"
+    },
+    "sourceFiles": 186,
+    "payloadFiles": 2292,
+    "payloadBytes": 23960004,
+    "sealedFilesIncludingManifest": 2293,
+    "allReadonly": true,
+    "sourceCard": {
+      "path": "apps/frontend/src/SalesProductCards.jsx",
+      "gitBlob": "49d6936017649c0d347b58430fa2fd15ed2b37fb"
+    },
+    "preservation": {
+      "packages": 63,
+      "records": 344,
+      "manifestAndIndexRecords": 126,
+      "mismatches": []
+    },
+    "installed": false,
+    "receipt": {
+      "path": "docs/evidence/crm/2026-10-21-photo-fix-passive-package/package-receipt.json",
+      "sha256": "2d78ae2e19b3084c01ba96c9d5f56a28b20af68e72042c639678750d729b74a5"
+    },
+    "preservationBefore": {
+      "path": "docs/evidence/crm/2026-10-21-photo-fix-passive-package/preservation-before.json",
+      "sha256": "738870367dd983f1ed63d7910f16f2822ba2d628dd7878c9efb486c8a691e77f"
+    },
+    "independentArtifactReview": {
+      "agent": "az_independent_reviewer",
+      "readOnly": true,
+      "result": "GO",
+      "openP1": 0,
+      "openP2": 0,
+      "officialVerifierExitCode": 0,
+      "sourceBlobsComparedToGit": 186,
+      "sourceBlobMismatches": 0,
+      "sealedReadonlyFiles": 2293,
+      "linksOrSpecialFiles": 0,
+      "locksAndIndexMatched": true,
+      "oldPackageProtectionEvidence": "ROOT_SNAPSHOT_AND_AFTER_COMPARISON; reviewer did not rescan all older packages",
+      "newBuildTestInstallOrRuntimeWrites": 0
+    }
+  },
+  "boundaries": {
+    "newAgents": 0,
+    "newGoals": 0,
+    "nativeGoalAtCheck": null,
+    "sharedTestRuntimeSqlConfigStoreServicesInstall": "NOT_MODIFIED",
+    "erpSource": "READ_ONLY",
+    "old439And7baProfiles": "UNCHANGED",
+    "oldPackages": "NOT_MODIFIED",
+    "cacheWritingPreflight": "NOT_RUN",
+    "realGui": "GUI_DENENMEDI",
+    "physicalDevice": "WAITING",
+    "crmUa11": "BEKLIYOR",
+    "liveVegaT1MainMergeTagPaidApiRealCustomerMessagesIdentityBypass": "NOT_USED",
+    "unchangedFinishCounts": {
+      "crmTotal": 25,
+      "green": 12,
+      "partial": 13,
+      "red": 0,
+      "totalErpCrm": 74
+    }
+  }
+}

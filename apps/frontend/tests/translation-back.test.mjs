@@ -17,7 +17,7 @@ test("an echoed back-translation is replaced through an explicit Turkish request
     assert.equal(result.backTranslation, "Tanıştığımıza memnun oldum!");
     assert.equal(calls.length, 2);
     assert.ok(calls.every((call) => call.url.endsWith("/translate")));
-    assert.deepEqual(calls[1].body, { mode: "incoming_to_tr", text: "Nice to meet you!", targetLanguage: "tr" });
+    assert.deepEqual(calls[1].body, { mode: "incoming_to_tr", text: "Nice to meet you!", targetLanguage: "tr", aiIntent:{userInitiated:true,action:"manual"} });
   } finally { globalThis.fetch = originalFetch; }
 });
 

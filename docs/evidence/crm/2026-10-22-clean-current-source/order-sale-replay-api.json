@@ -1,0 +1,152 @@
+{
+  "environment": "CLEAN_SYNTHETIC_TEST",
+  "simultaneousSameBody": [
+    {
+      "http": 200,
+      "invoiceId": "1",
+      "replayed": true
+    },
+    {
+      "http": 200,
+      "invoiceId": "1",
+      "replayed": true
+    }
+  ],
+  "differentActionSameOrder": {
+    "http": 200,
+    "replayed": true
+  },
+  "sameActionDifferentBody": {
+    "http": 409,
+    "code": "CLEAN_SALE_REQUEST_CONFLICT"
+  },
+  "personnelFinalize": 403,
+  "nativeFinalize": 403,
+  "convertSameOrderReplay": true,
+  "sale": {
+    "schemaVersion": "melisa-order-sale.v1",
+    "environment": "CLEAN_SYNTHETIC_TEST",
+    "environmentId": "e662fd94-d797-4b3b-938a-d143ad758b67",
+    "requestId": "45064956-9c91-470f-a7b6-a9330b60e456",
+    "order": {
+      "id": "3",
+      "documentNo": "CR2-450649569C91470FA7B6A9330B",
+      "documentDate": "2026-10-22",
+      "customerId": "1",
+      "customerName": "Örnek Mağaza",
+      "currency": "TRY",
+      "totalExact4": "376.5000"
+    },
+    "state": "FINALIZED",
+    "sale": {
+      "id": "1",
+      "documentNo": "CRS-20261022-3",
+      "status": "finalized",
+      "customerId": "1",
+      "currency": "TRY",
+      "totalExact4": "376.5000",
+      "stockEffect": true,
+      "ledgerEffect": true,
+      "collectionEffect": false,
+      "reservationEffect": false
+    },
+    "revision": "7e5c26b3ef875d3694995a71bd3eddd873a25f51c546eae856cc7228ffe5eeaf",
+    "capabilities": {
+      "canConvert": false,
+      "canFinalize": false
+    }
+  },
+  "stock": {
+    "success": true,
+    "data": {
+      "id": "1",
+      "stockCode": "0007 MELISA",
+      "productName": "Örnek pamuk takım",
+      "displayCode": "0007",
+      "classification": {
+        "brand": "MELISA",
+        "productType": "TAKIM",
+        "sourceName": "Örnek pamuk takım",
+        "verified": true
+      },
+      "isActive": true,
+      "stockQuantityExact": "21.00000000",
+      "unit": {
+        "label": "ADET",
+        "sourceId": "1",
+        "factorExact8": "1.00000000",
+        "verified": true
+      },
+      "barcodes": [
+        {
+          "id": "1",
+          "value": "0000000000007",
+          "isPrimary": true,
+          "sourceKey": "SYNTHETIC/20261022/barcodes/1"
+        }
+      ],
+      "provenance": {
+        "kind": "synthetic-test",
+        "sourceKey": "SYNTHETIC/20261022/products/1",
+        "runId": null,
+        "sourceAsOf": "2026-10-22",
+        "verified": true
+      },
+      "hold": {
+        "blocked": false,
+        "reasons": []
+      },
+      "photo": {
+        "status": "available",
+        "url": "/api/catalog/products/1/photo?variant=preview",
+        "thumbnailUrl": "/api/catalog/products/1/photo?variant=thumbnail",
+        "sourceKey": "SYNTHETIC/20261022/products/1",
+        "sha256": "f0116ae189705587e424f9e5c567b542b7d4b5059ea7b72681d6d6b87345fe38",
+        "verified": true
+      },
+      "salePrices": [
+        {
+          "id": "1",
+          "type": "sale",
+          "unitSourceId": "1",
+          "tier": 1,
+          "currency": "TRY",
+          "priceExact": "125.50000000",
+          "isMainUnit": true,
+          "sourceKey": "SYNTHETIC/20261022/products/1/PRICE/sale/1/1/TRY"
+        }
+      ]
+    },
+    "meta": {
+      "schemaVersion": "melisa-catalog.v1",
+      "environment": "CLEAN_SYNTHETIC_TEST",
+      "environmentId": "e662fd94-d797-4b3b-938a-d143ad758b67",
+      "synthetic": true,
+      "actualT1": false,
+      "externalOperations": false,
+      "readOnly": true,
+      "sourceAsOf": "2026-10-22",
+      "readAt": "2026-10-22T13:11:18.479Z",
+      "freshLive": false,
+      "total": 1,
+      "page": 1,
+      "limit": 50,
+      "totalPages": 1,
+      "canViewSalesPrices": true,
+      "filters": {
+        "brands": [
+          "MELISA"
+        ],
+        "productTypes": [
+          "TAKIM",
+          "TULUM"
+        ]
+      },
+      "scopeCounts": {
+        "acceptedOpening": 0,
+        "quarantinedSource": 0,
+        "syntheticTest": 3
+      }
+    }
+  }
+}

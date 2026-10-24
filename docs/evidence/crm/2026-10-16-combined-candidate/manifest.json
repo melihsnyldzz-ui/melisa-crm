@@ -1,0 +1,120 @@
+{
+  "sourceCommit": "5ecf39fedf960ba090255359ccb4292caa625b00",
+  "files": [
+    {
+      "file": "README.md",
+      "bytes": 7831,
+      "sha256": "8d7fb45c196cfa792a93268d750ec5c524ae6fa314e412032cdaa1a6a9e2ab51"
+    },
+    {
+      "file": "fixes/01-phone-old-success-discarded-on-b.png",
+      "bytes": 314555,
+      "sha256": "7dd767da06f6517156b29f0ce0f625bc9a550232aac0c08d16da05161dfd37ab"
+    },
+    {
+      "file": "fixes/02-phone-current-b-success-preserved.png",
+      "bytes": 316098,
+      "sha256": "52642f3a6d3371cf22c9258e35de511650b282190bc7d7ce7576e6a57e9292ff"
+    },
+    {
+      "file": "fixes/03-selected-jpg-original-download.png",
+      "bytes": 145974,
+      "sha256": "db389183b86739c19687e99eefee0e686b26fc4c50e7d62a05ca0786f2aa85af"
+    },
+    {
+      "file": "fixes/04-exchange-rate-exact8-preserved.png",
+      "bytes": 264396,
+      "sha256": "738842249e513c6acf31cf9c9498c7a7f767dd4d7eda648446d99fb56654f563"
+    },
+    {
+      "file": "fixes/selected-canonical-original.jpg",
+      "bytes": 52535,
+      "sha256": "96833efd740ad8f0942f6b54b8a261cb33f1f413bd4e5a43289370f3b9e04f3b"
+    },
+    {
+      "file": "fixes-result.json",
+      "bytes": 6393,
+      "sha256": "a552b737a02507f8c59c4176c441028b617683a4372822c50057ef56a94cbb96"
+    },
+    {
+      "file": "flow/01-customer-selected.png",
+      "bytes": 309742,
+      "sha256": "1c88ed2085f0a0b396ce2c35ec5592b01b9f3eb844c95b3da8ba5296b4a4c476"
+    },
+    {
+      "file": "flow/02-catalog-two-products.png",
+      "bytes": 217731,
+      "sha256": "306451048d400a0b6e8e5020f4a204ec02055c80b915149ba51019eb9e1b9ecd"
+    },
+    {
+      "file": "flow/03-order-customer-quantities.png",
+      "bytes": 266481,
+      "sha256": "9bae3a40bd3e925341c533e51b411fb1d3479dc34320c25f737f6ea9754646c0"
+    },
+    {
+      "file": "flow/04-order-saved-readback.png",
+      "bytes": 279679,
+      "sha256": "8025280d1038fb728c7e34e5f3466ddade9711205de5544a1c13527824646b66"
+    },
+    {
+      "file": "flow/05-saved-orders-list.png",
+      "bytes": 67364,
+      "sha256": "29b46817ca74666a901c1a6a8804108f315427e6c5b4358b86548df726401d9f"
+    },
+    {
+      "file": "flow/06-order-reopened-after-refresh.png",
+      "bytes": 164069,
+      "sha256": "8e777fa3767270c01d581f7d84091f92f2f627bc460512c451fb81c57bc54210"
+    },
+    {
+      "file": "flow/07-order-mobile-viewport.png",
+      "bytes": 82090,
+      "sha256": "1bc9adc71a4b9fbbfe4cba9bedb49a26c8f78983987a7423c34cf3bffd085376"
+    },
+    {
+      "file": "flow/08-customer-request-review.png",
+      "bytes": 56178,
+      "sha256": "b956126dc207abf4b286496e43301a44126a653f9f062769be70f60b22c5b61a"
+    },
+    {
+      "file": "flow/09-customer-request-submitted.png",
+      "bytes": 52581,
+      "sha256": "10f8e27d424ae287f786dc1d3bc76044233a6fd0b893cde4af2e1303f1264308"
+    },
+    {
+      "file": "flow/10-staff-request-visible.png",
+      "bytes": 257797,
+      "sha256": "bb158af5c378b012e74f77f00aaad2e782a8c9f36048a30890e6a7ecf9e3d12a"
+    },
+    {
+      "file": "flow/11-assigned-staff-request.png",
+      "bytes": 218735,
+      "sha256": "28148101249d53909e80c89be273d90547b957e8044964c0dc5cc4db85a39360"
+    },
+    {
+      "file": "flow/12-unrelated-staff-no-customer.png",
+      "bytes": 39829,
+      "sha256": "0cc04f6be3e660a391b4bbf38beca0226a4f7913a05372ebd543c2453ae99182"
+    },
+    {
+      "file": "flow-result.json",
+      "bytes": 18229,
+      "sha256": "f1ff2e869db28701a0064149a232604ef65acae6de2703f120e55245109caa5d"
+    },
+    {
+      "file": "source-mapping.json",
+      "bytes": 2152,
+      "sha256": "8b78f32d77d1666365aef6fe764b252cde8ec8e3f1c8bbb2f093767e69f02926"
+    },
+    {
+      "file": "target-test-results.txt",
+      "bytes": 4397,
+      "sha256": "bf7ff884e0753a695d507a4fba8d620f99b814d745d5dbef35dc8a6c052baa52"
+    },
+    {
+      "file": "test-results.json",
+      "bytes": 1644,
+      "sha256": "3634978a180136decf9e05fde75213c4b79bc26b594358ef1eb71487b1153332"
+    }
+  ]
+}

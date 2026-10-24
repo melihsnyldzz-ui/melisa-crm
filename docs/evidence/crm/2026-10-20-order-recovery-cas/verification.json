@@ -1,0 +1,65 @@
+{
+  "taskId": "DOT-CRM-ORDER-RECOVERY-CAS-20261020-1515",
+  "date": "2026-10-20",
+  "requirements": ["CRM06", "E02", "CRM-UA11"],
+  "source": {
+    "baseCommit": "c034e4ea3a8ea8b06626c913eacd26ffdcdd7a45",
+    "branch": "codex/crm-agents-on-completion-20261003",
+    "origin": "https://github.com/melihsnyldzz-ui/melisa-crm.git",
+    "files": [
+      {"path": "apps/frontend/src/lib/nativeOrder.js", "blob": "c7b5ce1887ec385096fae5a4c8d4b75fd1879d0f"},
+      {"path": "apps/frontend/tests/erp-order-recovery.test.mjs", "blob": "d048b91980b82180940377420b404eb74e3ac356"}
+    ]
+  },
+  "verification": {
+    "runtime": "Node v24.15.0",
+    "guard": "tests/offline-test-guard.mjs",
+    "fixture": "in-memory browser journal and deferred calls; no external network or real data",
+    "phases": [
+      {"name": "original-source-regression", "exitCode": 1, "nodeTests": 48, "pass": 18, "fail": 30, "leafTests": 43, "parentTests": 5},
+      {"name": "initial-fix-same-regression", "exitCode": 0, "nodeTests": 48, "pass": 48, "fail": 0, "leafTests": 43, "parentTests": 5},
+      {"name": "outer-await-regression-before-final-fix", "exitCode": 1, "nodeTests": 57, "pass": 48, "fail": 9, "newFailingLeaves": 8, "newFailingParents": 1},
+      {"name": "final-regression", "exitCode": 0, "nodeTests": 57, "pass": 57, "fail": 0, "leafTests": 51, "parentTests": 6, "unchangedLegacyLeaves": 5, "nativeLeaves": 46},
+      {"name": "targeted-compatibility", "exitCode": 0, "nodeTests": 7, "pass": 7, "fail": 0, "skip": 0}
+    ],
+    "syntax": {"source": "PASS", "test": "PASS"},
+    "diffCheck": "PASS",
+    "independentReview": {"existingAgent": "az_independent_reviewer", "readOnly": true, "initialOpenP2": 1, "finalOpenP1": 0, "finalOpenP2": 0, "reviewerRanTests": false},
+    "coverage": ["GET200 envelope drift", "GET404 envelope drift and deletion", "404-to-POST microtask replacement", "pending and new POST success/error journal replacement", "public and submit outer-await receipt/context drift", "stale newIntent deletion", "same-record reload and frozen replay", "resolved404 no-POST", "source/pricing/customer/actor binding"]
+  },
+  "delivery": {
+    "pullRequest": "https://github.com/melihsnyldzz-ui/melisa-crm/pull/3",
+    "sourceCommit": "56442129a01bd4ae870457f512e20b4cbf613c6c",
+    "committedSourceBlobs": "MATCH",
+    "exactHeadCi": {
+      "headSha": "56442129a01bd4ae870457f512e20b4cbf613c6c",
+      "conclusion": "SUCCESS",
+      "successfulJobCount": 7,
+      "runs": [
+        {"id": 39461345993, "workflow": "CRM CI", "event": "pull_request", "conclusion": "success", "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/39461345993", "jobs": ["secret-scan", "windows-startup-test", "quality-build-test"]},
+        {"id": 39461340094, "workflow": "CRM CI", "event": "push", "conclusion": "success", "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/39461340094", "jobs": ["secret-scan", "quality-build-test", "windows-startup-test"]},
+        {"id": 39461346035, "workflow": "AI Sales Agent - Offline", "event": "pull_request", "conclusion": "success", "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/39461346035", "jobs": ["ai-sales-offline"]}
+      ]
+    },
+    "stagedSecretScan": {"scope": "sourceCommit", "result": "PASS", "findings": 0, "exceptionsAdded": 0},
+    "receiptPolicy": "docs-only [skip ci]; source CI is not a fresh run for the receipt HEAD",
+    "deployment": "SOURCE_UNAPPLIED"
+  },
+  "boundaries": {
+    "newAgents": 0,
+    "resumedRunPeakActiveAgents": 2,
+    "completedFindingsReused": 2,
+    "nativeGoal": "PAUSED",
+    "hiddenQueue": "UNKNOWN",
+    "runtimeLockP03": "UNKNOWN_NOT_PROBED",
+    "cacheWritingPreflight": "NOT_RUN_SOURCE_ONLY_SCOPE",
+    "sharedTestRuntimeSqlServicesConfig": "NOT_TOUCHED",
+    "localPackageBuildInstall": "NOT_RUN",
+    "hostedBuildOfflineTests": "PASS_SOURCE_CI",
+    "browserNormalGui": "NOT_RUN",
+    "physicalDeviceWindowsLogonHumanAcceptance": "WAITING",
+    "crmUa11": "BEKLIYOR",
+    "liveVegaT1RealCustomerMessagesPaidApiMain": "NOT_USED",
+    "unchangedFinishCounts": {"crmTotal": 25, "crmGreen": 12, "crmPartial": 13, "crmRed": 0, "erpCrmTotal": 74}
+  }
+}
