@@ -1,7 +1,7 @@
 const nativeBridges=new WeakMap();let nativeSerial=0;
 export function createNativeSessionBridge({window:host=globalThis.window,timeoutMs=5000}={}) {
   const origin=host?.location?.origin;
-  if(!['http://192.168.1.46:62700','http://127.0.0.1:62700'].includes(origin)||typeof host?.MelisaProtectedSession?.postMessage!=='function')return null;
+  if(!['http://192.168.1.46:62700','http://127.0.0.1:62700','http://192.168.1.46:62800','http://127.0.0.1:62800'].includes(origin)||typeof host?.MelisaProtectedSession?.postMessage!=='function')return null;
   const native=host.MelisaProtectedSession;
   if(nativeBridges.has(native))return nativeBridges.get(native);
   const pending=new Map();let queue=Promise.resolve();

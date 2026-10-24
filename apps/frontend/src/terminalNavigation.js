@@ -2,11 +2,12 @@ const ERP_HOSTS = new Set(['127.0.0.1', '192.168.1.46']);
 export function terminalEntry(location = globalThis.location) {
   const params = new URLSearchParams(location?.search || '');
   const enabled = params.getAll('terminal').length === 1 && params.get('terminal') === '1';
+  const cleanChild = ['http://127.0.0.1:62800','http://192.168.1.46:62800'].includes(location?.origin);
   let erpOrigin = null;
   if (enabled && params.getAll('erpOrigin').length === 1) {
     try {
       const raw = params.get('erpOrigin'), url = new URL(raw);
-      if (url.protocol === 'http:' && ERP_HOSTS.has(url.hostname) && (['http://127.0.0.1:62700','http://192.168.1.46:62700'].includes(location.origin) ? url.port==='5234' : (url.port === '5194' || ['http://127.0.0.1:62600','http://192.168.1.46:62600'].includes(location.origin) && url.port === '5224'))
+      if (url.protocol === 'http:' && ERP_HOSTS.has(url.hostname) && (cleanChild ? url.port==='5244' : ['http://127.0.0.1:62700','http://192.168.1.46:62700'].includes(location.origin) ? url.port==='5234' : (url.port === '5194' || ['http://127.0.0.1:62600','http://192.168.1.46:62600'].includes(location.origin) && url.port === '5224'))
         && url.origin === raw && url.hostname === location.hostname && !url.username && !url.password) erpOrigin = raw;
     } catch {}
   }

@@ -4,6 +4,19 @@ import {bindTerminalNavigation} from '../src/terminalNavigation.js';
 const user={id:'own-agent-test',username:'agent-test',role:'personel',chatwootAgentId:3,permissions:['crm.view']};
 const result=(accessToken='access',refreshToken='refresh')=>({accessToken,refreshToken,expiresAt:100000,user});
 const defer=()=>{let resolve;const promise=new Promise(r=>resolve=r);return {promise,resolve};};
+test('E1 clean native bridge accepts only exact clean CRM origins and keeps the v1 native protocol',async()=>{
+ for(const origin of ['http://127.0.0.1:62800','http://192.168.1.46:62800']){
+  const calls=[],native={postMessage:raw=>calls.push(JSON.parse(raw))};
+  const bridge=createNativeSessionBridge({window:{location:{origin},MelisaProtectedSession:native}});
+  assert(bridge,'clean native origin has the existing bridge');
+  const pending=bridge.get();await Promise.resolve();
+  assert.deepEqual(Object.keys(calls[0]).sort(),['action','id','v']);assert.equal(calls[0].action,'get');
+  native.onmessage({data:JSON.stringify({v:1,id:calls[0].id,ok:true,session:null})});assert.equal(await pending,null);
+ }
+ for(const origin of ['http://192.168.1.99:62800','https://192.168.1.46:62800','http://192.168.1.46:5244','http://127.0.0.1:62801'])
+  assert.equal(createNativeSessionBridge({window:{location:{origin},MelisaProtectedSession:{postMessage(){throw Error('untrusted native call');}}}}),null);
+ assert.equal(createNativeSessionBridge({window:{location:{origin:'http://127.0.0.1:62800'}}}),null,'ordinary browser cannot create native storage');
+});
 test('bridge uses only native object replies, exact origin, and request IDs',async()=>{const calls=[],native={postMessage(raw){calls.push(JSON.parse(raw));}},host={location:{origin:'http://192.168.1.46:62700'},MelisaProtectedSession:native};const bridge=createNativeSessionBridge({window:host});const pending=bridge.get();await Promise.resolve();native.onmessage({data:JSON.stringify({v:1,id:'wrong',ok:true,session:{accessToken:'wrong'}})});native.onmessage({data:JSON.stringify({v:1,id:calls[0].id,ok:true,session:null})});assert.equal(await pending,null);assert.deepEqual(Object.keys(calls[0]).sort(),['action','id','v']);for(const origin of ['http://192.168.1.99:62700','http://192.168.1.46:5234','https://192.168.1.46:62700'])assert.equal(createNativeSessionBridge({window:{...host,location:{origin}}}),null);});
 test('repeated bridge construction shares one reply handler and FIFO including clear',async()=>{
  const calls=[],native={postMessage:raw=>calls.push(JSON.parse(raw))},host={location:{origin:'http://192.168.1.46:62700'},MelisaProtectedSession:native};
