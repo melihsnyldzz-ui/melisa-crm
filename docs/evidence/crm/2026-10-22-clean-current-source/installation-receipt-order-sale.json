@@ -1,0 +1,516 @@
+{
+  "schemaVersion": "melisa-clean-order-sale-install.v1",
+  "observedAt": "2026-10-22T13:18:17.916Z",
+  "environment": "CLEAN_SYNTHETIC_TEST",
+  "environmentId": "e662fd94-d797-4b3b-938a-d143ad758b67",
+  "database": "MELISA_ERP_CLEAN_TEST_20261022",
+  "server": "Semih\\MELISADEV",
+  "synthetic": true,
+  "actualT1": false,
+  "externalOperations": false,
+  "erp": {
+    "sourceCommit": "3db0830df16d36d59cc69b1a19feb593357aaf35",
+    "packageId": "CLEAN-ERP-20261022-3db0830df16d",
+    "frontendBuiltFrom": "9f541f98bb37872aecf3166f4f379d7f4c5687e3",
+    "frontendApplicationDiff": 0,
+    "pr": 54,
+    "url": "http://127.0.0.1:5244/ornek-akis.html",
+    "indexSHA256": "99ba958c20c93e017d237ee67bf2b7a52b1c98d896d995119d7b95d5a71b570a",
+    "servedMatchesDisk": true
+  },
+  "crm": {
+    "sourceCommit": "c8d0e28f0ea6cf16133c87dd548a4281381abfb7",
+    "frontendBuiltFrom": "c8d0e28f0ea6cf16133c87dd548a4281381abfb7",
+    "packageId": null,
+    "pr": 3,
+    "url": "http://127.0.0.1:62800/",
+    "indexSHA256": "b7fea2410d4f9846282b0f13e1ea9dfdec8ba726258caf4b38aca815b2d68095",
+    "servedMatchesDisk": true,
+    "packageIdentityEvidence": "Source clone pin, process identities and exact served dist; no separate CRM package health field"
+  },
+  "listeners": [
+    {
+      "port": 62803,
+      "address": "127.0.0.1",
+      "pid": 52988,
+      "created": "2026-10-22T13:05:19.4801880Z",
+      "executable": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe"
+    },
+    {
+      "port": 62802,
+      "address": "127.0.0.1",
+      "pid": 26880,
+      "created": "2026-10-22T13:05:19.4696020Z",
+      "executable": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe"
+    },
+    {
+      "port": 62801,
+      "address": "127.0.0.1",
+      "pid": 24168,
+      "created": "2026-10-22T13:05:19.4535060Z",
+      "executable": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe"
+    },
+    {
+      "port": 62800,
+      "address": "127.0.0.1",
+      "pid": 24168,
+      "created": "2026-10-22T13:05:19.4535060Z",
+      "executable": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe"
+    },
+    {
+      "port": 62704,
+      "address": "127.0.0.1",
+      "pid": 53000,
+      "created": "2026-10-21T14:33:33.2786970Z",
+      "executable": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe"
+    },
+    {
+      "port": 62703,
+      "address": "127.0.0.1",
+      "pid": 61536,
+      "created": "2026-10-21T14:33:58.1087620Z",
+      "executable": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe"
+    },
+    {
+      "port": 62702,
+      "address": "127.0.0.1",
+      "pid": 34992,
+      "created": "2026-10-21T14:33:50.4330810Z",
+      "executable": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe"
+    },
+    {
+      "port": 62701,
+      "address": "127.0.0.1",
+      "pid": 34620,
+      "created": "2026-10-21T14:34:06.3515320Z",
+      "executable": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe"
+    },
+    {
+      "port": 62700,
+      "address": "192.168.1.46",
+      "pid": 34620,
+      "created": "2026-10-21T14:34:06.3515320Z",
+      "executable": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe"
+    },
+    {
+      "port": 62700,
+      "address": "127.0.0.1",
+      "pid": 34620,
+      "created": "2026-10-21T14:34:06.3515320Z",
+      "executable": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe"
+    },
+    {
+      "port": 5244,
+      "address": "127.0.0.1",
+      "pid": 64760,
+      "created": "2026-10-22T09:22:26.5215770Z",
+      "executable": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe"
+    },
+    {
+      "port": 5234,
+      "address": "192.168.1.46",
+      "pid": 23340,
+      "created": "2026-10-21T14:33:52.7418090Z",
+      "executable": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe"
+    },
+    {
+      "port": 5234,
+      "address": "127.0.0.1",
+      "pid": 23340,
+      "created": "2026-10-21T14:33:52.7418090Z",
+      "executable": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe"
+    },
+    {
+      "port": 5194,
+      "address": "192.168.1.46",
+      "pid": 20796,
+      "created": "2026-10-20T08:51:28.6426800Z",
+      "executable": "C:\\Program Files\\nodejs\\node.exe"
+    },
+    {
+      "port": 5194,
+      "address": "127.0.0.1",
+      "pid": 20796,
+      "created": "2026-10-20T08:51:28.6426800Z",
+      "executable": "C:\\Program Files\\nodejs\\node.exe"
+    },
+    {
+      "port": 4196,
+      "address": "127.0.0.1",
+      "pid": 12024,
+      "created": "2026-10-22T13:04:57.4680710Z",
+      "executable": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe"
+    },
+    {
+      "port": 4194,
+      "address": "127.0.0.1",
+      "pid": 20708,
+      "created": "2026-10-22T13:04:57.4523730Z",
+      "executable": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe"
+    },
+    {
+      "port": 4186,
+      "address": "127.0.0.1",
+      "pid": 63880,
+      "created": "2026-10-21T14:30:30.3859690Z",
+      "executable": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe"
+    },
+    {
+      "port": 4184,
+      "address": "192.168.1.46",
+      "pid": 30764,
+      "created": "2026-10-21T14:30:59.7757660Z",
+      "executable": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe"
+    },
+    {
+      "port": 4184,
+      "address": "127.0.0.1",
+      "pid": 30764,
+      "created": "2026-10-21T14:30:59.7757660Z",
+      "executable": "C:\\Sirket\\ERP\\tools\\node-v24.19.0\\node.exe"
+    },
+    {
+      "port": 4146,
+      "address": "127.0.0.1",
+      "pid": 25480,
+      "created": "2026-10-20T08:51:32.2930010Z",
+      "executable": "C:\\Program Files\\nodejs\\node.exe"
+    },
+    {
+      "port": 4144,
+      "address": "192.168.1.46",
+      "pid": 24696,
+      "created": "2026-10-20T08:51:35.6747050Z",
+      "executable": "C:\\Program Files\\nodejs\\node.exe"
+    },
+    {
+      "port": 4144,
+      "address": "127.0.0.1",
+      "pid": 24696,
+      "created": "2026-10-20T08:51:35.6747050Z",
+      "executable": "C:\\Program Files\\nodejs\\node.exe"
+    }
+  ],
+  "oldListenersPreserved": true,
+  "oldListenerEntries": 16,
+  "oldIdentityComparison": "address-port-PID-birth-executable exact",
+  "sql": {
+    "databaseName": "MELISA_ERP_CLEAN_TEST_20261022",
+    "serverName": "Semih\\MELISADEV",
+    "protectedDigests": [
+      {
+        "scope": "media",
+        "digest": "0DDF74E6AEF4F708A3DD7CD27FB0BA0E2A60A567DE74E76BE18EE1506631BC92",
+        "unchanged": true
+      },
+      {
+        "scope": "native_receipts",
+        "digest": "4F90D6FA75C0190ADC1431CA293964A0899F565D137433E5FFE921CCED0A3046",
+        "unchanged": true
+      },
+      {
+        "scope": "old_permissions",
+        "digest": "DF33206C1A9DE4BD51B93168B0BAFFAB9499F1280EE36013B2A2F75677F088F6",
+        "unchanged": true
+      },
+      {
+        "scope": "order_lines",
+        "digest": "7E9EF77A1C974E5405D83074E5EDF19BF783CC7D90CAD0C98EF21B7DDD050725",
+        "unchanged": true
+      },
+      {
+        "scope": "orders",
+        "digest": "F09A94F59E654A690AD90F796781E7DAD09BE88F423281783EE5D0B28428200E",
+        "unchanged": true
+      },
+      {
+        "scope": "original_media",
+        "digest": "55509A6A3E4155877839F3CB2B1D479E2CCD0BD8330E3E87F13362296B41D023",
+        "unchanged": true
+      },
+      {
+        "scope": "prices",
+        "digest": "13A9334189B395A06F9DE992D8B8D0E46A902048E7654638FC5FEA24AB7AFE14",
+        "unchanged": true
+      }
+    ],
+    "products": [
+      {
+        "id": 1,
+        "stock_code": "0007 MELISA",
+        "current_stock_qty": 21,
+        "average_cost_try": 0,
+        "purchase_price": 0,
+        "sales_price": 125.5
+      },
+      {
+        "id": 2,
+        "stock_code": "0161 MELISA",
+        "current_stock_qty": 12,
+        "average_cost_try": 0,
+        "purchase_price": 0,
+        "sales_price": 8.55
+      },
+      {
+        "id": 3,
+        "stock_code": "0205 MELISA",
+        "current_stock_qty": 0,
+        "average_cost_try": 0,
+        "purchase_price": 0,
+        "sales_price": 10.25
+      }
+    ],
+    "customers": [
+      {
+        "id": 1,
+        "customer_code": "ORNEK-M01",
+        "currency_code": "TRY",
+        "balance": 376.5
+      }
+    ],
+    "suppliers": [
+      {
+        "id": 1,
+        "balance": 0
+      }
+    ],
+    "links": [
+      {
+        "order_id": 3,
+        "invoice_id": 1,
+        "status": "finalized",
+        "created_by": 15,
+        "approved_by": 17,
+        "approved_at": "2026-10-22T13:09:19.3588182"
+      }
+    ],
+    "actions": [
+      {
+        "request_id": "0CFCFFAF-FC4E-42EC-A7C2-4A992D678AD1",
+        "order_id": 3,
+        "invoice_id": 1,
+        "actor_id": 17,
+        "operation": "finalize"
+      },
+      {
+        "request_id": "ADA7E727-B2B2-44D3-8247-6DAFA3D5ED3B",
+        "order_id": 3,
+        "invoice_id": 1,
+        "actor_id": 15,
+        "operation": "convert"
+      }
+    ],
+    "stockMovements": [
+      {
+        "id": 2,
+        "product_id": 1,
+        "source_type": "sales_invoice",
+        "source_id": 1,
+        "quantity_out": 3,
+        "quantity_net": -3,
+        "unit_cost_try": null,
+        "average_cost_try_after": null,
+        "created_by": 17
+      }
+    ],
+    "customerMovements": [
+      {
+        "sales_invoice_id": 1,
+        "movement_type": "sales_invoice",
+        "account_currency": "TRY",
+        "account_amount": 376.5,
+        "balance_effect": 376.5
+      }
+    ],
+    "orders": 3,
+    "invoices": 1,
+    "pendingIntents": 0,
+    "nativeDefinitions": 8,
+    "saleDefinitions": 12,
+    "compatibilityDefinitions": 2
+  },
+  "proof": {
+    "rollback": {
+      "kind": "actual-native-transaction-rollback",
+      "environment": "CLEAN_SYNTHETIC_TEST",
+      "engineReached": true,
+      "code": "CLEAN_SALE_UNAVAILABLE",
+      "before": {
+        "stock": 24,
+        "balance": 0,
+        "state": "draft",
+        "stockMovements": 0,
+        "customerMovements": 0,
+        "requests": 1,
+        "intents": 0
+      },
+      "after": {
+        "stock": 24,
+        "balance": 0,
+        "state": "draft",
+        "stockMovements": 0,
+        "customerMovements": 0,
+        "requests": 1,
+        "intents": 0
+      },
+      "nativeFailure": null
+    },
+    "replay": {
+      "environment": "CLEAN_SYNTHETIC_TEST",
+      "simultaneousSameBody": [
+        {
+          "http": 200,
+          "invoiceId": "1",
+          "replayed": true
+        },
+        {
+          "http": 200,
+          "invoiceId": "1",
+          "replayed": true
+        }
+      ],
+      "differentActionSameOrder": {
+        "http": 200,
+        "replayed": true
+      },
+      "sameActionDifferentBody": {
+        "http": 409,
+        "code": "CLEAN_SALE_REQUEST_CONFLICT"
+      },
+      "personnelFinalize": 403,
+      "nativeFinalize": 403,
+      "convertSameOrderReplay": true,
+      "sale": {
+        "schemaVersion": "melisa-order-sale.v1",
+        "environment": "CLEAN_SYNTHETIC_TEST",
+        "environmentId": "e662fd94-d797-4b3b-938a-d143ad758b67",
+        "requestId": "45064956-9c91-470f-a7b6-a9330b60e456",
+        "order": {
+          "id": "3",
+          "documentNo": "CR2-450649569C91470FA7B6A9330B",
+          "documentDate": "2026-10-22",
+          "customerId": "1",
+          "customerName": "Örnek Mağaza",
+          "currency": "TRY",
+          "totalExact4": "376.5000"
+        },
+        "state": "FINALIZED",
+        "sale": {
+          "id": "1",
+          "documentNo": "CRS-20261022-3",
+          "status": "finalized",
+          "customerId": "1",
+          "currency": "TRY",
+          "totalExact4": "376.5000",
+          "stockEffect": true,
+          "ledgerEffect": true,
+          "collectionEffect": false,
+          "reservationEffect": false
+        },
+        "revision": "7e5c26b3ef875d3694995a71bd3eddd873a25f51c546eae856cc7228ffe5eeaf",
+        "capabilities": {
+          "canConvert": false,
+          "canFinalize": false
+        }
+      }
+    },
+    "customerBalanceFromNormalApi": 376.5,
+    "crmReadback": {
+      "events": [
+        {
+          "event": "Network.requestWillBeSent",
+          "url": "http://127.0.0.1:62800/api/live/crm/erp/v2/drafts/45064956-9c91-470f-a7b6-a9330b60e456",
+          "method": "GET",
+          "requestId": "14956.984"
+        },
+        {
+          "event": "Network.responseReceived",
+          "url": "http://127.0.0.1:62800/api/live/crm/erp/v2/drafts/45064956-9c91-470f-a7b6-a9330b60e456",
+          "status": 200,
+          "requestId": "14956.984"
+        },
+        {
+          "event": "Network.requestWillBeSent",
+          "url": "http://127.0.0.1:62800/api/live/crm/erp/v2/drafts/45064956-9c91-470f-a7b6-a9330b60e456/sale",
+          "method": "GET",
+          "requestId": "14956.985"
+        },
+        {
+          "event": "Network.responseReceived",
+          "url": "http://127.0.0.1:62800/api/live/crm/erp/v2/drafts/45064956-9c91-470f-a7b6-a9330b60e456/sale",
+          "status": 200,
+          "requestId": "14956.985"
+        }
+      ],
+      "data": {
+        "success": true,
+        "data": {
+          "schemaVersion": "melisa-order-sale.v1",
+          "environment": "CLEAN_SYNTHETIC_TEST",
+          "environmentId": "e662fd94-d797-4b3b-938a-d143ad758b67",
+          "requestId": "45064956-9c91-470f-a7b6-a9330b60e456",
+          "order": {
+            "id": "3",
+            "documentNo": "CR2-450649569C91470FA7B6A9330B",
+            "documentDate": "2026-10-22",
+            "customerId": "1",
+            "customerName": "Örnek Mağaza",
+            "currency": "TRY",
+            "totalExact4": "376.5000"
+          },
+          "state": "FINALIZED",
+          "sale": {
+            "id": "1",
+            "documentNo": "CRS-20261022-3",
+            "status": "finalized",
+            "customerId": "1",
+            "currency": "TRY",
+            "totalExact4": "376.5000",
+            "stockEffect": true,
+            "ledgerEffect": true,
+            "collectionEffect": false,
+            "reservationEffect": false
+          },
+          "revision": "7e5c26b3ef875d3694995a71bd3eddd873a25f51c546eae856cc7228ffe5eeaf",
+          "capabilities": {
+            "canConvert": false,
+            "canFinalize": false
+          }
+        }
+      }
+    }
+  },
+  "gui": {
+    "normalPersonnelDraft": true,
+    "normalSupervisorFinalize": true,
+    "normalCrmAssignedSaleRead": true,
+    "refreshReopenSameInvoice": true,
+    "normalStock21": true,
+    "humanAcceptance": "PENDING",
+    "screenshots": [
+      "order-sale-personnel-draft.jpg",
+      "order-sale-supervisor-final.jpg",
+      "order-sale-crm-final.jpg",
+      "order-sale-stock-final.jpg",
+      "order-sale-supervisor-final-result.jpg"
+    ]
+  },
+  "backup": {
+    "copyOnlyChecksum": true,
+    "verifyOnly": true,
+    "restorePerformed": false,
+    "file": "CLEAN_TEST_20261022_BEFORE_ORDER_SALE_20261022_01.bak"
+  },
+  "safety": {
+    "originalDatabaseAccess": 0,
+    "liveDatabaseAccess": 0,
+    "sysadmin": 0,
+    "databaseControl": 0,
+    "nativePurpose": "crm-order-draft-only",
+    "nativeStockEffect": false,
+    "nativeLedgerEffect": false,
+    "noLiveVegaT1Main": true
+  },
+  "rollbackScope": "Synthetic order3 sale transaction only. Backup verified but no restore; no automatic reset or old-process adoption. Existing installed ERP/CRM and original DBs untouched.",
+  "launcher": "Previous cmd policy rejection remains BLOCKED; no retry or bypass; reboot/logon NOT_RUN"
+}

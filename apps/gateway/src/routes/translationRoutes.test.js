@@ -5,6 +5,8 @@ import { env } from '../config/env.js';
 import { createPasswordHash } from '../services/crmAuthService.js';
 
 test('personnel cannot translate a conversation assigned to another agent', async () => {
+  const previousPaidPolicy=process.env.CRM_PAID_AI_ENABLED;
+  process.env.CRM_PAID_AI_ENABLED='true';
   const originalAuth = { ...env.auth, users: env.auth.users };
   const originalChatwoot = { ...env.chatwoot };
   const originalFetch = globalThis.fetch;
@@ -58,12 +60,13 @@ test('personnel cannot translate a conversation assigned to another agent', asyn
         Authorization: `Bearer ${loginBody.data.accessToken}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ mode: 'incoming_to_tr' }),
+      body: JSON.stringify({ mode: 'incoming_to_tr',aiIntent:{userInitiated:true,action:'manual'} }),
     });
     assert.equal(response.status, 403);
     assert.equal((await response.json()).error.code, 'WHATSAPP_CRM_CONVERSATION_FORBIDDEN');
     assert.equal(openAiCalled, false);
   } finally {
+    if(previousPaidPolicy===undefined)delete process.env.CRM_PAID_AI_ENABLED;else process.env.CRM_PAID_AI_ENABLED=previousPaidPolicy;
     server.close();
     globalThis.fetch = originalFetch;
     Object.assign(env.auth, originalAuth);

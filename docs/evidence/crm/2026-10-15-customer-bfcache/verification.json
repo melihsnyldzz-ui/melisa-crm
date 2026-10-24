@@ -1,0 +1,90 @@
+{
+  "schemaVersion": "crm06-customer-bfcache-technical.v1",
+  "date": "2026-10-15",
+  "decision": "CRM-DEC-015",
+  "previousSource": "e5c23d8ade066cf7a14a6e9778cac7fcf655941d",
+  "trigger": "Navigate away from customer catalogue and return to the same document through persisted pageshow (BFCache).",
+  "before": "pagehide disposed the controller permanently; same component returned with visible controls and inactive controller.",
+  "after": "pagehide disposes and clears cached rendered state; persisted return installs a fresh controller/photo loader and reads the server session before edits.",
+  "regressionBeforeFix": {
+    "failed": true,
+    "expectedSessionReads": 2,
+    "actualSessionReads": 1,
+    "evidenceAttribution": "frontend worker synthetic regression using pre-fix effect behavior"
+  },
+  "targetedChecks": [
+    {
+      "scope": "new EventTarget lifecycle with real request controller",
+      "passed": 5
+    },
+    {
+      "scope": "existing controller/API/model regression file",
+      "passed": 12
+    },
+    {
+      "scope": "changed UI entry binding test only",
+      "passed": 1
+    }
+  ],
+  "combinedRun": {
+    "passed": false,
+    "result": "hung without final output; only owned test processes terminated; not a PASS",
+    "causeVerified": false
+  },
+  "independentReview": {
+    "reasoningEffort": "high",
+    "openP1P2": 0,
+    "readOnly": true
+  },
+  "preserved": [
+    "normal capability/API authorization",
+    "fresh session and revocation handling",
+    "closed/expired terminal state",
+    "pending operation ID and single submission",
+    "old async abortion/generation suppression",
+    "photo object URL revocation",
+    "existing design and authoritative catalogue data"
+  ],
+  "sourceCi": [
+    {
+      "kind": "PR",
+      "run": 38645694752,
+      "conclusion": "success"
+    },
+    {
+      "kind": "push",
+      "run": 38645688172,
+      "conclusion": "success"
+    },
+    {
+      "kind": "AI offline",
+      "run": 38645694891,
+      "conclusion": "success"
+    }
+  ],
+  "package": {
+    "root": "C:/Sirket/CRM/releases/crm-shared-test-da82fc6644c1d9dba0c10eaa861773534d43c288",
+    "manifestSha256": "9c6f013599dea1c6d7062ce9179d5d115c6022d3f95296a7be3276d3bdc900a2",
+    "sourceTree": "4e3d56b57669d913da2a7df3c20fbb4c1629a17c",
+    "sourceFiles": 184,
+    "payloadFiles": 2290,
+    "payloadBytes": 23929121,
+    "indexSha256": "e23229de145ca53f5e2f4b662530431ac101737640b0c043dcd35b7bd4dbfdf4",
+    "lockedOfflineBuildAndManifestVerification": true,
+    "activated": false,
+    "activationOwner": "ERP"
+  },
+  "realBrowserBfcacheVerified": false,
+  "physicalMobileVerified": false,
+  "humanAccepted": false,
+  "crm06Closed": false,
+  "sharedRuntimeWritesByCrm": 0,
+  "credentialAttempts": 0,
+  "realMessages": 0,
+  "paidAiCalls": 0,
+  "liveDeployed": false,
+  "mainMerged": false,
+  "sourceCommit": "da82fc6644c1d9dba0c10eaa861773534d43c288",
+  "preparationSnapshotOnly": true,
+  "installedEvidenceRef": "installed-runtime.json"
+}

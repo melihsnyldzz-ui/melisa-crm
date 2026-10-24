@@ -1,0 +1,15 @@
+# CRM için gereken veri ve dış kararlar — 13 Ekim 2026
+
+Bu kayıt ortak 21 sıra /55 ana başlık içindeki bağımlılıkları açık tutar; ikinci finish tree veya yeni modül değildir. Bilinmeyen değere sıfır, varsayılan müşteri, maliyet, MOQ veya teslim sözü atanmaz. Bağımsız kaynak/paket işleri bu kararları beklemez.
+
+| Ortak sıra / ana ID | Somut bağımlılık | Mevcut kanıt ve sınır | Kapanması için gereken |
+| --- | --- | --- | --- |
+| 3 / ERP08, DATA04, DATA05, DATA10 | Eksik ürün/cari kimliği, maliyet ve kaynak belge kökeni | ERP sahibi güncel fiyat işini yürütür. CRM12Ekim ürün-talebi cari eşlemesi gerektirmez; bu işletme eşlemelerini kapatmaz. 10Ekim8kimlik/18köken kaydı tarihseldir, güncel sayı diye tekrar kullanılmaz. | ERP sahibi aynı veri kesiminde hangi kaydın hangi kaynak/hesap/belgeye ait olduğunu kanıtla veya açık karantinaya alır. İşletme kararı gerektiren eşleme tahmin edilmez. |
+| 8 / CRM07 | Telefon ile doğru ERP cari/döviz hesabı bağı | Önceki7733 exact lookup sonuç bulmadı;595 gerekçeli TEST seçimi otomatik gerçek kişi eşlemesi değildir. E01 dar392TRY kabulü korunur. | Doğrulanmış kişi/cari kaynağı ve aynı dövizli doğru hesap; eşleşme yoksa taslak yanlış hesaba açılmaz. |
+| 3 / REL02 | GitHub CI hesap ödeme/harcama engeli | 41b2f9e uzak branch/PRhead eşit;7job/0step, yeni annotation'larda billing engeli. Push çalışıyor; testler başlamadı. | GitHub hesap sahibi engeli çözer, son tam commit için gerekli job'lar çalışır. Kaynak teslimi bekletilmez; localPASS uzakCI sayılmaz. |
+| 3 / REL04 | Kalıcı yerel ağ adresi | Uygulama LAN192.168.1.46 originini destekler; DHCP rezervasyonu kanıtı yok. Uygulama adresi modem rezervasyonu değildir. | Yetkili IT/ağ sahibi DHCP rezervasyonu veya doğrulanmış uygun sabit adresi kayıtlar. Çalışan ERP/CRM bağlantısı kesilmez. |
+| 14 / CRM08 | MOQ, ülke, kargo, indirim ve seri bölme politikası | Mevcut ayarlar/insan taslağı akışı hazır; işletme değerleri bilinmiyor. Eski1000USD/EUR örnekleri etkin karar değildir. | Patron onaylı gerçek değerleri, istisnaları ve kaynak tarihini belirler. 'Bilinmiyor' ile 'minimum yok' ayrı tutulur; fiyat/teslim sözü uydurulmaz. Yeni ücretli model çağrısı başlatılmaz. |
+| 18 / DATA07, DATA08 | Makine kaybına dayanıklı ayrı yedek hedefi | CRM12Ekim özel snapshot ve ayrı restore-check mühürlü; yalnız aynı bilgisayarda doğrulandı. Ayrı cihaz/konum kopyası kaydı yok. | Mevcut yetkili korumalı ayrı hedefin açık kimliği ve kopya bütünlüğü; yoksa kullanıcı/IT hedefi belirler. Müşteri/veritabanı/oturum içeriği GitHub'a yüklenmez. |
+| 19 / CRM11, ERP16, REL03 | Gerçek Windows açılışı | Alt süreç toparlanma/logon görevleri teknik kayıtlı; gerçek reboot/logoff ertelenmiş. | Ortak sahibi planlanmış fiziksel turda normal açılış/bağımlılık/oturumu kabul eder. Habersiz reboot veya servis değişikliği yapılmaz. |
+
+Mevcut personel/rol, normal giriş/session/logout ve izinli konuşma kapsamı korunur. İptal Semih yardımcı düğmesi veya ayrı Windows deneme programı bu bağımlılıklara eklenmez. Retli cihaz/eğitimHTML/EXE adımı başka yol/modelle aşılmaz. Fiili LIVE/main/Vega/T1, gerçek müşteriye mesaj ve ücretli servis ayrı yetki sınırındadır.

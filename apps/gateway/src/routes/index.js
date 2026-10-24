@@ -1,3 +1,4 @@
+import { getChatwootConversationAccess } from '../services/chatwootInboxService.js';
 import { createCatalogRouter } from '../services/catalogRouter.mjs';
 import { verifyCrmAccessToken } from '../services/crmAuthService.js';
 import { Router } from 'express';
@@ -17,9 +18,12 @@ routes.use('/crm', requireCrmAuth);
 // Explicitly approved active CRM roles with crm.view; no ERP login or new credential.
 const catalogBinding = createCatalogRouter({
   Router,
+  readConversation:getChatwootConversationAccess,
   verifyCrmContext: token => verifyCrmAccessToken(token, { includeContext: true }),
   transport: (url, options) => fetch(url, options),
   activationApproved: true,
+  additionalUiOrigins: (process.env.CRM_CATALOG_UI_ORIGINS||'').split(',').filter(Boolean),
+  photoCrmAuthorization: process.env.CRM_ERP_CATALOG_PHOTO_CRM_AUTH==='true',
   uiOrigin: process.env.CRM_UI_ORIGIN || 'https://melisa-crm-ozel-tasarim-testi.melihsnyldzz.chatgpt.site',
   logoutOrigin: 'http://127.0.0.1:4212',
 });

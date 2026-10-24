@@ -1,0 +1,64 @@
+{
+  "checkedAt": "2026-10-05T16:03:28.1393160Z",
+  "source": "2aef938f3f76d8bf4ca95054a5a0f98c19e21001",
+  "manifestSha256": "4b2ea843df3b51024f0018690871c9ca95cef7b7f12bcea2baa92ac054e3dc01",
+  "ports": [
+    {
+      "port": 62400,
+      "pid": 71596,
+      "started": "2026-10-05T15:54:37.7052690Z",
+      "unchangedSinceBefore": false,
+      "packageInCommandLine": true
+    },
+    {
+      "port": 62401,
+      "pid": 71596,
+      "started": "2026-10-05T15:54:37.7052690Z",
+      "unchangedSinceBefore": false,
+      "packageInCommandLine": true
+    },
+    {
+      "port": 62402,
+      "pid": 54156,
+      "started": "2026-10-05T15:51:40.6845710Z",
+      "unchangedSinceBefore": false,
+      "packageInCommandLine": true
+    },
+    {
+      "port": 62403,
+      "pid": 35948,
+      "started": "2026-10-05T15:51:43.0713510Z",
+      "unchangedSinceBefore": false,
+      "packageInCommandLine": true
+    },
+    {
+      "port": 62404,
+      "pid": 49220,
+      "started": "2026-10-05T07:05:23.0876580Z",
+      "unchangedSinceBefore": true,
+      "packageInCommandLine": false
+    },
+    {
+      "port": 4114,
+      "pid": 33624,
+      "started": "2026-09-21T13:32:33.5930350Z",
+      "unchangedSinceBefore": true,
+      "packageInCommandLine": false
+    },
+    {
+      "port": 4116,
+      "pid": 40828,
+      "started": "2026-09-21T13:32:33.6970310Z",
+      "unchangedSinceBefore": true,
+      "packageInCommandLine": false
+    },
+    {
+      "port": 5188,
+      "pid": 31820,
+      "started": "2026-09-21T13:32:33.8048010Z",
+      "unchangedSinceBefore": true,
+      "packageInCommandLine": false
+    }
+  ],
+  "liveAndNativeUnchanged": true
+}

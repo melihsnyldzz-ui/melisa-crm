@@ -1,13 +1,84 @@
 import { env } from '../config/env.js';
+import { createHash } from 'node:crypto';
 import { resolvePhoneIdentity } from '../utils/phoneIdentity.js';
 import { chatwootApiRequest } from './chatwootApiService.js';
-import { assertConversationAccess } from './crmAuthService.js';
+import { assertConversationAccess, assertCrmPermission, findCrmUserById, listConfiguredCrmUsers,cleanCrmManagement } from './crmAuthService.js';
+import {resolveTestEndpoints} from '../../../../deploy/test-endpoints.mjs';
+import { normalSessionFingerprint } from './normalRefreshSession.mjs';
 import { waapiSendReady, refreshWaapiReadiness } from './waapiReadiness.js';
 import { WAAPI_RECIPIENT } from '../providers/waapiProvider.js';
 import { enrichWaapiReceipt } from './waapiReceiptService.js';
 
 const CHATWOOT_PAGE_SIZE = 25;
 const CHATWOOT_MAX_OVERVIEW_LIMIT = CHATWOOT_PAGE_SIZE * 20;
+const CHATWOOT_MAX_TRAVERSAL_PAGES = 80;
+const CHATWOOT_MAX_RAW_CONVERSATIONS = CHATWOOT_PAGE_SIZE * CHATWOOT_MAX_TRAVERSAL_PAGES;
+const OVERVIEW_SNAPSHOT_TTL_MS = 20000;
+let conversationSnapshot = null;
+let messageReadIdentity = null;
+const messageReads = new Map();
+
+// Only conversation metadata is seeded here. Catalog and orders still cross
+// the existing authenticated ERP HTTP boundary and persist in the owner's SQL.
+function cleanSyntheticProjection(user=null) {
+  if(process.env.CRM_TEST_PROFILE!=='clean-synthetic-20261022')return null;
+  const endpoints=resolveTestEndpoints();
+  const invalid=()=>Object.assign(Error('Yapay TEST konuşma kaynağı doğrulanamadı.'),{code:'CLEAN_CONVERSATION_PROJECTION_REQUIRED',statusCode:503});
+  const text=process.env.CRM_CLEAN_CONVERSATION_PROJECTION_JSON;
+  if(typeof text!=='string'||text.length>16384)throw invalid();
+  let projection;try{projection=JSON.parse(text);}catch{throw invalid();}
+  if(!projection||Array.isArray(projection)||projection.version!==1||projection.synthetic!==true||projection.environment!=='CLEAN_SYNTHETIC_TEST'
+    ||String(projection.environmentId).toLowerCase()!=='e662fd94-d797-4b3b-938a-d143ad758b67'||projection.database!==endpoints.database
+    ||!Array.isArray(projection.conversations)||projection.conversations.length>2)throw invalid();
+  const users=listConfiguredCrmUsers().filter(value=>value.active);
+  if(user){const current=findCrmUserById(user.id);if(!current?.active||user.testAdmin||user.testPersonnel||normalSessionFingerprint(current)!==normalSessionFingerprint(user))throw Object.assign(Error('CRM oturumu değişti.'),{code:'AUTH_TOKEN_INVALID',statusCode:401});assertCrmPermission(current,'crm.view');}
+  const ids=new Set();const baseline=projection.conversations.map(row=>{
+    if(!row||typeof row!=='object')throw invalid();const id=String(row.id),phone=id==='55'?'905550000001':id==='56'?'905550000002':null;
+    if(!phone||row.phone!==phone||ids.has(id)||typeof row.name!=='string'||!row.name.trim()||row.name.length>120||!Number.isSafeInteger(row.assigneeAgentId)||row.assigneeAgentId<1)throw invalid();
+    ids.add(id);const assigned=users.find(value=>value.chatwootAgentId===row.assigneeAgentId);if(!assigned)throw invalid();
+    return {id,name:row.name,phone:'+'+phone,contactId:id,backend:'clean-synthetic',provider:'synthetic',synthetic:true,channel:'whatsapp',language:'Türkçe',status:'open',unread:0,
+      assignedUserId:assigned.id,assignedUserName:assigned.displayName,chatwootAgentId:row.assigneeAgentId,
+      preview:'Yapay TEST: ürün ve sipariş taslağı',lastMessageAt:'2026-10-22T00:00:00.000Z',messages:[{id:Number(id)*100,direction:'incoming',text:'Yapay TEST: ürün ve sipariş taslağı',createdAt:'2026-10-22T00:00:00.000Z'}],
+      detailLoaded:true,messagesLoaded:true,history:{complete:true,hasMore:false,nextBefore:null},canSend:false,canAssign:false,capabilities:{read:true,send:false,assign:false}};
+  });
+  if(!cleanCrmManagement)return baseline;
+  const managed=cleanCrmManagement.conversations().map(row=>{
+    const assigned=row.assigneeAgentId===null?null:users.find(value=>value.chatwootAgentId===row.assigneeAgentId);
+    const canAssign=Boolean(user?.permissions?.includes('crm.assign'));
+    return {id:row.id,name:row.name,phone:'+'+row.phone,contactId:row.id,backend:'clean-synthetic',provider:'synthetic',synthetic:true,channel:'whatsapp',language:'Türkçe',status:'open',unread:0,
+      assignedUserId:assigned?.id||null,assignedUserName:assigned?.displayName||'',chatwootAgentId:row.assigneeAgentId,
+      preview:'Yapay TEST: personel atama denemesi',lastMessageAt:'2026-10-24T00:00:00.000Z',messages:[{id:Number(row.id)*100,direction:'incoming',text:'Yapay TEST: personel atama denemesi',createdAt:'2026-10-24T00:00:00.000Z'}],
+      detailLoaded:true,messagesLoaded:true,history:{complete:true,hasMore:false,nextBefore:null},canSend:false,canAssign,capabilities:{read:true,send:false,assign:canAssign}};
+  });
+  return [...baseline,...managed];
+}
+
+// Management metadata only: reuse the exact existing TEST identity/assignment
+// validation, never return contacts, phone numbers, messages or provider secrets.
+export function readCleanCrmAssignmentInventory(user) {
+  const rows = cleanSyntheticProjection(user);
+  if (rows === null) throw Object.assign(new Error('Bu ortamda TEST hesap envanteri bulunmuyor.'), {code:'CRM_USER_INVENTORY_UNAVAILABLE',statusCode:404});
+  assertCrmPermission(user,'crm.manage');
+  return rows.map(row => ({conversationId:row.id,assigneeAgentId:row.chatwootAgentId}));
+}
+
+function backendIdentity() {
+  return JSON.stringify([env.chatwoot.baseUrl, env.chatwoot.accountId, env.chatwoot.apiAccessToken]);
+}
+
+function assertBackendIdentity(identity) {
+  if (identity === backendIdentity()) return;
+  const error = new Error('Chatwoot baglantisi okuma sirasinda degisti.');
+  error.code = 'WHATSAPP_CRM_CHATWOOT_READ_IDENTITY_CHANGED';
+  error.statusCode = 503;
+  throw error;
+}
+
+function assertInboxPolicy(policy) {
+  if (policy[0] === env.chatwoot.inboxId && policy[1] === env.chatwoot.includeGroups) return;
+  const error = new Error('Chatwoot gelen kutusu kapsami okuma sirasinda degisti.');
+  error.code = 'WHATSAPP_CRM_CHATWOOT_READ_IDENTITY_CHANGED'; error.statusCode = 503; throw error;
+}
 
 function isChatwootSendEnabled() {
   if (env.whatsapp.provider === 'waapi') return waapiSendReady();
@@ -128,9 +199,32 @@ export function mapChatwootMessage(message) {
   };
 }
 
-async function readMessages(conversation) {
-  const response = await chatwootApiRequest(`/conversations/${conversation.id}/messages`);
-  const rows = response?.payload || [];
+function historyId(value) {
+  if ((typeof value !== 'number' && typeof value !== 'string') || !/^[1-9]\d*$/.test(String(value))) return null;
+  const id = Number(value);
+  return Number.isSafeInteger(id) && id > 0 ? id : null;
+}
+const historyPageInvalid = () => Object.assign(new Error('Konusma gecmisi dogrulanamadi.'), {code:'WHATSAPP_CRM_HISTORY_PAGE_INVALID',statusCode:502});
+
+async function readMessagesUnshared(conversation, identity, before) {
+  assertBackendIdentity(identity);
+  const response = await chatwootApiRequest(`/conversations/${conversation.id}/messages${before === undefined ? '' : '?before=' + before}`);
+  assertBackendIdentity(identity);
+  // Chatwoot's latest/before page is bounded to 20 raw rows. Reject an oversized
+  // page rather than slicing public rows and advancing past unseen messages.
+  if (!Array.isArray(response?.payload) || response.payload.length > 20) throw historyPageInvalid();
+  const unique = new Map(); let nextBefore = null;
+  for (const row of response.payload) {
+    const id = row && historyId(row.id);
+    if (!id || before !== undefined && id >= before
+      || row.conversation_id !== undefined && historyId(row.conversation_id) !== historyId(conversation.id)
+      || row.private !== undefined && typeof row.private !== 'boolean') throw historyPageInvalid();
+    nextBefore = nextBefore === null ? id : Math.min(nextBefore, id);
+    const previous = unique.get(id);
+    // Conflicting duplicates may never turn a private/activity record public.
+    if (!previous || !previous.private && normalizeChatwootMessageType(previous) !== 'activity') unique.set(id, row);
+  }
+  const rows = [...unique.values()];
   const workflow = rows
     .filter((message) => message.private && message.content_attributes?.melisa_crm)
     .map((message) => ({ id: message.id, ...message.content_attributes.melisa_crm }));
@@ -139,9 +233,24 @@ async function readMessages(conversation) {
       .filter((message) => !message.private && normalizeChatwootMessageType(message) !== 'activity')
       .map(row => enrichWaapiReceipt(mapChatwootMessage(row), row))))
       .sort((a, b) => (Date.parse(a.createdAt) || 0) - (Date.parse(b.createdAt) || 0) || Number(a.id) - Number(b.id))
-      .slice(-20),
+      .slice(before === undefined ? -20 : 0),
     workflow,
+    history: {nextBefore,hasMore:nextBefore !== null},
   };
+}
+
+function readMessages(conversation, before) {
+  const identity = backendIdentity();
+  if (messageReadIdentity !== identity) { messageReads.clear(); messageReadIdentity = identity; }
+  const key = `${conversation.id}:${before === undefined ? 'latest' : before}`;
+  if (messageReads.has(key)) return messageReads.get(key);
+  const pending = readMessagesUnshared(conversation, identity, before);
+  // Share only an in-flight read. The next poll always reads new messages/workflow.
+  if (messageReads.size < CHATWOOT_MAX_OVERVIEW_LIMIT) {
+    messageReads.set(key, pending);
+    pending.finally(() => { if (messageReads.get(key) === pending) messageReads.delete(key); }).catch(() => {});
+  }
+  return pending;
 }
 
 function workflowModel(entries = []) {
@@ -160,22 +269,131 @@ function isGroupConversation(conversation) {
     || String(sender.name || '').toLocaleUpperCase('tr-TR').includes('(GROUP)');
 }
 
-async function readAllConversationPages() {
+async function readAllConversationPagesUnshared(identity, { parallelPages = 1, personnelSelector = null } = {}) {
   const conversations = [];
+  const positions = new Map();
   let page = 1;
   let reportedTotal = 0;
+  let visited = 0;
+  let cacheable = true;
+  const invalid = () => Object.assign(new Error('Chatwoot konusma listesi gecersiz.'), {
+    code: 'WHATSAPP_CRM_CHATWOOT_READ_INVALID', statusCode: 502,
+  });
 
-  while (page <= 20) {
-    const response = await chatwootApiRequest(`/conversations?status=all&page=${page}`);
-    const rows = response?.data?.payload || [];
-    reportedTotal = Number(response?.data?.meta?.all_count || reportedTotal || rows.length);
-    conversations.push(...rows);
+  const acceptPage = response => {
+    assertBackendIdentity(identity);
+    // Chatwoot's filter renderer returns {meta,payload}; older documented
+    // wrappers use {data:{meta,payload}}. Both retain the same bounded contract.
+    const data = personnelSelector ? (response?.data || response) : response?.data;
+    const rows = data?.payload;
+    if (!Array.isArray(rows) || rows.length > CHATWOOT_PAGE_SIZE) throw invalid();
+    const count = data?.meta?.all_count;
+    if (personnelSelector && count === undefined) throw invalid();
+    if (count !== undefined) {
+      if (!(typeof count === 'number' || (typeof count === 'string' && /^\d+$/.test(count)))
+        || !Number.isSafeInteger(Number(count)) || Number(count) < 0 || Number(count) > CHATWOOT_MAX_RAW_CONVERSATIONS) throw invalid();
+      reportedTotal = Number(count);
+    } else { reportedTotal = reportedTotal || rows.length; cacheable = false; }
+    const pageIds = new Set(); let newIds = 0;
+    for (const row of rows) {
+      const id = Number(row?.id);
+      if (!row || typeof row !== 'object' || Array.isArray(row)
+        || !(typeof row.id === 'number' || (typeof row.id === 'string' && /^[1-9]\d*$/.test(row.id)))
+        || !Number.isSafeInteger(id) || id <= 0 || pageIds.has(id)) throw invalid();
+      pageIds.add(id);
+      if (personnelSelector && (Number(row.meta?.assignee?.id) !== personnelSelector.agentId
+        || (personnelSelector.inboxId && Number(row.inbox_id) !== personnelSelector.inboxId))) throw invalid();
+      if (positions.has(id)) {
+        // Activity ordering can overlap offset pages. Keep stable first position,
+        // but use the latest returned assignment/unread/contact metadata.
+        conversations[positions.get(id)] = row;
+      } else {
+        positions.set(id, conversations.length); conversations.push(row); newIds++;
+      }
+    }
+    visited += rows.length;
+    if (rows.length && !newIds) throw invalid();
+    if (conversations.length > reportedTotal
+      || (rows.length < CHATWOOT_PAGE_SIZE && visited < reportedTotal)) throw invalid();
 
-    if (rows.length < CHATWOOT_PAGE_SIZE || conversations.length >= reportedTotal) break;
-    page += 1;
+    return rows.length < CHATWOOT_PAGE_SIZE || visited >= reportedTotal;
+  };
+
+  while (page <= CHATWOOT_MAX_TRAVERSAL_PAGES) {
+    // The first fresh page proves the bounded count. Read subsequent creation-
+    // ordered pages in small concurrent batches, consuming in page order so
+    // duplicate/progress/count checks retain their existing semantics.
+    const remaining = cacheable && reportedTotal > visited
+      ? Math.ceil((reportedTotal - visited) / CHATWOOT_PAGE_SIZE) : 1;
+    const batchSize = Math.min(parallelPages, remaining, CHATWOOT_MAX_TRAVERSAL_PAGES - page + 1);
+    const responses = await Promise.all(Array.from({ length: batchSize }, (_, index) => {
+      assertBackendIdentity(identity);
+      if (!personnelSelector) return chatwootApiRequest(`/conversations?status=all&page=${page + index}&sort_by=created_at_desc`);
+      // Official read-only custom-filter endpoint. The filter values come only
+      // from the verified current actor and existing server inbox policy.
+      const payload = [{ attribute_key:'assignee_id', filter_operator:'equal_to', values:[String(personnelSelector.agentId)], query_operator:null }];
+      if (personnelSelector.inboxId) {
+        payload[0].query_operator = 'AND';
+        payload.push({ attribute_key:'inbox_id', filter_operator:'equal_to', values:[String(personnelSelector.inboxId)], query_operator:null });
+      }
+      return chatwootApiRequest(`/conversations/filter?page=${page + index}&sort_by=created_at_desc`, { method:'POST', body:{ payload } });
+    }));
+    let complete = false;
+    for (const response of responses) {
+      if (acceptPage(response)) { complete = true; break; }
+    }
+    if (complete) break;
+    page += batchSize;
   }
 
-  return conversations;
+  if (visited < reportedTotal) throw invalid();
+  const activity = row => Date.parse(toIsoDate(row.last_activity_at || row.timestamp || row.updated_at)) || 0;
+  conversations.sort((a, b) => activity(b) - activity(a) || Number(b.id) - Number(a.id));
+  return { rows: conversations, cacheable };
+}
+
+function readAllConversationPages({ fresh = false, personnelSelector = null } = {}) {
+  const identity = backendIdentity();
+  // Personnel access must not inherit any traversal that started before its request.
+  // Do not publish a personnel traversal into the management snapshot either.
+  if (fresh) return readAllConversationPagesUnshared(identity, { parallelPages: 4, personnelSelector }).then(result => result.rows);
+  if (conversationSnapshot?.identity === identity) {
+    if (conversationSnapshot.pending) return conversationSnapshot.pending;
+    if (conversationSnapshot.expiresAt > Date.now()) return Promise.resolve(conversationSnapshot.rows);
+  }
+  const entry = { identity, rows: null, expiresAt: 0, pending: null };
+  conversationSnapshot = entry;
+  entry.pending = readAllConversationPagesUnshared(identity).then(({ rows, cacheable }) => {
+    assertBackendIdentity(identity);
+    entry.rows = rows; entry.expiresAt = cacheable ? Date.now() + OVERVIEW_SNAPSHOT_TTL_MS : 0; entry.pending = null;
+    return rows;
+  }).catch(error => {
+    if (conversationSnapshot === entry) conversationSnapshot = null;
+    throw error;
+  });
+  return entry.pending;
+}
+
+// Re-query the authoritative assigned subset immediately before a personnel
+// bootstrap response. One fresh filter validates every returned ID together;
+// no management snapshot, settled cache or message history is reused here.
+export async function assertChatwootAssignedInboxCurrent({ conversationIds, user }) {
+  const agentId = Number(user?.chatwootAgentId);
+  const forbidden = () => Object.assign(new Error('Bu konusma size atanmamis.'), {
+    code:'WHATSAPP_CRM_CONVERSATION_FORBIDDEN', statusCode:403,
+  });
+  if (user?.role !== 'personel' || !Number.isSafeInteger(agentId) || agentId < 1
+    || !Array.isArray(conversationIds) || conversationIds.length > CHATWOOT_MAX_OVERVIEW_LIMIT
+    || conversationIds.some(id => !/^[1-9]\d*$/.test(String(id)) || !Number.isSafeInteger(Number(id)))) throw forbidden();
+  if (!conversationIds.length) return;
+  const identity = backendIdentity(), policy = [env.chatwoot.inboxId, env.chatwoot.includeGroups];
+  const rows = await readAllConversationPages({ fresh:true, personnelSelector:{agentId,inboxId:Number(policy[0]) || null} });
+  assertBackendIdentity(identity); assertInboxPolicy(policy);
+  const assigned = new Map(rows.filter(row => policy[1] || !isGroupConversation(row)).map(row => [Number(row.id),row]));
+  for (const id of conversationIds) {
+    const row = assigned.get(Number(id)); if (!row) throw forbidden();
+    assertConversationAccess(user, {id:Number(id),chatwootAgentId:row.meta?.assignee?.id || null});
+  }
 }
 
 function crmUserIdForAgent(agentId) {
@@ -246,14 +464,85 @@ function mapConversation(conversation, messageData, { canSend, canAssign }) {
   };
 }
 
-export async function listChatwootInboxOverview({ limit = 25, offset = 0, user = null } = {}) {
-  await refreshWaapiReadiness();
-  const sendEnabled = isChatwootSendEnabled();
-  const canSend = sendEnabled && (!user || user.permissions?.includes('crm.send'));
-  const canAssign = (!user || user.permissions?.includes('crm.assign'));
+async function listChatwootInboxBootstrap({ limit, user }) {
+  const identity = backendIdentity();
+  const policy = [env.chatwoot.inboxId, env.chatwoot.includeGroups];
+  const requestedLimit = Number(limit);
+  const safeLimit = Number.isFinite(requestedLimit)
+    ? Math.min(CHATWOOT_PAGE_SIZE, Math.max(1, Math.floor(requestedLimit))) : CHATWOOT_PAGE_SIZE;
+  const seen = new Set();
+  let rows = []; let provenEmpty = false;
+  const invalid = () => Object.assign(new Error('Chatwoot konusma listesi gecersiz.'), {
+    code: 'WHATSAPP_CRM_CHATWOOT_READ_INVALID', statusCode: 502,
+  });
+  for (let page = 1; page <= CHATWOOT_MAX_TRAVERSAL_PAGES; page++) {
+    assertBackendIdentity(identity); assertInboxPolicy(policy);
+    const response = await chatwootApiRequest(`/conversations?status=all&page=${page}&sort_by=last_activity_at_desc`);
+    assertBackendIdentity(identity); assertInboxPolicy(policy);
+    const payload = response?.data?.payload;
+    if (!Array.isArray(payload) || payload.length > CHATWOOT_PAGE_SIZE) throw invalid();
+    const rawCount = response?.data?.meta?.all_count;
+    const countKnown = rawCount !== undefined;
+    if (countKnown && (!(typeof rawCount === 'number' || (typeof rawCount === 'string' && /^\d+$/.test(rawCount)))
+      || !Number.isSafeInteger(Number(rawCount)) || Number(rawCount) < 0
+      || Number(rawCount) > CHATWOOT_MAX_RAW_CONVERSATIONS)) throw invalid();
+    const pageIds = new Set(); let added = 0;
+    for (const row of payload) {
+      const id = Number(row?.id);
+      if (!row || typeof row !== 'object' || Array.isArray(row)
+        || !(typeof row.id === 'number' || (typeof row.id === 'string' && /^[1-9]\d*$/.test(row.id)))
+        || !Number.isSafeInteger(id) || id <= 0 || pageIds.has(id)) throw invalid();
+      pageIds.add(id); if (!seen.has(id)) { seen.add(id); added++; }
+    }
+    if (payload.length && !added) throw invalid();
+    if (countKnown && (seen.size > Number(rawCount)
+      || (payload.length < CHATWOOT_PAGE_SIZE && seen.size < Number(rawCount)))) throw invalid();
+    rows = payload.filter(row => (!policy[0] || Number(row.inbox_id) === Number(policy[0]))
+      && (policy[1] || !isGroupConversation(row))).slice(0, safeLimit);
+    if (rows.length) break;
+    if (payload.length < CHATWOOT_PAGE_SIZE || (countKnown && seen.size >= Number(rawCount))) {
+      provenEmpty = countKnown && seen.size === Number(rawCount); break;
+    }
+    if (page === CHATWOOT_MAX_TRAVERSAL_PAGES) throw invalid();
+  }
+  assertBackendIdentity(identity); assertInboxPolicy(policy);
+  const canSend = isChatwootSendEnabled() && Boolean(user.permissions?.includes('crm.send'));
+  const canAssign = Boolean(user.permissions?.includes('crm.assign'));
+  const conversations = rows.map(row => {
+    const conversation = mapConversation(row, { messages: [], workflow: [] }, { canSend, canAssign });
+    for (const key of ['messages', 'notes', 'tasks', 'productInterests', 'quotes']) delete conversation[key];
+    return { ...conversation, messagesLoaded: false, detailLoaded: false, preview: 'Son mesaj yükleniyor…', waitingForReply: null };
+  });
+  const count = provenEmpty ? 0 : null;
+  return {
+    conversations,
+    summary: { total: count, open: count, unread: count, pendingHumanReply: count, complete: provenEmpty, source: 'chatwoot-crm' },
+    pagination: { limit: safeLimit, offset: 0, hasNext: !provenEmpty, nextOffset: provenEmpty ? null : 0, total: count },
+    capabilities: { read: true, send: canSend, assign: canAssign, updateStatus: false, localWorkflow: false },
+  };
+}
+
+export async function listChatwootInboxOverview({ limit = 25, offset = 0, user = null, view } = {}) {
+  const seeded=cleanSyntheticProjection(user);
+  if(seeded){assertCrmPermission(user,'crm.view');const rows=seeded.filter(row=>user?.role!=='personel'||Boolean(user.chatwootAgentId)&&row.chatwootAgentId===user.chatwootAgentId),safeLimit=Math.min(Math.max(Number(limit)||25,1),500),safeOffset=Math.max(Number(offset)||0,0),conversations=rows.slice(safeOffset,safeOffset+safeLimit),total=rows.length;return {conversations,summary:{total,complete:true,open:total,unread:0,unassigned:rows.filter(row=>!row.chatwootAgentId).length,pendingHumanReply:total,source:'clean-synthetic-projection'},pagination:{limit:safeLimit,offset:safeOffset,total,hasNext:safeOffset+conversations.length<total,nextOffset:safeOffset+conversations.length<total?safeOffset+conversations.length:null},capabilities:{read:true,send:false,assign:Boolean(cleanCrmManagement&&user?.permissions?.includes('crm.assign'))},boundaries:['Only the conversation is synthetic seed metadata; products, prices and drafts are read from the separate clean ERP SQL application.']};}
+  if (view === 'bootstrap' && ['patron', 'mudur'].includes(user?.role)) {
+    return listChatwootInboxBootstrap({ limit, user });
+  }
+  const readiness = refreshWaapiReadiness();
+  // Observe failures immediately while the independent read-only traversal runs.
+  readiness.catch(() => {});
+  const identity = backendIdentity();
+  const policy = [env.chatwoot.inboxId, env.chatwoot.includeGroups];
   const safeOffset = Math.max(Number(offset) || 0, 0);
   const safeLimit = Math.min(Math.max(Number(limit) || CHATWOOT_PAGE_SIZE, 1), CHATWOOT_MAX_OVERVIEW_LIMIT);
-  const allRows = await readAllConversationPages();
+  // Personnel assignment is an access boundary: its own fresh traversal cannot
+  // reuse either a settled snapshot or another request's older in-flight rows.
+  const agentId = Number(user?.chatwootAgentId);
+  const personnelSelector = user?.role === 'personel' && view === 'bootstrap'
+    ? { agentId, inboxId:Number(policy[0]) || null } : null;
+  const allRows = personnelSelector && (!Number.isSafeInteger(agentId) || agentId < 1) ? []
+    : await readAllConversationPages({ fresh: user?.role === 'personel' || view === 'bootstrap', personnelSelector });
+  assertBackendIdentity(identity);
   const inboxRows = env.chatwoot.inboxId
     ? allRows.filter((conversation) => Number(conversation.inbox_id) === Number(env.chatwoot.inboxId))
     : allRows;
@@ -261,17 +550,35 @@ export async function listChatwootInboxOverview({ limit = 25, offset = 0, user =
     ? inboxRows
     : inboxRows.filter((conversation) => !isGroupConversation(conversation));
   const accessibleRows = user?.role === 'personel'
-    ? visibleRows.filter((conversation) => Number(conversation.meta?.assignee?.id) === Number(user.chatwootAgentId))
+    ? visibleRows.filter((conversation) => user.chatwootAgentId && Number(conversation.meta?.assignee?.id) === Number(user.chatwootAgentId))
     : visibleRows;
   const rows = accessibleRows.slice(safeOffset, safeOffset + safeLimit);
-  const messagesByConversation = await mapWithConcurrency(rows, 5, readMessages);
+  const metadataOnly = user?.role === 'personel' && view === 'bootstrap';
+  const [messagesByConversation] = await Promise.all([
+    metadataOnly ? Promise.resolve([]) : mapWithConcurrency(rows, 5, row => readMessages(row)), readiness,
+  ]);
+  assertBackendIdentity(identity);
+  assertInboxPolicy(policy);
+  // Normal personnel assignment is checked after asynchronous history/readiness work.
+  // A normal personnel request must not publish a conversation reassigned while
+  // its messages were in flight. Reuse the bounded authoritative subset check;
+  // management caching and the existing rehearsal guard remain unchanged.
+  if (user?.role === 'personel' && !user.testPersonnel && rows.length) {
+    await assertChatwootAssignedInboxCurrent({conversationIds:rows.map(row => row.id), user});
+    assertBackendIdentity(identity); assertInboxPolicy(policy);
+  }
   const total = accessibleRows.length;
+  const sendEnabled = isChatwootSendEnabled();
+  const canSend = sendEnabled && (!user || user.permissions?.includes('crm.send'));
+  const canAssign = (!user || user.permissions?.includes('crm.assign'));
 
-  const conversations = rows.map((conversation, rowIndex) => mapConversation(
-    conversation,
-    messagesByConversation[rowIndex] || { messages: [], workflow: [] },
-    { canSend, canAssign },
-  ));
+  const conversations = rows.map((conversation, rowIndex) => {
+    const mapped = mapConversation(conversation,
+      messagesByConversation[rowIndex] || { messages: [], workflow: [] }, { canSend, canAssign });
+    if (!metadataOnly) return mapped;
+    for (const key of ['messages', 'notes', 'tasks', 'productInterests', 'quotes']) delete mapped[key];
+    return { ...mapped, messagesLoaded: false, detailLoaded: false, preview: 'Son mesaj yükleniyor…', waitingForReply: null };
+  });
 
   return {
     conversations,
@@ -279,7 +586,7 @@ export async function listChatwootInboxOverview({ limit = 25, offset = 0, user =
       total,
       open: accessibleRows.filter((item) => item.status === 'open').length,
       unread: accessibleRows.reduce((sum, item) => sum + Number(item.unread_count || 0), 0),
-      pendingHumanReply: conversations.filter((item) => item.status === 'open' && item.messages.at(-1)?.direction === 'incoming').length,
+      pendingHumanReply: metadataOnly ? null : conversations.filter((item) => item.status === 'open' && item.messages.at(-1)?.direction === 'incoming').length,
       source: 'chatwoot-crm',
     },
     pagination: {
@@ -307,41 +614,72 @@ export async function listChatwootInboxOverview({ limit = 25, offset = 0, user =
   };
 }
 
-export async function getChatwootConversationDetail({ conversationId, user }) {
-  await refreshWaapiReadiness();
+async function readAccessibleConversation({ conversationId, user }) {
+  const identity = backendIdentity(), policy = [env.chatwoot.inboxId, env.chatwoot.includeGroups];
   const numericId = Number(conversationId);
-  if (!Number.isInteger(numericId) || numericId < 1) {
-    const error = new Error('Konusma kimligi gecersiz.');
-    error.code = 'WHATSAPP_CRM_CONVERSATION_INVALID';
-    error.statusCode = 400;
-    throw error;
-  }
+  if (!Number.isSafeInteger(numericId) || numericId < 1) throw Object.assign(new Error('Konusma kimligi gecersiz.'), {code:'WHATSAPP_CRM_CONVERSATION_INVALID',statusCode:400});
+  let raw;
+  try { raw = await chatwootApiRequest('/conversations/' + numericId); } catch(error) { if (error?.statusCode !== 404) throw error; }
+  assertBackendIdentity(identity); assertInboxPolicy(policy);
+  if (!raw || (env.chatwoot.inboxId && Number(raw.inbox_id) !== Number(env.chatwoot.inboxId)) || (!env.chatwoot.includeGroups && isGroupConversation(raw)))
+    throw Object.assign(new Error('Konusma bulunamadi.'), {code:'WHATSAPP_CRM_CONVERSATION_NOT_FOUND',statusCode:404});
+  const access = { id:numericId, chatwootAgentId:raw.meta?.assignee?.id || null };
+  assertConversationAccess(user, access);
+  return { raw, access, identity, policy };
+}
+// Fresh assignment metadata only: never hydrates message history or media.
+export async function getChatwootConversationAccess({ conversationId, user }) {
+  const seeded=cleanSyntheticProjection(user);if(seeded){const row=seeded.find(value=>value.id===String(conversationId));if(!row)throw Object.assign(Error('Konuşma bulunamadı.'),{code:'WHATSAPP_CRM_CONVERSATION_NOT_FOUND',statusCode:404});return assertConversationAccess(user,row);}
+  return (await readAccessibleConversation({conversationId,user})).access;
+}
 
-  let rawConversation;
-  try {
-    rawConversation = await chatwootApiRequest(`/conversations/${numericId}`);
-  } catch (error) {
-    if (error?.statusCode !== 404) throw error;
-  }
-  if (!rawConversation
-    || (env.chatwoot.inboxId && Number(rawConversation.inbox_id) !== Number(env.chatwoot.inboxId))
-    || (!env.chatwoot.includeGroups && isGroupConversation(rawConversation))) {
-    const error = new Error('Konusma bulunamadi.');
-    error.code = 'WHATSAPP_CRM_CONVERSATION_NOT_FOUND';
-    error.statusCode = 404;
-    throw error;
-  }
-
-  const messageData = await readMessages(rawConversation);
-  const conversation = mapConversation(rawConversation, messageData, {
-    canSend: isChatwootSendEnabled() && Boolean(user?.permissions?.includes('crm.send')),
-    canAssign: Boolean(user?.permissions?.includes('crm.assign')),
-  });
-
-  return assertConversationAccess(user, conversation);
+// Namespace-preserving metadata read for the approved 7733 TEST interest flow.
+// No local PG ID, customer phone, messages or provider write is returned.
+export async function getChatwootProductRequestBinding({ conversationId, user }) {
+  const denied = () => Object.assign(new Error('Ürün talebi müşteri bağı doğrulanamadı.'), {code:'CUSTOMER_REQUEST_BINDING_UNAVAILABLE',statusCode:503});
+  const freshUser = () => {
+    const current = user?.id && findCrmUserById(user.id);
+    if (!current?.active || user.testAdmin || user.testPersonnel || !['patron','mudur','personel'].includes(current.role)
+      || normalSessionFingerprint(current) !== normalSessionFingerprint(user)) throw Object.assign(new Error('Normal CRM yetkisi değişti.'), {code:'CUSTOMER_REQUEST_FORBIDDEN',statusCode:403});
+    assertCrmPermission(current, 'crm.view'); return current;
+  };
+  if (process.env.CRM_ISOLATED_PREPARATION !== 'true' || process.env.CRM_TEST_EXPECTED_DATABASE !== 'MELISA_ERP_CRM_SHARED_TEST_20261009_02'
+    || env.whatsapp.testNumberOnly !== true || !env.whatsapp.allowedTestNumbers.some(value => resolvePhoneIdentity(value).normalizedPhone === '905387217733')) throw denied();
+  const actor = freshUser(), {raw,identity,policy} = await readAccessibleConversation({conversationId,user:actor});
+  freshUser(); assertBackendIdentity(identity); assertInboxPolicy(policy);
+  const positive = value => Number.isSafeInteger(Number(value)) && Number(value)>0 && String(Number(value))===String(value);
+  const phone = resolvePhoneIdentity(raw?.meta?.sender?.phone_number);
+  if (!positive(env.chatwoot.accountId) || !positive(raw?.id) || String(raw.id)!==String(Number(conversationId))
+    || !positive(raw.inbox_id) || !positive(raw.meta?.sender?.id) || !positive(raw.meta?.assignee?.id)
+    || raw.account_id!==undefined&&String(raw.account_id)!==String(env.chatwoot.accountId)
+    || !phone.verified || phone.normalizedPhone!=='905387217733' || isGroupConversation(raw)) throw denied();
+  assertConversationAccess(freshUser(), {id:Number(raw.id),chatwootAgentId:Number(raw.meta.assignee.id)});
+  const accountId=String(env.chatwoot.accountId),inboxId=String(raw.inbox_id),contactId=String(raw.meta.sender.id);
+  return {backend:'chatwoot',provider:'chatwoot',accountId,inboxId,chatwootConversationId:String(raw.id),chatwootContactId:contactId,
+    assigneeId:String(raw.meta.assignee.id),customerFingerprint:createHash('sha256').update(JSON.stringify([phone.normalizedPhone,accountId,inboxId,contactId])).digest('hex')};
+}
+export async function getChatwootConversationDetail({ conversationId, user, before }) {
+  if (before !== undefined && historyId(before) === null) throw Object.assign(new Error('Gecmis imleci gecersiz.'), {code:'WHATSAPP_CRM_HISTORY_CURSOR_INVALID',statusCode:400});
+  if(process.env.CRM_TEST_PROFILE==='clean-synthetic-20261022'){const row=await getChatwootConversationAccess({conversationId,user});return before===undefined?row:{...row,messages:[]};}
+  await refreshWaapiReadiness();
+  const {raw,identity,policy} = await readAccessibleConversation({conversationId,user});
+  if (before !== undefined && historyId(raw.id) !== historyId(conversationId)) throw historyPageInvalid();
+  const messageData = await readMessages(raw, before);
+  assertBackendIdentity(identity); assertInboxPolicy(policy);
+  // Reassignment while history is being read must not return the old actor's messages.
+  if (before !== undefined) {
+    const fresh = await readAccessibleConversation({conversationId,user});
+    if (historyId(fresh.raw.id) !== historyId(conversationId)) throw historyPageInvalid();
+  } else if (user?.role === 'personel') await getChatwootConversationAccess({conversationId,user});
+  assertBackendIdentity(identity); assertInboxPolicy(policy);
+  return {...assertConversationAccess(user, mapConversation(raw, messageData, {
+    canSend:isChatwootSendEnabled() && Boolean(user?.permissions?.includes('crm.send')),
+    canAssign:Boolean(user?.permissions?.includes('crm.assign')),
+  })),history:messageData.history};
 }
 
 export async function listChatwootAgents() {
+  if(cleanSyntheticProjection()){return listConfiguredCrmUsers().filter(user=>user.active&&user.chatwootAgentId).map(user=>({id:user.chatwootAgentId,name:user.displayName,role:user.role,availability:'synthetic',synthetic:true}));}
   const response = await chatwootApiRequest('/agents');
   const rows = Array.isArray(response) ? response : (response?.payload || []);
   return rows.map((agent) => ({

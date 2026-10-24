@@ -1,0 +1,64 @@
+{
+  "events": [
+    {
+      "event": "Network.requestWillBeSent",
+      "url": "http://127.0.0.1:62800/api/live/crm/erp/v2/drafts/45064956-9c91-470f-a7b6-a9330b60e456",
+      "method": "GET",
+      "requestId": "14956.984"
+    },
+    {
+      "event": "Network.responseReceived",
+      "url": "http://127.0.0.1:62800/api/live/crm/erp/v2/drafts/45064956-9c91-470f-a7b6-a9330b60e456",
+      "status": 200,
+      "requestId": "14956.984"
+    },
+    {
+      "event": "Network.requestWillBeSent",
+      "url": "http://127.0.0.1:62800/api/live/crm/erp/v2/drafts/45064956-9c91-470f-a7b6-a9330b60e456/sale",
+      "method": "GET",
+      "requestId": "14956.985"
+    },
+    {
+      "event": "Network.responseReceived",
+      "url": "http://127.0.0.1:62800/api/live/crm/erp/v2/drafts/45064956-9c91-470f-a7b6-a9330b60e456/sale",
+      "status": 200,
+      "requestId": "14956.985"
+    }
+  ],
+  "data": {
+    "success": true,
+    "data": {
+      "schemaVersion": "melisa-order-sale.v1",
+      "environment": "CLEAN_SYNTHETIC_TEST",
+      "environmentId": "e662fd94-d797-4b3b-938a-d143ad758b67",
+      "requestId": "45064956-9c91-470f-a7b6-a9330b60e456",
+      "order": {
+        "id": "3",
+        "documentNo": "CR2-450649569C91470FA7B6A9330B",
+        "documentDate": "2026-10-22",
+        "customerId": "1",
+        "customerName": "Örnek Mağaza",
+        "currency": "TRY",
+        "totalExact4": "376.5000"
+      },
+      "state": "FINALIZED",
+      "sale": {
+        "id": "1",
+        "documentNo": "CRS-20261022-3",
+        "status": "finalized",
+        "customerId": "1",
+        "currency": "TRY",
+        "totalExact4": "376.5000",
+        "stockEffect": true,
+        "ledgerEffect": true,
+        "collectionEffect": false,
+        "reservationEffect": false
+      },
+      "revision": "7e5c26b3ef875d3694995a71bd3eddd873a25f51c546eae856cc7228ffe5eeaf",
+      "capabilities": {
+        "canConvert": false,
+        "canFinalize": false
+      }
+    }
+  }
+}

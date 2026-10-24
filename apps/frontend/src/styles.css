@@ -540,6 +540,10 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
 .user-card dl span { display: flex; align-items: center; justify-content: space-between; color: #76879c; font-size: 8px; }
 .user-card dl strong { color: #405b79; font-size: 8.5px; }
 .user-card > button { width: 100%; }
+.inventory-account > div { grid-template-columns: minmax(0, 1fr) auto; align-items: start; }
+.inventory-account > div strong { overflow: visible; text-overflow: clip; white-space: normal; overflow-wrap: anywhere; }
+.inventory-account > div small { overflow-wrap: anywhere; }
+.inventory-account > div > b { white-space: nowrap; }
 .integration-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-bottom: 15px; }
 .integration-grid.crm-only { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .integration-card { padding: 16px; border: 1px solid #dfe7f1; border-radius: 16px; background: white; box-shadow: 0 8px 22px rgba(30, 62, 100, .04); }
@@ -849,6 +853,12 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
 .erp-order-dialog input,.erp-order-dialog select { min-height:44px; max-width:100%; border:1px solid #d5e1dc; border-radius:8px; padding:10px; background:white; }
 .erp-order-dialog form { margin:14px 0; }
 .erp-order-dialog [role=alert] { color:#9b302c; }
+.erp-draft-reference,.order-id small { overflow-wrap:anywhere; }
+@media(max-width:760px) { .backoffice-page .order-grid { grid-template-columns:1fr; } .order-card footer button { min-height:44px; font-size:12px; } }
 .catalog-action-buttons { flex-wrap:wrap; }
-@media(max-width:760px) { .erp-order-dialog { width:calc(100vw - 20px); max-height:94dvh; } .catalog-action-buttons button { min-height:44px; } }
+@media(max-width:760px) {
+ .erp-order-backdrop { padding:10px; grid-template-columns:minmax(0,1fr); }
+ .erp-order-backdrop > .erp-order-dialog { width:100%; min-width:0; max-width:100%; max-height:calc(100dvh - 20px); }
+ .catalog-action-buttons button { min-height:44px; }
+}
 .test-environment-label{padding:5px 12px;background:#fff4d6;color:#715000;font-size:12px;font-weight:700}

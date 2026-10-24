@@ -7,8 +7,10 @@ import { apiRateLimit, crmCors, securityHeaders } from './middleware/security.js
 import { routes } from './routes/index.js';
 import { createWaapiWebhookRoutes } from './routes/waapiWebhookRoutes.js';
 import { createMessageUploadParser } from './middleware/messageUploadParser.js';
+import {customerRequestRuntimeConfig} from './services/customerProductRequestIntegration.mjs';
+import {terminalHandoffEnabled,cleanCrmManagementEnabled} from './services/crmAuthService.js';
 
-export function createApp() {
+export function createApp({customerProductRequestRouter=null}={}) {
   const app = express();
 
   // cloudflared is the only reverse proxy hop in the public deployment.
@@ -19,6 +21,27 @@ export function createApp() {
   app.use(crmCors());
   app.use(requestContext);
   app.use(apiRateLimit());
+  // The separate TEST customer request journal has no upstream side effects.
+  // Mount only its exact router; the existing preparation write denial stays intact.
+  if(customerProductRequestRouter){
+    if(!customerRequestRuntimeConfig())throw Error('CUSTOMER_REQUEST_PROOF_REQUIRED');
+    app.use(['/customer-product-requests','/crm/customer-product-requests'],express.json({limit:'16kb'}));
+    app.use(customerProductRequestRouter);
+  }
+  // Shared preparation reads existing CRM data; all upstream writes are closed.
+  // Native ERP drafts use the separate isolated order proxy, never this gateway.
+  app.use((req,res,next)=>{
+    const managementWrite=(req.method==='POST'&&req.path==='/crm/users'
+      ||req.method==='PATCH'&&/^\/crm\/users\/clean-managed-[a-f0-9-]{36}$/.test(req.path)
+      ||req.method==='POST'&&/^\/crm\/conversations\/(155|156)\/assign$/.test(req.path))&&cleanCrmManagementEnabled();
+    if(process.env.CRM_ISOLATED_PREPARATION==='true'&&!['GET','HEAD','OPTIONS'].includes(req.method)
+      &&!managementWrite
+      &&!(req.method==='POST'&&(req.path==='/auth/login'||req.path==='/auth/terminal-handoff'&&terminalHandoffEnabled()||((process.env.CRM_NORMAL_REFRESH_ENABLED==='true'||process.env.CRM_CUSTOMER_PRODUCT_REQUEST_ENABLED==='true')&&['/auth/refresh','/auth/logout'].includes(req.path))))){
+      return res.status(403).json({success:false,error:{code:'CRM_PREPARATION_READ_ONLY',message:'Ortak hazırlık ortamında mevcut CRM kayıtları değiştirilemez.'}});
+    }
+    next();
+  });
+  app.use('/crm/users',express.json({limit:'8kb'}));
   app.use(createWaapiWebhookRoutes());
   app.use(createMessageUploadParser());
   app.use(express.json({ limit: env.requestBodyLimit }));

@@ -1,0 +1,39 @@
+import {createHash} from 'node:crypto';
+export const CATALOG_CONTRACT='melisa-catalog.v1';
+export const CATALOG_SOURCE='melisa-erp-catalog';
+export const nativeProductId=value=>{if(typeof value==='string'&&!/^[1-9]\d*$/.test(value)||!['string','number'].includes(typeof value)||!Number.isSafeInteger(Number(value))||Number(value)<1)throw Error('ERP_CATALOG_PRODUCT_CONTRACT');return Number(value);};
+export const crmProductId=value=>`erp-${nativeProductId(value)}`;
+export function parseCrmProductId(value){if(typeof value!=='string'||!/^erp-[1-9]\d*$/.test(value))throw Error('INVALID_PRODUCT_ID');return nativeProductId(value.slice(4));}
+const exact=value=>value===null?null:typeof value==='string'&&/^-?(?:0|[1-9]\d{0,19})\.\d{8}$/.test(value)?value:(()=>{throw Error('ERP_CATALOG_PRODUCT_CONTRACT');})();
+function canonicalPricing(value,priceExact){
+ if(!value||typeof value!=='object'||Array.isArray(value)||Object.keys(value).sort().join()!=='origin,sourcePriceExact,versionId')throw Error('ERP_CATALOG_PRODUCT_CONTRACT');
+ const {origin,versionId}=value,sourcePriceExact=exact(value.sourcePriceExact);
+ if(origin==='MANUAL'){
+  // Native producer versions are signed64 decimal strings; never round through Number.
+  if(typeof versionId!=='string'||!/^[1-9]\d{0,18}$/.test(versionId)||BigInt(versionId)>9223372036854775807n)throw Error('ERP_CATALOG_PRODUCT_CONTRACT');
+ }else if(origin!=='SOURCE'||versionId!==null||sourcePriceExact!==priceExact)throw Error('ERP_CATALOG_PRODUCT_CONTRACT');
+ // This is a source snapshot, not native transaction authority.
+ return {origin,versionId,sourcePriceExact};
+}
+const number=value=>{if(value===null)return null;const n=Number(value);return Number.isFinite(n)&&Math.abs(n)<=Number.MAX_SAFE_INTEGER?n:null;};
+export function canonicalProduct(row,{cleanSynthetic=false}={}){
+ const erpProductId=nativeProductId(row?.id),id=crmProductId(erpProductId);
+ if(typeof row.stockCode!=='string'||!row.stockCode||!(row.productName===null||typeof row.productName==='string')||typeof row.isActive!=='boolean'||typeof row.hold?.blocked!=='boolean'||row.provenance?.verified!==true||(cleanSynthetic?row.provenance.kind!=='synthetic-test':row.provenance.kind==='synthetic-test')||!Array.isArray(row.salePrices)||!Array.isArray(row.barcodes))throw Error('ERP_CATALOG_PRODUCT_CONTRACT');
+ const blocked=!row.isActive||row.hold.blocked;
+ const salePrices=row.salePrices.map(p=>{if(p.type!=='sale'||!['TRY','USD','EUR'].includes(p.currency)||!Number.isInteger(p.tier)||p.tier<1||p.tier>6||typeof p.isMainUnit!=='boolean'||typeof p.sourceKey!=='string')throw Error('ERP_CATALOG_PRODUCT_CONTRACT');const priceExact=exact(p.priceExact);return {id:String(nativeProductId(p.id)),type:'sale',tier:p.tier,currency:p.currency,isMainUnit:p.isMainUnit,sourceKey:p.sourceKey,unitSourceId:String(nativeProductId(p.unitSourceId)),priceExact,...(Object.hasOwn(p,'pricing')?{pricing:canonicalPricing(p.pricing,priceExact)}:{})};});
+ // Never pick a currency, tier or unit when the source exposes multiple choices.
+ const candidates=blocked?[]:salePrices.filter(p=>p.tier===1&&p.isMainUnit&&p.priceExact!==null&&number(p.priceExact)>0);
+ const price=candidates.length===1?candidates[0]:null;
+ const stockQuantityExact=exact(row.stockQuantityExact),stockQuantity=number(stockQuantityExact);
+ const photoReady=!blocked&&row.photo?.status==='available'&&row.photo.verified===true&&row.photo.sourceKey===row.provenance.sourceKey&&row.photo.url===`/api/catalog/products/${erpProductId}/photo?variant=preview`&&/^[a-f0-9]{64}$/.test(row.photo.sha256||'');
+ const product={id,erpProductId,stockCode:row.stockCode,safeCode:row.displayCode,productName:row.productName,barcode:row.barcodes.find(b=>b.isPrimary)?.value??row.barcodes[0]?.value??null,barcodes:row.barcodes,brand:row.classification?.verified?row.classification.brand:null,category:row.classification?.verified?row.classification.productType:null,unit:row.unit??null,isActive:row.isActive,hold:row.hold,status:blocked?'quarantined':'active',salePrices,salePrice:price?number(price.priceExact):null,priceExact:price?.priceExact??null,currency:price?.currency??null,priceSourceKey:price?.sourceKey??null,priceStatus:price?'recorded':'unknown',priceBasis:'per-item',priceBasisStatus:'user-confirmed',stockQuantityExact,stockQuantity,stockStatus:stockQuantity===null?'unknown':stockQuantity>0?'in-stock':'not-positive',photo:photoReady?{status:'available',url:row.photo.url,sourceKey:row.photo.sourceKey,sha256:row.photo.sha256,verified:true,validationStatus:'CONFIRMED'}:{status:'missing',url:null,verified:false},photoPath:photoReady?`/crm/catalog/products/${id}/photo`:null,thumbnailPath:photoReady?`/crm/catalog/products/${id}/photo?variant=thumbnail`:null,photoStatus:photoReady?'guarded-path':'unavailable',sourceUpdatedAt:null,pricedDocumentEligible:false,pricedDocumentBlockReason:'SOURCE_FRESHNESS_UNVERIFIED'};
+ product.revision=createHash('sha256').update(JSON.stringify(product)).digest('hex');return product;
+}
+export function canonicalMeta(meta,query={},actor,businessScope=null){
+ const cleanSynthetic=businessScope?.scopeKind==='VERIFIED_CLEAN_SYNTHETIC_TEST'&&businessScope.database==='MELISA_ERP_CLEAN_TEST_20261022';
+ if(meta?.schemaVersion!==CATALOG_CONTRACT||meta.readOnly!==true||meta.freshLive!==false||!(cleanSynthetic?Number.isSafeInteger(meta.scopeCounts?.syntheticTest)&&meta.scopeCounts.syntheticTest>=0:meta.scopeCounts?.syntheticTest===0)||!Number.isSafeInteger(meta.total)||meta.total<0||!Number.isSafeInteger(meta.page)||meta.page<1||!Number.isSafeInteger(meta.limit)||meta.limit<1||meta.limit>50||!Array.isArray(meta.filters?.brands)||!Array.isArray(meta.filters?.productTypes))throw Error('ERP_CATALOG_LIST_CONTRACT');
+ const page=meta.page,limit=meta.limit,total=meta.total,totalPages=Math.max(1,Math.ceil(total/limit));
+ if(businessScope!==null&&(Object.keys(businessScope).sort().join()!=='database,scopeKind,supportedCurrencies'||!cleanSynthetic&&(businessScope.scopeKind!=='VERIFIED_BUSINESS_TEST'||businessScope.database!=='MELISA_ERP_CRM_SHARED_TEST_20261009_02')||JSON.stringify(businessScope.supportedCurrencies)!==JSON.stringify(['TRY','USD','EUR'])))throw Error('ERP_CATALOG_BUSINESS_SCOPE_INVALID');
+ const environment=cleanSynthetic?'CLEAN_SYNTHETIC_TEST':'CANONICAL_TEST';
+ return {...(businessScope?{businessScope}:{}),...(cleanSynthetic?{synthetic:true}:{}),source:CATALOG_SOURCE,catalogVersion:CATALOG_CONTRACT,environment,sourceContract:CATALOG_CONTRACT,sourceIdentity:{contract:CATALOG_CONTRACT,environment,sourceAsOf:meta.sourceAsOf,readAt:meta.readAt,freshLive:false},fetchedAt:meta.readAt,sourceAsOf:meta.sourceAsOf,sourceUpdatedAt:null,cached:false,sourceDatabaseVerified:true,stockFreshness:'native-test',freshLive:false,verifiedCrmActorId:String(actor.id),verifiedCrmRole:actor.role,page,limit,total,totalPages,hasNextPage:page<totalPages,hasPreviousPage:page>1,totalPhotoEligible:null,photoEligibility:'confirmed-product-identity',filters:{search:query.search||'',barcode:query.barcode||'',brand:query.brand||null,category:query.category||null,hasImage:query.hasImage==='true'},facets:{scope:'current-query-excluding-own-facet',brands:meta.filters.brands.map(value=>({value,count:null})),categories:meta.filters.productTypes.map(value=>({value,count:null}))},capabilities:{read:true,unpricedCatalog:true,pricedPdf:false}};
+}

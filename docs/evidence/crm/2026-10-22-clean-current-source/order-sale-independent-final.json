@@ -1,0 +1,135 @@
+{
+  "databaseName": "MELISA_ERP_CLEAN_TEST_20261022",
+  "serverName": "Semih\\MELISADEV",
+  "protectedDigests": [
+    {
+      "scope": "media",
+      "digest": "0DDF74E6AEF4F708A3DD7CD27FB0BA0E2A60A567DE74E76BE18EE1506631BC92",
+      "unchanged": true
+    },
+    {
+      "scope": "native_receipts",
+      "digest": "4F90D6FA75C0190ADC1431CA293964A0899F565D137433E5FFE921CCED0A3046",
+      "unchanged": true
+    },
+    {
+      "scope": "old_permissions",
+      "digest": "DF33206C1A9DE4BD51B93168B0BAFFAB9499F1280EE36013B2A2F75677F088F6",
+      "unchanged": true
+    },
+    {
+      "scope": "order_lines",
+      "digest": "7E9EF77A1C974E5405D83074E5EDF19BF783CC7D90CAD0C98EF21B7DDD050725",
+      "unchanged": true
+    },
+    {
+      "scope": "orders",
+      "digest": "F09A94F59E654A690AD90F796781E7DAD09BE88F423281783EE5D0B28428200E",
+      "unchanged": true
+    },
+    {
+      "scope": "original_media",
+      "digest": "55509A6A3E4155877839F3CB2B1D479E2CCD0BD8330E3E87F13362296B41D023",
+      "unchanged": true
+    },
+    {
+      "scope": "prices",
+      "digest": "13A9334189B395A06F9DE992D8B8D0E46A902048E7654638FC5FEA24AB7AFE14",
+      "unchanged": true
+    }
+  ],
+  "products": [
+    {
+      "id": 1,
+      "stock_code": "0007 MELISA",
+      "current_stock_qty": 21,
+      "average_cost_try": 0,
+      "purchase_price": 0,
+      "sales_price": 125.5
+    },
+    {
+      "id": 2,
+      "stock_code": "0161 MELISA",
+      "current_stock_qty": 12,
+      "average_cost_try": 0,
+      "purchase_price": 0,
+      "sales_price": 8.55
+    },
+    {
+      "id": 3,
+      "stock_code": "0205 MELISA",
+      "current_stock_qty": 0,
+      "average_cost_try": 0,
+      "purchase_price": 0,
+      "sales_price": 10.25
+    }
+  ],
+  "customers": [
+    {
+      "id": 1,
+      "customer_code": "ORNEK-M01",
+      "currency_code": "TRY",
+      "balance": 376.5
+    }
+  ],
+  "suppliers": [
+    {
+      "id": 1,
+      "balance": 0
+    }
+  ],
+  "links": [
+    {
+      "order_id": 3,
+      "invoice_id": 1,
+      "status": "finalized",
+      "created_by": 15,
+      "approved_by": 17,
+      "approved_at": "2026-10-22T13:09:19.3588182"
+    }
+  ],
+  "actions": [
+    {
+      "request_id": "0CFCFFAF-FC4E-42EC-A7C2-4A992D678AD1",
+      "order_id": 3,
+      "invoice_id": 1,
+      "actor_id": 17,
+      "operation": "finalize"
+    },
+    {
+      "request_id": "ADA7E727-B2B2-44D3-8247-6DAFA3D5ED3B",
+      "order_id": 3,
+      "invoice_id": 1,
+      "actor_id": 15,
+      "operation": "convert"
+    }
+  ],
+  "stockMovements": [
+    {
+      "id": 2,
+      "product_id": 1,
+      "source_type": "sales_invoice",
+      "source_id": 1,
+      "quantity_out": 3,
+      "quantity_net": -3,
+      "unit_cost_try": null,
+      "average_cost_try_after": null,
+      "created_by": 17
+    }
+  ],
+  "customerMovements": [
+    {
+      "sales_invoice_id": 1,
+      "movement_type": "sales_invoice",
+      "account_currency": "TRY",
+      "account_amount": 376.5,
+      "balance_effect": 376.5
+    }
+  ],
+  "orders": 3,
+  "invoices": 1,
+  "pendingIntents": 0,
+  "nativeDefinitions": 8,
+  "saleDefinitions": 12,
+  "compatibilityDefinitions": 2
+}

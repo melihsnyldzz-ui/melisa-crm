@@ -32,13 +32,15 @@ test('Chatwoot multipart attachment preserves original bytes, filename and capti
     media: { mimeType: 'image/png', data: bytes.toString('base64'), fileName: 'synthetic.png' } });
   assert.equal(posts, 1);
 });
-test('CRM timeline uses provider time and keeps latest 20 chronologically despite import order', async t => {
+test('CRM timeline orders the bounded latest 20-message page by provider time despite import order', async t => {
   config(t);
   globalThis.fetch = async url => {
     if (url.endsWith('/conversations/55')) return new Response(JSON.stringify({ id: 55, inbox_id: 1,
       status: 'open', meta: { sender: { phone_number: '+19999999999' }, assignee: null } }));
     assert(url.endsWith('/conversations/55/messages'));
-    return new Response(JSON.stringify({ payload: Array.from({ length: 25 }, (_,i) => ({
+    // The latest Chatwoot page contains at most 20 raw rows. Oversized-page
+    // rejection is covered separately by chatwootInboxService.test.js.
+    return new Response(JSON.stringify({ payload: Array.from({ length: 20 }, (_,i) => ({
       id: 100 + i, message_type: 0, content: 'synthetic-' + i, created_at: 1790000000 + i,
       content_attributes: { provider: 'waapi', provider_timestamp: 1780000000 + 24 - i },
       attachments: [{ id: i, file_type: 'file', content_type: 'application/pdf', data_url: 'https://offline-chatwoot.invalid/synthetic.pdf', file_size: i + 1 }],

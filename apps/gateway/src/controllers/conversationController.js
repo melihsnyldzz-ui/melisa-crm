@@ -1,11 +1,66 @@
 import { env } from '../config/env.js';
 import { assignChatwootConversationToAgent } from '../services/chatwootConversationService.js';
-import { getChatwootConversationDetail, listChatwootAgents } from '../services/chatwootInboxService.js';
-import { sendCrmTextMessage } from '../services/sendService.js';
+import { getChatwootConversationDetail, getChatwootConversationAccess, assertChatwootAssignedInboxCurrent, listChatwootAgents } from '../services/chatwootInboxService.js';
+import { verifyCrmAccessToken, assertCrmPermission, cleanCrmManagement } from '../services/crmAuthService.js';
+import { sendCrmTextMessage, readCrmOutboundStatus } from '../services/sendService.js';
 import { ok } from '../utils/response.js';
+import { normalSessionFingerprint } from '../services/normalRefreshSession.mjs';
+
+export function parseConversationHistoryBefore(query = {}) {
+  const keys = Object.keys(query);
+  if (!keys.length) return undefined;
+  if (keys.length !== 1 || keys[0] !== 'before' || typeof query.before !== 'string'
+    || !/^[1-9]\d*$/.test(query.before) || !Number.isSafeInteger(Number(query.before)))
+    throw Object.assign(new Error('Gecmis imleci gecersiz.'), {code:'WHATSAPP_CRM_HISTORY_CURSOR_INVALID',statusCode:400});
+  return Number(query.before);
+}
+
+// Fresh normal-token guard for reads that must recheck authority before response.
+export function createConversationHistoryRequestGuard(req, {verify = verifyCrmAccessToken} = {}) {
+  const header = req.get('authorization') || '', original = normalSessionFingerprint(req.user);
+  const current = () => {
+    if (!/^Bearer [^\s]+$/.test(header)) throw Object.assign(new Error('CRM oturumu dogrulanamadi.'), {code:'AUTH_TOKEN_INVALID',statusCode:401});
+    const {user,expiresAt} = verify(header.slice(7), {includeContext:true});
+    if (!user?.active || !Number.isFinite(expiresAt) || expiresAt <= Date.now() || normalSessionFingerprint(user) !== original)
+      throw Object.assign(new Error('CRM oturumu degisti.'), {code:'AUTH_TOKEN_INVALID',statusCode:401});
+    assertCrmPermission(user,'crm.view'); return user;
+  };
+  return async () => current();
+}
+
+// The short TEST rehearsal may expire during a provider read. Normal sessions
+// retain their established path; no permanent user or role is changed here.
+export function createTestPersonnelRequestGuard(req, {
+  verify = verifyCrmAccessToken, readAccess = getChatwootConversationAccess, readAssignments = assertChatwootAssignedInboxCurrent,
+} = {}) {
+  if (req.user?.testPersonnel !== true) return null;
+  const header = req.get('authorization') || '';
+  const identity = user => JSON.stringify([user?.id, user?.username, user?.role, user?.chatwootAgentId]);
+  const originalIdentity = identity(req.user);
+  const current = permission => {
+    if (!/^Bearer [^\s]+$/.test(header)) throw Object.assign(new Error('TEST personel oturumu doğrulanamadı.'), {code:'AUTH_TOKEN_INVALID',statusCode:401});
+    const user = verify(header.slice(7));
+    if (user?.testPersonnel !== true || user?.active !== true || identity(user) !== originalIdentity)
+      throw Object.assign(new Error('TEST personel oturumu değişti.'), {code:'AUTH_TOKEN_INVALID',statusCode:401});
+    assertCrmPermission(user, permission);
+    return user;
+  };
+  return async ({permission = 'crm.view', conversationId, conversationIds} = {}) => {
+    const user = current(permission);
+    if (conversationIds !== undefined) await readAssignments({conversationIds,user});
+    if (conversationId !== undefined) await readAccess({conversationId,user});
+    return current(permission);
+  };
+}
 
 export async function patchConversationAssignment(req, res, next) {
   try {
+    if(process.env.CRM_TEST_PROFILE==='clean-synthetic-20261022'){
+      if(!cleanCrmManagement||!req.body||Object.keys(req.body).length!==1||!Object.hasOwn(req.body,'agentId'))
+        throw Object.assign(Error('TEST ataması kapalı veya geçersiz.'),{statusCode:403,code:'CRM_BASELINE_ASSIGNMENT_PROTECTED'});
+      const result=cleanCrmManagement.assign(req.user,req.params.conversationId,req.body.agentId);
+      res.set('Cache-Control','no-store');return ok(res,result,{source:'clean-synthetic-management',persistent:true});
+    }
     const value = Object.hasOwn(req.body || {}, 'agentId') ? req.body.agentId : req.body?.chatwootAgentId;
     const requestedAgentId = value === null ? null : Number(value);
     const agents = requestedAgentId === null ? [] : await listChatwootAgents();
@@ -29,23 +84,65 @@ export async function patchConversationAssignment(req, res, next) {
 
 export async function getConversationDetail(req, res, next) {
   try {
+    const before = parseConversationHistoryBefore(req.query);
+    const historyGuard = before === undefined ? null : createConversationHistoryRequestGuard(req);
+    if (historyGuard) await historyGuard();
+    const guard = createTestPersonnelRequestGuard(req);
     const result = await getChatwootConversationDetail({
       conversationId: req.params.conversationId,
       user: req.user,
+      ...(before === undefined ? {} : {before}),
     });
+    if (historyGuard) await historyGuard();
+    await guard?.({conversationId:req.params.conversationId});
     return ok(res, result, { source: 'chatwoot-conversation', readOnly: true });
   } catch (error) {
     return next(error);
   }
 }
 
-export async function postConversationMessage(req, res, next) {
+export function createConversationSendGuard(req, {
+  verify = verifyCrmAccessToken, readAccess = getChatwootConversationAccess,
+} = {}) {
+  const header = req.get('authorization') || '';
+  const original = normalSessionFingerprint(req.user);
+  const scope = user => JSON.stringify([user?.testAdmin === true, user?.testPersonnel === true]);
+  const originalScope = scope(req.user);
+  const current = () => {
+    if (!/^Bearer [^\s]+$/.test(header)) throw Object.assign(Error('Oturum doğrulanamadı.'), {code:'AUTH_TOKEN_INVALID',statusCode:401});
+    // The official verifier also validates a protected SID when the JWT has one;
+    // legacy normal JWTs retain their existing verification contract.
+    const {user, expiresAt} = verify(header.slice(7), {includeContext:true});
+    if (!user?.active || !['patron','mudur','personel'].includes(user.role)
+      || !Number.isFinite(expiresAt) || expiresAt <= Date.now()
+      || normalSessionFingerprint(user) !== original || scope(user) !== originalScope)
+      throw Object.assign(Error('Oturum değişti.'), {code:'AUTH_TOKEN_INVALID',statusCode:401});
+    assertCrmPermission(user, 'crm.send');
+    return user;
+  };
+  return async () => {
+    await readAccess({conversationId:req.params.conversationId, user:current()});
+    current();
+  };
+}
+
+export function createConversationMessageController({
+  readConversation = getChatwootConversationDetail, sendMessage = sendCrmTextMessage,
+  verify = verifyCrmAccessToken, readAccess = getChatwootConversationAccess,
+} = {}) {
+ return async function postConversationMessage(req, res, next) {
   try {
-    const conversation = await getChatwootConversationDetail({
+    const guard = createTestPersonnelRequestGuard(req, {verify, readAccess});
+    const sendGuard = guard
+      ? () => guard({permission:'crm.send',conversationId:req.params.conversationId})
+      : createConversationSendGuard(req, {verify, readAccess});
+    const conversation = await readConversation({
       conversationId: req.params.conversationId,
       user: req.user,
     });
-    const result = await sendCrmTextMessage({
+    const beforeProviderSend = sendGuard;
+    await beforeProviderSend();
+    const result = await sendMessage({
       conversationId: String(conversation.id),
       phone: conversation.phone,
       remoteJid: conversation.remoteJid,
@@ -57,7 +154,10 @@ export async function postConversationMessage(req, res, next) {
       media: req.body?.media,
       clientRequestId: req.body?.clientRequestId,
       actorId: req.user.id,
-    });
+    }, beforeProviderSend ? {beforeProviderSend} : {});
+    // Preserve the rehearsal's final check. For normal sends, a later revoke
+    // cannot undo an already confirmed transport or turn it into an auth error.
+    await guard?.({permission:'crm.send',conversationId:req.params.conversationId});
     return res.status(201).json({
       success: true,
       data: result,
@@ -66,4 +166,39 @@ export async function postConversationMessage(req, res, next) {
   } catch (error) {
     return next(error);
   }
+ };
 }
+export const postConversationMessage = createConversationMessageController();
+
+export function createOutboundStatusRequestGuard(req, verify = verifyCrmAccessToken) {
+  const header = req.get('authorization') || '';
+  const identity = user => JSON.stringify([user?.id,user?.username,user?.role,user?.chatwootAgentId,user?.testPersonnel === true]);
+  const original = identity(req.user);
+  return () => {
+    if (!/^Bearer [^\s]+$/.test(header)) throw Object.assign(Error('Oturum doğrulanamadı.'),{statusCode:401,code:'AUTH_TOKEN_INVALID'});
+    const user = verify(header.slice(7));
+    if (user?.active !== true || identity(user) !== original) throw Object.assign(Error('Oturum değişti.'),{statusCode:401,code:'AUTH_TOKEN_INVALID'});
+    assertCrmPermission(user,'crm.send');
+    return user;
+  };
+}
+export function createOutboundStatusController({
+  readConversation = getChatwootConversationDetail, readAccess = getChatwootConversationAccess,
+  readStatus = readCrmOutboundStatus, makeGuard = createOutboundStatusRequestGuard,
+} = {}) {
+  return async (req, res, next) => {
+    try {
+      const conversationId = req.params.conversationId;
+      const guard = makeGuard(req);
+      await guard?.({permission:'crm.send',conversationId});
+      const conversation = await readConversation({conversationId,user:req.user});
+      const result = await readStatus({conversationId:String(conversation.id),phone:conversation.phone,
+        remoteJid:conversation.remoteJid,actorId:req.user.id,text:req.body?.text,
+        media:req.body?.media,clientRequestId:req.body?.clientRequestId});
+      await readAccess({conversationId,user:req.user});
+      await guard?.({permission:'crm.send',conversationId});
+      return ok(res,result,{source:'outbound-journal',readOnly:true});
+    } catch(error) { return next(error); }
+  };
+}
+export const postConversationMessageStatus = createOutboundStatusController();

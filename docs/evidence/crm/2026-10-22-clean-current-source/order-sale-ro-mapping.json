@@ -1,0 +1,434 @@
+{
+  "schemaVersion": "melisa-crm-order-sale-ro-mapping.v1",
+  "observedAt": "2026-10-22T16:20:51+03:00",
+  "mode": "READ_ONLY_MATCHING_EXISTING_OWNER_INSTALLATION_AND_GUI_EVIDENCE",
+  "receipt": {
+    "path": "installation-receipt-order-sale.json",
+    "sha256": "f9231d810a7140f2816ca0ec3edea99be3ccbbe3a675e5b5cc335742f2e19c82",
+    "previousSha256": "495221a160ee67d3cf9806384605460d13db8a858879b4dd4d10c05ac1c6c3e7",
+    "change": "Only gui.screenshots appended the visible supervisor result. Removing that raw JSON list entry reconstructs the previous495221a1 snapshot hash exactly; no other receipt byte changes."
+  },
+  "sources": {
+    "crm": {
+      "source": "c8d0e28f0ea6cf16133c87dd548a4281381abfb7",
+      "frontendBuiltFrom": "c8d0e28f0ea6cf16133c87dd548a4281381abfb7",
+      "packageId": null,
+      "sourceCloneAppDiff": 0,
+      "pr": 3,
+      "ciRuns": [
+        39779665785,
+        39779654667,
+        39779665786
+      ],
+      "exactSourceCi": "SUCCESS_7_JOBS",
+      "url": "http://127.0.0.1:62800/",
+      "identityLimit": "No separate CRM package health identity exists; source clone, served bundle and process evidence are kept distinct."
+    },
+    "erp": {
+      "source": "3db0830df16d36d59cc69b1a19feb593357aaf35",
+      "packageId": "CLEAN-ERP-20261022-3db0830df16d",
+      "frontendBuiltFrom": "9f541f98bb37872aecf3166f4f379d7f4c5687e3",
+      "frontendApplicationDiff": 0,
+      "sourceCloneAppDiff": 0,
+      "pr": 54,
+      "ciRuns": [
+        39783687016,
+        39783679870
+      ],
+      "exactSourceCi": "SUCCESS_6_JOBS",
+      "url": "http://127.0.0.1:5244/ornek-akis.html"
+    }
+  },
+  "environment": {
+    "name": "CLEAN_SYNTHETIC_TEST",
+    "id": "e662fd94-d797-4b3b-938a-d143ad758b67",
+    "database": "MELISA_ERP_CLEAN_TEST_20261022",
+    "server": "Semih\\MELISADEV",
+    "synthetic": true,
+    "actualT1": false,
+    "externalOperations": false
+  },
+  "liveReadOnlyObservation": {
+    "listenerEntries": 23,
+    "uniqueProcesses": 16,
+    "listenerPidCreationExecutableDifferences": [],
+    "cleanPorts": [
+      62800,
+      62801,
+      62802,
+      62803,
+      5244,
+      4194,
+      4196
+    ],
+    "oldListenerEntries": 16,
+    "oldBeforeReceiptCurrentDifferences": [],
+    "publicHealth": [
+      {
+        "port": 4194,
+        "source": "3db0830df16d36d59cc69b1a19feb593357aaf35",
+        "packageId": "CLEAN-ERP-20261022-3db0830df16d",
+        "purpose": "crm-order-approval-sales-only",
+        "stockEffect": true,
+        "ledgerEffect": true
+      },
+      {
+        "port": 4196,
+        "source": "3db0830df16d36d59cc69b1a19feb593357aaf35",
+        "packageId": "CLEAN-ERP-20261022-3db0830df16d",
+        "purpose": "crm-order-draft-only",
+        "stockEffect": false,
+        "ledgerEffect": false
+      }
+    ],
+    "servedArtifacts": [
+      {
+        "system": "crm",
+        "results": [
+          {
+            "file": "index.html",
+            "bytes": 1279,
+            "diskSha256": "b7fea2410d4f9846282b0f13e1ea9dfdec8ba726258caf4b38aca815b2d68095",
+            "servedSha256": "b7fea2410d4f9846282b0f13e1ea9dfdec8ba726258caf4b38aca815b2d68095",
+            "receiptMatches": true
+          },
+          {
+            "file": "/assets/index-CCqRXctr.js",
+            "bytes": 896000,
+            "diskSha256": "24311f7c9a67e852978e767902bb1fd80dedac4675ad955ef82d0c4d151d5825",
+            "servedSha256": "24311f7c9a67e852978e767902bb1fd80dedac4675ad955ef82d0c4d151d5825",
+            "matches": true
+          },
+          {
+            "file": "/assets/index-D7F-go5Z.css",
+            "bytes": 167363,
+            "diskSha256": "eac3bfb694425777f621b3d45cdbe3b16a857017d1bf09e9ef883fa73932efc3",
+            "servedSha256": "eac3bfb694425777f621b3d45cdbe3b16a857017d1bf09e9ef883fa73932efc3",
+            "matches": true
+          }
+        ],
+        "allMatch": true
+      },
+      {
+        "system": "erp",
+        "results": [
+          {
+            "file": "ornek-akis.html",
+            "bytes": 27618,
+            "diskSha256": "99ba958c20c93e017d237ee67bf2b7a52b1c98d896d995119d7b95d5a71b570a",
+            "servedSha256": "99ba958c20c93e017d237ee67bf2b7a52b1c98d896d995119d7b95d5a71b570a",
+            "receiptMatches": true
+          },
+          {
+            "file": "/assets/example-BJPetald.js",
+            "bytes": 300721,
+            "diskSha256": "3012363df65c801ba0d990a384753508500638574f22f90bea2015947e0c389d",
+            "servedSha256": "3012363df65c801ba0d990a384753508500638574f22f90bea2015947e0c389d",
+            "matches": true
+          },
+          {
+            "file": "/assets/modulepreload-polyfill-B5Qt9EMX.js",
+            "bytes": 711,
+            "diskSha256": "d2a32840421496e872ade591618d2fa5c33797605d1aec04301717e5a90757d0",
+            "servedSha256": "d2a32840421496e872ade591618d2fa5c33797605d1aec04301717e5a90757d0",
+            "matches": true
+          },
+          {
+            "file": "/assets/testAdminSession-DXF3XzQa.js",
+            "bytes": 68614,
+            "diskSha256": "a08c4f5e5f35740556eb5f8199d91c810febf8aca02b523e0503ca6d180ceabf",
+            "servedSha256": "a08c4f5e5f35740556eb5f8199d91c810febf8aca02b523e0503ca6d180ceabf",
+            "matches": true
+          },
+          {
+            "file": "/assets/testProductPriceEditor-CUeOniZb.js",
+            "bytes": 7857,
+            "diskSha256": "49f2dddf3137edb1f80295fee87594c264a23762ae5711a41489cd96adf968a8",
+            "servedSha256": "49f2dddf3137edb1f80295fee87594c264a23762ae5711a41489cd96adf968a8",
+            "matches": true
+          },
+          {
+            "file": "/assets/testProductPriceModel-DsrvD341.js",
+            "bytes": 3923,
+            "diskSha256": "6c7d65a64dc8ee56bfdfa66f9639407b5fed8007c25a5045788a0d8b1dac2e18",
+            "servedSha256": "6c7d65a64dc8ee56bfdfa66f9639407b5fed8007c25a5045788a0d8b1dac2e18",
+            "matches": true
+          },
+          {
+            "file": "/assets/workingCatalogSession-DuE0wGPB.js",
+            "bytes": 135976,
+            "diskSha256": "d979c765e87679b3e94bcb91c358e7b54bfb06b37187f33f6e6be5592a40d4fa",
+            "servedSha256": "d979c765e87679b3e94bcb91c358e7b54bfb06b37187f33f6e6be5592a40d4fa",
+            "matches": true
+          },
+          {
+            "file": "/assets/testProductPriceEditor-BGOfR7-n.css",
+            "bytes": 2464,
+            "diskSha256": "f54ca7ee633e311e1622353bc893e6d17dd0ad9a0b01e9ba26679b9636de2e07",
+            "servedSha256": "f54ca7ee633e311e1622353bc893e6d17dd0ad9a0b01e9ba26679b9636de2e07",
+            "matches": true
+          },
+          {
+            "file": "/assets/workingCatalogSession-D9OXY2kT.css",
+            "bytes": 11407,
+            "diskSha256": "5673fcd359c507abb861ba31b140aff68a2bc2464102658d4080de71978e2f4d",
+            "servedSha256": "5673fcd359c507abb861ba31b140aff68a2bc2464102658d4080de71978e2f4d",
+            "matches": true
+          },
+          {
+            "file": "/assets/example-BaQ9KB24.css",
+            "bytes": 38971,
+            "diskSha256": "828033a2a9888cd8f493a93391145c7acc88f6c2a0119c50f35fbd0240ecbef1",
+            "servedSha256": "828033a2a9888cd8f493a93391145c7acc88f6c2a0119c50f35fbd0240ecbef1",
+            "matches": true
+          }
+        ],
+        "allMatch": true
+      }
+    ],
+    "sourceAttributionLimit": "Process birth/executable/listener identities independently matched. Process working directories were not independently extracted; source attribution also uses owner receipt, clean clones and public health."
+  },
+  "existingOwnerEvidence": {
+    "scope": "Existing recorded SQL output, normal GUI events and screenshots; CRM ran no new SQL or application operation.",
+    "requestId": "45064956-9c91-470f-a7b6-a9330b60e456",
+    "orderId": "3",
+    "invoiceId": "1",
+    "documentNo": "CRS-20261022-3",
+    "state": "FINALIZED",
+    "currency": "TRY",
+    "totalExact4": "376.5000",
+    "product": "0007 MELISA",
+    "quantity": 3,
+    "stockBefore": 24,
+    "stockAfter": 21,
+    "customerBalanceBefore": 0,
+    "customerBalanceAfter": 376.5,
+    "stockMovements": 1,
+    "customerMovements": 1,
+    "creationActor": 15,
+    "finalizationActor": 17,
+    "orders": 3,
+    "invoices": 1,
+    "actions": 2,
+    "pendingIntents": 0,
+    "protectedDigestsBeforeFinalReceiptMatched": 7,
+    "protectedScopes": [
+      "media",
+      "native_receipts",
+      "old_permissions",
+      "order_lines",
+      "orders",
+      "original_media",
+      "prices"
+    ],
+    "definitionHashMatches": {
+      "native": 8,
+      "originalSale": 12,
+      "compatibility": 2
+    },
+    "definitionClaim": "Owner final SQL counts use definition_hash equality, inspected without executing SQL.",
+    "crmEvents": {
+      "draftGET": 200,
+      "saleGET": 200,
+      "postCountInReadbackEvents": 0,
+      "readbackMatchesReceipt": true
+    },
+    "rollback": {
+      "kind": "actual-native-transaction-rollback",
+      "environment": "CLEAN_SYNTHETIC_TEST",
+      "engineReached": true,
+      "code": "CLEAN_SALE_UNAVAILABLE",
+      "before": {
+        "stock": 24,
+        "balance": 0,
+        "state": "draft",
+        "stockMovements": 0,
+        "customerMovements": 0,
+        "requests": 1,
+        "intents": 0
+      },
+      "after": {
+        "stock": 24,
+        "balance": 0,
+        "state": "draft",
+        "stockMovements": 0,
+        "customerMovements": 0,
+        "requests": 1,
+        "intents": 0
+      },
+      "nativeFailure": null
+    },
+    "replay": {
+      "environment": "CLEAN_SYNTHETIC_TEST",
+      "simultaneousSameBody": [
+        {
+          "http": 200,
+          "invoiceId": "1",
+          "replayed": true
+        },
+        {
+          "http": 200,
+          "invoiceId": "1",
+          "replayed": true
+        }
+      ],
+      "differentActionSameOrder": {
+        "http": 200,
+        "replayed": true
+      },
+      "sameActionDifferentBody": {
+        "http": 409,
+        "code": "CLEAN_SALE_REQUEST_CONFLICT"
+      },
+      "personnelFinalize": 403,
+      "nativeFinalize": 403,
+      "convertSameOrderReplay": true,
+      "sale": {
+        "schemaVersion": "melisa-order-sale.v1",
+        "environment": "CLEAN_SYNTHETIC_TEST",
+        "environmentId": "e662fd94-d797-4b3b-938a-d143ad758b67",
+        "requestId": "45064956-9c91-470f-a7b6-a9330b60e456",
+        "order": {
+          "id": "3",
+          "documentNo": "CR2-450649569C91470FA7B6A9330B",
+          "documentDate": "2026-10-22",
+          "customerId": "1",
+          "customerName": "Örnek Mağaza",
+          "currency": "TRY",
+          "totalExact4": "376.5000"
+        },
+        "state": "FINALIZED",
+        "sale": {
+          "id": "1",
+          "documentNo": "CRS-20261022-3",
+          "status": "finalized",
+          "customerId": "1",
+          "currency": "TRY",
+          "totalExact4": "376.5000",
+          "stockEffect": true,
+          "ledgerEffect": true,
+          "collectionEffect": false,
+          "reservationEffect": false
+        },
+        "revision": "7e5c26b3ef875d3694995a71bd3eddd873a25f51c546eae856cc7228ffe5eeaf",
+        "capabilities": {
+          "canConvert": false,
+          "canFinalize": false
+        }
+      }
+    },
+    "backup": {
+      "copyOnlyChecksum": true,
+      "verifyOnly": true,
+      "restorePerformed": false,
+      "file": "CLEAN_TEST_20261022_BEFORE_ORDER_SALE_20261022_01.bak"
+    }
+  },
+  "reviews": {
+    "crmSourceOpenP1P2": 0,
+    "upstreamNullableCompatibilityOpenP1P2": 0,
+    "receipt495SnapshotOpenP1P2": 0,
+    "receiptF923AdditionalVisibleResultOpenP1P2": 0,
+    "scope": "Existing independent reviewer, read-only; reviewer did not execute SQL/runtime/GUI/test operations."
+  },
+  "evidenceFiles": [
+    {
+      "file": "installation-receipt-order-sale.json",
+      "bytes": 15203,
+      "sha256": "f9231d810a7140f2816ca0ec3edea99be3ccbbe3a675e5b5cc335742f2e19c82",
+      "copyMatchesSource": true
+    },
+    {
+      "file": "order-sale-crm-readback.json",
+      "bytes": 1958,
+      "sha256": "60bf140a6e9332ed92529280a764c94f0bb0faa9f33d4affd445ef19984cdbc5",
+      "copyMatchesSource": true
+    },
+    {
+      "file": "order-sale-independent-final.json",
+      "bytes": 3106,
+      "sha256": "d8f94326d8c4f806c0a7f521b927dc10d000c4fb340abbbd829ac025135d9fb1",
+      "copyMatchesSource": true
+    },
+    {
+      "file": "order-sale-native-rollback.json",
+      "bytes": 506,
+      "sha256": "d9ad6d32a40bbc467f3d9a5a4d732e5e0f6053f4da288aad64b9db4a48bf2df5",
+      "copyMatchesSource": true
+    },
+    {
+      "file": "order-sale-replay-api.json",
+      "bytes": 3934,
+      "sha256": "19d6b9fec6c9fd2ddaef23af1a4256d9098f9d30fd1c05556ecab03ca3f888db",
+      "copyMatchesSource": true
+    },
+    {
+      "file": "order-sale-install-before-listeners.json",
+      "bytes": 4454,
+      "sha256": "906bc4356a3353b0af5c73f4fee94eee0f68e3caca308a92da695a4fe60ca176",
+      "copyMatchesSource": true
+    },
+    {
+      "file": "order-sale-personnel-draft.jpg",
+      "bytes": 87144,
+      "sha256": "d4b2ab995ea9958ba2a4a09e1529c4a23971ccc753fd6d11f5a42851c64540c3",
+      "copyMatchesSource": true
+    },
+    {
+      "file": "order-sale-supervisor-final.jpg",
+      "bytes": 83597,
+      "sha256": "c9220aef83281e6f9e735e71300ffa7e35aba959aca363ca41516efe31adffd1",
+      "copyMatchesSource": true
+    },
+    {
+      "file": "order-sale-crm-final.jpg",
+      "bytes": 75007,
+      "sha256": "2235c280de6889f99cc973b287952515176d665a3e9b7fe762e7e096481a7b01",
+      "copyMatchesSource": true
+    },
+    {
+      "file": "order-sale-stock-final.jpg",
+      "bytes": 75151,
+      "sha256": "ef07b05d1d28df693e904716ec8163e27b87c5ce6ebb585e688a8bce362f2de1",
+      "copyMatchesSource": true
+    },
+    {
+      "file": "order-sale-supervisor-final-result.jpg",
+      "bytes": 74355,
+      "sha256": "6f233ad4e67dbfc56e0d22a5157e78996d69cb50d3c66756bab799981f27bf88",
+      "copyMatchesSource": true
+    }
+  ],
+  "acceptance": {
+    "technicalNormalGui": "VERIFIED_FROM_OWNER_RECORDS_AND_IMAGES",
+    "crmPerformedNewGui": false,
+    "human": "PENDING",
+    "physicalPhone": "PENDING",
+    "windowsReboot": "NOT_RUN",
+    "launcherPolicyRejection": "UNCHANGED_BLOCKED_NO_BYPASS",
+    "originalCrmCounts": {
+      "total": 25,
+      "green": 12,
+      "partial": 13,
+      "red": 0
+    },
+    "originalTotal": 74,
+    "wholeCrmOrErpClosure": false
+  },
+  "boundaries": {
+    "applicationSourceChanged": false,
+    "sharedRuntimeSqlConfigServiceWrittenByCrm": false,
+    "newTestOrOperationalReplayByCrm": false,
+    "newCustomerMessage": false,
+    "paidApi": false,
+    "liveVegaT1": false,
+    "mainMerged": false,
+    "sharedReportEditedByCrm": false
+  },
+  "next": "This same-order technical readback and installation mapping is complete. Original human/device/reboot acceptances stay pending; the existing following synthetic store-day work remains under the current owner coordination, not a new plan.",
+  "repositoryPreservation": {
+    "scope": "Only the new captured order-sale-install-before-listeners.json has a path-specific -text attribute to preserve its163CRLF pairs and original4454bytes. Other text and application attributes are unchanged.",
+    "stagedOriginalOwnerEvidenceFiles": 11,
+    "stagedOwnerByteHashDifferences": 0
+  }
+}

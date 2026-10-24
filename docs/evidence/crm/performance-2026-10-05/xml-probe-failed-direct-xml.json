@@ -1,0 +1,49 @@
+{
+  "measuredAt": "2026-10-05T13:27:22.498Z",
+  "runtimeSource": "f1899b0e0828f23010af75b1731682c749e596cc",
+  "scope": "existing-handler-fixed-SELECT-fresh-child",
+  "samples": [
+    {
+      "index": 1,
+      "scenario": "first-page",
+      "variant": "candidate",
+      "authMs": [
+        1262.31
+      ],
+      "imagePoolMs": 253.27,
+      "identityParameterCount": 0,
+      "identitySqlLength": 33,
+      "identityBindMs": 0,
+      "identityQueryMs": 56.96,
+      "imagesParameterCount": 0,
+      "imagesSqlLength": 303,
+      "imagesBindMs": 0,
+      "imagesQueryMs": 212.12,
+      "eligibleIdCount": 1085,
+      "worker": {
+        "workerModuleImportMs": 2.35,
+        "databaseModuleImportMs": 774.64,
+        "driverImportMs": 0.36,
+        "planUntilPoolMs": 1.02,
+        "connectMs": 49.08,
+        "stockParameterCount": 7,
+        "stockSqlLength": 4068,
+        "stockBindMs": 0.32,
+        "stockQueryMs": 36.53,
+        "stockQueryEndedAt": 968.7841,
+        "errorCode": "PROFILE_READ_FAILED",
+        "sqlErrorNumber": 9506,
+        "driverErrorCode": "EREQUEST"
+      },
+      "status": 503,
+      "bytes": 104,
+      "totalMs": 2930.19,
+      "errorCode": "ERP_CATALOG_SQL_UNAVAILABLE"
+    }
+  ],
+  "limitations": [
+    "No server execution plan; SQL batch timing includes server compile/execute/network.",
+    "Worker uses exact executeRead in a fresh profiler child through original runner spawn dependency.",
+    "planUntilPool includes only exact executeRead plan construction; projection is post-query residual."
+  ]
+}

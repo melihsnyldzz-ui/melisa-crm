@@ -1,11 +1,24 @@
 // Approved single-CRM-login reader. No listener, ERP login, credential store, cache or business write.
 import { ERP_ORIGIN, ERP_DATABASE, ERP_PRODUCT_DATABASE } from './erpSourceContract.mjs';
+import {resolveTestEndpoints} from '../../../../deploy/test-endpoints.mjs';
 const PREFIX = '/crm/catalog/products';
 // Internal only: router rechecks the read lease immediately before committing response bytes.
 export const CATALOG_RESPONSE_GUARD = Symbol('catalog-response-guard');
 const fail = (status, code) => Response.json({ success: false, error: { code, message: code } }, { status, headers: { 'cache-control': 'no-store' } });
 const identity = id => (typeof id === 'string' && id.trim()) || (Number.isSafeInteger(id) && id > 0);
 const sameId = (a, b) => identity(a) && identity(b) && String(a) === String(b);
+function canonicalEnvironmentMatches(meta){
+  if(!process.env.CRM_TEST_PROFILE)return meta.environment==='CANONICAL_TEST';
+  try{
+    const target=resolveTestEndpoints(),scope=meta.businessScope;
+    return target.cleanSynthetic===true&&ERP_ORIGIN===target.catalogOrigin
+      &&meta.environment==='CLEAN_SYNTHETIC_TEST'&&meta.synthetic===true
+      &&meta.sourceIdentity?.environment==='CLEAN_SYNTHETIC_TEST'&&meta.sourceIdentity.contract==='melisa-catalog.v1'
+      &&scope?.scopeKind==='VERIFIED_CLEAN_SYNTHETIC_TEST'&&scope.database===target.database
+      &&Object.keys(scope).sort().join()==='database,scopeKind,supportedCurrencies'
+      &&JSON.stringify(scope.supportedCurrencies)===JSON.stringify(['TRY','USD','EUR']);
+  }catch{return false;}
+}
 async function bytes(response, max) {
   if (!response.body) throw Error('EMPTY_BODY');
   const reader = response.body.getReader(); const chunks = []; let length = 0;
@@ -46,7 +59,11 @@ function sanitize(row) {
     photoStatus: photoPath(row) ? 'guarded-path' : 'unavailable',
     sourceUpdatedAt: null, pricedDocumentEligible: false, pricedDocumentBlockReason: 'SOURCE_FRESHNESS_UNVERIFIED' };
 }
-export function createCatalogBridge({ deploymentApproved = false, transport, authorizeCrm, resolveCrmReadSession, now = Date.now, maxReadAgeMs = 15000 } = {}) {
+export function isTestCatalogPhotoOrigin(value){
+  try{const url=new URL(value),clean=process.env.CRM_TEST_PROFILE==='clean-synthetic-20261022'&&process.env.CRM_TEST_PORT_BASE==='62800'&&process.env.CRM_TEST_EXPECTED_DATABASE==='MELISA_ERP_CLEAN_TEST_20261022'&&process.env.CRM_TEST_ERP_ORIGIN==='http://127.0.0.1:4194'&&url.port==='62802';return url.protocol==='http:'&&['127.0.0.1','localhost','[::1]'].includes(url.hostname)&&(url.port==='62402'||process.env.CRM_ISOLATED_PREPARATION==='true'&&url.hostname==='127.0.0.1'&&(['62602','62702'].includes(url.port)||clean))&&!url.username&&!url.password&&url.pathname==='/'&&!url.search&&!url.hash}catch{return false}
+}
+export function createCatalogBridge({ deploymentApproved = false, transport, authorizeCrm, resolveCrmReadSession, now = Date.now, maxReadAgeMs = 15000, photoCrmAuthorization = false } = {}) {
+  if(photoCrmAuthorization&&!isTestCatalogPhotoOrigin(ERP_ORIGIN))throw Error('TEST_PHOTO_AUTH_ORIGIN_REQUIRED');
   if (deploymentApproved && (![transport, authorizeCrm, resolveCrmReadSession].every(x => typeof x === 'function'))) throw Error('EXPLICIT_AUTH_AND_TRANSPORT_REQUIRED');
   // resolveCrmReadSession: verified current CRM JWT read lease only; no ERP login/credential or UI role claim.
   // authorizeCrm: fresh verified CRM actor and explicit catalog grant. No role-name equivalence or default staff access.
@@ -71,12 +88,13 @@ export function createCatalogBridge({ deploymentApproved = false, transport, aut
     const url = new URL(request.url);
     if (request.method !== 'GET') return fail(405, 'GET_ONLY');
     const tail = url.pathname.slice(PREFIX.length);
-    if (!url.pathname.startsWith(PREFIX) || !/^(?:|\/vega-[1-9][0-9]*(?:\/photo)?)$/.test(tail)) return fail(404, 'ROUTE_NOT_ALLOWED');
+    if (!url.pathname.startsWith(PREFIX) || !/^(?:|\/(?:vega|erp)-[1-9][0-9]*(?:\/photo)?)$/.test(tail)) return fail(404, 'ROUTE_NOT_ALLOWED');
     const isPhoto = tail.endsWith('/photo'); const id = tail ? tail.split('/')[1] : null;
     const query = new URLSearchParams();
     for (const [key, value] of url.searchParams) {
-      if (tail || !['search', 'brand', 'category', 'hasImage', 'page', 'limit'].includes(key) || url.searchParams.getAll(key).length !== 1) return fail(400, 'INVALID_QUERY');
-      if (key === 'hasImage' ? !['true','false'].includes(value) : ['search', 'brand', 'category'].includes(key) ? value.length > 120 : !/^[1-9][0-9]*$/.test(value) || !Number.isSafeInteger(+value) || (key === 'limit' && +value > 100)) return fail(400, 'INVALID_QUERY');
+      if(isPhoto&&key==='variant'&&url.searchParams.getAll(key).length===1&&['thumbnail','preview','original'].includes(value)){query.set(key,value);continue;}
+      if (tail || !['search', 'barcode', 'brand', 'category', 'hasImage', 'page', 'limit'].includes(key) || url.searchParams.getAll(key).length !== 1) return fail(400, 'INVALID_QUERY');
+      if (key === 'hasImage' ? !['true','false'].includes(value) : ['search', 'barcode', 'brand', 'category'].includes(key) ? value.length > 120 : !/^[1-9][0-9]*$/.test(value) || !Number.isSafeInteger(+value) || (key === 'limit' && +value > 100)) return fail(400, 'INVALID_QUERY');
       query.set(key, value);
     }
     if (!deploymentApproved) return fail(503, 'BRIDGE_NOT_DEPLOYED');
@@ -96,6 +114,22 @@ export function createCatalogBridge({ deploymentApproved = false, transport, aut
       const upstream = await exchange(id ? `/api/crm-catalog/products/${id}` : `/api/crm-catalog/products?${query}`, session, assertCurrent, signal);
       if (upstream.status === 404 && upstream.code !== 'PRODUCT_NOT_FOUND') return fail(503, 'ERP_SINGLE_LOGIN_ROUTE_UNAVAILABLE');
       if (upstream.status !== 200) return fail(upstream.status >= 400 ? upstream.status : 502, upstream.code || 'ERP_READ_REJECTED');
+      if (upstream.data.meta?.catalogVersion === 'melisa-catalog.v1') {
+        const m=upstream.data.meta;
+        if(m.source!=='melisa-erp-catalog'||!canonicalEnvironmentMatches(m)||m.sourceDatabaseVerified!==true||!sameId(m.verifiedCrmActorId,crm.id)||m.verifiedCrmRole!==crm.role||m.cached!==false) return fail(503,'ERP_SOURCE_IDENTITY_REQUIRED');
+        const validate=row=>{if(!row||!/^erp-[1-9]\d*$/.test(row.id||'')||row.id!==`erp-${row.erpProductId}`||!Number.isSafeInteger(row.erpProductId)||typeof row.stockCode!=='string'||!row.stockCode||!(row.productName===null||typeof row.productName==='string')||!/^[a-f0-9]{64}$/.test(row.revision||'')||!['guarded-path','unavailable'].includes(row.photoStatus)||row.photoPath!==(row.photoStatus==='guarded-path'?`${PREFIX}/${row.id}/photo`:null))throw Error('PRODUCT_CONTRACT');return row;};
+        const data=id?validate(upstream.data.data):upstream.data.data.map(validate);
+        if(id&&data.id!==id)return fail(502,'PRODUCT_ID_MISMATCH');
+        if(isPhoto){
+          if(!data.photoPath||data.photo?.validationStatus!=='CONFIRMED'||data.hold?.blocked!==false)return fail(404,'VERIFIED_PHOTO_PATH_REQUIRED');
+          const photo=await transport(new URL(`/api/crm-catalog/products/${id}/photo?variant=${query.get('variant')||'preview'}`,ERP_ORIGIN),{method:'GET',headers:{accept:'image/jpeg,image/png,image/webp',authorization:session.authorization},redirect:'manual',cache:'no-store',signal});assertCurrent();
+          const mime=(photo.headers.get('content-type')||'').split(';')[0];if(!photo.ok||!['image/jpeg','image/png','image/webp'].includes(mime))return fail(502,'PHOTO_REJECTED');
+          const body=await bytes(photo,3*1024*1024);const signature=mime==='image/jpeg'?body[0]===255&&body[1]===216&&body[2]===255:mime==='image/png'?[137,80,78,71,13,10,26,10].every((v,i)=>body[i]===v):new TextDecoder().decode(body.slice(0,4))==='RIFF'&&new TextDecoder().decode(body.slice(8,12))==='WEBP';
+          if(!signature)return fail(502,'PHOTO_BYTES_OR_FRESHNESS_REJECTED');return protect(new Response(body,{headers:{'content-type':mime,'cache-control':'no-store','x-content-type-options':'nosniff'}}));
+        }
+        if(!id&&(m.page!==Number(query.get('page')||1)||m.limit!==Number(query.get('limit')||50)||data.length!==Math.min(m.limit,Math.max(0,m.total-(m.page-1)*m.limit))))return fail(502,'PAGINATION_CONTRACT_REQUIRED');
+        return protect(Response.json({success:true,data,meta:m},{headers:{'cache-control':'no-store'}}));
+      }
       if (upstream.data.meta?.source !== 'crm-existing-stock-select-only' || upstream.data.meta?.sourceDatabaseVerified !== true || upstream.data.meta?.productDatabaseVerified!==true || upstream.data.meta?.imageDatabaseVerified!==true || upstream.data.meta?.imageDatabaseName !== ERP_DATABASE || upstream.data.meta?.productDatabaseName!==ERP_PRODUCT_DATABASE) return fail(503, 'ERP_SOURCE_IDENTITY_REQUIRED');
       if (!sameId(upstream.data.meta?.verifiedCrmActorId, crm.id) || upstream.data.meta?.verifiedCrmRole !== crm.role) return fail(502, 'CRM_SOURCE_ACTOR_MISMATCH');
       if (now() - started > maxReadAgeMs || session.expiresAt <= now()) return fail(503, 'FRESH_READ_REQUIRED');
@@ -104,9 +138,11 @@ export function createCatalogBridge({ deploymentApproved = false, transport, aut
         if (!(upstream.data.data.isPassive === false || upstream.data.data.isActive === true)) return fail(403, 'ACTIVE_PRODUCT_REQUIRED');
         if (isPhoto) {
           const path = photoPath(upstream.data.data); if (!path) return fail(404, 'VERIFIED_PHOTO_PATH_REQUIRED');
-          // Existing ERP /uploads is public in source. Never forward ERP Bearer to an asset path.
+          // Legacy public ERP assets retain accept-only headers. Explicit TEST adapter
+          // may receive the verified CRM read lease; no ERP credential is forwarded.
           assertCurrent();
-          const response = await transport(new URL(path, ERP_ORIGIN), { method: 'GET', redirect: 'manual', credentials: 'omit', cache: 'no-store', headers: { accept: 'image/png,image/jpeg,image/webp' }, signal });
+          const headers={accept:'image/png,image/jpeg,image/webp',...(photoCrmAuthorization?{authorization:session.authorization}:{})};
+          const response = await transport(new URL(path, ERP_ORIGIN), { method: 'GET', redirect: 'manual', credentials: 'omit', cache: 'no-store', headers, signal });
           assertCurrent();
           if (!response.ok || response.status >= 300 && response.status < 400) return fail(502, 'PHOTO_REJECTED');
           const mime = (response.headers.get('content-type') || '').split(';')[0].trim().toLowerCase();

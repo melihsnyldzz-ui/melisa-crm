@@ -2,6 +2,7 @@
 // No local Windows SQL driver, token, CRM password or business write in this process.
 import path from 'node:path';
 import {pathToFileURL,fileURLToPath} from 'node:url';
+import {createHash} from 'node:crypto';
 const apiRoot=process.env.CRM_ERP_API_ROOT;
 const active=`ISNULL(s.DELETED,0)=0 AND ISNULL(s.IPTAL,0)=0 AND ISNULL(s.STATUS,0)=1`;
 const search=`(@search IS NULL OR s.STOKKODU COLLATE Turkish_100_CI_AI LIKE @search OR s.MALINCINSI COLLATE Turkish_100_CI_AI LIKE @search OR s.KOD1 COLLATE Turkish_100_CI_AI LIKE @search OR s.KOD4 COLLATE Turkish_100_CI_AI LIKE @search)`;
@@ -13,8 +14,7 @@ const output=`p.source_id,p.stock_code,p.product_name,p.brand,p.category,p.sale_
 export function buildReadPlan(options,eligibleIds=[]){
   if(!options||typeof options!=='object'||Array.isArray(options))throw Error('INVALID_QUERY');
   if(!Array.isArray(eligibleIds)||eligibleIds.length>2000||eligibleIds.some(id=>!Number.isSafeInteger(id)||id<1)||new Set(eligibleIds).size!==eligibleIds.length)throw Error('IMAGE_SCOPE_INVALID');
-  const bindings=eligibleIds.map((id,index)=>['imageId'+index,'BigInt',id]);
-  const image=eligibleIds.length?`s.IND IN(${eligibleIds.map((_,i)=>'@imageId'+i).join(',')})`:'1=0';
+  const bindings=[];
   if(Object.hasOwn(options,'id')){
     if(Object.keys(options).some(key=>key!=='id'))throw Error('INVALID_QUERY');
     if(!Number.isSafeInteger(options.id)||options.id<1)throw Error('PRODUCT_ID_INVALID');bindings.push(['id','BigInt',options.id]);
@@ -22,14 +22,25 @@ export function buildReadPlan(options,eligibleIds=[]){
   }
   if(Object.keys(options).some(key=>!['page','limit','offset','hasImage','search','brand','category'].includes(key))||!Number.isSafeInteger(options.page)||options.page<1||!Number.isSafeInteger(options.limit)||options.limit<1||options.limit>100||!Number.isSafeInteger(options.offset)||options.offset<0||options.offset>2147483647||options.offset!==(options.page-1)*options.limit||typeof options.hasImage!=='boolean')throw Error('INVALID_QUERY');
   for(const key of ['search','brand','category'])if(typeof options[key]!=='string'||options[key].length>120||options[key]!==options[key].trim())throw Error('INVALID_QUERY');
+  // Validated integer IDs are data in one bounded parameter, never SQL text.
+  // Detail reads do not need or bind the list's image eligibility scope.
+  if(eligibleIds.length)bindings.push(['imageIds','Xml','<ids>'+eligibleIds.map(id=>'<id>'+id+'</id>').join('')+'</ids>']);
+  // Tedious transports Xml input as text. Parse the bound value once in a
+  // scalar variable after the batch's source identity guard.
+  const imageDeclaration=eligibleIds.length?'DECLARE @imageScope xml=CONVERT(xml,@imageIds);':'';
+  const imageRows=`SELECT imageNode.value('(text())[1]','bigint') AS id FROM @imageScope.nodes('/ids/id') AS imageSet(imageNode)`;
+  // hasImage is a validated internal boolean. Restrict photo-only reads to the
+  // unique eligible scope before grouping; all-product reads retain a left join.
+  const from=eligibleIds.length?(options.hasImage?`(${imageRows}) imageScope INNER LOOP JOIN dbo.F0102TBLSTOKLAR s ON s.IND=imageScope.id`:`dbo.F0102TBLSTOKLAR s LEFT HASH JOIN (${imageRows}) imageScope ON imageScope.id=s.IND`):'dbo.F0102TBLSTOKLAR s';
+  const image=eligibleIds.length?'imageScope.id IS NOT NULL':'1=0';
   bindings.push(['search','NVarChar',options.search?'%'+options.search+'%':null],['brand','NVarChar',options.brand||null],['category','NVarChar',options.category||null],['hasImage','Bit',options.hasImage],['offset','Int',options.offset],['limit','Int',options.limit]);
-  const photo=`(@hasImage=0 OR (${image}))`,base=`${active} AND ${search}`,filter=`${base} AND ${brand} AND ${category} AND ${photo}`;
-  return{bindings,sql:`
-    SELECT COALESCE(SUM(CONVERT(bigint,CASE WHEN ${photo} THEN 1 ELSE 0 END)),0) AS total,COALESCE(SUM(CONVERT(bigint,CASE WHEN ${image} THEN 1 ELSE 0 END)),0) AS totalPhotoEligible FROM dbo.F0102TBLSTOKLAR s WHERE ${base} AND ${brand} AND ${category};
-    WITH p AS(SELECT ${fields},s.KARTINACILMATARIHI AS internal_page_date FROM dbo.F0102TBLSTOKLAR s ${unit} WHERE ${filter} ORDER BY s.KARTINACILMATARIHI DESC,s.IND DESC OFFSET @offset ROWS FETCH NEXT @limit ROWS ONLY)
+  const photo=options.hasImage?image:'1=1',base=`${active} AND ${search}`,filter=`${base} AND ${brand} AND ${category} AND ${photo}`;
+  return{bindings,sql:`${imageDeclaration}
+    SELECT COALESCE(SUM(CONVERT(bigint,CASE WHEN ${photo} THEN 1 ELSE 0 END)),0) AS total,COALESCE(SUM(CONVERT(bigint,CASE WHEN ${image} THEN 1 ELSE 0 END)),0) AS totalPhotoEligible FROM ${from} WHERE ${base} AND ${brand} AND ${category};
+    WITH p AS(SELECT ${fields},s.KARTINACILMATARIHI AS internal_page_date FROM ${from} ${unit} WHERE ${filter} ORDER BY s.KARTINACILMATARIHI DESC,s.IND DESC OFFSET @offset ROWS FETCH NEXT @limit ROWS ONLY)
     SELECT ${output} FROM p ${stock} ORDER BY p.internal_page_date DESC,CONVERT(bigint,p.source_id) DESC;
-    SELECT TOP(501) LTRIM(RTRIM(s.KOD1)) AS value,COUNT_BIG(1) AS count FROM dbo.F0102TBLSTOKLAR s WHERE ${base} AND ${category} AND ${photo} AND NULLIF(LTRIM(RTRIM(s.KOD1)),N'') IS NOT NULL GROUP BY LTRIM(RTRIM(s.KOD1)) ORDER BY LTRIM(RTRIM(s.KOD1));
-    SELECT TOP(501) LTRIM(RTRIM(s.KOD4)) AS value,COUNT_BIG(1) AS count FROM dbo.F0102TBLSTOKLAR s WHERE ${base} AND ${brand} AND ${photo} AND NULLIF(LTRIM(RTRIM(s.KOD4)),N'') IS NOT NULL GROUP BY LTRIM(RTRIM(s.KOD4)) ORDER BY LTRIM(RTRIM(s.KOD4));`};
+    SELECT TOP(501) LTRIM(RTRIM(s.KOD1)) AS value,COUNT_BIG(1) AS count FROM ${from} WHERE ${base} AND ${category} AND ${photo} AND NULLIF(LTRIM(RTRIM(s.KOD1)),N'') IS NOT NULL GROUP BY LTRIM(RTRIM(s.KOD1)) ORDER BY LTRIM(RTRIM(s.KOD1));
+    SELECT TOP(501) LTRIM(RTRIM(s.KOD4)) AS value,COUNT_BIG(1) AS count FROM ${from} WHERE ${base} AND ${brand} AND ${photo} AND NULLIF(LTRIM(RTRIM(s.KOD4)),N'') IS NOT NULL GROUP BY LTRIM(RTRIM(s.KOD4)) ORDER BY LTRIM(RTRIM(s.KOD4));`};
 }
 const publicFields=['source_id','stock_code','product_name','brand','category','sale_price','sale_currency','stock_quantity','is_active'];
 const fieldText=(value,max,required=false)=>{
@@ -98,3 +109,40 @@ async function run(){
   await new Promise(resolve=>process.stdout.write('',resolve));process.exit(0);
 }
 if(process.argv[1]&&path.resolve(process.argv[1]).toLowerCase()===fileURLToPath(import.meta.url).toLowerCase()&&process.argv.includes('--runtime-read'))await run();
+
+// Line protocol is internal to the bounded CRM reader pool; no credentials or
+// user/role state enters a job. executeRead verifies the source on every batch.
+async function runPersistent(){
+ let module,driver,scopeHash,buffer=Buffer.alloc(0),busy=false,ending=false,closed=false;
+ const signature=()=>createHash('sha256').update(JSON.stringify({cwd:path.resolve(process.cwd()).toLowerCase(),apiRoot:process.env.CRM_ERP_API_ROOT?path.resolve(process.env.CRM_ERP_API_ROOT).toLowerCase():null,env:Object.keys(process.env).filter(key=>/^(VEGA_|SQL_|CRM_ERP_)/.test(key)).sort().map(key=>[key,process.env[key]])})).digest('hex');
+ const currentScope=()=>process.env.SQL_READ_ONLY==='true'&&path.resolve(process.cwd()).toLowerCase()===path.resolve(apiRoot).toLowerCase()&&signature()===scopeHash;
+ async function shutdown(){if(closed)return;closed=true;try{await module?.closeVegaSqlPool?.();}catch{}process.exit(0);}
+ async function consume(line){
+  if(busy||ending){await shutdown();return;}busy=true;let jobId;
+  try{
+   const input=JSON.parse(line);jobId=input?.jobId;
+   if(!/^[1-9][0-9]*$/.test(jobId||'')||!Number.isSafeInteger(Number(jobId))||Object.keys(input).some(key=>!['jobId','options','eligibleIds'].includes(key)))throw Error('WORKER_PROTOCOL_INVALID');
+   if(!currentScope())throw Error('WORKER_CONFIGURATION_CHANGED');
+   const data=await executeRead({options:input.options,eligibleIds:input.eligibleIds,getPool:module.getVegaSqlPool,driver});
+   if(!currentScope())throw Error('WORKER_CONFIGURATION_CHANGED');
+   const output=JSON.stringify({jobId,success:true,data});if(Buffer.byteLength(output)>1024*1024)throw Error('WORKER_OUTPUT_LIMIT');
+   await new Promise((resolve,reject)=>process.stdout.write(output+'\n',error=>error?reject(error):resolve()));
+  }catch(error){const code=typeof error?.message==='string'&&/^[A-Z0-9_]{1,60}$/.test(error.message)?error.message:'ERP_EXISTING_STOCK_READ_UNAVAILABLE';if(jobId)process.stdout.write(JSON.stringify({jobId,success:false,error:{code}})+'\n');else ending=true;}
+  finally{busy=false;if(ending)await shutdown();}
+ }
+ try{
+  if(!apiRoot||path.resolve(process.cwd()).toLowerCase()!==path.resolve(apiRoot).toLowerCase()||process.env.SQL_READ_ONLY!=='true')throw Error('EXACT_NORMAL_API_CWD_REQUIRED');
+  module=await import(pathToFileURL(apiRoot+'/src/config/vegaDatabase.js'));driver=(await import(pathToFileURL(apiRoot+'/node_modules/mssql/tedious.js'))).default;
+  scopeHash=signature();
+  process.stdin.on('data',chunk=>{
+   if(ending||closed)return;buffer=Buffer.concat([buffer,Buffer.from(chunk)]);const newline=buffer.indexOf(10);
+   if(newline<0){if(buffer.length>65536){ending=true;if(!busy)void shutdown();}return;}
+   if(newline>65536||newline!==buffer.length-1){ending=true;if(!busy)void shutdown();return;}
+   const line=buffer.subarray(0,newline).toString('utf8');buffer=Buffer.alloc(0);void consume(line);
+  });
+  process.stdin.on('end',()=>{ending=true;if(!busy)void shutdown();});
+  process.stdin.on('error',()=>{ending=true;if(!busy)void shutdown();});
+  process.stdout.on('error',()=>{ending=true;if(!busy)void shutdown();});
+ }catch{await shutdown();}
+}
+if(process.argv[1]&&path.resolve(process.argv[1]).toLowerCase()===fileURLToPath(import.meta.url).toLowerCase()&&process.argv.includes('--runtime-persistent-read'))await runPersistent();

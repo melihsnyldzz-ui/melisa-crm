@@ -89,3 +89,54 @@ test('WAAPI disconnect invalidates an in-flight ready result', async () => {
   resolve({ ok: true, json: async () => ready });
   assert.equal((await pending).providerConnected, false); assert.equal(p.connected(), false);
 });
+
+const incomingLid = '22252259123221@lid';
+const mappedIncoming = { status: 'success', data: { status: 'success', instanceId: '105185',
+  data: { contacts: [{ lid: incomingLid, pn: '19999999999@c.us' }], count: 1 } } };
+
+test('WAAPI resolves direct phones without lookup; linked IDs require the instance-owned mapping', async () => {
+  const { provider, calls } = setup(mappedIncoming);
+  assert.equal(await provider.resolveIncomingPhone('19999999999@c.us'), '19999999999');
+  assert.equal(calls.length, 0);
+  assert.equal(await provider.resolveIncomingPhone(incomingLid), '19999999999');
+  assert.equal(calls.length, 1);
+  assert.equal(calls[0].url, 'https://waapi.app/api/v1/instances/105185/client/action/get-lid');
+  assert.deepEqual(JSON.parse(calls[0].options.body), { contactIds: [incomingLid] });
+  assert(!calls.some(call => /send-/.test(call.url)));
+});
+
+test('WAAPI rejects unconfirmed, ambiguous, conflicting and invalid inbound mapping responses', async () => {
+  const response = (contacts, patch = {}) => ({ ...mappedIncoming,
+    data: { ...mappedIncoming.data, data: { contacts, count: contacts.length }, ...patch } });
+  for (const action of [null, { status: 'error' }, { ...mappedIncoming, status: 'error' },
+    response(mappedIncoming.data.data.contacts, { status: 'error' }),
+    response(mappedIncoming.data.data.contacts, { instanceId: '104978' }), response([]),
+    response([...mappedIncoming.data.data.contacts, ...mappedIncoming.data.data.contacts]),
+    response([{ lid: '99999999999999@lid', pn: '19999999999@c.us' }]),
+    response([{ lid: incomingLid, pn: '22252259123221@lid' }]),
+    response([{ lid: incomingLid, pn: '123@g.us' }]),
+    response([{ lid: incomingLid, pn: '09999999999@c.us' }]),
+    { ...mappedIncoming, data: { ...mappedIncoming.data, data: { ...mappedIncoming.data.data, count: 2 } } }]) {
+    const { provider, calls } = setup(action);
+    await assert.rejects(provider.resolveIncomingPhone(incomingLid), /INCOMING_IDENTITY_UNCONFIRMED/);
+    await assert.rejects(provider.resolveIncomingPhone(incomingLid), /INCOMING_IDENTITY_UNCONFIRMED/);
+    assert.equal(calls.length, 2); // A failed lookup is never cached.
+  }
+  const { provider, calls } = setup(mappedIncoming);
+  for (const jid of ['status@broadcast', '12345678900@g.us', '12345678900@newsletter',
+    '123456@c.us', '09999999999@c.us', '22252259123221@lid/other', null, 12345]) {
+    await assert.rejects(provider.resolveIncomingPhone(jid), /INCOMING_IDENTITY_INVALID/);
+  }
+  assert.equal(calls.length, 0);
+});
+
+test('WAAPI coalesces inbound mapping lookups and expires its bounded cache', async () => {
+  let now = 0, count = 0;
+  const provider = new WaapiProvider({ config, now: () => now, fetchFn: async () => {
+    count++; return { ok: true, json: async () => mappedIncoming };
+  } });
+  const result = await Promise.all(Array.from({ length: 8 }, () => provider.resolveIncomingPhone(incomingLid)));
+  assert(result.every(phone => phone === '19999999999')); assert.equal(count, 1);
+  now = 599999; await provider.resolveIncomingPhone(incomingLid); assert.equal(count, 1);
+  now = 600000; await provider.resolveIncomingPhone(incomingLid); assert.equal(count, 2);
+});

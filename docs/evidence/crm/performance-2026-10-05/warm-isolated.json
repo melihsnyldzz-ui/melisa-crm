@@ -1,0 +1,80 @@
+{
+  "measuredAt": "2026-10-05T13:44:34.584Z",
+  "runtimeSource": "f1899b0e0828f23010af75b1731682c749e596cc",
+  "scope": "existing-handler-fixed-SELECT-fresh-child",
+  "samples": [
+    {
+      "index": 1,
+      "scenario": "first-page",
+      "variant": "candidate",
+      "authMs": [
+        88.78,
+        2.74
+      ],
+      "imagePoolMs": 44.47,
+      "identityParameterCount": 0,
+      "identitySqlLength": 33,
+      "identityBindMs": 0,
+      "identityQueryMs": 8.79,
+      "imagesParameterCount": 0,
+      "imagesSqlLength": 303,
+      "imagesBindMs": 0,
+      "imagesQueryMs": 9.02,
+      "eligibleIdCount": 1085,
+      "worker": {
+        "workerModuleImportMs": 1.29,
+        "databaseModuleImportMs": 466.91,
+        "driverImportMs": 0.34,
+        "warmSamples": [
+          {
+            "index": 1,
+            "planUntilPoolMs": 0.83,
+            "connectMs": 41.77,
+            "stockParameterCount": 7,
+            "stockSqlLength": 4259,
+            "stockBindMs": 0.29,
+            "stockQueryMs": 62.75,
+            "projectValidateMs": 0.58,
+            "executeReadMs": 106.69,
+            "fullReadEqualToFirst": true
+          },
+          {
+            "index": 2,
+            "planUntilPoolMs": 0.19,
+            "connectMs": 0.01,
+            "stockParameterCount": 7,
+            "stockSqlLength": 4259,
+            "stockBindMs": 0.04,
+            "stockQueryMs": 38.29,
+            "projectValidateMs": 0.18,
+            "executeReadMs": 38.76,
+            "fullReadEqualToFirst": true
+          },
+          {
+            "index": 3,
+            "planUntilPoolMs": 0.2,
+            "connectMs": 0.01,
+            "stockParameterCount": 7,
+            "stockSqlLength": 4259,
+            "stockBindMs": 0.03,
+            "stockQueryMs": 37.4,
+            "projectValidateMs": 0.13,
+            "executeReadMs": 37.85,
+            "fullReadEqualToFirst": true
+          }
+        ],
+        "totalBeforeCleanupMs": 655.98
+      },
+      "workerTotalMs": 752.64,
+      "status": 200,
+      "bytes": 10102,
+      "totalMs": 929.77,
+      "count": 12
+    }
+  ],
+  "limitations": [
+    "No server execution plan; SQL batch timing includes server compile/execute/network.",
+    "Worker uses exact executeRead in a fresh profiler child through original runner spawn dependency.",
+    "planUntilPool includes only exact executeRead plan construction; projection is post-query residual."
+  ]
+}

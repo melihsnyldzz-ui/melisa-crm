@@ -1,0 +1,117 @@
+import {canonicalPricing,pricingSourceExact,pricingVersionId} from '../catalog/canonicalStock.js';
+const fail=message=>{throw Error(message||'ERP taslağı doğrulanamadı.');};
+export function nativeOrderFailureMessage(error,preservedDraft=false){
+ const network=error instanceof TypeError&&error.status===undefined&&error.code===undefined&&['Failed to fetch','NetworkError when attempting to fetch resource.','Load failed'].includes(error.message);
+ return network?(preservedDraft===true?'Bağlantı kesildi. Taslağınız korunuyor; aynı taslağı yeniden doğrulayın.':'Bağlantı kesildi. Bağlantıyı yeniden deneyin.'):error?.message||'ERP işlemi tamamlanamadı. Seçiminiz korunuyor.';
+}
+const pricingContract='melisa-crm-draft-pricing.v1';
+const keys=(value,names)=>value&&typeof value==='object'&&!Array.isArray(value)&&Object.keys(value).length===names.length&&names.every(k=>Object.hasOwn(value,k));
+const rootKeys=['requestId','conversationId','peer','customerId','customerMatch','documentCurrency','exchangeRateExact8','items'];
+const lineKeys=['productId','stockCode','quantity','priceId','unitSourceId','tier','currency','priceExact8','priceSourceKey'];
+const validWitness=w=>keys(w,['origin','versionId','sourcePriceExact8'])&&w.origin==='MANUAL'&&pricingVersionId(w.versionId)&&pricingSourceExact(w.sourcePriceExact8);
+const uuid=v=>/^[a-f0-9]{8}-[a-f0-9]{4}-[1-5][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i.test(v||'');
+const id=v=>Number.isSafeInteger(v)&&v>0;
+const decimal=v=>typeof v==='string'&&/^(?:0|[1-9]\d{0,11})\.\d{8}$/.test(v)&&Number(v)>0;
+export function validateNativeOrder(payload){
+ const manual=Object.hasOwn(payload||{},'pricingContract');
+ if(!keys(payload,manual?[...rootKeys,'pricingContract']:rootKeys)||manual&&payload.pricingContract!==pricingContract)fail('Fiyat değişti; ürünü yeniden seçin.');
+ if(!uuid(payload?.requestId)||!/^\d+$/.test(payload.conversationId)||!/^\d{8,15}$/.test(payload.peer)||!id(payload.customerId)||!['TRY','USD','EUR'].includes(payload.documentCurrency)||!decimal(payload.exchangeRateExact8)||payload.documentCurrency==='TRY'&&payload.exchangeRateExact8!=='1.00000000'||!Array.isArray(payload.items)||!payload.items.length||payload.items.length>50)fail('Müşteri, konuşma, kur veya ürün seçimi geçerli değil.');
+ const match=payload.customerMatch;if(!match||!['exact-phone','operator-confirmed'].includes(match.basis)||match.phone!==payload.peer||!/^[a-f0-9]{64}$/.test(match.revision||'')||match.basis==='operator-confirmed'&&(typeof match.reason!=='string'||match.reason.trim().length<8)||match.basis==='exact-phone'&&match.reason!==null)fail('Müşteri eşleşmesini doğrulayın.');
+ let witnessed=0;const seen=new Set();for(const line of payload.items){const witness=Object.hasOwn(line||{},'pricingWitness');if(!keys(line,witness?[...lineKeys,'pricingWitness']:lineKeys)||witness&&(!manual||!validWitness(line.pricingWitness)))fail('Fiyat değişti; ürünü yeniden seçin.');if(witness)witnessed++;if(!id(line.productId)||!id(line.priceId)||!id(line.unitSourceId)||line.tier!==1||typeof line.stockCode!=='string'||!line.stockCode||line.stockCode.length>120||!id(line.quantity)||line.quantity>9999||line.currency!==payload.documentCurrency||!decimal(line.priceExact8)||typeof line.priceSourceKey!=='string'||!line.priceSourceKey||seen.has(line.productId))fail('Ürün, adet, fiyat veya para birimi geçerli değil.');seen.add(line.productId);}if(manual&&!witnessed)fail('Fiyat değişti; ürünü yeniden seçin.');return payload;
+}
+export function nativeOrderPayload(requestId,conversation,customer,match,items,quantities,rate){
+ if(customer?.blocked||!customer)fail('Müşteri seçimi gerekli.');
+ const lines=items.map((line,i)=>{const pricing=Object.hasOwn(line,'pricing')?canonicalPricing(line.pricing,line.priceExact):null;return {productId:line.productId,stockCode:line.stockCode,quantity:quantities[i],priceId:line.priceId,unitSourceId:line.unitSourceId,tier:1,currency:line.currency,priceExact8:line.priceExact,priceSourceKey:line.priceSourceKey,...(pricing?.origin==='MANUAL'?{pricingWitness:{origin:'MANUAL',versionId:pricing.versionId,sourcePriceExact8:pricing.sourcePriceExact}}:{})};});
+ return validateNativeOrder({requestId,conversationId:String(conversation.id),peer:String(conversation.phone||'').replace(/\D/g,''),customerId:customer.id,customerMatch:{basis:match.basis,phone:String(conversation.phone||'').replace(/\D/g,''),revision:customer.revision,reason:match.basis==='exact-phone'?null:match.reason.trim()},documentCurrency:items[0]?.currency,exchangeRateExact8:String(rate),items:lines,...(lines.some(line=>Object.hasOwn(line,'pricingWitness'))?{pricingContract}:{})});
+}
+const equal=(a,b)=>{if(a===b)return true;if(!a||!b||typeof a!=='object'||typeof b!=='object')return false;const ak=Object.keys(a).sort(),bk=Object.keys(b).sort();return ak.length===bk.length&&ak.every((k,i)=>k===bk[i]&&equal(a[k],b[k]));};
+const round4=v=>(v+5000n)/10000n;
+const exact8=v=>BigInt(v.replace('.',''));
+const exact4=v=>typeof v==='string'&&/^\d+\.\d{4}$/.test(v)?BigInt(v.replace('.','')):fail();
+export function validateNativeSource(source){
+ if(!source||!/^PRODUCT-[0-9a-f-]{36}$/i.test(source.runId||'')||!/^\d{4}-\d{2}-\d{2}$/.test(source.sourceAsOf||'')||!['sourceHash','planHash','bindingsHash','snapshotHash'].every(k=>/^[a-f0-9]{64}$/.test(source[k]||''))||source.actualT1!==false||!Number.isSafeInteger(source.counts?.products)||source.counts.products<0||!Number.isSafeInteger(source.counts?.prices)||source.counts.prices<0)fail('ERP güncel ürün kaynağı doğrulanamadı.');
+ return source;
+}
+export function validateNativeReceipt(receipt,body,expectedSource){
+ validateNativeOrder(body);
+ if(expectedSource){validateNativeSource(expectedSource);validateNativeSource(receipt?.currentSource);if(receipt.sourceMetadataStatus!=='sealed-current-source'||!equal(expectedSource,receipt.currentSource))fail('ERP taslağının değişmez ürün kaynağı seçimle eşleşmedi. Aynı taslağı yeniden kontrol edin.');}
+ if(!equal(receipt?.request,body)||receipt.status!=='draft'||receipt.erpPersisted!==true||receipt.testOnly!==true||['stockEffect','ledgerEffect','collectionEffect','reservationEffect'].some(k=>receipt[k]!==false)||!Array.isArray(receipt.items)||receipt.items.length!==body.items.length)fail('ERP ayrı geri okuma seçimle eşleşmedi. Aynı taslağı kontrol edin.');
+ let total=0n;for(const line of body.items){const rows=receipt.items.filter(r=>r.productId===line.productId&&r.stockCode===line.stockCode&&r.quantity===line.quantity&&r.currency===line.currency);if(rows.length!==1)fail();const row=rows[0],price=round4(exact8(line.priceExact8)),lineTotal=price*BigInt(line.quantity);if(exact4(row.unitPriceExact4)!==price||exact4(row.lineTotalExact4)!==lineTotal)fail('ERP satır fiyatı veya toplamı değişti.');total+=lineTotal;}if(exact4(receipt.grandTotalExact4)!==total||exact4(receipt.amountTryExact4)!==(total*exact8(body.exchangeRateExact8)+50000000n)/100000000n)fail('ERP toplamı seçimle eşleşmedi.');return receipt;
+}
+// The immutable draft receipt and the current ERP sale are separate contracts.
+export function validateNativeOrderSale(value,receipt){
+ const invalid=()=>fail('ERP satış sonucu bu siparişle doğrulanamadı.');
+ validateNativeReceipt(receipt,receipt?.request);
+ const identifier=v=>typeof v==='string'&&/^[1-9]\d{0,18}$/.test(v)&&BigInt(v)<=9223372036854775807n;
+ const text=v=>typeof v==='string'&&v.trim().length>0&&v.length<=500&&!/[\u0000-\u001f\u007f]/.test(v);
+ if(!keys(value,['schemaVersion','environment','environmentId','requestId','order','state','sale','revision','capabilities'])||value.schemaVersion!=='melisa-order-sale.v1'||value.environment!=='CLEAN_SYNTHETIC_TEST'||value.environmentId!=='e662fd94-d797-4b3b-938a-d143ad758b67'||value.requestId!==receipt.request.requestId.toLowerCase()||typeof value.revision!=='string'||!/^[a-f0-9]{64}$/.test(value.revision)||!['NOT_CONVERTED','DRAFT','FINALIZED'].includes(value.state))invalid();
+ const order=value.order;
+ if(!keys(order,['id','documentNo','documentDate','customerId','customerName','currency','totalExact4'])||!identifier(order.id)||!identifier(order.customerId)||order.id!==String(receipt.id)||order.documentNo!==receipt.documentNo||!text(order.documentNo)||order.customerId!==String(receipt.request.customerId)||!text(order.customerName)||order.currency!=='TRY'||order.currency!==receipt.request.documentCurrency||order.totalExact4!==receipt.grandTotalExact4||typeof order.documentDate!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(order.documentDate)||!Number.isFinite(Date.parse(order.documentDate))||new Date(order.documentDate).toISOString().slice(0,10)!==order.documentDate)invalid();
+ const capabilities=value.capabilities;
+ if(!keys(capabilities,['canConvert','canFinalize'])||typeof capabilities.canConvert!=='boolean'||typeof capabilities.canFinalize!=='boolean'||value.state!=='NOT_CONVERTED'&&capabilities.canConvert||value.state!=='DRAFT'&&capabilities.canFinalize)invalid();
+ if(value.state==='NOT_CONVERTED'){if(value.sale!==null)invalid();return value;}
+ const sale=value.sale,finalized=value.state==='FINALIZED';
+ if(!keys(sale,['id','documentNo','status','customerId','currency','totalExact4','stockEffect','ledgerEffect','collectionEffect','reservationEffect'])||!identifier(sale.id)||!text(sale.documentNo)||sale.status!==(finalized?'finalized':'draft')||sale.customerId!==order.customerId||sale.currency!==order.currency||sale.totalExact4!==order.totalExact4||sale.stockEffect!==finalized||sale.ledgerEffect!==finalized||sale.collectionEffect!==false||sale.reservationEffect!==false)invalid();
+ return value;
+}
+export const nativeOrderSaleLabel=value=>({NOT_CONVERTED:'Henüz satışa aktarılmadı',DRAFT:'ERP satış taslağı hazır',FINALIZED:'ERP satışı tamamlandı'})[value.state];
+
+export async function readNativeOrderSale({store,receipt,nativeActorId,readSale,isCurrent}){
+ if(!isCurrent())return null;
+ const record=store.assertActor(store.read(),nativeActorId);
+ store.assertCurrent(record,nativeActorId);
+ if(!record.resolved)fail('Önce sipariş taslağını ERP’den yeniden doğrulayın.');
+ validateNativeReceipt(receipt,record.payload,record.expectedSource);
+ let value;
+ try{value=await readSale(record.payload.requestId);}catch(error){
+  if(!isCurrent())return null;
+  store.assertCurrent(record,nativeActorId);
+  throw error;
+ }
+ if(!isCurrent())return null;
+ store.assertCurrent(record,nativeActorId);
+ return validateNativeOrderSale(value,receipt);
+}
+export function createNativeOrderStore(actor,conversationId,storage){
+ const key=`melisa-crm-native-order-v2:${encodeURIComponent(actor)}:${encodeURIComponent(String(conversationId))}`;
+ let verifiedRecord=null;
+ const read=()=>{if(!actor||!/^\d+$/.test(String(conversationId)))fail();const raw=storage.getItem(key);if(!raw)return null;const r=JSON.parse(raw);if(r.version!==2||!/^\d+$/.test(r.nativeActorId)||typeof r.resolved!=='boolean'||r.payload.conversationId!==String(conversationId))fail();validateNativeOrder(r.payload);if(r.expectedSource)validateNativeSource(r.expectedSource);return r;};
+ const write=r=>{const raw=JSON.stringify(r);storage.setItem(key,raw);if(storage.getItem(key)!==raw)fail('Taslak tarayıcıda korunamadı. Sipariş gönderilmedi.');return r;};
+ const assertActor=(r,id)=>{if(!r||r.nativeActorId!==String(id))fail('Taslağın oluşturulduğu ERP hesabıyla giriş yapın.');return r;};
+ // Compare the complete captured envelope, including resolved/source/pricing state.
+ const assertCurrent=(record,actorId)=>{const current=assertActor(read(),actorId);if(!equal(current,record))fail('Taslak kaydı değişti. Kaydı yeniden açın.');return current;};
+ return {read,assertActor,assertCurrent,prepare(payload,nativeActorId,expectedSource){validateNativeOrder(payload);if(expectedSource)validateNativeSource(expectedSource);const previous=read();if(previous){assertActor(previous,nativeActorId);if(!equal(previous.payload,payload))fail('Aynı taslak kimliğiyle farklı seçim gönderilemez.');return previous;}if(!/^\d+$/.test(String(nativeActorId)))fail();return write({version:2,nativeActorId:String(nativeActorId),resolved:false,payload:JSON.parse(JSON.stringify(payload)),...(expectedSource?{expectedSource:JSON.parse(JSON.stringify(expectedSource))}:{})});},resolved(actorId,record=read()){const next=write({...assertCurrent(record,actorId),resolved:true});verifiedRecord=JSON.parse(JSON.stringify(next));return next;},newIntent(actorId){if(!assertActor(read(),actorId).resolved)fail('Önceki taslak sonucu bekleniyor.');assertCurrent(verifiedRecord,actorId);storage.removeItem(key);if(storage.getItem(key)!==null)fail();verifiedRecord=null;}};
+}
+async function recoverNativeRecord({store,nativeActorId,readDetail,isCurrent},record){
+ const inactive={record,receipt:null,missing:false};
+ if(!isCurrent())return inactive;
+ store.assertCurrent(record,nativeActorId);
+ let receipt;
+ try{receipt=await readDetail(record.payload.requestId);}catch(e){
+  if(!isCurrent())return inactive;
+  store.assertCurrent(record,nativeActorId);
+  if(e.status===404)return {record,receipt:null,missing:true};
+  throw e;
+ }
+ if(!isCurrent())return inactive;
+ store.assertCurrent(record,nativeActorId);
+ validateNativeReceipt(receipt,record.payload,record.expectedSource);
+ store.resolved(nativeActorId,record);
+ return {record,receipt,missing:false};
+}
+function currentRecovery(result,{store,nativeActorId,isCurrent}){
+ if(!isCurrent())return {...result,receipt:null,missing:false};
+ // A successful inner recovery has already changed only this envelope to resolved.
+ store.assertCurrent(result.receipt?{...result.record,resolved:true}:result.record,nativeActorId);
+ return result;
+}
+export async function recoverNativeOrder(options){const record=options.store.assertActor(options.store.read(),options.nativeActorId);return currentRecovery(await recoverNativeRecord(options,record),options);}
+export async function submitNativeOrder({store,payload,nativeActorId,readDetail,createDraft,isCurrent,expectedSource}){
+ const previous=store.read(),record=store.prepare(payload,nativeActorId,expectedSource),recovery={store,nativeActorId,readDetail,isCurrent};
+ if(previous){const r=currentRecovery(await recoverNativeRecord(recovery,record),recovery);if(r.receipt||!r.missing||!isCurrent())return r.receipt;if(record.resolved)fail('Doğrulanmış taslak artık okunamadı.');}
+ if(!isCurrent())return null;
+ store.assertCurrent(record,nativeActorId);
+ try{await createDraft(record.payload);}catch(e){if(!isCurrent())throw e;const r=currentRecovery(await recoverNativeRecord(recovery,record),recovery);if(!isCurrent())return null;if(r.receipt)return r.receipt;throw e;}
+ if(!isCurrent())return null;
+ return currentRecovery(await recoverNativeRecord(recovery,record),recovery).receipt;
+}

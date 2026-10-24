@@ -1,0 +1,28 @@
+{
+  "before": {
+    "calls": 30,
+    "sumMs": 14610.51,
+    "maxMs": 845.69,
+    "bytes": 2829700,
+    "peak": 1,
+    "wallMs": 14644.4,
+    "count": 748,
+    "cacheable": 1
+  },
+  "after": {
+    "calls": 30,
+    "sumMs": 43112.69,
+    "maxMs": 2254.08,
+    "bytes": 2829700,
+    "peak": 3,
+    "wallMs": 15627.21,
+    "count": 748,
+    "cacheable": 1
+  },
+  "completed": 1,
+  "sameIdSet": 1,
+  "sameMetadata": 1,
+  "providerCalls": 0,
+  "sqlCalls": 0,
+  "writes": 0
+}

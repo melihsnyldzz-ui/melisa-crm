@@ -1,0 +1,206 @@
+{
+  "physicalAcceptance": "pending",
+  "acceptedProcessProofs": {
+    "secondLauncher": "ERP75",
+    "nativeCrmDownSummaryRecovery": "ERP76",
+    "finalPinsHealth": "ERP77",
+    "foreignPort": "ERP75",
+    "reason": "ERP77 changes UI report Turkish labels only; API/network/owner/SQL identical to ERP76",
+    "apiWebRecovery": "ERP75"
+  },
+  "tasks": [
+    {
+      "logonType": "Interactive",
+      "lastResult": 267009,
+      "lastRun": "2026-10-06T20:18:26.0000000Z",
+      "triggerTypes": [
+        "MSFT_TaskLogonTrigger"
+      ],
+      "restartCount": 0,
+      "multipleInstances": "IgnoreNew",
+      "principal": "Xaser",
+      "state": "Running",
+      "runLevel": "Limited",
+      "name": "Melisa-ERP-TEST-Canonical"
+    },
+    {
+      "logonType": "Interactive",
+      "lastResult": 2147946720,
+      "lastRun": "2026-10-06T20:03:47.0000000Z",
+      "triggerTypes": [
+        "MSFT_TaskLogonTrigger"
+      ],
+      "restartCount": 3,
+      "multipleInstances": "IgnoreNew",
+      "principal": "Xaser",
+      "state": "Running",
+      "runLevel": "Limited",
+      "name": "Melisa-CRM-TEST-Completion"
+    }
+  ],
+  "crmFinalManifestSha256": "CCDAAB18C33973EF5A7E95E28F696FB8FF0426C41C339FAEFC00BF9EB9929B31",
+  "oldWrapperPinRemoved": true,
+  "erpIntermediateSwitchReference": "C:\\Sirket\\ERP\\runtime\\canonical-test\\package-switches\\GOAL6-76-TO-77",
+  "scope": "Final read-only identity/status; no LIVE, shared native, Docker or provider-send mutation",
+  "liveAndSharedNativeUnchanged": [
+    {
+      "createdAt": "2026-09-21T13:32:33.8048010Z",
+      "pid": 31820,
+      "unchanged": true
+    },
+    {
+      "createdAt": "2026-09-21T13:32:33.5930350Z",
+      "pid": 33624,
+      "unchanged": true
+    },
+    {
+      "createdAt": "2026-09-21T13:32:33.6970310Z",
+      "pid": 40828,
+      "unchanged": true
+    },
+    {
+      "createdAt": "2026-10-01T21:22:05.5609470Z",
+      "pid": 10712,
+      "unchanged": true
+    },
+    {
+      "createdAt": "2026-10-06T15:27:51.3476470Z",
+      "pid": 44548,
+      "unchanged": true
+    }
+  ],
+  "wrapperSha256": "56EDFEB5D35A63B8A117C3CC4B9AC2B455E911EACE1489A6B2750FA8A08A243A",
+  "crmGatewayHealthOk": true,
+  "actualReboot": false,
+  "erpFinalPackageManifestSha256": "A3AAE6CB40ED93ADBB63DAE472B33F91D8399BD225EED726E1C704D5E5744F01",
+  "erpRollbackReference": "C:\\Sirket\\ERP\\evidence\\ERP-GOAL6-20261006\\ops-rollback-before\\start-canonical-test-goal5.ps1",
+  "erp": {
+    "sourceCommit": "4f918c51fd49c86953a69484714af41bec1cf794",
+    "services": {
+      "web": {
+        "port": 5194,
+        "nextRestartAt": null,
+        "pid": 59956,
+        "lastCode": null,
+        "restartCount": 1,
+        "state": "ready"
+      },
+      "api": {
+        "port": 4144,
+        "nextRestartAt": null,
+        "pid": 66856,
+        "lastCode": null,
+        "restartCount": 1,
+        "state": "ready"
+      },
+      "native": {
+        "port": 4146,
+        "nextRestartAt": null,
+        "pid": 62176,
+        "lastCode": null,
+        "restartCount": 1,
+        "state": "ready"
+      }
+    },
+    "packageId": "CANONICAL-TEST-4f918c51fd49",
+    "observedAt": "2026-10-06T20:20:22.3757111Z",
+    "database": {
+      "reachable": null,
+      "identityVerified": true,
+      "expectedName": "MELISA_ERP_SIRKET_TEST_20260929_01"
+    },
+    "version": 1,
+    "startup": {
+      "taskName": "Melisa-ERP-TEST-Canonical",
+      "state": "running",
+      "supervisorPid": 77800,
+      "configured": true
+    },
+    "environment": "CANONICAL_TEST"
+  },
+  "observedAt": "2026-10-06T20:20:29.0058858Z",
+  "serviceHealth": [
+    {
+      "createdAt": "2026-10-06T20:18:39.1308900Z",
+      "databaseName": null,
+      "packageId": "CANONICAL-TEST-4f918c51fd49",
+      "serverName": null,
+      "pid": 59956,
+      "sourceCommit": "4f918c51fd49c86953a69484714af41bec1cf794",
+      "port": 5194,
+      "ok": true,
+      "name": "web"
+    },
+    {
+      "createdAt": "2026-10-06T20:18:43.0561440Z",
+      "databaseName": "MELISA_ERP_SIRKET_TEST_20260929_01",
+      "packageId": "CANONICAL-TEST-4f918c51fd49",
+      "serverName": "Semih\\MELISADEV",
+      "pid": 62176,
+      "sourceCommit": "4f918c51fd49c86953a69484714af41bec1cf794",
+      "port": 4146,
+      "ok": true,
+      "name": "native"
+    },
+    {
+      "createdAt": "2026-10-06T20:18:47.7131040Z",
+      "databaseName": "MELISA_ERP_SIRKET_TEST_20260929_01",
+      "packageId": "CANONICAL-TEST-4f918c51fd49",
+      "serverName": "Semih\\MELISADEV",
+      "pid": 66856,
+      "sourceCommit": "4f918c51fd49c86953a69484714af41bec1cf794",
+      "port": 4144,
+      "ok": true,
+      "name": "api"
+    }
+  ],
+  "crm": {
+    "version": 1,
+    "environment": "CANONICAL_TEST",
+    "observedAt": "2026-10-06T20:20:12.946Z",
+    "sourceCommit": "77a2fa346b4c3653b77e33625e185c1259402af7",
+    "packageId": "crm-test-77a2fa346b4c3653b77e33625e185c1259402af7",
+    "packageManifestSha256": "ccdaab18c33973ef5a7e95e28f696fb8ff0426c41c339faefc00bf9eb9929b31",
+    "startup": {
+      "taskName": "Melisa-CRM-TEST-Completion",
+      "configured": true,
+      "supervisorPid": 74452,
+      "state": "running"
+    },
+    "services": {
+      "catalog": {
+        "pid": 35348,
+        "state": "running",
+        "restartCount": 1,
+        "lastCode": null,
+        "nextRestartAt": null
+      },
+      "orders": {
+        "pid": 39772,
+        "state": "running",
+        "restartCount": 1,
+        "lastCode": null,
+        "nextRestartAt": null
+      },
+      "server": {
+        "pid": 74768,
+        "state": "running",
+        "restartCount": 3,
+        "lastCode": "TEST_CHILD_EXITED",
+        "nextRestartAt": null
+      }
+    },
+    "dependencies": {
+      "chatwoot": {
+        "state": "ready"
+      },
+      "erp": {
+        "state": "ready"
+      },
+      "native": {
+        "state": "ready"
+      }
+    }
+  },
+  "crmRollbackReference": "C:\\Sirket\\CRM\\runtime\\test-completion\\package-switches\\20261006T195732333Z-bc8f5e3951024ff1bf9927e39c662bf5\\previous-startup-config.json"
+}

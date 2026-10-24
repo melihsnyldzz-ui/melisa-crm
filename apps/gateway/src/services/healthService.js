@@ -3,8 +3,10 @@ import { outboundAttemptStore } from './outboundAttemptService.js';
 import { waapiProvider } from '../providers/waapiProvider.js';
 import { waapiChatwootBridge } from './waapiChatwootBridge.js';
 import { refreshWaapiReadiness, waapiSendReady } from './waapiReadiness.js';
+import {getBusinessTestReadBudget} from './businessTestReadBudget.mjs';
 
 export async function getHealth() {
+  if (process.env.CRM_ISOLATED_PREPARATION === 'true') return {status:'ok',appName:env.appName,authMode:'crm-local',provider:'disabled-preparation',providerConnected:false,sendReady:false,bridgeReady:false,translationEnabled:false,sendEnabled:false,outboundIdempotency:outboundAttemptStore.backend,...(getBusinessTestReadBudget()?{testReadBudget:getBusinessTestReadBudget()}: {})};
   await refreshWaapiReadiness();
   const providerStatus = env.whatsapp.provider === 'waapi' ? await waapiProvider.getStatus()
     : { provider: env.whatsapp.provider, providerConnected: false, checkedAt: null };
