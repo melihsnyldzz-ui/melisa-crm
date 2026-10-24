@@ -2,6 +2,39 @@
 
 23 Ekim2026. Bu, mevcut bitiş ağacının dar CRM kaynak düzeltmesi ve salt okunur erişim denetimidir. Yeni gereksinim, atama motoru, yardımcı servis veya kurulum değildir. Teknik kaynak sonucu, kurulu normal hesap kanıtı ve insan kabulü ayrı tutulur.
 
+## 24 Ekim03:37TR — B5 teknik envanter normal ekranda tamam
+
+Kurulu frontend **a32e071 / CLEAN-CRM-20261024-a32e071221f5-B5PROFILE**, backend **c1bc351**,761dosya/manifest70CB2066 source/paket/runtime eşlendi. Normal ownerChrome **Hesabım → Ayarlar → Hesap envanterini göster**, yenile/fullreload ve oturum korunumu PASS; aynı4hesap ve55→clean-staff. CRM manifest/dosya/kaynak/publicHTTP ve [kaydedilen ekranı](inventory-normal-settings-a32.png) RO gördü; SQL/login yazısı yok.53ownerSQLözet dosyası before/afterGUI byteeş,16listenerkorunumu owner kanıtı. Exacta32CI7/7SUCCESS. [Tam sırsız kanıt](normal-user-inventory.json).
+
+**Bu yalnız teknik hesap envanteri kapanışıdır.** Gerçek personel kimlik/rol/atama uygulaması ve insan/cihaz kabulü BEKLİYOR; örnek Patron gerçek Müdür değildir. Uzun hesap adları kesiliyor ve genel Ayarlar atama açıklaması read-only/assign=false ile tutarsız; mevcut B5 sınırlamalarıdır, yeni atama yapılmadı. SemihagentNULL korunur.25/12/13/0 ve17/74 aynı; terminal Bserisidışında, tek etkin sıra CRM_STATUS.md. Aşağıdaki bekleyen kurulum/boşprofil kayıtları tarihsel aşamalardır.
+
+## 24 Ekim03:30TR — Gerçek compiled profil / düzeltme a32
+
+4ead frontend761dosya/1621C47B gerçekten kuruldu, backendc1 aynı; fakat owner normal GUI'de panel gizli. Gerçek compiledbundle boşenv `n1={}` gösterdi. Önceki25,22/11,43sn “cleanbuild” yalnız derleme başarısıdır; preload VITEbayraklarını silmiş, profil/GUI kanıtı değildir.
+
+**a32e071** mevcut build-frontend'e yalnız exact `--profile=clean-synthetic-20261022` ekler: mevcutguard/sırtemizliği sonra4sabit sırsızbayrak; default/.envyasağı/ağkoruması aynı, serbestoverride yok. GerçekViteartifact4senaryo1PASS3FAIL→4PASS (+üst ve3guard=8PASS); üretim9,78sn/panelpermissionmountdoğru, reviewP1P2=0. **a32 exactCI PR40045201834/push40045197040/AI40045201865 completedSUCCESS/7job; yeni paket SOURCE_UNAPPLIED / owner normalGUI ve insan BEKLİYOR.** Backendc1/App4ead ve4CRMhesap korunur. Owner yeniimmutable frontend'i explicitprofil ile kurar; önceki yanlışderlenmişartifactler tarihsel kalır. [Sırsız kaynak/paket/GUI ayrımı](normal-user-inventory.json).25/12/13/0 ve17/74 aynı; tek etkin sıra CRM_STATUS.md. Aşağıdaki03:21aşaması güncelGUI PASS değildir.
+
+Owner kurulum çağrısı mevcut frontend çalışma dizininde `node ../../scripts/ci/build-frontend.mjs --profile=clean-synthetic-20261022` olmalıdır. Helper seçilen profil için mevcut guard'ı kendi yükler; caller preloaded olsa da bayraklar guard sonrasında atanır. Varsayılan `build.mjs` profil seçmez; önceden environment içine bayrak yazmak yeni sözleşme değildir. `.env` yüklenmez, yenihelper veya runtimebayrak enjeksiyonu kurulmaz. Gerçek build testi guard'ın caller preload'uyla ve onsuz çalışmasını, dört exactflag dışındaVITE/credential/dotenv taşınmamasını ve bilinmeyen argümanların build öncesi reddini doğrular. Bu teknik kanıt normal tarayıcı veya insan kabulü değildir.
+
+## 24 Ekim03:21TR — c1 kuruldu; normal Ayarlar erişim düzeltmesi
+
+ERP sahibi c1 backend+frontend'i `CLEAN-CRM-20261024-c1bc351218c3-B5` /760dosya/manifest `A5999B06F7ECDF5D2E6F49DAEA14CB8494EAA279D2246BA8665CA65F9B12D4AE` olarak03:13:33TR'de kurdu. Kurulum makbuzu SHA256 `F26E74872F7381344BEF147556694B5EB64F77A417EF65CA59C90877A02A424B`. CRM yalnız RO760manifest dosyası, yedi üretim kaynağı/exactc1Gitblob (gereken yerde sadeceCRLF→LF) ve taze LANindex/modülJS disk-HTTP hash eşliğini doğruladı. Raw/git hash'leri JSON'da ayrı; raw byte eşliği ilk karşılaştırmada sağlanmadığından satır sonu normalizasyonu açıkça kaydedildi. Bağımsız SQL/PID/credential sorgusu yapılmadı. Owner'ın16diğerlistener ve53SQLözet korunumu owner kanıtıdır. Kurulu ERPAPI04a83e53/web0993a123/native035fcc08 pinleri CRM kaynağından ayrıdır.
+
+Normal yönetici API readback'i03:15:33TR'de tam kapsamı gösterdi: **4CRM hesap kaydı/active4/inactive0/unlinked1/conflict0/complete=true**. Dördüncü hesap **`clean-semih-20261023` / `semih` / Patron / agentNULL**; eski üç örnek ve55→temsilci2→clean-staff korunur. Patron global okuma yetkilidir; agentNULL otomatik hata sayılıp temsilci uydurulmaz. Bu dört configuredCRM hesabı11etkinERP hesabıyla ayrı ad alanıdır. Yedi personel/Angela/İlker bu dört CRM kaydında yok; gerçek personel yetki uygulaması yapılmış sayılmaz. Owner normal yönetici200+no-store/personel403/anonim401/send=false/assign=false ve ticariyazı0 kanıtını verdi. Özel readback2860bayt/SHA256 `292BD3A6937CF62CE52502D3D5C1F0E7CF4F4B64E06A13B40D1501BDF564E73F`; yalnız sırsız metadata JSON'a alındı.
+
+### Gerçek normal GUI'de yakalanan hata
+
+c1 paneli menüsü olmayan **Kullanıcılar** dalına eklenmişti. Owner normal Chrome/LAN girişinden Hesabım ve Ayarlar'ı dolaştı; envantere ulaşamadı. API200 ve önceki4izole panel testi normal gezinmeyi kanıtlamıyordu. Bu eksik **normal UI FAIL** olarak kaydedildi; Reactstate/DOM/token enjeksiyonuyla ekran açılmadı.
+
+**[4ead69a](https://github.com/melihsnyldzz-ui/melisa-crm/commit/4ead69a529b45e00669ad930c744a12af37f631d)** yalnız aynı panel mount'unu mevcut **Hesabım → Ayarlar** bölümünde bağlantı kartının altına taşır. Yeni menü/dal, CSS, auth/rol, backend, deploy, hesap veya atama yazısı yoktur; `isLive + cleanbuild + crm.manage` koşulu aynen korunur. Tek üretim farkı `apps/frontend/src/App.jsx`; mevcut App test fixture'ına clean build parametresi ve üç gezinme regresyonu eklendi.
+
+- C1kaynak: yeni3test **2PASS/1FAIL**, pozitif normal yol paneli bulamadı. Düzeltme: **3PASS/0FAIL**; gerçek App'in Hesabım/Ayarlar event handler'ları çağrılır, doğrudan setActiveView enjeksiyonu yoktur.
+- Müdür ve Patron aynı normal yoldan panel/düğmeyi görür; personel/`crm.manage` olmayan müdür ve clean dışı build görmez. Gezinmek kendiliğinden hesap okuması yapmaz.
+- Fixture normal sentetik oturum + App/SSR testidir; gerçek tarayıcı/insan kabulü değildir. Aynı clean bayraklarıyla offline frontend build **PASS/11,43sn**. Mevcut bağımsız reviewer iki dosyada açıkP1/P2=0; App/test fiziksel hash'leri JSON'dadır.
+- **4ead exactCI PR40044335083/push40044329524/AI40044335082 completedSUCCESS/7job; frontend SOURCE_UNAPPLIED.** Kurulu backendc1 aynı kalır; owner yalnız frontend'i mevcut sahipli paket/rollback yolunda günceller. Normal **Hesabım → Ayarlar → Hesap envanterini göster**, yenile/reopen ve aynı4hesap makbuzu gelmeden kurulu ekran PASS yazılmaz. Gerçek insan/telefon/TC21 ayrı BEKLİYOR;25/12/13/0 ve17/74 aynı.
+
+Aşağıdaki03:03 kaynak devrindeki `SOURCE_UNAPPLIED`/Kullanıcılar yolu kurulum öncesi tarihsel aşamadır; bu yeni kurulum ve GUI bulgusunu geçersiz kılmaz.
+
 ## 24 Ekim — B5 tam CRM hesap okuması kaynak teslimi
 
 Önceki e1 atama-kapalı düzeltmesi korunur. ERP ana konuşmasındaki doğrudan kullanıcı onayı `01a16b29-ac26-75a2-8554-1d304f61072c` ile mevcut B5'in eksik sırsız normal hesap/rol/temsilci/atama okuması tamamlandı. [Kaynak c1bc351](https://github.com/melihsnyldzz-ui/melisa-crm/commit/c1bc351218c3db70ac2b3fa7cff5ba2bf7560ffb), mevcut feature/[PR3](https://github.com/melihsnyldzz-ui/melisa-crm/pull/3); yeni ana iş veya takip sistemi değildir. [Yapılandırılmış kaynak ve kapsam kanıtı](normal-user-inventory.json).
