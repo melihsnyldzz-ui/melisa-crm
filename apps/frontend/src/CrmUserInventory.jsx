@@ -42,7 +42,7 @@ export default function CrmUserInventory({getContext}) {
     {data?<>
       <p role="status">{data.accounts.length} CRM hesap kaydı · {data.accounts.filter(row=>row.active).length} etkin · {data.accounts.filter(row=>!row.active).length} kapalı</p>
       {!data.coverage.accountsComplete?<p role="alert">Yapılandırmadaki {data.coverage.omittedInvalidAccountCount} hesap okunamadı; hesap kapsamı eksik. Listede olmaması hesabın bulunmadığını kanıtlamaz.</p>:null}
-      <div className="user-grid">{data.accounts.map((row,index)=><article className="user-card" key={`${index}:${row.userId}`}>
+      <div className="user-grid">{data.accounts.map((row,index)=><article className="user-card inventory-account" key={`${index}:${row.userId}`}>
         <div><span><strong>{row.displayName}</strong><small>{row.username} · {roleName[row.role]||row.role}</small></span><b className={row.active?'online':''}>{row.active?'Etkin':'Kapalı'}</b></div>
         <dl><span>CRM hesap kimliği<strong>{row.userId}</strong></span><span>Temsilci<strong>{row.chatwootAgentId??'Bağlı değil'}</strong></span><span>Eşleme<strong>{mappingName[row.mappingState]||'Doğrulanmadı'}</strong></span></dl>
       </article>)}</div>

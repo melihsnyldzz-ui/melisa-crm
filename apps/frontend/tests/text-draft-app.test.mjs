@@ -654,3 +654,20 @@ test('B5 inventory normal settings entry is absent outside the clean TEST build'
  h.connect({...actor(),permissions:['crm.view','crm.manage']},[row()]);
  assert.doesNotMatch(await openNormalSettings(h),/aria-label="CRM hesap envanteri"|Hesap envanterini göster/);
 }));
+
+test('B5 settings assignment description respects the current source denial',async()=>{
+ for(const denial of [{capabilities:{assign:false}},{capabilities:{assign:'false'}}])await fixture(async h=>{
+  h.connect({...actor(),assignmentEnabled:true,canAssign:true},[row()],denial);
+  const html=await openNormalSettings(h);
+  assert.match(html,/Müşteri atama<\/span><strong>Bu oturumda kapalı · salt okunur<\/strong>/);
+  assert.doesNotMatch(html,/Müşteri atama<\/span><strong>Bu oturumda açık<\/strong>/);
+ },{clean:true,isolated:true});
+});
+
+test('B5 settings assignment description preserves supported and account-denied states',async()=>{
+ for(const allowed of [true,false])await fixture(async h=>{
+  h.connect({...actor(),assignmentEnabled:true,canAssign:allowed},[row()],{capabilities:{assign:true}});
+  const html=await openNormalSettings(h);
+  assert.match(html,allowed?/Müşteri atama<\/span><strong>Bu oturumda açık<\/strong>/:/Müşteri atama<\/span><strong>Bu oturumda kapalı · salt okunur<\/strong>/);
+ },{clean:true,isolated:true});
+});
