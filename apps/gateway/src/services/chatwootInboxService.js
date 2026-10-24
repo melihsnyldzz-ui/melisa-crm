@@ -43,6 +43,15 @@ function cleanSyntheticProjection(user=null) {
   });
 }
 
+// Management metadata only: reuse the exact existing TEST identity/assignment
+// validation, never return contacts, phone numbers, messages or provider secrets.
+export function readCleanCrmAssignmentInventory(user) {
+  const rows = cleanSyntheticProjection(user);
+  if (rows === null) throw Object.assign(new Error('Bu ortamda TEST hesap envanteri bulunmuyor.'), {code:'CRM_USER_INVENTORY_UNAVAILABLE',statusCode:404});
+  assertCrmPermission(user,'crm.manage');
+  return rows.map(row => ({conversationId:row.id,assigneeAgentId:row.chatwootAgentId}));
+}
+
 function backendIdentity() {
   return JSON.stringify([env.chatwoot.baseUrl, env.chatwoot.accountId, env.chatwoot.apiAccessToken]);
 }

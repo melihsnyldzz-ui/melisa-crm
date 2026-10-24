@@ -781,6 +781,9 @@ export const liveApi = {
     const rows = result.agents || result.items || (Array.isArray(result) ? result : []);
     return { agents: rows.map((item, index) => ({ ...item, id: item.id ?? item.agentId ?? index, name: item.name || item.displayName || `Temsilci ${index + 1}` })) };
   },
+  async userInventory(token, options = {}) {
+    return request('/crm/users',token,options);
+  },
   async send(token, id, text, clientRequestId, media = null) {
     const payload = { text, media, clientRequestId };
     validateSendPayload(payload);
