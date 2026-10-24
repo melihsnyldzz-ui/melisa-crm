@@ -1,5 +1,11 @@
 # B5 / C01–C02 / CRM-UA11 — rol ve kaynak yeteneğiyle atama
 
+### 24 Ekim 11:45 TR — B5 pasif paket kaynakla eşleşti; kurulum yapılmadı
+
+ERP sahibinin hazırladığı acb2a3a / CLEAN-CRM-20261024-acb2a3a0ce91-B5MGMT adayı **787 dosya**, manifest55ffbc1a70d9ade3aa7c8270e445b07575fe3817f24bc3e591e2f14daf197c92. CRM yalnız okuyarak787payloadSHA'yı manifestle byte bazında eşledi.14kritik uygulama kaynak dosyası acb2 ile yalnız CRLF/LF normalizasyonundan sonra aynı; doğrudan Git byte eşliği0/14, satır sonu dışında kaynak farkı0. Manifestteki gerçek packageId CLEAN-CRM-20261022-acb2a3a0ce91;20261024-B5MGMT fiziksel aday dizininin adıdır. Ana dosya index-CeCdOZfo.js912719bayt/SHA213d54b16d10c7f984b4e4bb518d093e8778a8ba85ac62d02b77e00210791587 kendi mevcut build çıktısıyla byte-eş; CSSaynı. Yeni build/test/login/API/SQL/kurulum yok; exact acb2 CI7SUCCESS önceki kanıttır.
+
+**Paket pasif, installed=false.** Son doğrulanmış runtime CRM59ca114 / ERPf4db'dir. ERP PR58/c4d4 kaynağının owner rollback-probe kaydı FAILED / CLEAN_PERSONNEL_DENIED / Line24; hesap oluşturma0, restartfalse, metadata/grants ve53özet korunmuş. CRM iki before/after dosya çiftinin byte eşliğini RO doğruladı. Owner'ın bildirdiği eksik employees ve terminal/sales employee kolonları mevcut ERP kaynak ajanında0013/0014 uyarlamasıdır; CRM bunlar için SQL sorgusu/düzeltmesi veya kod/paket tekrarı yapmadı. Ortak kurulum tek ERP sahibinde. B5 normal kurulu ekran/kişisel kesin bağ ve insan kabulü ayrı BEKLİYOR; E1 sunucu+normalbrowser kabulü korunur, native/cihaz/insan açık.25/12🟢/13🟡/0🔴 ve17/74aynı. [Paket ve somut bağımlılık](management-source-readiness.json).
+
 ## 24 Ekim 11:31 TR — B5 normal hesap/rol/temsilci kaynağı ve görünür sentetik akış
 
 **Kaynak acb2a3a0ce917d68221372e5f21bb788e90475aa / uygulama 7d09fdf9d83dbbda8523dbca5ba33465d628809e; kurulu B5 değildir.** Mevcut Ayarlar → CRM hesap envanterine, yalnız owner'ın açıkça etkinleştirdiği exact clean TEST'te yeni kişisel hesap ve düzenleme eklendi. Normal crm.manage, mevcut scrypt/issuer/normal grant/refresh/logout ve her istekte güncel kayıt kullanılır; yeni auth/atama motoru yok. Personel yalnız kendi atanmış görüşmesini, Müdür bütün görüşme/atamaları görür. Patron yükseltme, mevcut dört hesabı değiştirme/reset/adopt, isimden ERP kişisi çıkarma ve gerçek müşteri ataması yok.
