@@ -1,5 +1,12 @@
 ## CRM-UA11 — 15 Ekim — son normal ekran ve fiziksel mobil kabulü
 
+### 24 Ekim 09:54 TR — E1 kendi normal CRM oturumu kurulu teknik doğrulandı
+
+ERP owner source09a2ea30'u09:44:34TR'de772dosya/B1420manifest ile gerçekten kurdu;16normalAPI ve kurulu normal Personel→1atanmış konuşma→tamreload'da kimlik→çıkış→reloadkapalı,3aile sunucuda revoked kanıtı var. CRM772hash/4Gitblob/mainartifact ve53koruma özeti dosyalarını RO eşledi;[ERP6e3c4bda](https://github.com/melihsnyldzz-ui/melisa-erp-v2/blob/6e3c4bdaf48612421ef6872ea5ed820ee8331eba/STATUS.md) /[mevcut CRM kanıtı](docs/evidence/crm/2026-10-24-e1-terminal/README.md). Yeni test/kurulum yapılmadı;source09aCI7/7aynı.
+
+**İnsan/aynı-kişi/cihaz BEKLİYOR:** bu kendi sentetik CRM hesabının normal ekranıdır;ERP→CRM kişi bağı,AndroidKeystore/TC21/gerçek personel/telefon/Windows reboot-logon ve koli adapteri sonucu değildir. Owner09:37mevcut-paket geri açması kapanma nedenini çözmüş veya rebootkabulü sayılmaz.25/12🟢/13🟡/0🔴 ve17/74 aynı. Eski kaynak-hazır/kurulum-bekleyen ifadeler kendi tarihindeki aşamadır.
+
+
 ### 24 Ekim 09:36 TR — E1 kendi normal CRM oturumu teknik hazır; insan kabulü BEKLİYOR
 
 [09a2ea30](https://github.com/melihsnyldzz-ui/melisa-crm/commit/09a2ea30dd9fea152554dbf6efe43c731add1510) mevcut sentetik Personel için normal giriş/yenileme/reopen/çıkış/revoke,grantless ret,kendi aile logout ve exact clean terminal frame tüketicisini tamamlar.5ilk regresyon ve1frame önceFAIL;son52doğrudan+15legacy ve7rota raporuPASS,production24,24sn,reviewP1P2=0/secret0/exactCI7SUCCESS. IAB'de normal production App/gerçek rotalar/bellek journalıyla1atanmış müşteri ve konuşma,normal çıkış ve reload'da kapalı giriş görüldü; [üç ekran ve sınırlar](docs/evidence/crm/2026-10-24-e1-terminal/README.md).

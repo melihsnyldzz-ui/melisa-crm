@@ -1,5 +1,17 @@
 # E1 / M01 / CRM-UA11 — mevcut terminal girişinin CRM kaynak parçası
 
+## 24 Ekim 09:54 TR — 09a normal CRM oturumu gerçekten kurulu; salt okunur eşleme tamam
+
+ERP tek sahibi **24Ekim09:44:34TR**'de source/frontend/backend **09a2ea30** paketini kurdu. [ERP STATUS6e3c4bda](https://github.com/melihsnyldzz-ui/melisa-erp-v2/blob/6e3c4bdaf48612421ef6872ea5ed820ee8331eba/STATUS.md) / [PR54](https://github.com/melihsnyldzz-ui/melisa-erp-v2/pull/54) ve mevcut final/kurulum/normal-runtime makbuzları okundu. Paket `CLEAN-CRM-20261024-09a2ea30dd9f-E1SESSION`, **772dosya**, manifestSHA256 `B1420C607F67A27E18404FDA5D911703FF2175406FBB9129B72C1A3BD073E911`. CRM bütün772dosyayı, dört değişen kaynak dosyasını exact09aGitblobuyla yalnız gerekenCRLF normalizasyonu yaparak, ana901320bayt/8d264cc8 dosyasını kendi hazır build'i ve owner'ın sunulanHTTP artifact'iyle salt okunur eşledi.
+
+Owner'ın **16gerçek normal API** kontrolü normal giriş/me/atanmış55/rotasyon/eski replay401/kendi-aile çıkışı/yanlışpersonel403'ü doğruluyor. Kurulu normal IAB **ornek-personel·Personel → Mesajlarım /1atanmış konuşma → aynı konuşma → tamreload'da kimlik korunur → normal çıkış → reload'da giriş kapalı** gösteriyor. Root mevcut hesap/reload ekran pikselini ve reload/çıkış AX kayıtlarını RO gördü; yeni login veya test tekrarı yapmadı.3deneme ailesi owner final makbuzunda sunucuda revoked. Bu kurulu normal **CRM hesabı** kanıtıdır; ERP terminalindeki aynı kişi bağı veya cihaz/insan kabulü değildir.
+
+Owner private journal parent/reparse/varolan dosya ve atomik replace sonrası ACL'i doğruladı; CRM journal veya credential okumadı. Kurulum/API/GUI öncesi-sonrası üç53koruma özeti dosya çifti byte-eş; yeni SQL sorgusu yapılmadı. ERP8aa/native035/16diğerlistener owner makbuzunda korunuyor. CRM taze OS okumasında4port/3node/6listener ve09:44:30doğumlarını gördü; komut satırları relative modül adları içeriyor, package CWD'si bağımsız sorgulanmadı. Runtime kaynak bağının dayanağı owner kurulum+normal API/GUI makbuzudur; tazeHTTP veya akış PASS iddiası yok.
+
+**Kurulu teknik sonuç; insan/aynı-kişi/cihaz BEKLİYOR.** Önceki09:36 SOURCE_READY ve eski635/c1 kurulum referansı tarihsel aşamadır. Kesintide temiz süreçlerin kapanma nedeni kanıtlanmadı; owner09:37mevcut-paket geri açma kanıtı gerçek Windows reboot/logon kabulü değildir. Mevcut ERP→CRM userId→temsilci→müşteri bağı, AndroidKeystore/uygulama yeniden açma, koli adapteri ve gerçek personel/telefon/TC21/insan açık.25/12🟢/13🟡/0🔴 ve17/74 değişmedi. Kaynak09aCI7/7aynı; bu uzlaştırma yalnız belge,build/test/CI/kurulum tekrarı yok. [Makbuz hashleri ve sınırlar](source-origin-readiness.json) `currentCleanNormalSession.ownerInstallation` içinde.
+
+## Tarihçe — önceki kaynak hazır / kurulum öncesi aşama
+
 ## 24 Ekim 09:36 TR — bağımsız normal CRM oturumu kaynak ve izole ekranda hazır
 
 [09a2ea30](https://github.com/melihsnyldzz-ui/melisa-crm/commit/09a2ea30dd9fea152554dbf6efe43c731add1510) mevcut normal password-login / hash-only `createNormalRefreshStore` / native tüketiciyi yalnız **mevcut yapay Personel** hesabı için tamamlar. Varsayılan kapalıdır; owner'ın mevcut üç refresh ayarı exact clean profil/DB/origin/journal ile açıkça seçilmelidir. Baseline'dan aktivasyon, kimlik veya dosya mirası yok. Eski DB02/Semih/assigned/cookie koşulları değişmedi; ERP kimliğinden CRM kimliği, yeni login/SSO/credential taşıma veya hesap/rol/atama üretilmedi.

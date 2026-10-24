@@ -4,7 +4,7 @@
     "observedAtIstanbul": "2026-10-24T09:36:58.054729+03:00",
     "sourceCommit": "09a2ea30dd9fea152554dbf6efe43c731add1510",
     "baseSource": "c79b3d5400e0bd63928b3b7bdbe4daa1b9e8d7f7",
-    "status": "INDEPENDENT_CRM_SESSION_SOURCE_READY_INSTALLATION_PENDING",
+    "status": "INSTALLED_OWN_CRM_NORMAL_SESSION_TECHNICALLY_VERIFIED",
     "existingAcceptanceIds": [
       "E1",
       "M01",
@@ -72,7 +72,8 @@
         "grantless JWT denied for selected clean actor",
         "verified grant marker enables exact own-family access logout",
         "separate private journal; Windows ACL/reparse/replacement confirmation belongs to ERP installation"
-      ]
+      ],
+      "appliedByOwner": true
     },
     "regressionBeforeAfter": {
       "initialFive": {
@@ -300,7 +301,7 @@
       "stagedFindings": 0,
       "status": "PASS"
     },
-    "lastInstalledCrmReference": "B5 frontend635/backendc1 / CLEAN-CRM-20261024-63513b21ff93-B5UX, existing04:19/04:21 owner receipts; source09 not installed by CRM",
+    "lastInstalledCrmReference": "C:/Sirket/ERP/releases/CLEAN-CRM-20261024-09a2ea30dd9f-E1SESSION /772 files /manifest B1420C607F67A27E18404FDA5D911703FF2175406FBB9129B72C1A3BD073E911 /owner observed 2026-10-24T09:46:11.7399489+03:00",
     "missingDependency": {
       "status": "ERP_CRM_SAME_PERSON_MAPPING_NOT_PROVEN",
       "ownerConfirmation": "ERP current sources preserve separate application sessions and have no verified ERP→CRM→representative mapping.",
@@ -320,9 +321,10 @@
     "handoff": {
       "owner": "ERP",
       "source": "09a2ea30dd9fea152554dbf6efe43c731add1510",
-      "needed": "sealed backend+frontend package, private journal ACL/reparse/atomic-replace preservation, explicit owner activation, normal installed GUI/readback and manifest/source/bundle receipt",
-      "crmSharedWrites": false,
-      "readySourceAndBuild": true
+      "status": "INSTALLED_AND_NORMAL_CRM_TECHNICALLY_VERIFIED",
+      "ownerCommit": "6e3c4bdaf48612421ef6872ea5ed820ee8331eba",
+      "crmPerformedInstallation": false,
+      "samePersonAndDeviceHumanAcceptance": "PENDING"
     },
     "finishCounts": {
       "crmTotal": 25,
@@ -359,6 +361,447 @@
       ],
       "wholeClosureGranted": false,
       "method": "existing pure checkProjects, no configured cache script rerun"
+    },
+    "previousSourceReadyState": {
+      "status": "INDEPENDENT_CRM_SESSION_SOURCE_READY_INSTALLATION_PENDING",
+      "lastInstalledCrmReference": "B5 frontend635/backendc1 / CLEAN-CRM-20261024-63513b21ff93-B5UX, existing04:19/04:21 owner receipts; source09 not installed by CRM",
+      "handoff": {
+        "owner": "ERP",
+        "source": "09a2ea30dd9fea152554dbf6efe43c731add1510",
+        "needed": "sealed backend+frontend package, private journal ACL/reparse/atomic-replace preservation, explicit owner activation, normal installed GUI/readback and manifest/source/bundle receipt",
+        "crmSharedWrites": false,
+        "readySourceAndBuild": true
+      }
+    },
+    "ownerInstallation": {
+      "reconciledAtUtc": "2026-10-24T06:54:41.137687+00:00",
+      "reconciledAtIstanbul": "2026-10-24T09:54:41.137687+03:00",
+      "publicOwnerStatus": "https://github.com/melihsnyldzz-ui/melisa-erp-v2/blob/6e3c4bdaf48612421ef6872ea5ed820ee8331eba/STATUS.md",
+      "publicOwnerPr": "https://github.com/melihsnyldzz-ui/melisa-erp-v2/pull/54",
+      "ownerStatusCommit": "6e3c4bdaf48612421ef6872ea5ed820ee8331eba",
+      "receipts": {
+        "e1-crm-final-delivery.json": {
+          "file": "e1-crm-final-delivery.json",
+          "bytes": 1066,
+          "sha256": "f17d4c4dca4c55ca530d9b4f7d392327f76629d31f1b2f9893b88a64909578fd",
+          "record": {
+            "status": "CRM_NORMAL_SESSION_INSTALLED_AND_VERIFIED",
+            "source": "09a2ea30dd9fea152554dbf6efe43c731add1510",
+            "package": "C:/Sirket/ERP/releases/CLEAN-CRM-20261024-09a2ea30dd9f-E1SESSION",
+            "manifestSha": "B1420C607F67A27E18404FDA5D911703FF2175406FBB9129B72C1A3BD073E911",
+            "files": 772,
+            "observedAt": "2026-10-24T09:46:11.7399489+03:00",
+            "exactSourceCiJobsSuccessful": 7,
+            "backendNormalCases": 16,
+            "normalUiLogin": true,
+            "ownAssignedConversation": true,
+            "pageReloadPreservedSession": true,
+            "normalUiLogoutAfterReload": true,
+            "logoutReloadDeniedAccess": true,
+            "testGrantFamilies": 3,
+            "testFamiliesRevoked": true,
+            "servedFrontendSha": "8d264cc8382ffe56812d426fdc76d46db4efcac7d32fe245644cda8aba6758a6",
+            "ownerBundleMatched": true,
+            "dataSummariesUnchanged": 53,
+            "preservedListeners": 16,
+            "accountsChanged": 0,
+            "rolesChanged": 0,
+            "assignmentsChanged": 0,
+            "commercialWrites": 0,
+            "messagesSent": 0,
+            "erpCrmSamePerson": "PENDING",
+            "androidReopen": "NOT_RUN",
+            "humanAcceptance": "PENDING"
+          }
+        },
+        "e1-crm-session-installation.json": {
+          "file": "e1-crm-session-installation.json",
+          "bytes": 866,
+          "sha256": "aa80620750cbf1c77f8c3cd4559e837f239f9f02c66149825d086312565c8cdb",
+          "record": {
+            "status": "INSTALLED",
+            "source": "09a2ea30dd9fea152554dbf6efe43c731add1510",
+            "frontendSource": "09a2ea30dd9fea152554dbf6efe43c731add1510",
+            "backendSource": "09a2ea30dd9fea152554dbf6efe43c731add1510",
+            "root": "C:/Sirket/ERP/releases/CLEAN-CRM-20261024-09a2ea30dd9f-E1SESSION",
+            "manifestSha": "B1420C607F67A27E18404FDA5D911703FF2175406FBB9129B72C1A3BD073E911",
+            "files": 772,
+            "changedPorts": [
+              62800,
+              62801,
+              62802,
+              62803
+            ],
+            "preservedListeners": 16,
+            "erpSource": "8aa3093efd43a4010dbf0106497ef7e592edc46a",
+            "nativeSource": "035fcc08d8f56cdd0cbc437a290285328fce1ec9",
+            "database": "MELISA_ERP_CLEAN_TEST_20261022",
+            "environmentId": "e662fd94-d797-4b3b-938a-d143ad758b67",
+            "synthetic": true,
+            "actualT1": false,
+            "dataSummariesUnchanged": 53,
+            "installedAt": "2026-10-24T09:44:34.7748332+03:00"
+          }
+        },
+        "e1-crm-normal-runtime.json": {
+          "file": "e1-crm-normal-runtime.json",
+          "bytes": 2224,
+          "sha256": "b07dbb9956bd3b7e5a15c439fe66d9849627950087a822d0d850b968cab08f40",
+          "record": {
+            "status": "NORMAL_CRM_AUTH_TECHNICALLY_VERIFIED",
+            "source": "09a2ea30dd9fea152554dbf6efe43c731add1510",
+            "observedAt": "2026-10-24T09:44:55.9962625+03:00",
+            "cases": [
+              {
+                "operation": "/auth/me",
+                "status": 401,
+                "verified": true
+              },
+              {
+                "operation": "/auth/login",
+                "status": 200,
+                "verified": true
+              },
+              {
+                "operation": "/auth/me",
+                "status": 200,
+                "verified": true
+              },
+              {
+                "operation": "/crm/inbox",
+                "status": 200,
+                "verified": true
+              },
+              {
+                "operation": "/crm/conversations/55",
+                "status": 200,
+                "verified": true
+              },
+              {
+                "operation": "/auth/refresh",
+                "status": 200,
+                "verified": true
+              },
+              {
+                "operation": "/auth/refresh",
+                "status": 401,
+                "verified": true
+              },
+              {
+                "operation": "/auth/me",
+                "status": 200,
+                "verified": true
+              },
+              {
+                "operation": "/auth/logout",
+                "status": 200,
+                "verified": true
+              },
+              {
+                "operation": "/auth/me",
+                "status": 401,
+                "verified": true
+              },
+              {
+                "operation": "/auth/refresh",
+                "status": 401,
+                "verified": true
+              },
+              {
+                "operation": "/auth/login",
+                "status": 200,
+                "verified": true
+              },
+              {
+                "operation": "/crm/conversations/55",
+                "status": 403,
+                "verified": true
+              },
+              {
+                "operation": "/auth/login",
+                "status": 200,
+                "verified": true
+              },
+              {
+                "operation": "/auth/logout",
+                "status": 200,
+                "verified": true
+              },
+              {
+                "operation": "/auth/me",
+                "status": 401,
+                "verified": true
+              }
+            ],
+            "ownAssignedConversationRead": true,
+            "wrongStaffDenied": true,
+            "rotationAndReplayVerified": true,
+            "logoutAndOwnFamilyRevocationVerified": true,
+            "privateAclAfterAtomicReplace": true,
+            "rawSecretsPersisted": false,
+            "dataSummariesUnchanged": 53,
+            "accountsChanged": 0,
+            "rolesChanged": 0,
+            "assignmentsChanged": 0,
+            "messagesSent": 0,
+            "commercialWrites": 0,
+            "deviceResult": "NOT_RUN",
+            "erpCrmSamePerson": "NOT_VERIFIED",
+            "humanAcceptance": "PENDING"
+          }
+        },
+        "e1-crm-session-package.json": {
+          "file": "e1-crm-session-package.json",
+          "bytes": 259,
+          "sha256": "26bdd07e41d7ef902a0df9fc5ac5b6b0423f8da9a5da8ba30e6b42cc74f351ae",
+          "record": {
+            "source": "09a2ea30dd9fea152554dbf6efe43c731add1510",
+            "root": "C:/Sirket/ERP/releases/CLEAN-CRM-20261024-09a2ea30dd9f-E1SESSION",
+            "manifestSha": "B1420C607F67A27E18404FDA5D911703FF2175406FBB9129B72C1A3BD073E911",
+            "files": 772,
+            "installed": false
+          }
+        },
+        "e1-crm-session-state-preparation.json": {
+          "file": "e1-crm-session-state-preparation.json",
+          "bytes": 179,
+          "sha256": "be81cbb9713cc628c913fdf9ff90bd02a079a8b8c6b83e04df17e154b437019e",
+          "record": {
+            "actorCreated": false,
+            "parentReparseRejected": true,
+            "rawCredentialsPersisted": false,
+            "privateParentInheritance": true,
+            "existingJournalOverwritten": false
+          }
+        }
+      },
+      "packageReceiptInstalledFalseNote": "e1-crm-session-package.json is the earlier passive packaging receipt; the later installation/final receipts supersede installed:false without modifying that historical receipt.",
+      "independentCrmReadOnlyFileMatch": {
+        "source": "09a2ea30dd9fea152554dbf6efe43c731add1510",
+        "packageId": "CLEAN-CRM-20261024-09a2ea30dd9f-E1SESSION",
+        "manifestSha256": "b1420c607f67a27e18404fda5d911703ff2175406fbb9129b72c1a3bd073e911",
+        "verifiedFiles": 772,
+        "productionFiles": [
+          {
+            "path": "apps/gateway/src/services/normalRefreshSession.mjs",
+            "physicalSha256": "a52b7cc0292e95c99c40bb97d539da555f1306d04b8c1648801fe918287b4d6e",
+            "gitBlobSha256": "a10be2d7872a463dd32d7a03686b1332d7c2199263090457c5623b1fbbd8ae0f",
+            "match": "git-exact-after-CRLF-normalization"
+          },
+          {
+            "path": "apps/gateway/src/services/crmAuthService.js",
+            "physicalSha256": "d796afa20cb361f6ff85ac072e3a04c8e73d76baca1693f8742fa26213e4c151",
+            "gitBlobSha256": "dd51382ac6b5d4cc1a258bb1af8ad5ab7b56294013ef6457fe00731b654e064e",
+            "match": "git-exact-after-CRLF-normalization"
+          },
+          {
+            "path": "apps/frontend/src/liveApi.js",
+            "physicalSha256": "9e65f67d77c6d64d5da4bd3a0d5748b97ce20bca398f80a0fb9f7eae0b9d376e",
+            "gitBlobSha256": "18b6e28ec31330225695706ee1585254a1e2639d733e9f3929ca3e65aa682653",
+            "match": "git-exact-after-CRLF-normalization"
+          },
+          {
+            "path": "deploy/test-server.mjs",
+            "physicalSha256": "23057cf1c95cf742486ef34d04b1ecb2b7ede4f4094ed9216007c782ea9c94c0",
+            "gitBlobSha256": "d5b749d9025046f691e4cfebfeed4ddeeff2569e4ebd00b1396231ce5af9ef25",
+            "match": "git-exact-after-CRLF-normalization"
+          }
+        ],
+        "mainBytes": 901320,
+        "mainSha256": "8d264cc8382ffe56812d426fdc76d46db4efcac7d32fe245644cda8aba6758a6",
+        "matchesOwnerServedArtifact": true,
+        "matchesExistingCrmBuild": true,
+        "protectedSummaryComparisons": [
+          {
+            "before": "e1-crm-session-data.before.txt",
+            "after": "e1-crm-session-data.after.txt",
+            "byteEqual": true,
+            "sha256": "034bd4bd5447900e4eea94f96be130dc492013a0d01219667a75073ef9988bcd",
+            "bytes": 5359
+          },
+          {
+            "before": "e1-crm-session-data.after.txt",
+            "after": "e1-crm-normal-protected.after.txt",
+            "byteEqual": true,
+            "sha256": "034bd4bd5447900e4eea94f96be130dc492013a0d01219667a75073ef9988bcd",
+            "bytes": 5359
+          },
+          {
+            "before": "e1-crm-normal-protected.after.txt",
+            "after": "e1-crm-gui-protected.after.txt",
+            "byteEqual": true,
+            "sha256": "034bd4bd5447900e4eea94f96be130dc492013a0d01219667a75073ef9988bcd",
+            "bytes": 5359
+          }
+        ],
+        "freshHttpOrSql": false
+      },
+      "runtimeObservation": {
+        "listeners": [
+          {
+            "address": "127.0.0.1",
+            "port": 62803,
+            "pid": 64476,
+            "processName": "node.exe",
+            "packagePathInCommandLine": false,
+            "packageIdInCommandLine": false,
+            "sourceScriptNames": [
+              "test-erp-orders.mjs"
+            ],
+            "createdAt": "2026-10-24T09:44:30.7001680+03:00"
+          },
+          {
+            "address": "127.0.0.1",
+            "port": 62802,
+            "pid": 27756,
+            "processName": "node.exe",
+            "packagePathInCommandLine": false,
+            "packageIdInCommandLine": false,
+            "sourceScriptNames": [
+              "test-erp-catalog.mjs"
+            ],
+            "createdAt": "2026-10-24T09:44:30.6881460+03:00"
+          },
+          {
+            "address": "127.0.0.1",
+            "port": 62801,
+            "pid": 26212,
+            "processName": "node.exe",
+            "packagePathInCommandLine": false,
+            "packageIdInCommandLine": false,
+            "sourceScriptNames": [
+              "test-server.mjs"
+            ],
+            "createdAt": "2026-10-24T09:44:30.6736610+03:00"
+          },
+          {
+            "address": "192.168.1.46",
+            "port": 62800,
+            "pid": 26212,
+            "processName": "node.exe",
+            "packagePathInCommandLine": false,
+            "packageIdInCommandLine": false,
+            "sourceScriptNames": [
+              "test-server.mjs"
+            ],
+            "createdAt": "2026-10-24T09:44:30.6736610+03:00"
+          },
+          {
+            "address": "127.0.0.1",
+            "port": 62800,
+            "pid": 26212,
+            "processName": "node.exe",
+            "packagePathInCommandLine": false,
+            "packageIdInCommandLine": false,
+            "sourceScriptNames": [
+              "test-server.mjs"
+            ],
+            "createdAt": "2026-10-24T09:44:30.6736610+03:00"
+          },
+          {
+            "address": "100.87.188.3",
+            "port": 62800,
+            "pid": 26212,
+            "processName": "node.exe",
+            "packagePathInCommandLine": false,
+            "packageIdInCommandLine": false,
+            "sourceScriptNames": [
+              "test-server.mjs"
+            ],
+            "createdAt": "2026-10-24T09:44:30.6736610+03:00"
+          }
+        ],
+        "scopeNote": "Only OS port/PID/birth/module-name observation. CIM command lines contain relative module names, not a package path; no CWD/secret reader was used. The source/package execution link reuses the owner installation plus normal API/GUI receipts.",
+        "freshHttp": false,
+        "freshSql": false,
+        "newLoginOrFlowTest": false
+      },
+      "ownerNormalGui": {
+        "kind": "OWNER_INSTALLED_NORMAL_CRM_GUI",
+        "origin": "http://192.168.1.46:62800/",
+        "normalCrmUser": "ornek-personel",
+        "role": "personel",
+        "assignedConversation": "55",
+        "count": 1,
+        "fullReloadPreservedIdentity": true,
+        "normalLogoutAfterReload": true,
+        "reloadStaysLoggedOut": true,
+        "observedRootReadOnlyAccountScreenshot": true,
+        "observedRootReadOnlyReloadAndLogoutAx": true,
+        "evidence": [
+          {
+            "file": "e1-crm-ui-account-after-reload.png",
+            "bytes": 29057,
+            "sha256": "9c39711fbb37bf13342422872fe646eba4a9301b05748e763880e0ca1e7c505e",
+            "copiedToRepository": false
+          },
+          {
+            "file": "e1-crm-ui-conversation.png",
+            "bytes": 46280,
+            "sha256": "e8a03c10b5e85f2e72c552b16cca1a8470f0ed56399e308ae5aea1f7f523233f",
+            "copiedToRepository": false
+          },
+          {
+            "file": "e1-crm-ui-logout-reloaded.png",
+            "bytes": 29264,
+            "sha256": "1cc3220812a3e2e79acd455fb012c4bd19af9b92fd4d35bfb4b44e4f5cec24af",
+            "copiedToRepository": false
+          },
+          {
+            "file": "e1-crm-ui-reloaded.txt",
+            "bytes": 1238,
+            "sha256": "ac4c2225a8845ef2b04cc270b4adbb8e5cfd89d070da5cd06e6eef092c349f43",
+            "copiedToRepository": false
+          },
+          {
+            "file": "e1-crm-ui-logout-reloaded.txt",
+            "bytes": 742,
+            "sha256": "2f5b8157bed32378491a9a1c1fce323c84f1114a7a8e54ee630c197193f5b1ac",
+            "copiedToRepository": false
+          }
+        ],
+        "erpTerminalSamePerson": false,
+        "physicalDeviceAcceptance": false,
+        "humanAcceptance": "PENDING"
+      },
+      "privateJournalPolicy": {
+        "verifiedByOwner": true,
+        "parentReparseRejected": true,
+        "existingJournalOverwritten": false,
+        "privateInheritance": true,
+        "aclAfterAtomicReplace": true,
+        "rawSecretsPersisted": false,
+        "journalReadByCrm": false
+      },
+      "sharedOperationsByCrm": false,
+      "newApplicationTestsBuildOrCiByCrm": false,
+      "humanAcceptance": "PENDING",
+      "recordAlignment": {
+        "mainIds": {
+          "ERP": "CRM06",
+          "CRM": "CRM06"
+        },
+        "crmInconsistencies": [],
+        "crmPrerequisites": [
+          {
+            "id": "required[0]",
+            "decision": "REUSE",
+            "code": null
+          },
+          {
+            "id": "required[1]",
+            "decision": "BLOCKED",
+            "code": "PROOF_BLOCKED"
+          },
+          {
+            "id": "required[2]",
+            "decision": "BLOCKED",
+            "code": "PROOF_BLOCKED"
+          }
+        ],
+        "wholeClosureGranted": false,
+        "method": "existing pure checkProjects only; configured cache script not rerun"
+      }
     }
   },
   "kind": "existing-E1-CRM-source-consumer-readiness",
@@ -750,7 +1193,7 @@
     ],
     "evidenceScope": "Recorded owner installation and13stateful auth cases plus normal ERP stock/supplier GUI; CRM read existing receipt/protection files only. No new auth/SQL/HTTP/GUI execution."
   },
-  "currentCrmInstallationReference": "docs/evidence/crm/2026-10-23-b5-assignment/normal-user-inventory.json",
+  "currentCrmInstallationReference": "currentCleanNormalSession.ownerInstallation (ERP STATUS6e3c4bda /source09a2ea30 /772 files)",
   "recordReconciliation": {
     "observedAt": "2026-10-24T01:44:21Z",
     "beforeCrmSource": "548fee85f7a2b2897f048b9e7ac4378cfb2e6f29",
@@ -828,5 +1271,6 @@
       "openP1P2": 0,
       "scope": "Five staged documents; single current table/preflight,296621-byte historical body equality, links, mixed635/c1 package-source distinction, ERP8aa versus unappliedCRM2c and pending acceptance. Reviewer performed no checker/test/GUI/HTTP/SQL/runtime or writes."
     }
-  }
+  },
+  "previousCrmInstallationReferenceB5": "docs/evidence/crm/2026-10-23-b5-assignment/normal-user-inventory.json"
 }
