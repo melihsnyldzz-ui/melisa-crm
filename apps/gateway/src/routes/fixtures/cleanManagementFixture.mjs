@@ -29,13 +29,15 @@ export function memoryPrivateFiles() {
   return {text:file=>files.get(key(file)),restore:()=>Object.assign(fs,original)};
 }
 
-export async function createManagementFixture({password=crypto.randomBytes(24).toString('base64url')}={}) {
+export async function createManagementFixture({password=crypto.randomBytes(24).toString('base64url'),terminalHandoff=false,peerFetch}={}) {
   if(process.platform!=='win32')throw Error('Exact production clean profile is Windows-only.');
+  if(terminalHandoff&&typeof peerFetch!=='function')throw Error('A memory-only terminal peer fixture is required.');
   const config={CRM_TEST_PROFILE:'clean-synthetic-20261022',CRM_TEST_PORT_BASE:'62800',CRM_ISOLATED_PREPARATION:'true',
     CRM_TEST_ERP_ORIGIN:'http://127.0.0.1:4194',CRM_TEST_EXPECTED_DATABASE:'MELISA_ERP_CLEAN_TEST_20261022',CRM_UI_ORIGIN:'http://127.0.0.1:62800',
     CRM_NORMAL_REFRESH_ENABLED:'true',CRM_NORMAL_REFRESH_USER_ID:'clean-staff-20261022',CRM_NORMAL_REFRESH_JOURNAL_PATH:'C:/Sirket/ERP/clean/20261022/runtime/crm-normal-refresh.json',
     CRM_CLEAN_ACCOUNT_MANAGEMENT_ENABLED:'true',CRM_CLEAN_ACCOUNT_MANAGEMENT_FILE:CLEAN_MANAGED_USERS_FILE,
-    CRM_CUSTOMER_PRODUCT_REQUEST_ENABLED:'false',CRM_CUSTOMER_PRODUCT_REQUEST_PROOF:'false',CRM_SEMIH_TEST_CONTINUE_ENABLED:'false',CRM_ASSIGNED_STAFF_REFRESH_ENABLED:'false',CRM_TERMINAL_HANDOFF_ENABLED:'false',
+    CRM_CUSTOMER_PRODUCT_REQUEST_ENABLED:'false',CRM_CUSTOMER_PRODUCT_REQUEST_PROOF:'false',CRM_SEMIH_TEST_CONTINUE_ENABLED:'false',CRM_ASSIGNED_STAFF_REFRESH_ENABLED:'false',CRM_TERMINAL_HANDOFF_ENABLED:terminalHandoff?'true':'false',
+    ...(terminalHandoff?{CRM_TERMINAL_PEER_KEY:crypto.randomBytes(32).toString('base64url')}:{}),
     WHATSAPP_SEND_ENABLED:'false',WHATSAPP_LIVE_SEND_APPROVED:'false',CRM_PAID_AI_ENABLED:'false',
     CRM_CLEAN_CONVERSATION_PROJECTION_JSON:JSON.stringify({version:1,environment:'CLEAN_SYNTHETIC_TEST',synthetic:true,
       environmentId:'e662fd94-d797-4b3b-938a-d143ad758b67',database:'MELISA_ERP_CLEAN_TEST_20261022',conversations:[
@@ -49,15 +51,17 @@ export async function createManagementFixture({password=crypto.randomBytes(24).t
     users:[account('clean-manager-20261022','ornek-mudur','Örnek Müdür','patron',1),account('clean-staff-20261022','ornek-personel','Örnek Personel','personel',2),account('clean-stranger-20261022','ornek-diger','Örnek Diğer','personel',3),account('clean-semih-20261023','semih','Semih','patron',null)]});
   Object.assign(env.whatsapp,{sendEnabled:false,liveSendApproved:false,provider:'evolution'});env.chatwoot.inboxReadEnabled=false;
   const memory=memoryPrivateFiles(),baseline=JSON.stringify(env.auth.users);
+  const originalFetch=globalThis.fetch;
+  if(terminalHandoff)globalThis.fetch=(input,options)=>String(input).startsWith('http://127.0.0.1:4194/api/auth/terminal-handoff/')?peerFetch(input,options):originalFetch(input,options);
   const {createApp}=await import('../../app.js');
   const app=createApp(),server=app.listen(0,'127.0.0.1');await new Promise((resolve,reject)=>{server.once('listening',resolve);server.once('error',reject);});
-  const origin=`http://127.0.0.1:${server.address().port}`;env.cors.origins=[origin];
+  const origin=`http://127.0.0.1:${server.address().port}`,requestOrigin=terminalHandoff?config.CRM_UI_ORIGIN:origin;env.cors.origins=[requestOrigin];
   const call=async(route,{body,method=body===undefined?'GET':'POST',token}={})=>{
-    const response=await fetch(origin+route,{method,headers:{origin,...(body===undefined?{}:{'content-type':'application/json'}),...(token?{authorization:`Bearer ${token}`}:{})},...(body===undefined?{}:{body:JSON.stringify(body)})});
+    const response=await fetch(origin+route,{method,headers:{origin:requestOrigin,...(body===undefined?{}:{'content-type':'application/json'}),...(token?{authorization:`Bearer ${token}`}:{})},...(body===undefined?{}:{body:JSON.stringify(body)})});
     return {status:response.status,headers:response.headers,...await response.json()};
   };
   return {origin,password,call,baseline,memory,server,app,close:async()=>{
-    server.closeAllConnections();await new Promise(resolve=>server.close(resolve));memory.restore();Object.assign(env.auth,beforeAuth);Object.assign(env.whatsapp,beforeWa);env.cors.origins=beforeCors;env.chatwoot.inboxReadEnabled=beforeRead;
+    server.closeAllConnections();await new Promise(resolve=>server.close(resolve));globalThis.fetch=originalFetch;memory.restore();Object.assign(env.auth,beforeAuth);Object.assign(env.whatsapp,beforeWa);env.cors.origins=beforeCors;env.chatwoot.inboxReadEnabled=beforeRead;
     for(const [key,value]of Object.entries(previous)){if(value===undefined)delete process.env[key];else process.env[key]=value;}
   }};
 }

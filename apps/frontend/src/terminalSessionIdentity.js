@@ -12,6 +12,7 @@ export function linkedTerminalContext(host=globalThis.window){
 // It cannot issue a login, create a relation, or change CRM permissions.
 export function terminalIdentity(value,user,location,now=Date.now()){
  const entry=terminalEntry(location);
+ const managerPermissions=['crm.view','crm.send','crm.assign','crm.agents','crm.manage'];
  if(!entry.enabled||!entry.erpOrigin||!['http://127.0.0.1:62800','http://192.168.1.46:62800'].includes(location?.origin)
    ||!value||Object.getPrototypeOf(value)!==Object.prototype||Object.keys(value).length!==fields.length||fields.some(key=>!Object.hasOwn(value,key))
    ||value.version!==1||value.environmentId!=='e662fd94-d797-4b3b-938a-d143ad758b67'||value.database!=='MELISA_ERP_CLEAN_TEST_20261022'
@@ -19,10 +20,12 @@ export function terminalIdentity(value,user,location,now=Date.now()){
    ||typeof value.erpNormalSessionId!=='string'||!uuid.test(value.erpNormalSessionId)||typeof value.crmUserId!=='string'||!/^[A-Za-z0-9_-]{1,100}$/.test(value.crmUserId)
    ||!Number.isSafeInteger(value.chatwootAgentId)||value.chatwootAgentId<1||typeof value.bindingRevision!=='string'||!/^[a-f0-9]{64}$/.test(value.bindingRevision)
    ||!Number.isSafeInteger(value.expiresAt)||value.expiresAt<=now
-   ||!user||user.id!==value.crmUserId||user.chatwootAgentId!==value.chatwootAgentId||user.role!=='personel'
-   ||user.testAdmin||user.testPersonnel||user.canAssign===true||user.normalRefreshSession!==true
+   ||!user||user.id!==value.crmUserId||user.chatwootAgentId!==value.chatwootAgentId||!['personel','mudur'].includes(user.role)
+   ||user.testAdmin||user.testPersonnel||user.role==='personel'&&user.canAssign===true||user.normalRefreshSession!==true
    ||!Array.isArray(user.permissions)||!user.permissions.includes('crm.view')
-   ||user.permissions.some(permission=>!['crm.view','crm.send'].includes(permission)))throw unavailable();
+   ||(user.role==='mudur'
+      ?user.permissions.length!==managerPermissions.length||managerPermissions.some(permission=>!user.permissions.includes(permission))
+      :user.permissions.some(permission=>!['crm.view','crm.send'].includes(permission))))throw unavailable();
  return Object.freeze(Object.fromEntries(fields.map(key=>[key,value[key]])));
 }
 const identityKey=value=>JSON.stringify(fields.filter(key=>key!=='expiresAt').map(key=>value[key]));
@@ -31,10 +34,10 @@ const identityKey=value=>JSON.stringify(fields.filter(key=>key!=='expiresAt').ma
 // Only authenticated CRM /auth/me.terminalIdentity is consumed. Its ERP
 // confirmation and explicit relation remain server-owned upstream contracts.
 export function createTerminalSessionConsumer(createLoader,{api,location,now=Date.now,onCommit,onError,onBusy=()=>{},onInvalidate=()=>{}}){
- let generation=0,running=null,closing=null,closeFailure=null,lastKey='',context=null,failure=null;
+ let generation=0,running=null,closing=null,closeFailure=null,lastKey='',context=null,role='',failure=null;
  const same=epoch=>epoch===generation;
  const current=(epoch,signal)=>{if(!same(epoch)||signal?.aborted)throw new DOMException('Terminal session cancelled','AbortError');};
- const reset=(notify=true)=>{generation++;context=null;loader.invalidate();if(notify){onBusy(false);onInvalidate();}};
+ const reset=(notify=true)=>{generation++;context=null;role='';loader.invalidate();if(notify){onBusy(false);onInvalidate();}};
  function closeAfter(pending){
   if(closing)return closing;
   const work=(async()=>{if(pending)await pending.catch(()=>{});await api.clearNormalSession(lastKey);lastKey='';closeFailure=null;})();
@@ -46,8 +49,8 @@ export function createTerminalSessionConsumer(createLoader,{api,location,now=Dat
   const epoch=generation;current(epoch,options.signal);
   const user=await api.session(key,{...options,preserveAuthDenial:true,redirect:'error'});current(epoch,options.signal);
   const next=terminalIdentity(user?.terminalIdentity,user,location,now());
-  if(context&&identityKey(context)!==identityKey(next))throw unavailable();
-  context=next;return user;
+  if(context&&(identityKey(context)!==identityKey(next)||role!==user.role))throw unavailable();
+  context=next;role=user.role;return user;
  }
  const loader=createLoader({api:{...api,
   resumeNormalSession:async options=>{
@@ -57,10 +60,10 @@ export function createTerminalSessionConsumer(createLoader,{api,location,now=Dat
   },
   session:verify,
   inbox:async(key,offset,options)=>{
-   const epoch=generation,pinned=context,result=await api.inbox(key,offset,options);current(epoch,options.signal);
+   const epoch=generation,pinned=context,pinnedRole=role,result=await api.inbox(key,offset,options);current(epoch,options.signal);
    await verify(key,options);current(epoch,options.signal);const next=context;
-   if(!pinned||identityKey(pinned)!==identityKey(next)||!Array.isArray(result?.conversations)
-     ||result.conversations.some(row=>row.assignedUserId!==next.crmUserId||row.chatwootAgentId!==next.chatwootAgentId))throw unavailable();
+   if(!pinned||identityKey(pinned)!==identityKey(next)||pinnedRole!==role||!Array.isArray(result?.conversations)
+     ||role==='personel'&&result.conversations.some(row=>row.assignedUserId!==next.crmUserId||row.chatwootAgentId!==next.chatwootAgentId))throw unavailable();
    context=next;return result;
   },
  },onCommit,onBusy,onError:error=>{failure=error;}});

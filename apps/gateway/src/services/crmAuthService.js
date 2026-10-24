@@ -292,7 +292,8 @@ function terminalUser(proof){
   if(!isTerminalPeerProof(proof)||!terminalHandoffEnabled())throw terminalReject();
   const user=findCrmUserById(proof.terminalIdentity.crmUserId);
   if(!user?.active||!normalRefreshUserAllowed(user)||refreshStoreForUser(user)!==cleanNormalRefreshStore
-    ||user.role!=='personel'||user.chatwootAgentId!==proof.terminalIdentity.chatwootAgentId)throw terminalReject();
+    ||!['personel','mudur'].includes(user.role)||user.role==='mudur'&&!managedUserAllowed(user)
+    ||user.chatwootAgentId!==proof.terminalIdentity.chatwootAgentId)throw terminalReject();
   return user;
 }
 async function verifyTerminalLink(link){

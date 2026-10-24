@@ -47,6 +47,20 @@ test('stock pool is sealed for new adapters while older rollback packages still 
   f.manifest.sourceFiles.push({path:pool,gitBlob:blob(fs.readFileSync(path.join(f.root,pool)))});sort(f.manifest.sourceFiles);f.seal();
   assert.equal(f.verify().environment,'TEST');
 });
+
+test('B5 terminal contract is sealed when imported while older rollback packages remain valid',t=>{
+  const old=fixture(t);assert.equal(old.verify().environment,'TEST');
+  const f=fixture(t),importer='apps/gateway/src/services/crmAuthService.js',contract='packages/contracts/terminal-handoff.mjs';
+  f.write(importer,"import {validateTerminalRequest} from '../../../../packages/contracts/terminal-handoff.mjs';\n");
+  f.manifest.files=inventoryPackage(f.root).files.filter(row=>row.path!==TEST_PACKAGE_MANIFEST);
+  f.manifest.sourceFiles.push({path:importer,gitBlob:blob(fs.readFileSync(path.join(f.root,importer)))});sort(f.manifest.sourceFiles);f.seal();
+  assert.throws(()=>f.verify(),{code:'PACKAGE_REQUIRED_FILE_MISSING'});
+  assert.equal(allowedSourcePath(contract),true);assert.equal(allowedSourcePath('packages/contracts/unapproved.mjs'),false);
+  f.write(contract,'export const validateTerminalRequest=value=>value;\n');
+  f.manifest.files=inventoryPackage(f.root).files.filter(row=>row.path!==TEST_PACKAGE_MANIFEST);
+  f.manifest.sourceFiles.push({path:contract,gitBlob:blob(fs.readFileSync(path.join(f.root,contract)))});sort(f.manifest.sourceFiles);f.seal();
+  assert.equal(f.verify().environment,'TEST');
+});
 test('changed backend, frontend or dependency byte, same-size edit, missing file and unlisted file all fail verification',t=>{
   for(const change of ['apps/gateway/package.json','apps/frontend/dist/client/assets/test.js','apps/gateway/node_modules/dotenv/lib/main.js']){
     const f=fixture(t),file=path.join(f.root,change),bytes=fs.readFileSync(file);bytes[0]=bytes[0]===65?66:65;fs.writeFileSync(file,bytes);assert.throws(()=>f.verify(),{code:'PACKAGE_PAYLOAD_MISMATCH'});

@@ -17,6 +17,8 @@ const runtimeFiles = ['package.json','apps/gateway/package.json','apps/gateway/p
 // only for an adapter that imports it, and is always sealed as a Git source blob.
 const stockPoolPath='packages/erp-adapter/services/crmStockWorkerPool.mjs';
 const canonicalCatalogPaths=['packages/erp-adapter/services/canonicalCatalog.mjs','packages/erp-adapter/services/canonicalCatalogReader.mjs'];
+const terminalContractPath='packages/contracts/terminal-handoff.mjs';
+const terminalContractImporters=new Set(['apps/gateway/src/services/crmAuthService.js','apps/gateway/src/services/normalRefreshSession.mjs','apps/gateway/src/services/terminalHandoffPeer.mjs']);
 const buildFiles = ['apps/frontend/index.html','apps/frontend/vite.config.mjs','apps/frontend/scripts/prepare-sites-build.mjs','apps/frontend/worker/index.js','apps/frontend/.openai/hosting.json'];
 // This is one approved source/toolchain tuple, not a general alternate root.
 const crm18Node2419=Object.freeze({
@@ -63,7 +65,7 @@ function privatePath(value) {
 }
 export function allowedSourcePath(value) {
   if(!safePackagePath(value)||privatePath(value)||/(?:^|\/)(?:tests?|__tests__)(?:\/|$)|\.test\.[^.]+$/i.test(value))return false;
-  if(runtimeFiles.includes(value)||buildFiles.includes(value)||value==='deploy/test-package.mjs'||value==='deploy/test-endpoints.mjs'||value==='deploy/customer-product-request-test.mjs'||value===stockPoolPath||canonicalCatalogPaths.includes(value))return true;
+  if(runtimeFiles.includes(value)||buildFiles.includes(value)||value==='deploy/test-package.mjs'||value==='deploy/test-endpoints.mjs'||value==='deploy/customer-product-request-test.mjs'||value===stockPoolPath||canonicalCatalogPaths.includes(value)||value===terminalContractPath)return true;
   return /^apps\/gateway\/src\/.+\.(?:js|mjs|json)$/.test(value)
     || /^apps\/frontend\/src\/.+\.(?:js|jsx|mjs|css|svg|png|webp|jpg|jpeg)$/.test(value)
     || /^apps\/frontend\/public\/.+\.(?:svg|png|webp|jpg|jpeg|ico|woff2?)$/.test(value);
@@ -198,6 +200,7 @@ export function verifyTestPackage({packageRoot,manifestSha256}) {
     validateLockedDependencies(JSON.parse(fs.readFileSync(path.join(packageRoot,lock.path),'utf8')),JSON.parse(fs.readFileSync(path.join(packageRoot,`apps/${target}/package.json`),'utf8')));
   }
   for(const source of manifest.sourceFiles){const bytes=fs.readFileSync(path.join(packageRoot,source.path));if(crypto.createHash('sha1').update(`blob ${bytes.length}\0`).update(bytes).digest('hex')!==source.gitBlob)failure('PACKAGE_GIT_BLOB_MISMATCH');}
+  if(manifest.sourceFiles.some(row=>terminalContractImporters.has(row.path)&&fs.readFileSync(path.join(packageRoot,row.path),'utf8').includes('packages/contracts/terminal-handoff.mjs'))&&!manifest.sourceFiles.some(row=>row.path===terminalContractPath))failure('PACKAGE_REQUIRED_FILE_MISSING');
   if(fs.readFileSync(path.join(packageRoot,'deploy/test-erp-catalog.mjs'),'utf8').includes('crmStockWorkerPool.mjs')&&!manifest.sourceFiles.some(row=>row.path===stockPoolPath))failure('PACKAGE_REQUIRED_FILE_MISSING');
   if(fs.readFileSync(path.join(packageRoot,'deploy/test-erp-catalog.mjs'),'utf8').includes('canonicalCatalogReader.mjs')&&canonicalCatalogPaths.some(name=>!manifest.sourceFiles.some(row=>row.path===name)))failure('PACKAGE_REQUIRED_FILE_MISSING');
   if(fs.readFileSync(path.join(packageRoot,'deploy/test-server.mjs'),'utf8').includes("'./test-endpoints.mjs'")&&!manifest.sourceFiles.some(row=>row.path==='deploy/test-endpoints.mjs'))failure('PACKAGE_REQUIRED_FILE_MISSING');
