@@ -1,17 +1,29 @@
 ## Sıradaki iş — CRM06 (tek etkin yürütme kaydı)
 
-24 Ekim 2026 22:32 TR — B5 kişisel Müdür kaynağı1ab4702/CI7SUCCESS ve pasif clean paket45c81b92 hazır. Paket kurulmadı; kişisel ERP–CRM ilişki yayını, normal form son gönderimi ve bağımsız Müdür normal ekran kabulü ERP sahibinde. Önceki kurulum/hata notları kendi tarihlerinin kanıtıdır.
+25 Ekim 2026 00:33 TR — CRM47646 kaynak/paket/runtime owner makbuzuyla eşlendi. Yeni Personel/Müdür kişisel sunucu bağları28çağrıda doğrulandı; önceki403 kökü UNKNOWN, eski FAIL korundu. Owner normal GUI reload teknik doğrulandı; cihaz/insan kabulü aşağıda ayrıdır.
 
 | Alan | Kayıt |
 | --- | --- |
 | Ana ID / sıra | CRM06 — mevcut katalog ve müşteri ürün talebi ana kapsamı; B5/C01/C02 ve E1/M01 bağlı teknik halkaları. 25 CRM yaprağı:12🟢/13🟡/0🔴;17 başlık/74 yaprak aynı. |
-| Güncel adım | B5 kaynak hazırlığı kapandı: mevcut normal create formu/kişisel Personel korundu; yeni managed Müdür E1 ve rol pini tamam.1ab4702 exact CI7SUCCESS; pasif clean paket2299/193kaynak/45c81b92 doğrulandı, installed=false. ERP owner normal kişi–ERP–CRM bağını ve kurulu form/Müdür ekranını doğrulayacak; bu insan veya tam CRM06 kabulü değildir. |
+| Güncel adım | B5 yeni kişisel sunucu halkası teknik doğrulandı: CRM47646 exactCI7SUCCESS; Node24.19 clean pasif2299/193 ve kurulu owner804/F6411556 ayrı eşlendi. Personel/mudur için iki linked aile,28 çağrı; bu bir root403FIXED, insan veya tamCRM06 kabulü değildir. |
 | Sahip | CRM ana ajanı kendi kaynak/UI/kanıt kaydını yönetir. Ortak runtime/SQL/ayar/depo/servis/hesap/rol/atama/APK/kurulumun tek uygulayıcısı ERP sahibidir. |
 | Bitiş koşulu | CRM06 bütün özgün katalog/ürün/adet/tek talep/yeniden açma/atanmış-yanlış personel/kalıcılık koşulları ve gereken gerçek insan kabulüyle tam kapanır. B5'in salt okunur envanter/sunum teknik sonucu bunu veya tüm E1'i kapatmaz. |
-| Mevcut kanıt | Yeni frontend6/backend5alt+1üst/paket3 hedef PASS, prod source build23,29s, pasif clean mainCkcbNSPr912972/6ad0d979 CSSaynı, review0/secret0. Exact1ab CI7SUCCESS ve2299/193Gitblob pasif paket mühürlü. Son önceki RO runtimeacb2/ERP64f/native035; yeni sürüm kurulu sayılmaz. [Güncel kanıt ve kısa normal adım](docs/evidence/crm/2026-10-23-b5-assignment/README.md). |
-| Teknik bağımlılık | ERP sahibi Node24.15 manifest/toolchain uyumunu ve shared clean kurulum admission/korumayı yürütür; mevcut normal ERP kimlik kaynağında doğru erpUserId/employeeId ile normal CRM create readback crmUserId/agent/role bağını yayımlar. CRM özel store/env/DPAPI/parola/anahtar okumaz veya sharedHTTP/GUI/login/SQL/yazı yapmaz. Kurulu create-submit/gerçek bağımsız Müdür ve gerçek kişi/cihaz/insan kabulü açık. |
-| Bitince aynı başlıktaki sonraki adım | Aynı B5'te ERP owner yeni source/paket/runtime makbuzu ve kendi normal form→kişisel bağ→Müdür/Personel reopen/ret kanıtını uygular. CRM yalnız gereken makbuz eşlemesi veya somut kaynak hatasını alır; kabul edilmiş17/E1/katalog senaryosu tekrarlanmaz. Kısa sırsız parametreler mevcut B5 README'dedir; kimlikler isimden tahmin edilmez.25 Ekim09.30/10.00 TR sınırı aynı. |
+| Mevcut kanıt | 00:27:08TR kurulum kaynak/frontend/backend47646, wrapperF6411556, frontendCkcb912972/6ad0; değişen4kaynak Git LF→wrapperCRLF içerik eş. ERPb9/native035 ve16diğerlistener/53veri özeti korunmuş. Owner iki kişisel bağ/tekuse/refresh/çıkış/ownrevoke/oldfamilies28çağrı; yeni hedef9PASS/review0/secret0/exactCI7SUCCESS. [Güncel makbuz](docs/evidence/crm/2026-10-23-b5-assignment/README.md). |
+| Teknik bağımlılık | Bu sınırlı halkanın kurulum ve normal GUI readback'i ERP656e77c8 sabit kaydında doğrulandı; yeni bekleyen kaynak/kurulum halkası çıkarılmadı. Tarihi1ab403 kökü UNKNOWN/FAIL korunur, ek replay/fix açılmaz. Gerçek7personel/Angela görevleri ve ayrı retli B5 alt kapsamları, native/cihaz/Windows/insan kabulü ayrıca açık; bu teknik sonuç onları kapatmaz. |
+| Bitince aynı başlıktaki sonraki adım | Aynı B5/C01/C02/E1 kaydında onaylı gerçek kişi/görev eşlemesinin owner normal readback'ini ve özgün son cihaz/insan kabulünü ayrı koru. Bu son makbuzda yeni bağımsız CRM kaynak arızası yok; desteklenmeyen hesap/özel envanter güvenlik retlerini başka araçla aşma. Kurulum/HTTP/GUI/SQL/runtime ERP sahibinde;09.30/10.00TR sınırı aynı, yeni devam kapısı kurulmaz. |
 | CRM06 tüm özgün koşulları kapanınca geçiş | CRM06 tüm özgün koşulları ve gereken insan kabulüyle tam kapanınca ERP09 ana kapanışına geçilir. CRM-DEC-018 kapsamındaki izinli bağımsız ERP09 teknik hazırlığı bu sırada sürebilir; teknik test insan kabulünü tamamlamaz. |
+
+### 25 Ekim 00:33 TR — B5 kaynak/paket/runtime eş; iki kişisel sunucu bağı doğrulandı
+
+ERP sahibinin 00:27:08 TR kurulum makbuzu **47646b6bfc4f2630e5e48e103b39a48f359f7e0e** backend+frontend kaynağını kurulu804dosyalık immutable wrapper/F641155657DB255000D48E8B7D5614DD38198B0B320F8C66094D9FDC71838C51 ile eşler. Owner2299dosya/193Gitblob pasif c4fefd37 girdisini, Node24.19 ve mevcut kilitli bağımlılıkları doğruladı. CRM manifest/derivation, değişen dört kaynak ve frontend'i salt okunur eşledi: Git/pasif LF, wrapper CRLF; içerik aynı, ham dosya byte eşliği iddia edilmez. Frontend CkcbNSPr912972/6ad0d979 aynı; tasarım değişmedi. ERP b9dd984876c808482017365556538078601187b8/native035fcc08/clean DB aynı, yalnız62800–62803 owner tarafından değişti;16diğerlistener/53veri özeti ve mevcut hesap/rol/atama korundu.2299/804 payload taraması CRM'de tekrarlanmadı.
+
+Yeni dar kaynak yalnız mevcut server hata loguna izinli aşama/neden, gerçek peer HTTPstatus, eşitlik booleanı ve değişen alan ADLARINI ekler. Kimlik/süre değeri/code/verifier/token/key/body yok; public hataDTO, rol/11alan/taze ERP family-bağ-revizyonu, timeout/cache/auth/iptal/own-provisional-revoke kararları aynı. Node24.19 yeni hedefli9PASS, reviewP1/P2=0/secret0; exact47646 [PR CI40133880100](https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/40133880100), push40133875053 ve AIoffline40133880098 toplam7iş SUCCESS. Belge HEAD'i bu uygulama/CI kimliği değildir.
+
+Owner'ın ayrı 00:27:37 TR makbuzunda Personel ve bağımsız gerçek rol mudur için **iki yeni kişisel oturum ailesi /28sunucu çağrısı doğrulandı**: Personel yalnız atanmış yapay156, diğer55/envanter403; Müdür normal3konuşma/7hesap kapsamı; tekuse tekrarret, aynı kimlikle refresh, kendi ERP çıkışında linkedCRMret, CRMçıkış. İki kendi geçici linkedailesi iptal edildi; eski normal aileler korundu; bu provada hesap/rol/atama/ticari yazı0. Bu, fiziksel native/Keystore, normal GUI cross-realmSSO veya insan kabulü değildir. Önceki normal kişisel login/atama kanıtı REUSE; yeni diagnostic runtime'da Personel156 detayını ve Müdür kendi adıyla3görüşmeyi tamreload sonrasında yeniden açtı. Bu owner teknik ekran sonucu [ERP656e77c8 sabit kaydında](https://github.com/melihsnyldzz-ui/melisa-erp-v2/blob/656e77c8f812826c96ce13f8fa12d8edeed1fad6/docs/evidence/erp/2026-10-22-clean-shared-install.md) doğrulandı; insan/cihaz veya GUIcrossrealm kabulü değildir.
+
+**Önceki1ab403 FAIL korunur; kökü UNKNOWN.** Eski dört dış çağrı200/200/200/403 ve95ms iç peerstatus/expiry/kimlikfarkını kanıtlamaz. Eski helper iki rol beklediği için allOwn=false yazmıştı; gerçekte denenmiş tek provisional revoked=true, eski aileler korunmuş. Geçerli15sn/2sn izole zincir200; zorlanmış retler gerçek kök kanıtı değildir. Yeni tanı kaynağının bu tek owner provasında403 tekrarlanmadı; rootFIXED denmez, ikinci replay/ret araştırması açılmadı.
+
+CRM ortak HTTP/GUI/login/SQL/runtime/özelstore/env/DPAPI/anahtar okuma-yazısı yapmadı; yalnız kendi kaynak/pasif paket ve sırsız belirlenmiş makbuzlar kullanıldı. Runtimecache yazan kayıt scripti source-only sınırında çalıştırılmadı; kayıt yapısı offline kontrol edildi. Gerçek7personel/Angela görev eşlemesi, nativeAndroid/TC21/Windows ve CRM06/CRM-UA11 insan kabulü **BEKLİYOR**.25CRM=12🟢/13🟡/0🔴 ve17başlık/74yaprak değişmedi. [Sırsız makbuz hash'leri ve eşleme](docs/evidence/crm/2026-10-23-b5-assignment/management-source-readiness.json).
 
 ### 24 Ekim 22:32 TR — B5 kişisel Müdür kaynağı ve pasif clean paket hazır; normal kabul ayrı
 
@@ -73,21 +85,21 @@ ERP c4d4 missing-schema ve b98b662 Turkish-LOWER metadata probe hataları ayrı 
 
 Önceki ERP3cee kurulum makbuzu sonrasında yapılandırılmış kayıt denetimi bir kez çalıştı: yapısal tutarsızlık0; CRM runtime REUSE + normal-role/UI iki BLOCKED, ERP üç BLOCKED; CHECK_REQUIRED/genel kapanışfalse. Yalnız kendi CRM cache'i yazıldı; bu uygulama, gerçek rol, cihaz veya insan kabulü değildir.
 
-B5 kişisel kaynak/pasif teslimi sonunda mevcut kayıt kontrolü bir kez çalıştı: yapısal tutarsızlık0; son önceki owner runtime makbuzu REUSE, yeni kişisel normal-role/UI iki BLOCKED; CHECK_REQUIRED ve genel kapanışfalse. Yalnız kendi agent-check cache'i yazıldı; ortak runtime/SQL/servis, yeni normal GUI veya insan kabulü yok.
+Önceki 24 Ekim 1ab kişisel kaynak/pasif teslimi sonunda mevcut kayıt kontrolü bir kez çalıştı: yapısal tutarsızlık0; son önceki owner runtime makbuzu REUSE, yeni kişisel normal-role/UI iki BLOCKED; CHECK_REQUIRED ve genel kapanışfalse. Yalnız kendi agent-check cache'i yazıldı; ortak runtime/SQL/servis, yeni normal GUI veya insan kabulü yok.
 
 ### Mevcut önkoşul görünümü — yeni kapı veya kabul değildir
 
 **Önceki 24 Ekim11:00TR B5 dar RO devir (aşağıdaki kaynak-yok ifadeleri tarihsel aşamadır):** Kayıtlı tamCRM4 ve sırsızERP11 makbuzları dokuz istenen kişinin kişisel hesabını içermiyor;SemihERP10018/CRMclean-semih kesin ve korunur. Bu genel “kimlik eksik” veya insan kabulü bekleme engeli değildir: ERP normal kullanıcı/personel UI+API/core var, fakat exactclean POST/PATCH frontgate ve genericwriteguard bunu kapatıyor; CRM normal hesap/rol/temsilci kalıcı yönetim yazısı yok, clean atama read-only. Görev rolleri/örnekID'lere sabit iş admission'ı da yeni kişileri desteklemeli. [Dokuz kişinin somut alanı, normal yol/dosya ve teknik bitiş ölçütü](docs/evidence/crm/2026-10-23-b5-assignment/README.md). Yeni hesap/API/SQL/login/rol/atama yazısı veya eski envanter/sunum tekrarı yok; teknikB5 olumlu/olumsuz normalTEST ile kapanır, insanE2 ayrı. Bu tespit E1native/kurulum sahibini veya17/74-25/12/13/0 sayısını değiştirmez.
 
-Aşağıdaki görünüm kurulu B5 sentetik normal API/tarayıcı kanıtını REUSE eder; gerçek kişi, bağımsız Müdür ve E1 native/fiziksel kapsamı açık tutar. Önceki E1 sunucu/normal browser teknik kabulü tarihsel REUSE kalır. Owner'ın yeni B5 örnek personel ve Patron readback'i doğrulandı; bu gerçek kişi veya insan kabulü değildir. B5'in örnek Patron ve09a'nın kendi sentetik Personel ile doğrulanmış normal ekranını reddetmez veya yeniden denetletmez. `runtime-health`, yalnız mevcut owner kurulum/normal ekran ve makbuz eşlemesinin zamanlı REUSE kaydıdır; yeni canlı sağlık sorgusu değildir. Kayıt denetimi uygulama, fiziksel cihaz, insan veya LIVE PASS vermez.
+Aşağıdaki görünüm, kurulu CRM 47646 kaynağının Personel ve bağımsız managed Müdür için 28 sunucu çağrısını ve ERP sahibinin tam yenileme sonrası normal ekran kanıtını REUSE eder. Yeni kurulum ve bu sınırlı normal rol/ekran kapsamı teknik olarak doğrulandı; gerçek kişilerin görev eşlemesi, E1 native/GUI cross-realm, fiziksel cihaz ve insan kabulü açıktır. Önceki örnek Patron/09a kanıtları tarihsel olarak korunur ve tekrar edilmez. `runtime-health`, owner kurulum makbuzu ile kaynak/paket eşlemesinin zamanlı kaydıdır; CRM yeni sağlık veya giriş sorgusu yapmadı. Bu tur runtime cache yazan kayıt denetimi çalıştırılmadı. Teknik önkoşul görünümü, özgün bitiş veya insan/LIVE kabulü değildir.
 
 ```melisa-preflight
 {
   "current": {
     "environment": "clean-e662fd94-d797-4b3b-938a-d143ad758b67-t1false",
-    "runtime": "last-ro-crmacb2a3a0-erp64f273df-native035fcc08-20261024T143031",
-    "identityRole": "b5-source1ab-managed-personel-mudur-fixture-verified-personal-runtime-pending",
-    "surface": "b5-personal-source-passive-package-ready-installed-create-mudur-human-pending"
+    "runtime": "owner-installed-crm47646b6b-f6411556-erpb9dd9848-native035fcc08-20261025T002708",
+    "identityRole": "b5-personal-personel-managed-mudur-two-linked-families-server-verified",
+    "surface": "b5-personal-server28-and-owner-normal-gui-reload-verified-native-human-pending"
   },
   "required": [
     {
@@ -121,35 +133,33 @@ Aşağıdaki görünüm kurulu B5 sentetik normal API/tarayıcı kanıtını REU
       "status": "verified",
       "context": {
         "environment": "clean-e662fd94-d797-4b3b-938a-d143ad758b67-t1false",
-        "runtime": "last-ro-crmacb2a3a0-erp64f273df-native035fcc08-20261024T143031",
-        "identityRole": "b5-source1ab-managed-personel-mudur-fixture-verified-personal-runtime-pending",
-        "surface": "b5-personal-source-passive-package-ready-installed-create-mudur-human-pending"
+        "runtime": "owner-installed-crm47646b6b-f6411556-erpb9dd9848-native035fcc08-20261025T002708",
+        "identityRole": "b5-personal-personel-managed-mudur-two-linked-families-server-verified",
+        "surface": "b5-personal-server28-and-owner-normal-gui-reload-verified-native-human-pending"
       },
       "evidenceRef": "docs/evidence/crm/2026-10-23-b5-assignment/management-source-readiness.json"
     },
     {
       "requirementId": "normal-role",
-      "status": "blocked",
+      "status": "verified",
       "context": {
         "environment": "clean-e662fd94-d797-4b3b-938a-d143ad758b67-t1false",
-        "runtime": "last-ro-crmacb2a3a0-erp64f273df-native035fcc08-20261024T143031",
-        "identityRole": "b5-source1ab-managed-personel-mudur-fixture-verified-personal-runtime-pending",
-        "surface": "b5-personal-source-passive-package-ready-installed-create-mudur-human-pending"
+        "runtime": "owner-installed-crm47646b6b-f6411556-erpb9dd9848-native035fcc08-20261025T002708",
+        "identityRole": "b5-personal-personel-managed-mudur-two-linked-families-server-verified",
+        "surface": "b5-personal-server28-and-owner-normal-gui-reload-verified-native-human-pending"
       },
-      "evidenceRef": "docs/evidence/crm/2026-10-23-b5-assignment/management-source-readiness.json",
-      "error": "B5_PERSONAL_IDENTITY_AND_MUDUR_RUNTIME_ACCEPTANCE_PENDING"
+      "evidenceRef": "docs/evidence/crm/2026-10-23-b5-assignment/management-source-readiness.json"
     },
     {
       "requirementId": "normal-ui",
-      "status": "blocked",
+      "status": "verified",
       "context": {
         "environment": "clean-e662fd94-d797-4b3b-938a-d143ad758b67-t1false",
-        "runtime": "last-ro-crmacb2a3a0-erp64f273df-native035fcc08-20261024T143031",
-        "identityRole": "b5-source1ab-managed-personel-mudur-fixture-verified-personal-runtime-pending",
-        "surface": "b5-personal-source-passive-package-ready-installed-create-mudur-human-pending"
+        "runtime": "owner-installed-crm47646b6b-f6411556-erpb9dd9848-native035fcc08-20261025T002708",
+        "identityRole": "b5-personal-personel-managed-mudur-two-linked-families-server-verified",
+        "surface": "b5-personal-server28-and-owner-normal-gui-reload-verified-native-human-pending"
       },
-      "evidenceRef": "docs/evidence/crm/2026-10-23-b5-assignment/management-source-readiness.json",
-      "error": "B5_INSTALLED_CREATE_MUDUR_PHYSICAL_HUMAN_ACCEPTANCE_PENDING"
+      "evidenceRef": "docs/evidence/crm/2026-10-23-b5-assignment/management-source-readiness.json"
     }
   ]
 }
