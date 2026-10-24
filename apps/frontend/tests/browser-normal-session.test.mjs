@@ -7,6 +7,23 @@ import {createSessionLoader} from '../src/sessionLoader.js';
 const user={id:'crm-semih-test-20261012',username:'crm-semih-test',displayName:'Semih TEST',role:'patron',permissions:['crm.view','crm.send','crm.assign','crm.agents','crm.manage'],normalTestScope:{semihTestContinue:true,isolatedPreparation:true,database:'MELISA_ERP_CRM_SHARED_TEST_20261009_02'}};
 const result=()=>({accessToken:'synthetic-access',expiresAt:100000,user});
 const deferred=()=>{let resolve;const promise=new Promise(r=>resolve=r);return {promise,resolve};};
+
+test('clean normal own-session logout survives lost RAM grant and uses only independently verified me authority',async()=>{
+  const previousFetch=globalThis.fetch,previousWindow=globalThis.window,calls=[];
+  globalThis.window={location:{origin:'http://127.0.0.1:62800'}};
+  globalThis.fetch=async(url,options)=>{
+    calls.push({url,body:options.body,authorization:options.headers?.Authorization});
+    if(url.endsWith('/auth/me'))return Response.json({data:{id:'clean-staff-20261022',username:'ornek-personel',role:'personel',permissions:['crm.view','crm.send'],normalRefreshSession:true}});
+    if(url.endsWith('/auth/logout'))return Response.json({data:{loggedOut:true}});
+    throw Error('Unexpected clean fixture request');
+  };
+  try{
+    const {liveApi}=await import('../src/liveApi.js?clean-own-family-logout');
+    await liveApi.clearNormalSession('synthetic-clean-access');
+    assert.deepEqual(calls.map(x=>x.url),['/api/live/auth/me','/api/live/auth/logout']);
+    assert.equal(calls[1].authorization,'Bearer synthetic-clean-access');assert.equal(calls[1].body,'{}');
+  }finally{globalThis.fetch=previousFetch;if(previousWindow===undefined)delete globalThis.window;else globalThis.window=previousWindow;}
+});
 const fixture=(overrides={})=>{const calls=[];let cookie=true;const manager=createBrowserNormalSession({inspect:async()=>{calls.push('inspect');return {enabled:true,user:cookie?user:null};},refresh:async()=>{calls.push('refresh');return result();},logout:async()=>{calls.push('logout');cookie=false;},nativeRefresh:async()=>{throw Error('Browser cookie cannot use native refresh');},nativeLogout:async()=>{},...overrides});return {manager,calls};};
 
 test('only the exact normal scoped Semih TEST identity earns the entry label',()=>{

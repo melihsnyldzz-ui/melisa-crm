@@ -27,6 +27,21 @@ function configure(selected=networkEnv){
  return env;
 }
 
+test('clean terminal iframe admits only the same-host ERP5244 GET and still requires normal CRM authentication',()=>{
+  const ns=networks();
+  for(const [local,remote]of [['127.0.0.1','127.0.0.1'],['192.168.1.46','192.168.1.20']]){
+    const req=request(local,remote,'GET',`/?terminal=1&erpOrigin=${encodeURIComponent(`http://${local}:5244`)}`);
+    req.headers={host:`${local}:62800`,'sec-fetch-site':'same-site','sec-fetch-dest':'iframe',referer:`http://${local}:5244/terminal.html`};
+    assert.equal(server.testUiRequestAllowed(req,ns,endpoints),true);
+    for(const patch of [{referer:`http://${local}:5234/terminal.html`},{referer:'http://example.com:5244/terminal.html'},
+      {referer:`http://${local}:5244/other.html`},{'sec-fetch-dest':'document'},{'sec-fetch-site':'cross-site'},
+      {origin:`http://${local}:5244`},{'x-forwarded-for':remote}])
+      assert.equal(server.testUiRequestAllowed({...req,headers:{...req.headers,...patch}},ns,endpoints),false);
+    assert.equal(server.testUiRequestAllowed({...req,method:'POST'},ns,endpoints),false);
+    assert.equal(server.testUiRequestAllowed({...req,url:'/api/live/auth/refresh'},ns,endpoints),false);
+  }
+});
+
 test('clean UI enables both exact origins from owner configuration, never baseline inheritance or bootstrap',()=>{
  const configured=configure();
  const origins='http://127.0.0.1:62800,http://192.168.1.46:62800,http://100.87.188.3:62800';

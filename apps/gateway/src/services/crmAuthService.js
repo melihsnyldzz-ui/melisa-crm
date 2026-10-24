@@ -4,7 +4,7 @@ import { env } from '../config/env.js';
 import { waapiSendReady } from './waapiReadiness.js';
 import { verifyTestAdminSession } from './testAdminSession.mjs';
 import { verifyTestPersonnelSession } from './testPersonnelSession.mjs';
-import { configuredNormalRefreshStore, configuredSemihTestRefreshStore, isDedicatedNormalTestUser, isDedicatedSemihTestUser, normalRefreshUserPolicy, semihRefreshUserPolicy, normalSessionFingerprint, DEDICATED_NORMAL_TEST_USER_ID, DEDICATED_SEMIH_TEST_USER_ID } from './normalRefreshSession.mjs';
+import { configuredNormalRefreshStore, configuredSemihTestRefreshStore, isDedicatedNormalTestUser, isDedicatedSemihTestUser, normalRefreshUserPolicy, semihRefreshUserPolicy, normalSessionFingerprint, DEDICATED_NORMAL_TEST_USER_ID, DEDICATED_SEMIH_TEST_USER_ID, CLEAN_NORMAL_TEST_USER_ID } from './normalRefreshSession.mjs';
 import {configuredCustomerRequestIssuerStore,customerRequestSharedConfig} from './customerRequestIssuerSession.mjs';
 import {configuredAssignedStaffRefreshStore,DEDICATED_ASSIGNED_STAFF_TEST_USER_ID} from './assignedStaffRefreshSession.mjs';
 
@@ -20,6 +20,7 @@ const DUMMY_DIGEST = crypto.scryptSync('invalid-password', DUMMY_SALT, 64).toStr
 // Only a user object returned after verifying its issuer session carries it.
 const verifiedCustomerRequestIssuers = new WeakSet();
 const verifiedAssignedStaffSessions = new WeakSet();
+const verifiedCleanNormalSessions = new WeakSet();
 
 function authError(code, message, statusCode = 401) {
   const error = new Error(message);
@@ -88,6 +89,7 @@ export function publicCrmUser(user) {
     permissions: [...user.permissions],
     ...(verifiedCustomerRequestIssuers.has(user)?{customerProductRequestIssuer:true}:{}),
     ...(verifiedAssignedStaffSessions.has(user)?{assignedStaffRefresh:true}:{}),
+    ...(verifiedCleanNormalSessions.has(user)?{normalRefreshSession:true}:{}),
     ...(process.env.CRM_NORMAL_REFRESH_ENABLED==='true'&&process.env.CRM_ISOLATED_PREPARATION==='true'
       &&process.env.CRM_TEST_EXPECTED_DATABASE==='MELISA_ERP_CRM_SHARED_TEST_20261009_02'
       &&user.id===process.env.CRM_NORMAL_REFRESH_USER_ID&&isDedicatedNormalTestUser(user)
@@ -116,6 +118,7 @@ export function findCrmUserByUsername(username) {
 }
 
 const normalRefreshStore = configuredNormalRefreshStore({resolveUser:findCrmUserById});
+const cleanNormalRefreshStore = process.env.CRM_TEST_PROFILE==='clean-synthetic-20261022'?normalRefreshStore:null;
 const semihRefreshStore = configuredSemihTestRefreshStore({resolveUser:findCrmUserById});
 const assignedStaffRefreshStore = configuredAssignedStaffRefreshStore({resolveUser:findCrmUserById});
 const customerRequestIssuer = configuredCustomerRequestIssuerStore({resolveUser:findCrmUserById});
@@ -209,7 +212,8 @@ export function logoutNormalAccessSession(accessToken){
 function logoutAccessSession(accessToken,{allowAssignedStaff=false}={}){
   const {user,authority}=captureNormalCrmAuthority(accessToken);
   const store=customerRequestIssuer?.includes(user.id)&&customerRequestIssuer.allows(user)?customerRequestIssuer.store
-    :allowAssignedStaff&&assignedStaffRefreshStore&&user.id===DEDICATED_ASSIGNED_STAFF_TEST_USER_ID?assignedStaffRefreshStore:null;
+    :allowAssignedStaff&&assignedStaffRefreshStore&&user.id===DEDICATED_ASSIGNED_STAFF_TEST_USER_ID?assignedStaffRefreshStore
+    :allowAssignedStaff&&cleanNormalRefreshStore&&user.id===CLEAN_NORMAL_TEST_USER_ID?cleanNormalRefreshStore:null;
   if(!store)throw authError('AUTH_TOKEN_INVALID','Yeniden giriş yapın.');
   return store.revokeSession(authority.normalSessionId,user);
 }
@@ -244,12 +248,14 @@ export function verifyCrmAccessToken(token, { includeContext = false } = {}) {
   }
   if(user.id===DEDICATED_SEMIH_TEST_USER_ID&&(!semihRefreshUserAllowed(user)||!payload.normalSessionId))throw authError('AUTH_TOKEN_INVALID','Yeniden giriş yapın.');
   if(assignedStaffRefreshStore&&user.id===DEDICATED_ASSIGNED_STAFF_TEST_USER_ID&&!payload.normalSessionId)throw authError('AUTH_TOKEN_INVALID','Yeniden giriş yapın.');
+  if(cleanNormalRefreshStore&&user.id===CLEAN_NORMAL_TEST_USER_ID&&!payload.normalSessionId)throw authError('AUTH_TOKEN_INVALID','Yeniden giriş yapın.');
   if(payload.normalSessionId){
     const store=refreshStoreForUser(user);
     if(!store)throw authError('AUTH_TOKEN_INVALID','Yeniden giriş yapın.');
     store.verify(payload.normalSessionId,user);
     if(store===customerRequestIssuer?.store)verifiedCustomerRequestIssuers.add(user);
     if(store===assignedStaffRefreshStore)verifiedAssignedStaffSessions.add(user);
+    if(store===cleanNormalRefreshStore)verifiedCleanNormalSessions.add(user);
   }
   return includeContext ? { user, expiresAt: Number.isFinite(payload.exp) ? payload.exp * 1000 : NaN } : user;
 }

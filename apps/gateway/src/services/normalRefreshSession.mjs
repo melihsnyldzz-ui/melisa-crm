@@ -6,6 +6,8 @@ const hash = value => crypto.createHash('sha256').update(value).digest('hex');
 const reject = () => Object.assign(new Error('Oturum sona erdi. Yeniden giriş yapın.'), {code:'AUTH_TOKEN_INVALID',statusCode:401});
 export const DEDICATED_NORMAL_TEST_USER_ID='crm-agent-test-20261011';
 export const DEDICATED_SEMIH_TEST_USER_ID='crm-semih-test-20261012';
+export const CLEAN_NORMAL_TEST_USER_ID='clean-staff-20261022';
+export const CLEAN_NORMAL_REFRESH_JOURNAL='C:/Sirket/ERP/clean/20261022/runtime/crm-normal-refresh.json';
 const SEMIH_TEST_PERMISSIONS=Object.freeze(['crm.view','crm.send','crm.assign','crm.agents','crm.manage']);
 export function isDedicatedNormalTestUser(user) {
   return user?.id===DEDICATED_NORMAL_TEST_USER_ID&&user.username==='crm-agent-test'&&user.role==='personel'
@@ -19,8 +21,40 @@ export function isDedicatedSemihTestUser(user,agentId) {
     &&SEMIH_TEST_PERMISSIONS.every(permission=>user.permissions.includes(permission))&&!user.testAdmin&&!user.testPersonnel;
 }
 export function normalRefreshUserPolicy(config=process.env) {
+  if(config.CRM_TEST_PROFILE)return cleanNormalRefreshUserPolicy(config);
   if(config.CRM_NORMAL_REFRESH_USER_ID===DEDICATED_NORMAL_TEST_USER_ID)return isDedicatedNormalTestUser;
   throw Error('Isolated normal-session identity is invalid.');
+}
+
+// Reuse the existing normal grant engine for one already configured synthetic
+// CRM account. This policy neither maps an ERP identity nor creates an account.
+function cleanNormalRefreshScope(config) {
+  const required={CRM_TEST_PROFILE:'clean-synthetic-20261022',CRM_ISOLATED_PREPARATION:'true',
+    CRM_TEST_PORT_BASE:'62800',CRM_UI_ORIGIN:'http://127.0.0.1:62800',CRM_TEST_ERP_ORIGIN:'http://127.0.0.1:4194',
+    CRM_TEST_EXPECTED_DATABASE:'MELISA_ERP_CLEAN_TEST_20261022',CRM_NORMAL_REFRESH_ENABLED:'true',
+    CRM_NORMAL_REFRESH_USER_ID:CLEAN_NORMAL_TEST_USER_ID,CRM_NORMAL_REFRESH_JOURNAL_PATH:CLEAN_NORMAL_REFRESH_JOURNAL,
+    WHATSAPP_SEND_ENABLED:'false',WHATSAPP_LIVE_SEND_APPROVED:'false',CRM_PAID_AI_ENABLED:'false'};
+  const peers=['CRM_CUSTOMER_PRODUCT_REQUEST_ENABLED','CRM_CUSTOMER_PRODUCT_REQUEST_PROOF',
+    'CRM_SEMIH_TEST_CONTINUE_ENABLED','CRM_ASSIGNED_STAFF_REFRESH_ENABLED'];
+  const journals=['CRM_SEMIH_TEST_REFRESH_JOURNAL_PATH','CRM_ASSIGNED_STAFF_REFRESH_JOURNAL_PATH',
+    'CRM_CUSTOMER_PRODUCT_REQUEST_STORE_FILE','CRM_CUSTOMER_PRODUCT_REQUEST_REFRESH_JOURNAL_PATH'];
+  if(Object.entries(required).some(([key,value])=>config[key]!==value)
+    ||peers.some(key=>!['false','',undefined].includes(config[key]))
+    ||journals.some(key=>config[key]&&(typeof config[key]!=='string'
+      ||config[key].replaceAll('\\','/').split('/').slice(1).some(segment=>/[. ]$/.test(segment)||segment.includes(':'))
+      ||path.win32.normalize(config[key]).toLowerCase()===path.win32.normalize(CLEAN_NORMAL_REFRESH_JOURNAL).toLowerCase())))
+    throw Error('Clean normal-session configuration is invalid.');
+  return JSON.stringify([...Object.keys(required),...peers,...journals].map(key=>config[key]??null));
+}
+function cleanNormalRefreshUserPolicy(config) {
+  const snapshot=cleanNormalRefreshScope(config);
+  return user=>{
+    try{return cleanNormalRefreshScope(config)===snapshot&&user?.id===CLEAN_NORMAL_TEST_USER_ID
+      &&user.username==='ornek-personel'&&user.role==='personel'&&user.active===true&&user.chatwootAgentId===2
+      &&Array.isArray(user.permissions)&&user.permissions.length===2
+      &&user.permissions.includes('crm.view')&&user.permissions.includes('crm.send')&&!user.testAdmin&&!user.testPersonnel;}
+    catch{return false;}
+  };
 }
 export function semihRefreshUserPolicy(config=process.env){
   const agentId=Number(config.CRM_SEMIH_TEST_AGENT_ID);
@@ -99,6 +133,13 @@ export function assertPrivateRefreshJournal(file,config,repoRoot){
 export function configuredNormalRefreshStore({config=process.env,resolveUser,repoRoot=process.cwd()}={}) {
   if(config.CRM_NORMAL_REFRESH_ENABLED!=='true')return null;
   const file=config.CRM_NORMAL_REFRESH_JOURNAL_PATH;
+  if(config.CRM_TEST_PROFILE){
+    const authorizeUser=normalRefreshUserPolicy(config);
+    const relative=path.win32.relative(path.win32.resolve(repoRoot),CLEAN_NORMAL_REFRESH_JOURNAL);
+    if(!relative.startsWith('..')||typeof resolveUser!=='function'||!authorizeUser(resolveUser(CLEAN_NORMAL_TEST_USER_ID)))
+      throw Error('Clean normal-session identity is invalid.');
+    return createNormalRefreshStore({file,resolveUser,authorizeUser});
+  }
   assertPrivateRefreshJournal(file,config,repoRoot);
   const authorizeUser=normalRefreshUserPolicy(config);
   return createNormalRefreshStore({file,resolveUser,authorizeUser:user=>{

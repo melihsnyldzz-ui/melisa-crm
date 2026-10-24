@@ -8,6 +8,7 @@ import {resolveTestDirectories} from './test-supervisor.mjs';
 import {installTestAdminSession} from '../apps/gateway/src/services/testAdminSession.mjs';
 import {installTestPersonnelSession} from '../apps/gateway/src/services/testPersonnelSession.mjs';
 import {resolveTestEndpoints} from './test-endpoints.mjs';
+import {normalRefreshUserPolicy} from '../apps/gateway/src/services/normalRefreshSession.mjs';
 const mime = { '.html':'text/html; charset=utf-8', '.js':'text/javascript', '.css':'text/css', '.png':'image/png', '.svg':'image/svg+xml', '.woff2':'font/woff2' };
 
 export function validateTestLanAddress(value='') {
@@ -85,7 +86,7 @@ export function testTerminalFrameAllowed(req,host) {
   if(!req.url.startsWith('/?terminal=1')||req.headers.origin)return false;
   try {
     const parent=new URL(req.headers.referer||'');
-    const expected = host.endsWith(':62700') ? host.replace(':62700',':5234') : host.endsWith(':62600') ? host.replace(':62600',':5224') : host.replace(':62400',':5194');
+    const expected = host.endsWith(':62800') ? host.replace(':62800',':5244') : host.endsWith(':62700') ? host.replace(':62700',':5234') : host.endsWith(':62600') ? host.replace(':62600',':5224') : host.replace(':62400',':5194');
     return parent.origin==='http://'+expected&&parent.pathname==='/terminal.html';
   } catch { return false; }
 }
@@ -110,6 +111,13 @@ if (!env.CRM_BASELINE_ENV) throw Error('CRM_BASELINE_ENV_REQUIRED');
 // Capture the validated TEST locations before baseline dotenv can override them.
 const {runtime,logs}=resolveTestDirectories(repoRoot,env);
 const endpoints=resolveTestEndpoints(env);
+// Only an explicit owner setting may activate the existing clean normal grant.
+// A baseline file cannot silently enable it or select a different identity.
+const cleanRefresh=endpoints.cleanSynthetic?{
+  CRM_NORMAL_REFRESH_ENABLED:env.CRM_NORMAL_REFRESH_ENABLED==='true'?'true':'false',
+  CRM_NORMAL_REFRESH_USER_ID:env.CRM_NORMAL_REFRESH_ENABLED==='true'?env.CRM_NORMAL_REFRESH_USER_ID:'',
+  CRM_NORMAL_REFRESH_JOURNAL_PATH:env.CRM_NORMAL_REFRESH_ENABLED==='true'?env.CRM_NORMAL_REFRESH_JOURNAL_PATH:'',
+}:null;
 const paidAi=env.CRM_PAID_AI_ENABLED==='true'&&!endpoints.isolated;
 const {lanAddress,tailscaleAddress,peers}=testUiNetworkSettings(env,endpoints);
 const uiOrigins=[endpoints.uiOrigin,...[lanAddress,tailscaleAddress].filter(Boolean).map(address=>`http://${address}:${endpoints.ui}`)];
@@ -153,6 +161,7 @@ Object.assign(env, {
 });
 if(endpoints.isolated)Object.assign(env,{WHATSAPP_SEND_ENABLED:'false',WHATSAPP_LIVE_SEND_APPROVED:'false',WAAPI_CHATWOOT_BRIDGE_ENABLED:'false',WAAPI_INCOMING_READER_ENABLED:'false',CRM_AI_SALES_MODE:'off'});
 if(endpoints.cleanSynthetic)Object.assign(env,{CRM_TEST_PROFILE:endpoints.profile,CRM_TEST_TERMINAL_PERSONNEL_USERNAME:'',CRM_CUSTOMER_PRODUCT_REQUEST_ENABLED:'false',CRM_CUSTOMER_PRODUCT_REQUEST_ISSUER_IDS:'',CRM_NORMAL_REFRESH_ENABLED:'false',CRM_SEMIH_TEST_CONTINUE_ENABLED:'false',CHATWOOT_INBOX_READ_ENABLED:'false',CHATWOOT_INBOX_FALLBACK_ENABLED:'false',CRM_PAID_AI_ENABLED:'false',OPENAI_API_KEY:'',WAAPI_API_KEY:'',CHATWOOT_API_ACCESS_TOKEN:'',EVOLUTION_API_KEY:'',CRM_OUTBOUND_NAMESPACE:'melisa-crm:clean-synthetic-20261022'});
+if(cleanRefresh){Object.assign(env,cleanRefresh);if(cleanRefresh.CRM_NORMAL_REFRESH_ENABLED==='true')normalRefreshUserPolicy(env);}
 if(requests.CRM_CUSTOMER_PRODUCT_REQUEST_ENABLED==='true')env.CRM_SEMIH_TEST_CONTINUE_ENABLED='false';
 }
 export async function createTestCustomerProductRequestIntegration({environment=process.env,endpoints=resolveTestEndpoints(environment),Router,catalogReader}={}){
