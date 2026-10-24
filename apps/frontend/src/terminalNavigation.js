@@ -13,19 +13,31 @@ export function terminalEntry(location = globalThis.location) {
   }
   return { enabled, erpOrigin };
 }
-export function bindTerminalNavigation({ window: win = globalThis.window, entry, onActivate = () => {}, onLogout = async () => {} }) {
+export function bindTerminalNavigation({ window: win = globalThis.window, entry, onActivate = () => {}, onLogout = async () => {}, deferReady = false }) {
   const allowed = entry?.enabled && entry.erpOrigin && win.parent !== win;
+  let generation=0,closed=false;
   const notify = action => { if (allowed) win.parent.postMessage({ type: 'melisa-terminal-child', version: 1, action }, entry.erpOrigin); };
   const receive = event => {
     const data = event.data;
     if (!allowed || event.source !== win.parent || event.origin !== entry.erpOrigin || !data || Array.isArray(data)
       || Object.keys(data).sort().join(',') !== 'action,type,version'
       || data.type !== 'melisa-terminal-parent' || data.version !== 1 || !['activate','logout'].includes(data.action)) return;
-    if (data.action === 'logout') { Promise.resolve(onLogout()).then(() => notify('logged-out')).catch(() => notify('unavailable')); return; }
-    onActivate(); notify('ready');
+    const epoch=++generation;
+    const done=action=>{if(!closed&&epoch===generation)notify(action);};
+    try {
+      const result=data.action==='logout'?onLogout():onActivate();
+      const action=data.action==='logout'?'logged-out':'ready';
+      if(result&&typeof result.then==='function')Promise.resolve(result).then(()=>done(action),()=>done('unavailable'));
+      else done(action);
+    }catch{done('unavailable');}
   };
-  win.addEventListener('message', receive); notify('ready');
-  return { home: () => notify('home'), unavailable: () => notify('unavailable'), close: () => win.removeEventListener('message', receive) };
+  win.addEventListener('message', receive); if(!deferReady)notify('ready');
+  return { home: () => notify('home'), unavailable: () => notify('unavailable'), close: () => {closed=true;generation++;win.removeEventListener('message', receive);} };
+}
+export function bindTerminalSessionNavigation({sessionLoader,onActivated=()=>{},onClose=async()=>{},...options}){
+ return bindTerminalNavigation({...options,deferReady:true,onActivate:async()=>{
+  const result=await sessionLoader.start();if(!result)throw Error('Terminal identity unavailable');onActivated();
+ },onLogout:async()=>{const closed=sessionLoader.close();await Promise.all([closed,onClose()]);}});
 }
 export function catalogConversationHeaders(conversationId) {
   if (conversationId === undefined || conversationId === null) return {};

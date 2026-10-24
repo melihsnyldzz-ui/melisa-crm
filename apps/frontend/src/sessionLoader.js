@@ -1,3 +1,7 @@
+import {createTerminalSessionConsumer} from './terminalSessionIdentity.js';
+
+export const createTerminalSessionLoader=options=>createTerminalSessionConsumer(createSessionLoader,options);
+
 // One user-driven login/resume at a time; logout invalidates even non-abortable
 // transports. Credentials/tokens are never stored here beyond the active call.
 export function createSessionLoader({api,onCommit,onError,onBusy,onAgents=()=>{},onAgentsState=()=>{},now=Date.now}) {
