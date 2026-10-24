@@ -1,5 +1,9 @@
 ## CRM-UA11 — 15 Ekim — son normal ekran ve fiziksel mobil kabulü
 
+### 24 Ekim11:02TR — E1 native15sn kaynağı teslim; B5 teknik yönetim kaynağı sürdürülür
+
+CRM59ca114 exactlinkedcleaniframe15sn/legacy5sn,35mockclock/relatedPASS,23,21sproduction veexactCI7SUCCESS;review0/secret0. Bu gerçeknative/Keystore/cihaz testi değildir,kurulmadı. E1 kurulum/normalGUI ve kaynak-paket-runtime makbuzu ERP'de. B5 mevcut4CRM/11ERP makbuzunda9kişiselbağ yokluğu yalnız snapshotkapsamındadır; supportednormalaccountmanagement writerı gerçekten eksik olduğundan teknik kaynak işi CRM-DEC-025'te aynıB5'e verildi. Normalhesap+doğruonaylırol/agent+olumlu/olumsuznormalTEST teknik kapanış koşuludur; **insanE2son turu bunun kapısı değildir**. İlker'egenelCRMhesabı/atama açılmaz,Semih/örneklerkorunur,gerçekmüşteri sahipliği tahmin edilmez. YeniB5 hesap/yetki kaynağı henüz yapılmış/kurulu sayılmaz;25/12/13/0ve17/74aynı.
+
 ### 24 Ekim 10:43 TR — E1 ilk grant ve same-person kaynak hazır; kabul BEKLİYOR
 
 [3218a0a](https://github.com/melihsnyldzz-ui/melisa-crm/commit/3218a0a37451ab746d38ade4ff66d555913208d9)+6f0: ilk boşCRMrealm için dar ERPdevri ve mevcut normal issuer/refresh/çıkış/atanmışliste tüketicisi teknik hazır;frontend57/backend52hedefPASS,exactCIikiSHA'da7şerSUCCESS,review0/secret0. GerçekERPprovider/routerde722↔CRM3218API/JWT/journal ve mevcut frontendprotectedmanager/loader5sourceconformancePASS. ERPnormal-authcallback/nativevault/ilişki sentetiktir;bu normalGUI/Keystore/TC21/gerçekpersonel/insan kabulü değildir. [Kanıt ve sınırlar](docs/evidence/crm/2026-10-24-e1-terminal/README.md).

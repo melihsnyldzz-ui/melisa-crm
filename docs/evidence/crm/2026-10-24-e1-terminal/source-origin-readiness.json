@@ -1,4 +1,120 @@
 {
+  "currentNativeBridgeDeadline": {
+    "observedAtUtc": "2026-10-24T08:03:20.416Z",
+    "sourceCommit": "59ca114b858f4042e30cd1736825be3d7c68599c",
+    "backendSourceUnchanged": "3218a0a37451ab746d38ade4ff66d555913208d9",
+    "status": "SOURCE_READY_NOT_INSTALLED",
+    "linkedCleanTimeoutMs": 15000,
+    "standaloneLegacyTimeoutMs": 5000,
+    "scope": "Exact linked clean62800/same-hostERP5244 iframe only; native object/exact origins/FIFO/get-put-clear/request-ID/generation remain unchanged.",
+    "sourceFiles": [
+      {
+        "path": "apps/frontend/src/nativeSessionBridge.js",
+        "bytes": 4903,
+        "sha256": "e52f4688d8c1e30abc8819eea448d2e4c431f57b0602d505f4f0d9fd3c4e4185"
+      },
+      {
+        "path": "apps/frontend/tests/native-session-bridge.test.mjs",
+        "bytes": 11157,
+        "sha256": "50eeed84622022b39c023e44f44f0d44b624cf6912a1117a65143e19d948e7dd"
+      }
+    ],
+    "verification": {
+      "before": {
+        "pass": 0,
+        "fail": 2
+      },
+      "affected": {
+        "pass": 35,
+        "fail": 0,
+        "skip": 0,
+        "durationMs": 92.0711
+      },
+      "clock": "Controlled mock timers; not a real15second wait or physical native runtime.",
+      "intermediateFixtureCorrection": "One-microtask timing assumption changed to drain four microtasks before testing settled state.",
+      "reviewOpenP1P2": 0,
+      "stagedSecretFindings": 0
+    },
+    "build": {
+      "profile": "clean-synthetic-20261022",
+      "seconds": 23.21,
+      "main": "/assets/index-DiUlgoPK.js",
+      "bytes": 906832,
+      "sha256": "9bc02fd7d90f8ed9966ea32d9e9f986f6c802c23c434b905ac62ec8d43f03465",
+      "cssUnchanged": true
+    },
+    "ci": {
+      "sourceCommit": "59ca114b858f4042e30cd1736825be3d7c68599c",
+      "jobsSuccessful": 7,
+      "runs": [
+        {
+          "id": 40076309087,
+          "event": "pull_request",
+          "jobs": [
+            120820288600,
+            120820288575,
+            120820288321
+          ],
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 40076305978,
+          "event": "push",
+          "jobs": [
+            120820280782,
+            120820280743,
+            120820280625
+          ],
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 40076308994,
+          "event": "pull_request",
+          "jobs": [
+            120820288053
+          ],
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    },
+    "erpNativeReview": {
+      "readOnly": true,
+      "openP1P2": 0,
+      "files": [
+        "WorkSessionHandoff.kt",
+        "WorkHandoffHttp.kt",
+        "WorkTasksActivity.kt"
+      ],
+      "ownerReportedJvmTests": 18,
+      "ownerReportedWebTests": 41,
+      "ownerReportedApkSha256": "EF94FD383F09BDD3F427CAFBC8B16D637F4CA67D8E16686098461C6F5ED72717",
+      "independentlyBuiltOrInstalledByCrm": false
+    },
+    "boundaries": {
+      "sharedRuntimeSqlAccountsRolesAssignmentsWrites": 0,
+      "customerMessages": 0,
+      "paidApi": 0,
+      "liveVegaT1": false,
+      "mainMerge": false,
+      "installedCrmSource": "09a2ea30dd9fea152554dbf6efe43c731add1510",
+      "samePersonNormalGui": "NOT_TRIED",
+      "nativeKeystoreDeviceHuman": "PENDING",
+      "crmLeaves": {
+        "total": 25,
+        "green": 12,
+        "yellow": 13,
+        "red": 0
+      },
+      "tree": {
+        "headings": 17,
+        "leaves": 74
+      }
+    },
+    "next": "ERP native/exact package/runtime/normal GUI receipt remains owner responsibility; CRM continues authorized existing B5 normal management source."
+  },
   "currentTerminalHandoffAdapter": {
     "observedAtUtc": "2026-10-24T07:47:31.331660+00:00",
     "sourceCommit": "3218a0a37451ab746d38ade4ff66d555913208d9",
