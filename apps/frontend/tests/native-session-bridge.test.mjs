@@ -17,6 +17,38 @@ test('E1 clean native bridge accepts only exact clean CRM origins and keeps the 
   assert.equal(createNativeSessionBridge({window:{location:{origin},MelisaProtectedSession:{postMessage(){throw Error('untrusted native call');}}}}),null);
  assert.equal(createNativeSessionBridge({window:{location:{origin:'http://127.0.0.1:62800'}}}),null,'ordinary browser cannot create native storage');
 });
+
+test('E1 linked clean native calls allow 15s while legacy and standalone keep their 5s deadline',async t=>{
+ t.mock.timers.enable({apis:['setTimeout']});
+ for(const linked of [true,false])for(const hostname of ['127.0.0.1','192.168.1.46']){
+  const calls=[],native={postMessage:raw=>calls.push(JSON.parse(raw))};
+  const host={location:{origin:`http://${hostname}:62800`,hostname,search:`?terminal=1&erpOrigin=${encodeURIComponent(`http://${hostname}:5244`)}`},MelisaProtectedSession:native};
+  host.parent=linked?{}:host;
+  const bridge=createNativeSessionBridge({window:host});let settled=false;
+  const pending=bridge.get();pending.then(()=>{settled=true;},()=>{settled=true;});const rejection=assert.rejects(pending,/Cihaz oturumu yanıt vermedi/);
+  await Promise.resolve();t.mock.timers.tick(4999);for(let i=0;i<4;i++)await Promise.resolve();assert.equal(settled,false);
+  t.mock.timers.tick(1);for(let i=0;i<4;i++)await Promise.resolve();assert.equal(settled,!linked);
+  if(linked){t.mock.timers.tick(9999);for(let i=0;i<4;i++)await Promise.resolve();assert.equal(settled,false);t.mock.timers.tick(1);}
+  await rejection;
+ }
+ const calls=[],native={postMessage:raw=>calls.push(JSON.parse(raw))};
+ const legacy={location:{origin:'http://127.0.0.1:62700',hostname:'127.0.0.1',search:'?terminal=1&erpOrigin=http%3A%2F%2F127.0.0.1%3A5234'},parent:{},MelisaProtectedSession:native};
+ const pending=createNativeSessionBridge({window:legacy}).get(),rejection=assert.rejects(pending,/Cihaz oturumu yanıt vermedi/);
+ await Promise.resolve();t.mock.timers.tick(5000);await rejection;
+});
+
+test('E1 late get reply cannot complete queued clear; a valid delayed clear stays bounded and FIFO',async t=>{
+ t.mock.timers.enable({apis:['setTimeout']});
+ const calls=[],native={postMessage:raw=>calls.push(JSON.parse(raw))},host={location:{origin:'http://127.0.0.1:62800',hostname:'127.0.0.1',search:'?terminal=1&erpOrigin=http%3A%2F%2F127.0.0.1%3A5244'},parent:{},MelisaProtectedSession:native};
+ const bridge=createNativeSessionBridge({window:host}),get=bridge.get(),rejected=assert.rejects(get,/Cihaz oturumu yanıt vermedi/);let cleared=false;
+ const clear=bridge.clear();clear.then(()=>{cleared=true;},()=>{cleared=true;});
+ await Promise.resolve();t.mock.timers.tick(15000);await rejected;for(let i=0;i<5;i++)await Promise.resolve();
+ assert.deepEqual(calls.map(call=>call.action),['get','clear']);
+ native.onmessage({data:JSON.stringify({v:1,id:calls[0].id,ok:true,session:{userId:'late-old-person'}})});await Promise.resolve();assert.equal(cleared,false);
+ t.mock.timers.tick(6000);await Promise.resolve();assert.equal(cleared,false,'native own closure may need longer than the previous five seconds');
+ native.onmessage({data:JSON.stringify({v:1,id:calls[1].id,ok:true,session:null})});assert.equal(await clear,null);
+ assert(calls.every(call=>Object.keys(call).sort().join(',')==='action,id,v'));
+});
 test('bridge uses only native object replies, exact origin, and request IDs',async()=>{const calls=[],native={postMessage(raw){calls.push(JSON.parse(raw));}},host={location:{origin:'http://192.168.1.46:62700'},MelisaProtectedSession:native};const bridge=createNativeSessionBridge({window:host});const pending=bridge.get();await Promise.resolve();native.onmessage({data:JSON.stringify({v:1,id:'wrong',ok:true,session:{accessToken:'wrong'}})});native.onmessage({data:JSON.stringify({v:1,id:calls[0].id,ok:true,session:null})});assert.equal(await pending,null);assert.deepEqual(Object.keys(calls[0]).sort(),['action','id','v']);for(const origin of ['http://192.168.1.99:62700','http://192.168.1.46:5234','https://192.168.1.46:62700'])assert.equal(createNativeSessionBridge({window:{...host,location:{origin}}}),null);});
 test('repeated bridge construction shares one reply handler and FIFO including clear',async()=>{
  const calls=[],native={postMessage:raw=>calls.push(JSON.parse(raw))},host={location:{origin:'http://192.168.1.46:62700'},MelisaProtectedSession:native};
