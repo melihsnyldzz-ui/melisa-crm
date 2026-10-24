@@ -1,4 +1,239 @@
 {
+  "currentInstalledLinkReadback": {
+    "observedAt": "2026-10-24T08:28:47.313Z",
+    "readOnly": true,
+    "crm": {
+      "status": "INSTALLED",
+      "source": "59ca114b858f4042e30cd1736825be3d7c68599c",
+      "frontendSource": "59ca114b858f4042e30cd1736825be3d7c68599c",
+      "backendSource": "59ca114b858f4042e30cd1736825be3d7c68599c",
+      "root": "C:/Sirket/ERP/releases/CLEAN-CRM-20261024-59ca114b858f-E1LINK",
+      "manifestSha": "49A76E90623CCABA3541DA7D82AB4563878AC682AB5B4C105933729E88930E03",
+      "files": 783,
+      "changedPorts": [
+        62800,
+        62801,
+        62802,
+        62803
+      ],
+      "preservedListeners": 16,
+      "erpSource": "f4db4884c3a85f799c98e955b43d6c6745d7db55",
+      "nativeSource": "035fcc08d8f56cdd0cbc437a290285328fce1ec9",
+      "database": "MELISA_ERP_CLEAN_TEST_20261022",
+      "environmentId": "e662fd94-d797-4b3b-938a-d143ad758b67",
+      "synthetic": true,
+      "actualT1": false,
+      "dataSummariesUnchanged": 53,
+      "installedAt": "2026-10-24T11:16:54.2598417+03:00"
+    },
+    "erp": {
+      "status": "INSTALLED",
+      "source": "f4db4884c3a85f799c98e955b43d6c6745d7db55",
+      "frontendSource": "f4db4884c3a85f799c98e955b43d6c6745d7db55",
+      "package": "CLEAN-ERP-20261022-f4db4884c3a8",
+      "root": "C:/Sirket/ERP/releases/CLEAN-ERP-20261024-f4db4884c3a8-E1LINK",
+      "files": 3424,
+      "manifestSha": "A057B46C7A3DB6DC66FCAAFF1903093A98FF81CF73A7754A135A6530EB55777C",
+      "changedPorts": [
+        4194,
+        5244
+      ],
+      "nativeSource": "035fcc08d8f56cdd0cbc437a290285328fce1ec9",
+      "preservedListeners": 18,
+      "crmStatus": 200,
+      "dataSummariesUnchanged": 53,
+      "protectedSessionStatePreserved": true,
+      "database": "MELISA_ERP_CLEAN_TEST_20261022",
+      "environmentId": "e662fd94-d797-4b3b-938a-d143ad758b67",
+      "synthetic": true,
+      "actualT1": false,
+      "installedAt": "2026-10-24T11:16:03.5830383+03:00"
+    },
+    "receipts": {
+      "crm": {
+        "path": "C:\\Sirket\\ERP\\clean\\20261022\\runtime\\semih-access-20261023\\e1-link-crm-installation.json",
+        "sha256": "b77ecb0da74bb1a634ad98829d4474448117255e2d14c155f8eed7c3edcc5df2"
+      },
+      "erp": {
+        "path": "C:\\Sirket\\ERP\\clean\\20261022\\runtime\\semih-access-20261023\\e1-link-erp-installation.json",
+        "sha256": "9e9cb7e4751816612eb17a8103644adf17ee99147be54811d985c34076f1e988"
+      }
+    },
+    "manifest": {
+      "path": "C:\\Sirket\\ERP\\releases\\CLEAN-CRM-20261024-59ca114b858f-E1LINK\\release-manifest.json",
+      "sha256": "49a76e90623ccaba3541da7d82ab4563878ac682ab5b4c105933729e88930e03",
+      "files": 783,
+      "allPayloadHashesEqual": true
+    },
+    "sourceReadbacks": [
+      {
+        "path": "apps/frontend/src/App.jsx",
+        "exactGitBytes": false,
+        "lineEndingNormalizedGitEqual": true,
+        "installedSha256": "49ed154211f763509592ea45ea2600e33958fd7606446bc2d8798980b7ae45da",
+        "gitBlobSha256": "8c624bb1d713dcc073bcfb7f55c0ba1d0caacfbdda22e462c74fedf4337ecd65"
+      },
+      {
+        "path": "apps/frontend/src/nativeSessionBridge.js",
+        "exactGitBytes": false,
+        "lineEndingNormalizedGitEqual": true,
+        "installedSha256": "91a66d0f6c7f1c5dcb1f24289d29e8b0460ad1ba0da485904fd84d5bbbfd99b2",
+        "gitBlobSha256": "e52f4688d8c1e30abc8819eea448d2e4c431f57b0602d505f4f0d9fd3c4e4185"
+      },
+      {
+        "path": "apps/frontend/src/terminalSessionIdentity.js",
+        "exactGitBytes": false,
+        "lineEndingNormalizedGitEqual": true,
+        "installedSha256": "4f5f25bbc6ae109f2db5056fe64b3cc2a9c270fcfc5043eb404eae531527b9f6",
+        "gitBlobSha256": "357119ddded189bf847f8ce2ad3ddb1b73aee9d405b7276b2204a7dcda84ac2e"
+      },
+      {
+        "path": "apps/gateway/src/app.js",
+        "exactGitBytes": false,
+        "lineEndingNormalizedGitEqual": true,
+        "installedSha256": "5aa3859e05a27b84210fa185e9706e395da68c58560f053f1fdcf5cb1058259c",
+        "gitBlobSha256": "8c5465f6f138cd13374c5ad5f218c76bdd402c4840bd863407c0c52a59cd28ec"
+      },
+      {
+        "path": "apps/gateway/src/services/crmAuthService.js",
+        "exactGitBytes": false,
+        "lineEndingNormalizedGitEqual": true,
+        "installedSha256": "cfdd917af1a71b1c9e647d26015fd19a3950e3bfc939ff794813f227a2dd98b0",
+        "gitBlobSha256": "5d96f476dac1bc06b9f8382a972a64629a053a39cc552bfb3bff8d2db766c169"
+      },
+      {
+        "path": "apps/gateway/src/services/normalRefreshSession.mjs",
+        "exactGitBytes": false,
+        "lineEndingNormalizedGitEqual": true,
+        "installedSha256": "208d1ecb01e580f01ab2e54f19655c2ba05fe0c5f418d5622a36a0c14c37c7f5",
+        "gitBlobSha256": "242e7fed0a99414ec26855e337686f73835e38d9cb72757c9916e54c933ce2d3"
+      },
+      {
+        "path": "apps/gateway/src/services/terminalHandoffPeer.mjs",
+        "exactGitBytes": false,
+        "lineEndingNormalizedGitEqual": true,
+        "installedSha256": "449566261a45341b5ee74c94f9954c1cfcd7202954dcd2acb003729348806fee",
+        "gitBlobSha256": "3cd1f884d68cce1e96fed6f5df88f7c956d0ec980d3025afca34739667ccf77e"
+      },
+      {
+        "path": "deploy/test-server.mjs",
+        "exactGitBytes": false,
+        "lineEndingNormalizedGitEqual": true,
+        "installedSha256": "c93e2964668d22e255edb21b4e375b8b75369f2f211e74d454af7da99cfed6bb",
+        "gitBlobSha256": "e0447ef603f89ac53b2baac7c6569406d8c45040cdfaa15f5fb0d671ab250eb5"
+      }
+    ],
+    "main": {
+      "path": "/assets/index-DiUlgoPK.js",
+      "bytes": 906832,
+      "sha256": "9bc02fd7d90f8ed9966ea32d9e9f986f6c802c23c434b905ac62ec8d43f03465"
+    },
+    "protectionFileComparisons": [
+      {
+        "before": "e1-link-erp-install-protected.before.txt",
+        "after": "e1-link-erp-install-protected.after.txt",
+        "beforeSha256": "034bd4bd5447900e4eea94f96be130dc492013a0d01219667a75073ef9988bcd",
+        "afterSha256": "034bd4bd5447900e4eea94f96be130dc492013a0d01219667a75073ef9988bcd",
+        "equal": true
+      },
+      {
+        "before": "e1-link-crm-data.before.txt",
+        "after": "e1-link-crm-data.after.txt",
+        "beforeSha256": "034bd4bd5447900e4eea94f96be130dc492013a0d01219667a75073ef9988bcd",
+        "afterSha256": "034bd4bd5447900e4eea94f96be130dc492013a0d01219667a75073ef9988bcd",
+        "equal": true
+      }
+    ],
+    "ownerRuntime": {
+      "path": "C:\\Sirket\\ERP\\clean\\20261022\\runtime\\semih-access-20261023\\e1-link-runtime-lan-proof.json",
+      "sha256": "b7c54359a55763ebfed93a011400dabbc0f22a45d8320c8d9de52f0fcd569d68",
+      "status": "FAILED",
+      "caseCount": 22,
+      "allRecordedCasesVerified": true,
+      "failure": "Unexpected status at crm/auth/logout: 429",
+      "allOwnLinkedFamiliesRevoked": false,
+      "normalNativeGui": "NOT_TESTED",
+      "nativeVault": "NOT_TESTED",
+      "physicalAndroid": "NOT_CONNECTED",
+      "observedAt": "2026-10-24T11:21:57.5835062+03:00"
+    },
+    "mismatches": [],
+    "httpCalls": 0,
+    "sqlCalls": 0,
+    "loginCalls": 0,
+    "sharedWrites": 0,
+    "humanAcceptance": "BEKLIYOR",
+    "osReadback": {
+      "ObservedAt": "2026-10-24T08:29:12.2375082Z",
+      "ReadOnly": true,
+      "Rows": [
+        {
+          "Port": 62800,
+          "LocalAddress": "192.168.1.46",
+          "Pid": 15708,
+          "Name": "node.exe",
+          "CreatedUtc": "2026-10-24T08:16:41.1435180Z",
+          "CommandHasReleasePath": false,
+          "CommandHasTestServer": false,
+          "CommandHasNodeOrders": false
+        },
+        {
+          "Port": 62800,
+          "LocalAddress": "127.0.0.1",
+          "Pid": 15708,
+          "Name": "node.exe",
+          "CreatedUtc": "2026-10-24T08:16:41.1435180Z",
+          "CommandHasReleasePath": false,
+          "CommandHasTestServer": false,
+          "CommandHasNodeOrders": false
+        },
+        {
+          "Port": 62800,
+          "LocalAddress": "100.87.188.3",
+          "Pid": 15708,
+          "Name": "node.exe",
+          "CreatedUtc": "2026-10-24T08:16:41.1435180Z",
+          "CommandHasReleasePath": false,
+          "CommandHasTestServer": false,
+          "CommandHasNodeOrders": false
+        },
+        {
+          "Port": 62801,
+          "LocalAddress": "127.0.0.1",
+          "Pid": 15708,
+          "Name": "node.exe",
+          "CreatedUtc": "2026-10-24T08:16:41.1435180Z",
+          "CommandHasReleasePath": false,
+          "CommandHasTestServer": false,
+          "CommandHasNodeOrders": false
+        },
+        {
+          "Port": 62802,
+          "LocalAddress": "127.0.0.1",
+          "Pid": 46804,
+          "Name": "node.exe",
+          "CreatedUtc": "2026-10-24T08:16:41.1726910Z",
+          "CommandHasReleasePath": false,
+          "CommandHasTestServer": false,
+          "CommandHasNodeOrders": false
+        },
+        {
+          "Port": 62803,
+          "LocalAddress": "127.0.0.1",
+          "Pid": 40524,
+          "Name": "node.exe",
+          "CreatedUtc": "2026-10-24T08:16:41.1916260Z",
+          "CommandHasReleasePath": false,
+          "CommandHasTestServer": false,
+          "CommandHasNodeOrders": true
+        }
+      ],
+      "CwdProven": false,
+      "HttpCalls": 0,
+      "SqlCalls": 0,
+      "SharedWrites": 0
+    }
+  },
   "currentNativeBridgeDeadline": {
     "observedAtUtc": "2026-10-24T08:03:20.416Z",
     "sourceCommit": "59ca114b858f4042e30cd1736825be3d7c68599c",

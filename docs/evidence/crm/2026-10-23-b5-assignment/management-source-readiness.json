@@ -1,0 +1,232 @@
+{
+  "observedAt": "2026-10-24T08:32:16.065Z",
+  "sourceCommit": "acb2a3a0ce917d68221372e5f21bb788e90475aa",
+  "implementationCommit": "7d09fdf9d83dbbda8523dbca5ba33465d628809e",
+  "status": "SOURCE_READY_CI_SUCCESS_NOT_INSTALLED",
+  "features": [
+    "normal crm.manage Users UI create/edit; personel/mudur, active, explicit unique synthetic agent1001-9999",
+    "server UUID, scrypt, global revision CAS, immutable baseline accounts, private atomic file and redacted audit",
+    "existing normal grant/refresh/logout engine; managed account revision fingerprint prevents role/active/agent/password flip-back revival",
+    "only separate synthetic155/156 assignment/readback; baseline55/56 and Chatwoot writes remain closed",
+    "post-mutation roster supersedes an old pending read, queues a fresh GET and preserves account generation"
+  ],
+  "activation": {
+    "defaultOff": true,
+    "profile": "clean-synthetic-20261022",
+    "database": "MELISA_ERP_CLEAN_TEST_20261022",
+    "file": "C:/Sirket/ERP/clean/20261022/runtime/crm-managed-users.json",
+    "explicitOwnerSettings": [
+      "CRM_CLEAN_ACCOUNT_MANAGEMENT_ENABLED=true",
+      "CRM_CLEAN_ACCOUNT_MANAGEMENT_FILE=C:/Sirket/ERP/clean/20261022/runtime/crm-managed-users.json"
+    ],
+    "existingNormalRefreshPrerequisite": true,
+    "baselineCannotEnable": true,
+    "baselineAccountsEditable": false,
+    "accountCreationInSharedRuntime": false,
+    "installationOwner": "ERP"
+  },
+  "tests": {
+    "coreUiConfig": {
+      "reports": 20,
+      "passed": 20
+    },
+    "productionNormalRoutes": {
+      "subtests": 9,
+      "parentReports": 1,
+      "totalReports": 10,
+      "passed": 10,
+      "platform": "Windows only exact fixed-path profile; all private file IO in RAM, ephemeral HTTP, no shared calls"
+    },
+    "relatedAuthInventoryNormal": {
+      "reports": 45,
+      "passed": 45,
+      "overlapsCore": true
+    },
+    "rosterAndTerminalIdentity": {
+      "reports": 44,
+      "passed": 44,
+      "overlapsUi": true
+    },
+    "reviewRegression": {
+      "before": {
+        "passed": 0,
+        "failed": 2
+      },
+      "after": "included in44"
+    },
+    "countsMustNotBeAdded": true
+  },
+  "build": {
+    "seconds": 11.24,
+    "profile": "clean-synthetic-20261022",
+    "main": "/assets/index-CeCdOZfo.js",
+    "bytes": 912719,
+    "sha256": "213d54b16d10c7f984b4e4bb518d093e8778a8ba85ac62d02b77e00210791587",
+    "css": "/assets/index-C1zRRMAe.css",
+    "cssSha256": "3358f7ded98d63dc4e364d2557174490914b08bda7c0016262ed1a8f63e851da",
+    "cssChanged": false
+  },
+  "review": {
+    "independent": true,
+    "openP1": 0,
+    "openP2": 0,
+    "fixedP2": "Delayed pre-mutation roster could be reused instead of issuing a fresh GET.",
+    "reviewerDidNotRunTestsOrGui": true
+  },
+  "browser": {
+    "actualProductionApp": true,
+    "actualNormalRoutes": true,
+    "synthetic": true,
+    "privateStoreAdapter": "RAM",
+    "phases": [
+      "normal baseline manager login",
+      "create sentetik-personel with explicit agent1001",
+      "full reload preserves clean-managed-ddecb580-af4c-4762-8e6e-2e9952767312",
+      "manager assigns155, fresh inbox reflects owner and unassigned2→1",
+      "new normal personel login/full reload lists only155, opens conversation",
+      "normal management closes account; normal login receives401 generic error"
+    ],
+    "actual390": {
+      "width": 390,
+      "documentScrollWidth": 390,
+      "formWidth": 312.7083435058594
+    },
+    "consoleWarningsAndErrors": 0,
+    "screenshotsFromPreFinalRosterFixBuilds": [
+      "/assets/index-jK8eh326.js",
+      "/assets/index-DBWwMLAU.js"
+    ],
+    "finalRosterRaceVerifiedByControlledAsyncTests": true,
+    "finalBuildNotClaimedAsInstalledGui": true,
+    "fixturePorts": [
+      57510,
+      52090
+    ],
+    "fixtureClosed": true,
+    "agentCreatedTabClosed": true,
+    "temporaryViewportReset": true,
+    "realPersonOrPhysicalDeviceAcceptance": false
+  },
+  "screenshots": [
+    {
+      "file": "management-account-reloaded.jpg",
+      "bytes": 89872,
+      "sha256": "b21cecf884b9039d1f79f5d04de82a77397ef501e39bfe03172e0d88d605ad7e",
+      "scope": "Real production App/normal HTTP routes in isolated loopback fixture; private files in RAM, synthetic accounts/customers."
+    },
+    {
+      "file": "management-assigned-personel.jpg",
+      "bytes": 56115,
+      "sha256": "a1111ded454d57018656714d557e3984fe67c90160e16fee07ca550475fb158b",
+      "scope": "Real production App/normal HTTP routes in isolated loopback fixture; private files in RAM, synthetic accounts/customers."
+    },
+    {
+      "file": "management-editor-actual390.jpg",
+      "bytes": 46463,
+      "sha256": "9118d58cd7c46810bd820d4545bc0162de810fd76597fdb075aad983fbccdc80",
+      "scope": "Actual window.innerWidth390/document.scrollWidth390; emulator only, not physical phone."
+    },
+    {
+      "file": "management-editor-request390-actual433.jpg",
+      "bytes": 35423,
+      "sha256": "7c4024284dd6e5657cb736fb55b0699471cd046c53caaca355b9a3129ba3d7a3",
+      "scope": "Requested viewport390 produced actual433; retained as a measurement mismatch, not 390 proof."
+    },
+    {
+      "file": "management-inactive-login-denied.jpg",
+      "bytes": 24118,
+      "sha256": "94de913f11760ae2646b3d86d747480b75c549707b0fd9f8f076920454b1cf35",
+      "scope": "Real production App/normal HTTP routes in isolated loopback fixture; private files in RAM, synthetic accounts/customers."
+    },
+    {
+      "file": "management-personel-reloaded.jpg",
+      "bytes": 35768,
+      "sha256": "16745710791c24e37ab77c41f6f6ad842e6c4ffe96061cca992f45ff1f5ef68d",
+      "scope": "Real production App/normal HTTP routes in isolated loopback fixture; private files in RAM, synthetic accounts/customers."
+    }
+  ],
+  "ci": {
+    "sourceCommit": "acb2a3a0ce917d68221372e5f21bb788e90475aa",
+    "status": "SUCCESS",
+    "previousCommit": "7d09fdf9d83dbbda8523dbca5ba33465d628809e",
+    "previousFailure": "Linux config test expected a fixed Windows private path to activate. acb2a3a asserts the existing fail-closed rejection on non-Windows; production code/guards unchanged.",
+    "previousFailedRun": 40078086855,
+    "checks": [
+      {
+        "id": 120826293963,
+        "name": "quality-build-test",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/40078289201/job/120826293963"
+      },
+      {
+        "id": 120826293917,
+        "name": "windows-startup-test",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/40078289201/job/120826293917"
+      },
+      {
+        "id": 120826293733,
+        "name": "secret-scan",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/40078289201/job/120826293733"
+      },
+      {
+        "id": 120826293341,
+        "name": "ai-sales-offline",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/40078289170/job/120826293341"
+      },
+      {
+        "id": 120826279898,
+        "name": "quality-build-test",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/40078284030/job/120826279898"
+      },
+      {
+        "id": 120826279865,
+        "name": "secret-scan",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/40078284030/job/120826279865"
+      },
+      {
+        "id": 120826279770,
+        "name": "windows-startup-test",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/40078284030/job/120826279770"
+      }
+    ],
+    "verifiedAt": "2026-10-24T08:32:45.609Z"
+  },
+  "runtime": {
+    "installedCrm": "59ca114b858f4042e30cd1736825be3d7c68599c",
+    "installedErp": "f4db4884c3a85f799c98e955b43d6c6745d7db55",
+    "b5SourceInstalled": false,
+    "realPersonalAccountsPrepared": false,
+    "realCustomerOwnershipChosen": false,
+    "normalInstalledB5Gui": "BEKLIYOR",
+    "humanAcceptance": "BEKLIYOR"
+  },
+  "sharedWrites": 0,
+  "realCustomerMessages": 0,
+  "paidApiCalls": 0,
+  "mainMerged": false,
+  "recordCheck": {
+    "status": "CHECK_REQUIRED",
+    "structuralIssues": 0,
+    "crm": {
+      "runtimeHealth": "REUSE",
+      "normalNativeRole": "BLOCKED",
+      "normalNativeUi": "BLOCKED"
+    },
+    "erpBlockedProofs": 3,
+    "wholeClosureGranted": false,
+    "cacheSaved": "only own CRM agent-check path; no shared runtime write"
+  }
+}

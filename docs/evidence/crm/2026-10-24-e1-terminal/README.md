@@ -1,5 +1,11 @@
 # E1 / M01 / CRM-UA11 — mevcut terminal girişinin CRM kaynak parçası
 
+## 24 Ekim 11:29 TR — ERP kurulum makbuzu hazır, CRM kaynak/paket eşlemesi salt okunur tamam
+
+ERP owner11:16:03 ERPf4db4884c3a85f799c98e955b43d6c6745d7db55 ve11:16:54 CRM59ca114b858f4042e30cd1736825be3d7c68599c kurulum makbuzlarını verdi. CRM immutable paket CLEAN-CRM-20261024-59ca114b858f-E1LINK / **783dosya**, manifest49a76e90623ccaba3541da7d82ab4563878ac682ab5b4c105933729e88930e03. CRM tüm783payloadSHA,8kritikGitblob(59) ve mainDiUlgoPK906832/9bc02fd7 eşliğini doğruladı; fark0. İki53koruma özeti before/after dosya çifti byte-eş. SaltOS4port/6listener/3Node kimliği kurulum zamanıyla tutarlı; CLI göreli olduğundan CWD/source path OS'den bağımsız kanıtlanmadı, kaynak→runtime owner makbuzuyla bağlıdır. CRM yeniHTTP/SQL/login/restart/kurulum/sharedwrite yapmadı. [Yeni currentInstalledLinkReadback](source-origin-readiness.json) eski09a ve kaynak-only kanıtlarını tarihsel olarak korur.
+
+**Kapanış tamam değil:**11:21:57 owner LAN kaydı22doğrulanmış API olayıyla ERP15→CRMclean-staff/agent2, normal grant/refresh/replay/wrongdevice/PKCE/unbound/revoke zincirini gösterir; son CRMlogout429 nedeniyle dosyanın status'u FAILED, allOwnLinkedFamiliesRevokedfalse'tur. Owner daha sonraki2testaile cleanup'ını bildirdi; bu eski dosya otomatikPASS'e çevrilmedi. Hız sınırı/servis sıfırlanmadı; owner doğal süre sonrası yalnız son kapanış/readback'i tamamlar. E1finalnormalGUI/nativeKeystore/fizikselTC21/telefon/Windowsreboot-logon/insan BEKLİYOR. NativepublicOrigin düzeltmesi ERP sahibindedir. Yeni B5 acb2 kaynağı bu kurulu59 paketine atfedilmez.
+
 ## 24 Ekim 11:02 TR — native ilk devir bekleme sınırı kaynak/CI tamam
 
 [59ca114](https://github.com/melihsnyldzz-ui/melisa-crm/commit/59ca114b858f4042e30cd1736825be3d7c68599c) yalnız mevcut `createNativeSessionBridge` varsayılanını exact clean62800↔ERP5244 **gömülü** terminal için **15sn** yapar. Native ilkget ERPprepare/CRMissuer/tazeme ve gereken kendi aile kapanışını bekler; önceki5sn doğru yanıttan önce hata üretebilirdi. Standaloneclean/legacy5sn, açıktimeoutparametresi, gerçeknativeobject/origin denetimi, FIFO, requestID, get/put/clear ve generation/revoke aynı. Tasarım/yetki/mesaj/katalog değişmedi.
