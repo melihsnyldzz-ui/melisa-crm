@@ -1,4 +1,282 @@
 {
+  "currentErpRecoveryReadback": {
+    "observedAt": "2026-10-24T10:41:21.591Z",
+    "status": "ERP_INSTALLED_CRM_PRESERVED_PERSONNEL_NORMAL_WRITE_FAILED_OWNER_FIXING",
+    "readOnlyReconciliation": true,
+    "installation": {
+      "path": "C:/Sirket/ERP/clean/20261022/runtime/semih-access-20261023/b5-startup-recovery.json",
+      "bytes": 1096,
+      "sha256": "2f031ab4c5dad30e8b9212bc23a0d5817fb31cf837ebf1c16133a001ede59151",
+      "record": {
+        "rollbackBoundary": "Preserved old starters and immutable packages; no DB restore or repeated failed f4 startup",
+        "changedPorts": [
+          4194,
+          5244
+        ],
+        "files": 3442,
+        "manifestSha": "DD2BD6C6873E74A277CA3023C98E1C3B427A04EEA14CF3FE9B074B4217D58C60",
+        "commercialWrites": 0,
+        "durationSeconds": 38.65,
+        "database": "MELISA_ERP_CLEAN_TEST_20261022",
+        "frontendSource": "3cee44d02e674f842c88aed5517f8ab726defc80",
+        "crmStatus": 200,
+        "actualT1": false,
+        "nativeSource": "035fcc08d8f56cdd0cbc437a290285328fce1ec9",
+        "source": "3cee44d02e674f842c88aed5517f8ab726defc80",
+        "protectedFilesUnchanged": true,
+        "installedAt": "2026-10-24T13:33:06.6171905+03:00",
+        "synthetic": true,
+        "allOldRoleRowsUnchanged": true,
+        "preservedListeners": 18,
+        "root": "C:/Sirket/ERP/releases/CLEAN-ERP-20261024-3cee44d02e67-B5RECOVERY",
+        "stoppedProcesses": 0,
+        "environmentId": "e662fd94-d797-4b3b-938a-d143ad758b67",
+        "package": "CLEAN-ERP-20261022-3cee44d02e67",
+        "status": "INSTALLED",
+        "existingContributionScopesUnchanged": 53,
+        "accountsCreated": 0
+      }
+    },
+    "candidateReceipt": {
+      "path": "C:/Sirket/ERP/clean/20261022/runtime/semih-access-20261023/b5-startup-current-erp-package.json",
+      "bytes": 307,
+      "sha256": "f6f0900a031f53f9192ff43e6fa47eb0cebb9a28a6876f6529721ceb99f9c4f3",
+      "record": {
+        "source": "3cee44d02e674f842c88aed5517f8ab726defc80",
+        "root": "C:/Sirket/ERP/releases/CLEAN-ERP-20261024-3cee44d02e67-B5RECOVERY",
+        "files": 3442,
+        "manifestSha": "DD2BD6C6873E74A277CA3023C98E1C3B427A04EEA14CF3FE9B074B4217D58C60",
+        "installed": false,
+        "guardKept": true,
+        "envDiscovery": false
+      },
+      "interpretation": "Earlier installed=false is passive candidate history; later recovery receipt proves installation."
+    },
+    "manifest": {
+      "path": "C:/Sirket/ERP/releases/CLEAN-ERP-20261024-3cee44d02e67-B5RECOVERY/release-manifest.json",
+      "bytes": 578301,
+      "sha256": "dd2bd6c6873e74a277ca3023c98e1c3b427a04eea14cf3fe9b074b4217d58c60",
+      "sourceCommit": "3cee44d02e674f842c88aed5517f8ab726defc80",
+      "frontendSourceCommit": "3cee44d02e674f842c88aed5517f8ab726defc80",
+      "packageId": "CLEAN-ERP-20261022-3cee44d02e67",
+      "files": 3442,
+      "synthetic": true,
+      "actualT1": false,
+      "environmentId": "e662fd94-d797-4b3b-938a-d143ad758b67"
+    },
+    "ci": {
+      "path": "C:/Sirket/ERP/clean/20261022/runtime/semih-access-20261023/b5-startup-recovery-ci.json",
+      "bytes": 1279,
+      "sha256": "3d06d2f36dd6a547e52750f3d42cf5f88e4fa5d08855679c620e07240390c8b6",
+      "record": [
+        {
+          "name": "quality-build-test",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/melihsnyldzz-ui/melisa-erp-v2/actions/runs/40085896989/job/120848666114"
+        },
+        {
+          "name": "secret-scan",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/melihsnyldzz-ui/melisa-erp-v2/actions/runs/40085896989/job/120848640403"
+        },
+        {
+          "name": "windows-startup-test",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/melihsnyldzz-ui/melisa-erp-v2/actions/runs/40085896989/job/120848640208"
+        },
+        {
+          "name": "windows-startup-test",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/melihsnyldzz-ui/melisa-erp-v2/actions/runs/40085892954/job/120848629241"
+        },
+        {
+          "name": "quality-build-test",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/melihsnyldzz-ui/melisa-erp-v2/actions/runs/40085892954/job/120848629192"
+        },
+        {
+          "name": "secret-scan",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/melihsnyldzz-ui/melisa-erp-v2/actions/runs/40085892954/job/120848629064"
+        }
+      ],
+      "sourceOwnerReported": "3cee44d02e674f842c88aed5517f8ab726defc80",
+      "freshGithubChecksByCrm": false,
+      "testsRerunByCrm": false
+    },
+    "crmRuntime": {
+      "source": "acb2a3a0ce917d68221372e5f21bb788e90475aa",
+      "files": 787,
+      "manifestSha256": "55ffbc1a70d9ade3aa7c8270e445b07575fe3817f24bc3e591e2f14daf197c92",
+      "previousSourcePackageNormalApiAndBrowserProof": "REUSE",
+      "newPayloadScan": false,
+      "unchangedDuringErpRecoveryOwnerReported": true
+    },
+    "nativeRuntimeSource": "035fcc08d8f56cdd0cbc437a290285328fce1ec9",
+    "runtimeBinding": "ERP owner installation/source readback receipt plus matching immutable manifest. No new CRM API or OS CWD proof.",
+    "normalErpManagement": {
+      "ownerExistingSemihSession": true,
+      "screenshot": {
+        "sourcePath": "C:/Sirket/ERP/clean/20261022/runtime/semih-access-20261023/b5-erp-recovered-normal-management.png",
+        "file": "installed-erp-b5-management-recovered.jpg",
+        "bytes": 95313,
+        "sha256": "7fc29cb96f2c482a9185670a959687c2974b063803cc4bb329364b2d3f7ba402",
+        "format": "JPEG",
+        "sourceExtension": "png",
+        "copiedUnchanged": true,
+        "pixelsViewedByCrm": true
+      },
+      "visibleActiveUsers": 11,
+      "visibleRoles": 17,
+      "personnelOverviewHttpStatusFromOwner": 200,
+      "source": "Owner normal browser screenshot and saved request cases; not CRM login or API."
+    },
+    "failedPersonnelApi": {
+      "path": "C:/Sirket/ERP/clean/20261022/runtime/semih-access-20261023/b5-erp-normal-personnel-proof.json",
+      "bytes": 1301,
+      "sha256": "a1c6a074bf2d1ed1252a9c96498a6e4392ee6feb50c094fcd81bc4e0b4f0bcc3",
+      "observedAt": "2026-10-24T13:36:22.9374083+03:00",
+      "status": "FAILED",
+      "cases": [
+        {
+          "method": "POST",
+          "path": "/api/auth/login",
+          "status": 200,
+          "elapsedMs": 278,
+          "expected": true
+        },
+        {
+          "method": "GET",
+          "path": "/api/auth-admin/overview",
+          "status": 200,
+          "elapsedMs": 193,
+          "expected": true
+        },
+        {
+          "method": "GET",
+          "path": "/api/personnel/overview",
+          "status": 200,
+          "elapsedMs": 54,
+          "expected": true
+        },
+        {
+          "method": "POST",
+          "path": "/api/auth-admin/users",
+          "status": 503,
+          "elapsedMs": 10054,
+          "expected": false
+        },
+        {
+          "method": "POST",
+          "path": "/api/auth/logout",
+          "status": 200,
+          "elapsedMs": 13,
+          "expected": true
+        }
+      ],
+      "failure": "Unexpected status at /api/auth-admin/users: 503 EABORT",
+      "accountsCreated": 0,
+      "employeeBindingsCreated": 0,
+      "realPeopleCreated": 0,
+      "commercialWrites": 0,
+      "ownSessionCloseFailure": false,
+      "incompleteComparisonFlags": {
+        "originalUsersUnchanged": false,
+        "nonUserBusinessScopesUnchanged": false
+      },
+      "flagInterpretation": "Abort left comparison stages incomplete. These false fields are not interpreted as proof of corruption or as completed acceptance; the later owner count and byte-equal protection files are separate evidence.",
+      "diagnosisOwnerReported": "bind/final verification full integrity check exceeds default10s request budget; current ERP source owner handles a narrow timeout regression/fix, no replay by CRM.",
+      "zeroRowsReadback": {
+        "path": "C:/Sirket/ERP/clean/20261022/runtime/semih-access-20261023/b5-personnel-failure-readback.txt",
+        "sha256": "862e78c665a7de317acfd88484552a866a0d16be89cf6d5bbc231801de13a01b",
+        "counts": {
+          "prepared_actor_rows": 0,
+          "employee_rows": 0,
+          "personnel_intents": 0
+        }
+      }
+    },
+    "protections": {
+      "comparisons": [
+        {
+          "before": "b5-startup-protected.before.txt",
+          "after": "b5-startup-protected.after.txt",
+          "bytes": 5356,
+          "beforeSha256": "096bc59e260d7323293cb680d4d50b2202c908ede07093c8e2c04d97929c39fb",
+          "afterSha256": "096bc59e260d7323293cb680d4d50b2202c908ede07093c8e2c04d97929c39fb",
+          "byteEqual": true
+        },
+        {
+          "before": "b5-startup-roles.before.txt",
+          "after": "b5-startup-roles.after.txt",
+          "bytes": 157,
+          "beforeSha256": "6737102202401ca8e1f53912ed2adb084a8494156d5908940751eeae32a01ba9",
+          "afterSha256": "6737102202401ca8e1f53912ed2adb084a8494156d5908940751eeae32a01ba9",
+          "byteEqual": true
+        },
+        {
+          "before": "b5-personnel-protected.before.txt",
+          "after": "b5-personnel-failure-protected.txt",
+          "bytes": 5356,
+          "beforeSha256": "096bc59e260d7323293cb680d4d50b2202c908ede07093c8e2c04d97929c39fb",
+          "afterSha256": "096bc59e260d7323293cb680d4d50b2202c908ede07093c8e2c04d97929c39fb",
+          "byteEqual": true
+        }
+      ],
+      "ownerReportedProtectedScopes": 53,
+      "crossPhaseOld5359ComparisonAttempted": false,
+      "protectedFilesUnchangedOwnerReported": true,
+      "preservedOtherListenersOwnerReported": 18
+    },
+    "remaining": {
+      "erpPersonalAccountEmployeeBindNormalPositiveNegativeProof": "OWNER_FIXING",
+      "realPeopleCrmErpTaskIdentityMapping": "BEKLIYOR",
+      "installedCrmCreateFormAndIndependentMudur": "BEKLIYOR",
+      "nativePhysicalWindowsHumanAcceptance": "BEKLIYOR"
+    },
+    "crmActivity": {
+      "appCodeChanges": 0,
+      "buildRuns": 0,
+      "applicationTestRuns": 0,
+      "httpCalls": 0,
+      "sqlCalls": 0,
+      "loginCalls": 0,
+      "sharedWrites": 0,
+      "credentialsRead": false,
+      "newAgents": 0,
+      "finishCountersChanged": false
+    },
+    "recordCheck": {
+      "status": "CHECK_REQUIRED",
+      "structuralIssues": 0,
+      "crmRequirements": [
+        {
+          "id": "required[0]",
+          "decision": "REUSE",
+          "code": null
+        },
+        {
+          "id": "required[1]",
+          "decision": "BLOCKED",
+          "code": "PROOF_BLOCKED"
+        },
+        {
+          "id": "required[2]",
+          "decision": "BLOCKED",
+          "code": "PROOF_BLOCKED"
+        }
+      ],
+      "wholeClosureGranted": false,
+      "repeatAcceptedTests": false,
+      "ownCrmCacheOnly": true
+    }
+  },
   "currentNormalManagementReadback": {
     "observedAt": "2026-10-24T09:00:00.465Z",
     "status": "INSTALLED_SYNTHETIC_NORMAL_API_AND_BROWSER_VERIFIED",

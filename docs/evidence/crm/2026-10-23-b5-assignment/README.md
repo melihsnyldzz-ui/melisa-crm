@@ -1,3 +1,13 @@
+### 24 Ekim 13:37 TR — ERP yeni kurulum eşlendi; normal personel oluşturma hatası ERP sahibinde
+
+ERP sahibinin 13:33:06 TR kurulum makbuzu kaynak ve immutable manifestle eş: 3cee44d02e674f842c88aed5517f8ab726defc80, 3442 dosya, DD2BD6C6873E74A277CA3023C98E1C3B427A04EEA14CF3FE9B074B4217D58C60. Owner kayıtlı altı CI işi SUCCESS; CRM yeniden build/test veya GitHub CI sorgusu yapmadı. Önceki pasif aday installed=false tarihçedir, sonraki recovery makbuzu INSTALLED. CRM acb2/787/55ffbc ve native035 korunmuş; önceki B5 normal API/tarayıcı kanıtları REUSE. Kaynak checkout kurulum sayılmadı; yeni ERP3442 payload taraması da yapılmadı.
+
+Normal ERP yönetim ekranı mevcut Semih oturumuyla 11 etkin kullanıcı ve17 rol gösteriyor; owner ekranı pikselleri incelenip byte değiştirilmeden JPG olarak kaydedildi (kaynak uzantısı PNG, içerik JPEG). Bu ekran kişisel hesapların topluca oluşturulduğunu veya CRM bağını kanıtlamaz. Yeni sentetik ERP hesap oluşturma denemesi 13:36'da 10054 ms /503 EABORT ile FAILED; tekrar edilmedi. Owner sonraki sırsız readback'inde yeni hesap0/personel0/açık intent0 görüyor. İki aşamanın53 koruma çifti ve eski rol dosyası kendi before/after sınırında byte-eş; önceki farklı aşamanın5359 baytlık özetiyle kıyas kurulmadı. FAILED makbuzundaki tamamlanmamış karşılaştırma bayrakları gerçek veri değişimi veya kabul diye yorumlanmadı.
+
+ERP sahibi yalnız bind/final bütünlük kontrolünün10 saniyelik request bütçesini hedefli kaynak/test ile düzeltiyor; ortak hesap/HTTP/SQL/runtime/kurulum işlemi yalnız ondadır. CRM yeni uygulama kodu, login/HTTP/SQL veya shared yazı başlatmadı. Gerçek kişisel görev/ID, kurulu CRM create-form, bağımsız Müdür, native/cihaz/Windows/insan kabulü açık;25 CRM=12🟢/13🟡/0🔴 ve17/74 değişmedi. [Yeni makbuz ve somut hata](management-source-readiness.json).
+
+[Kurulu ERP normal yönetim ekranı](installed-erp-b5-management-recovered.jpg) — kişisel bağ veya insan kabulü değildir.
+
 ### 24 Ekim 11:56 TR — Kurulu B5 normal API ve tarayıcı alt kapsamı doğrulandı
 
 ERP sahibinin acb2 /787 dosya/55ffbc paketine ait yeni makbuzları eşlendi: normal yönetim API'sinde17 doğrulanmış olay; yalnız yeni sentetik kişisel hesap ve155 ataması, kendi kaydını okuma/yenileme, yanlış156 ve kullanıcı yönetiminde403, eski refresh için401. Kurulu normal tarayıcıda personel yalnız155'i açtı, tam yenilemede aynı kimlik ve kayıt korundu. Normal yönetici envanteri okudu, aynı sentetik hesabı ekrandan kapattı; yeniden açılışta aynı ID kapalı, normal login401. Önceki dört hesap korundu; son envanter5 hesap/4 etkin/1 kapalı, owner managed revision3.
