@@ -1,5 +1,12 @@
 ## CRM-UA11 — 15 Ekim — son normal ekran ve fiziksel mobil kabulü
 
+### 24 Ekim 09:36 TR — E1 kendi normal CRM oturumu teknik hazır; insan kabulü BEKLİYOR
+
+[09a2ea30](https://github.com/melihsnyldzz-ui/melisa-crm/commit/09a2ea30dd9fea152554dbf6efe43c731add1510) mevcut sentetik Personel için normal giriş/yenileme/reopen/çıkış/revoke,grantless ret,kendi aile logout ve exact clean terminal frame tüketicisini tamamlar.5ilk regresyon ve1frame önceFAIL;son52doğrudan+15legacy ve7rota raporuPASS,production24,24sn,reviewP1P2=0/secret0/exactCI7SUCCESS. IAB'de normal production App/gerçek rotalar/bellek journalıyla1atanmış müşteri ve konuşma,normal çıkış ve reload'da kapalı giriş görüldü; [üç ekran ve sınırlar](docs/evidence/crm/2026-10-24-e1-terminal/README.md).
+
+Bu kaynak adayı ERP tarafından kurulu sayılmaz. Ortak paket/journalACL-reparse-atomic-replace/kurulu normal GUI makbuzu ERP'de;ERP→CRM aynı kişi/temsilci bağı mevcut kaynaklarda doğrulanmadı. Native reopen testi adapter kanıtıdır;fiziksel TC21/telefon/insan/Windowsreboot-logon BEKLİYOR. Eski özelDB/Semih/cookieguardları,normal yetkiler,mevcut ID/atamalar korundu;kimlik/credential aktarımı veya yeni hesap yok.25/12🟢/13🟡/0🔴 ve17/74 aynı;sonraki tarihli önceki kaynak/kurulum ifadeleri kendi tarihinin kaydıdır.
+
+
 ## 24 Ekim 04:15 TR — E1 exact-origin CRM tüketici kaynağı hazır
 
 **[2c21c0f](https://github.com/melihsnyldzz-ui/melisa-crm/commit/2c21c0f7a0c4b10d29886b3dc3b61ba1a10c9c75)** mevcut native nesne ve terminal gezinme modülüne yalnız exact clean çocuk/aynı-host parent çiftini ekler; eski profiller ve tokensız üç alanlı activate/logout şeması korunur. Backend, normal auth/refresh, depo, hesap/rol/atama veya ERP dosyası değişmedi.3yeni test önce3FAIL; düzeltmede3yeni+6doğrudan etkilenen uyumluluk9PASS/48,81ms. Mevcut doğru clean profilli üretim build16,98sn PASS; bağımsız source review açıkP1/P2=0. Exact2c CI PR40048946210/push40048939909/AI40048946107 tamamlandı: SUCCESS /7job. [Kaynak ve somut eksik halkalar](docs/evidence/crm/2026-10-24-e1-terminal/README.md).

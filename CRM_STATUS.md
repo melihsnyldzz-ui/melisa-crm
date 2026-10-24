@@ -1,16 +1,16 @@
 ## Sıradaki iş — CRM06 (tek etkin yürütme kaydı)
 
-24 Ekim 2026 04:44 TR — mevcut makbuzlarla güncel kayıt. Bu bölüm tek etkin yürütme görünümüdür; aşağıdaki tarihçe yeni iş veya güncel kurulum sayılmaz. Uygulama kodu, ortak TEST ve kabul kapsamı değişmedi.
+24 Ekim 2026 09:36 TR — mevcut kaynak ve makbuzlarla güncel kayıt. Bu bölüm tek etkin yürütme görünümüdür; aşağıdaki tarihçe yeni iş veya güncel kurulum sayılmaz. Bu tur CRM normal oturum kaynağı değişti; ortak TEST kurulumu ve kabul kapsamı değişmedi.
 
 | Alan | Kayıt |
 | --- | --- |
 | Ana ID / sıra | CRM06 — mevcut katalog ve müşteri ürün talebi ana kapsamı; B5/C01/C02 ve E1/M01 bağlı teknik halkaları. 25 CRM yaprağı:12🟢/13🟡/0🔴;17 başlık/74 yaprak aynı. |
-| Güncel adım | B5 sunum kaynak63513b2/backendc1 kurulu ve normal owner ekranında doğrulandı. E1 CRM tüketici source2c21c0f hazır; kurulum makbuzunda yok. ERP'nin kendi normal yenileme source8aa3093e kuruludur; bu, CRM clean yenilemesi veya aynı kişiyle geçiş değildir. |
+| Güncel adım | E1 bağımsız CRM normal oturum source09a2ea30 hazır: normal giriş/yenileme/reopen/çıkış/revoke ve izole normal Personel ekranı kanıtlı; exactCI7SUCCESS. ERP kurulumu BEKLİYOR. B5 kurulu635frontend/c1backend ve ERP8aa normal yenileme ayrı makbuzlardır; aynı kişiyle geçiş kanıtı yok. |
 | Sahip | CRM ana ajanı kendi kaynak/UI/kanıt kaydını yönetir. Ortak runtime/SQL/ayar/depo/servis/hesap/rol/atama/APK/kurulumun tek uygulayıcısı ERP sahibidir. |
 | Bitiş koşulu | CRM06 bütün özgün katalog/ürün/adet/tek talep/yeniden açma/atanmış-yanlış personel/kalıcılık koşulları ve gereken gerçek insan kabulüyle tam kapanır. B5'in salt okunur envanter/sunum teknik sonucu bunu veya tüm E1'i kapatmaz. |
-| Mevcut kanıt | B5:63513b21ff931f2b6516c735479c095955213a13 / CLEAN-CRM-20261024-63513b21ff93-B5UX /762dosya/manifest3A5F7D93; kurulum04:19, normal Ayarlar/refresh/fullreload04:21,4etkin/0kapalı/1temsilcisiz/tek yapay atama. ERP:8aa3093e API-web kurulum04:38,13durumlu login/yenileme/çıkış kontrolü ve normal ERP ekranı;53özet byte korunumu owner kanıtı. CRM762dosya ve3kaynak blobu RO eşlendi; taze HTTP/SQL/GUI testi yapılmadı. [B5 makbuzu](docs/evidence/crm/2026-10-23-b5-assignment/normal-user-inventory.json) · [E1 kaynak/ERP makbuzu](docs/evidence/crm/2026-10-24-e1-terminal/source-origin-readiness.json). |
-| Teknik bağımlılık | E1 için CRM backend clean normal yenileme sözleşmesi ve ERP ID→CRM ID→temsilci→müşteri bağı hazır değil. Dört configured CRM hesabı gerçek çalışan eşlemesi değildir; Semih/ID/atamalar korunur, isimden kimlik çıkarılmaz. ERP yenilemesi kurulu; CRM2c/native cihaz/aynı kişi kabulü ayrı. İnsan/TC21 ve Windows reboot/logon BEKLİYOR; teknik işlere genel kapı yapılmaz. |
-| Bitince aynı başlıktaki sonraki adım | Mevcut E1'in CRM sorumluluğundaki normal oturum/kimlik tüketici eksiği, pinli sözleşme ve kanıtlı kapsamla ayrılır; belirsiz kişi/atama veya kapalı guard varsayımla açılmaz. Kaynak2c kurulumu ERP'de kalır. Hazır bağımsız yetkili kaynak işi rutin devam beklemeden sürer;25Ekim09.30 sonrası uzun yeni iş,10.00TR sonrası yeni geliştirme yok. |
+| Mevcut kanıt | E1 source09a2ea30dd9fea152554dbf6efe43c731add1510;5regresyonFAIL→PASS,frameFAIL→PASS;52doğrudan+15legacy/7rota raporuPASS;production24,24sn/main8TslbvG7/8d264cc8. Normal production App+gerçek rotalar, ephemeral sentetik bellek journalıyla IAB:1atanmış müşteri/konuşma/çıkış/yenilemede kapalı;kurulu/cihaz kabulü değildir. ExactPR40052220483/push40052217472/AI40052220489SUCCESS7job;reviewP1P2=0/secret0. [E1kanıtı](docs/evidence/crm/2026-10-24-e1-terminal/README.md). Son kuruluB5 635/c1 /762dosya/manifest3A5F7D93 veERP8aa04:38 owner kanıtı [JSON'da](docs/evidence/crm/2026-10-24-e1-terminal/source-origin-readiness.json); yeni sharedHTTP/SQL/GUI testi yapılmadı. |
+| Teknik bağımlılık | CRM'nin kendi mevcut clean-staff kimliğiyle normal refresh eksikliği kaynakta kapandı;kurulum/ayrı private journal ACL/reparse/atomic-replace ve kurulu normal GUI/readback ERP'de. Doğrulanmış ERP ID→CRM ID→temsilci→müşteri sözleşmesi mevcut kaynaklarda yok;owner teyitli. Dört CRM hesabı gerçek çalışan eşlemesi değildir. Aynı-kişi native profil/korumalı depo/cihaz,insan/TC21/Windows reboot-logon BEKLİYOR;başka hazır teknik işe genel kapı yapılmaz. |
+| Bitince aynı başlıktaki sonraki adım | ERP sahibi09a adayını exact kaynak/paket/bundle ve private-journal korunumu ile kurar;CRM yeni makbuzu RO eşler. Aynı-kişi devamı için mevcut iki normal /auth/me kimliği,doğrulanmış kişi ilişkisi,CRM temsilci ve mevcut atama kanıtı gerekir;isim/parola/token ile bağ icat edilmez. Hazır bağımsız yetkili kaynak işi rutin devam beklemeden sürer;25Ekim09.30sonrasıuzunyeniiş/10.00TRsonrasıyeni geliştirme yok. |
 | CRM06 tüm özgün koşulları kapanınca geçiş | CRM06 tüm özgün koşulları ve gereken insan kabulüyle tam kapanınca ERP09 ana kapanışına geçilir. CRM-DEC-018 kapsamındaki izinli bağımsız ERP09 teknik hazırlığı bu sırada sürebilir; teknik test insan kabulünü tamamlamaz. |
 
 ### Mevcut önkoşul görünümü — yeni kapı veya kabul değildir
@@ -92,6 +92,12 @@ Aşağıdaki `normal-role` ve `normal-ui`, sonraki E1 aynı-kişi/CRM oturumu ka
 ```
 
 Kayıt düzeni kontrolü mevcut saf checker ile yapılır; cache/dosya yazan `run.mjs` çağrılmaz. Eski kabul/testler tekrarlanmaz, sayaç yükseltilmez. Gerçek mesaj/finansal yazı/LIVE/Vega/T1/ücretli servis/main/tag ve güvenlik reddini aşma sınırları korunur.
+
+### 24 Ekim 09:36 TR — E1 bağımsız normal oturum teslimi; kurulum ayrı
+
+[09a2ea30 kaynak](https://github.com/melihsnyldzz-ui/melisa-crm/commit/09a2ea30dd9fea152554dbf6efe43c731add1510) mevcut normal oturum motorunu yalnız mevcut sentetik Personel için exact/default-off clean kapsamda kullanır. Yeni giriş sistemi, ERP kişi bağı, cookie genişlemesi veya gerçek hesap/yetki/atama yok. Terminal iframe GET62800→5244 kabulü, grantless ret, doğrulanmış grant marker'ı ve kendi aile çıkışı birlikte tamamlandı. [Üç normal ekran](docs/evidence/crm/2026-10-24-e1-terminal/README.md) yalnız izole production App/gerçek rotalar/bellek journalı kanıtıdır; native yeniden açılış rota adapter testidir, kurulu cihaz değildir. Kesinti sonrası mevcut test/build/CI sonuçları kullanıldı, tekrar koşulmadı.
+
+Normal-role/UI önkoşulları halen **aynı kişi/kurulu E1** kapsamıdır; bu bağımsız kaynak sonucuyla PASS yapılmadı. ERP makbuzu gelince yalnız kaynak/paket/runtime eşlenir. İnsan ve mevcut sayaçlar aynı. İlk mevcut kayıt kontrolü CRM0tutarsızlık/REUSE+2BLOCKED,ERP3BLOCKED/CHECK_REQUIRED döndürdü;bu işlev/insan PASS veya bağımsız kaynağa genel durma kararı değildir. Yalnız kendi agent-check cache'i yazıldı, ortak hizmete işlem yapılmadı.
 
 ## Tarihsel teslim kayıtları — önceki durumlar yalnız kendi tarihinin kanıtıdır
 
