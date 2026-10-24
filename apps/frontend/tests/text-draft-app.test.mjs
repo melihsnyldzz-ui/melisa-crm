@@ -16,13 +16,13 @@ const row=(id='55')=>({id,phone:'+905387217733',channel:'whatsapp',assignedUserI
 const storage=()=>{const values=new Map();return {getItem:key=>values.get(key)??null,setItem:(key,value)=>values.set(key,value),removeItem:key=>values.delete(key)};};
 const fakeWindow=sessionStorage=>({location:{pathname:'/',search:''},crypto:{randomUUID},sessionStorage,localStorage:{getItem:()=>null,setItem(){}},matchMedia:()=>({matches:false}),dispatchEvent(){},requestAnimationFrame:fn=>{fn();return 1;},cancelAnimationFrame(){},setTimeout:()=>0,clearTimeout(){},setInterval:()=>0,clearInterval(){},addEventListener(){},removeEventListener(){}});
 const settle=async()=>{await Promise.resolve();await Promise.resolve();};
-async function bundle(file,instrument=false,isolated=false){
- await build({absWorkingDir:frontend,tsconfigRaw:{},entryPoints:[frontend+'src/App.jsx'],outfile:file,bundle:true,platform:'node',format:'esm',jsx:'automatic',define:{'import.meta.env.DEV':'false','import.meta.env.VITE_CRM_TEST':'"1"','import.meta.env.VITE_CRM_ISOLATED_PREPARATION':JSON.stringify(isolated?'1':'0')},external:['react','@phosphor-icons/react'],loader:{'.css':'empty'},plugins:instrument?[{name:'isolated-app-handler-harness',setup(build){
+async function bundle(file,instrument=false,isolated=false,clean=false){
+ await build({absWorkingDir:frontend,tsconfigRaw:{},entryPoints:[frontend+'src/App.jsx'],outfile:file,bundle:true,platform:'node',format:'esm',jsx:'automatic',define:{'import.meta.env.DEV':'false','import.meta.env.VITE_CRM_TEST':'"1"','import.meta.env.VITE_CRM_CLEAN_SYNTHETIC_TEST':JSON.stringify(clean?'1':'0'),'import.meta.env.VITE_CRM_ISOLATED_PREPARATION':JSON.stringify(isolated?'1':'0')},external:['react','@phosphor-icons/react'],loader:{'.css':'empty'},plugins:instrument?[{name:'isolated-app-handler-harness',setup(build){
   build.onLoad({filter:/App\.jsx$/},args=>({loader:'jsx',contents:readFileSync(args.path,'utf8').replace(/^import \{ useCallback, useEffect, useMemo, useRef, useState \} from "react";/,'const {useCallback,useEffect,useMemo,useRef,useState}=globalThis.__draftHooks;').replace('  if(liveMode&&!liveSession&&!semihEntry.checked)','  globalThis.__draftHarness.actions={commitLiveSession,openAssignment,confirmAssignment,assignCustomer,setAgents,setSelectedAssigneeId,setDraft,sendMessage,closeLiveSession,refreshLivePermissions,selectConversation,setQuery,setFilter,loadRemainingConversations,activateTerminal,checkSendStatus,translateDraft,renewExpiredNormalSession,continueSemihSession,connectLive,getConversations:()=>conversations,setHistoryPanel:panel=>chatScrollRef.current=panel};\n  if(liveMode&&!liveSession&&!semihEntry.checked)')}));
   build.onLoad({filter:/liveApi\.js$/},args=>({loader:'js',contents:readFileSync(args.path,'utf8')+'\nfor(const name of Object.keys(globalThis.__draftHarness.api))liveApi[name]=(...args)=>globalThis.__draftHarness.api[name](...args);'}));
  }}]:[]});
 }
-async function fixture(run,{compact=false,terminal=false,offline=false,isolated=false,remembered=null,origin=''}={}){
+async function fixture(run,{compact=false,terminal=false,offline=false,isolated=false,clean=false,remembered=null,origin=''}={}){
  mkdirSync(temporary,{recursive:true});const file=temporary+'text-draft-handlers-'+randomUUID()+'.mjs', previous={window:globalThis.window,document:globalThis.document,hooks:globalThis.__draftHooks,harness:globalThis.__draftHarness};
  const local=storage(),values=[],effects=[];let cursor=0;
  globalThis.window=fakeWindow(local);
@@ -32,7 +32,7 @@ async function fixture(run,{compact=false,terminal=false,offline=false,isolated=
  globalThis.document={visibilityState:'visible',addEventListener(){},removeEventListener(){}};
  globalThis.__draftHooks={useState(initial){const i=cursor++;if(!(i in values))values[i]=typeof initial==='function'?initial():initial;return [values[i],update=>{values[i]=typeof update==='function'?update(values[i]):update;}];},useRef(initial){const i=cursor++;if(!(i in values))values[i]={current:initial};return values[i];},useMemo:fn=>fn(),useCallback:fn=>fn,useEffect:fn=>effects.push(fn)};
  const harness=globalThis.__draftHarness={api:{login:async()=>({accessToken:'synthetic-normal-access'}),rememberedNormalSession:async()=>remembered??({enabled:false,user:null}),hasNativeNormalSession:()=>false,clearNormalSession:async()=>{},rememberNormalSession:async()=>{},resumeNormalSession:async()=>null,assign:async()=>({}),sendStatus:async()=>({}),canonicalCatalogProduct:async()=>({}),erpDrafts:async()=>({orders:[]}),catalogSignOut:async()=>({}),session:async()=>actor(),inbox:async()=>({conversations:[row()],summary:{total:1}}),conversation:async()=>({conversation:row()}),send:async()=>({message:{id:'synthetic-accepted',direction:'outgoing',text:'sent'}})},actions:null};
- try{await bundle(file,true,isolated);const {App}=await import(pathToFileURL(file).href);const render=()=>{cursor=0;effects.length=0;return App();};const connect=(session=actor(),rows=[row(),row('56')],inboxExtra={})=>{harness.actions.commitLiveSession({key:'synthetic-session',session,inbox:{conversations:rows,summary:{total:rows.length},...inboxExtra},agents:{agents:[]}});return render();};
+ try{await bundle(file,true,isolated,clean);const {App}=await import(pathToFileURL(file).href);const render=()=>{cursor=0;effects.length=0;return App();};const connect=(session=actor(),rows=[row(),row('56')],inboxExtra={})=>{harness.actions.commitLiveSession({key:'synthetic-session',session,inbox:{conversations:rows,summary:{total:rows.length},...inboxExtra},agents:{agents:[]}});return render();};
   const checking=render();assert.match(renderToStaticMarkup(checking),/Oturum kontrol ediliyor/);assert.doesNotMatch(renderToStaticMarkup(checking),/Synthetic fixture|Mesajınız/);
   const startup=effects.find(fn=>String(fn).includes('liveApi.rememberedNormalSession'));assert.equal(typeof startup,'function');const stopStartup=startup();
   for(let i=0;i<12;i++)await Promise.resolve();render();
@@ -618,3 +618,39 @@ test('shared terminal existing personnel action uses only empty stateless bootst
   assert.doesNotMatch(renderToStaticMarkup(h.render()),/TEST ADMIN/);
  }finally{globalThis.fetch=originalFetch;}
 },{terminal:true,isolated:true}));
+
+// Exercise the actual App profile-menu handlers, never setActiveView directly.
+// This is an offline App/SSR navigation regression, not a normal browser login.
+async function openNormalSettings(h) {
+ const profile=find(h.render(),node=>node.type==='button'&&node.props['aria-label']==='Hesabım');
+ assert(profile,'normal account menu is reachable');profile.props.onClick();
+ const settings=find(h.render(),node=>node.type==='button'&&node.props.children==='Ayarlar');
+ assert(settings,'normal account menu offers Settings');settings.props.onClick();
+ return renderToStaticMarkup(h.render());
+}
+
+test('B5 inventory normal settings entry exposes the on-demand read to clean managers',async()=>{
+ for(const role of ['mudur','patron'])await fixture(async h=>{
+  let reads=0;h.harness.api.userInventory=async()=>{reads++;throw Error('No automatic inventory read');};
+  h.connect({...actor(),role,permissions:['crm.view','crm.manage']},[row()]);
+  assert.doesNotMatch(renderToStaticMarkup(h.render()),/aria-label="CRM hesap envanteri"/);
+  const html=await openNormalSettings(h);
+  assert.match(html,/aria-label="CRM hesap envanteri"/);
+  assert.match(html,/Hesap envanterini göster/);
+  assert.equal((html.match(/aria-label="CRM hesap envanteri"/g)||[]).length,1);
+  assert.equal(reads,0,'navigation alone does not enumerate users');
+ },{clean:true,isolated:true});
+});
+
+test('B5 inventory normal settings entry stays hidden without crm.manage',async()=>{
+ for(const role of ['personel','mudur'])await fixture(async h=>{
+  h.connect({...actor(),role,permissions:['crm.view']},[row()]);
+  const html=await openNormalSettings(h);
+  assert.doesNotMatch(html,/aria-label="CRM hesap envanteri"|Hesap envanterini göster/);
+ },{clean:true,isolated:true});
+});
+
+test('B5 inventory normal settings entry is absent outside the clean TEST build',async()=>fixture(async h=>{
+ h.connect({...actor(),permissions:['crm.view','crm.manage']},[row()]);
+ assert.doesNotMatch(await openNormalSettings(h),/aria-label="CRM hesap envanteri"|Hesap envanterini göster/);
+}));
