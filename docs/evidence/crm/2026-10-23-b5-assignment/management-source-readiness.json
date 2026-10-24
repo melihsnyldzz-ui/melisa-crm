@@ -1,4 +1,287 @@
 {
+  "currentPersonalSourcePreparation": {
+    "observedAt": "2026-10-24T19:33:58.345Z",
+    "status": "SOURCE_CI_AND_PASSIVE_CLEAN_PACKAGE_READY_NOT_INSTALLED",
+    "scope": "B5 personal ERP/CRM identity, existing normal create form and independent managed mudur; same original C01/C02 and CRM-UA11 acceptance.",
+    "implementationCommit": "e0d5dd20e698ab3cfbfe3b1890e26fa992ca8584",
+    "finalSourceCommit": "1ab47029d54cc6aa341b29328de29ea690e6d4f1",
+    "sourceFindings": {
+      "managedPersonelHandoffSupportedBefore": true,
+      "normalCreateFormAlreadySupported": true,
+      "normalCreateFormChanged": false,
+      "oldPatronLabelNotMudurAcceptance": true,
+      "concreteFixedMudurBlocks": [
+        "backend terminalUser role",
+        "frontend authenticated role/permissions",
+        "frontend Personel-only inbox ownership filter"
+      ],
+      "newIdentityOrAuthorizationEngine": false,
+      "erpUserIdStoredInLocalManagedAccount": false,
+      "bindingAuthority": "Existing freshly verified ERP terminal peer proof; never a name match, parent/native ID claim or copied token.",
+      "startupCleanStaffIdentityStillRequired": true
+    },
+    "behavior": {
+      "managedMudurOnly": true,
+      "mudurPermissions": [
+        "crm.view",
+        "crm.send",
+        "crm.assign",
+        "crm.agents",
+        "crm.manage"
+      ],
+      "mudurInbox": "Current normal server-authorized conversations including other assignees/unassigned; source does not invent customer ownership.",
+      "personelInbox": "Only exact assigned CRM user and agent; wrong-person access and assignment remain denied.",
+      "patronTerminalAdmission": false,
+      "semihBaselinePreserved": true,
+      "ilkerGeneralCrmAccessGranted": false,
+      "freshErpAndCrmRevokeAndManagementRevision": true,
+      "pendingRoleOrBindingChangeClosesWithoutUiCommit": true
+    },
+    "targetedVerification": {
+      "frontend": {
+        "file": "apps/frontend/tests/personal-terminal-session-identity.test.mjs",
+        "before": {
+          "pass": 3,
+          "fail": 3
+        },
+        "after": {
+          "pass": 6,
+          "fail": 0
+        },
+        "realBrowser": false
+      },
+      "backend": {
+        "file": "apps/gateway/src/routes/personalTerminalHandoffRoutes.test.mjs",
+        "pass": 6,
+        "fail": 0,
+        "meaning": "Five new scenarios plus parent; real CRM normal routes/issuer, memory-only ERP peer and private files.",
+        "initialFixtureOriginFailure": "A test setup error, corrected to the existing exact public UI origin; not counted as an application bug."
+      },
+      "package": {
+        "file": "tests/test-package.test.mjs",
+        "filter": "B5 ",
+        "pass": 3,
+        "fail": 0,
+        "beforeContractFail": 1,
+        "beforeCleanProfileFail": 2,
+        "olderImportlessRollbackStillValid": true
+      },
+      "previousAcceptedSharedCasesRerun": false,
+      "independentReadOnlyReview": {
+        "openP1": 0,
+        "openP2": 0
+      },
+      "stagedSecretFindings": 0
+    },
+    "ci": {
+      "head": "1ab47029d54cc6aa341b29328de29ea690e6d4f1",
+      "checks": [
+        {
+          "id": 120965568917,
+          "name": "windows-startup-test",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/40125381124/job/120965568917"
+        },
+        {
+          "id": 120965568872,
+          "name": "secret-scan",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/40125381124/job/120965568872"
+        },
+        {
+          "id": 120965568711,
+          "name": "quality-build-test",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/40125381124/job/120965568711"
+        },
+        {
+          "id": 120965568709,
+          "name": "ai-sales-offline",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/40125381093/job/120965568709"
+        },
+        {
+          "id": 120965557019,
+          "name": "secret-scan",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/40125377025/job/120965557019"
+        },
+        {
+          "id": 120965556953,
+          "name": "quality-build-test",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/40125377025/job/120965556953"
+        },
+        {
+          "id": 120965556913,
+          "name": "windows-startup-test",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/40125377025/job/120965556913"
+        }
+      ]
+    },
+    "build": {
+      "ordinarySourceBuild": {
+        "status": "PASS",
+        "durationSeconds": 23.29
+      },
+      "passiveProductionCleanBuild": {
+        "status": "PASS",
+        "profile": "clean-synthetic-20261022",
+        "nodeVersion": "v24.15.0",
+        "main": {
+          "path": "/assets/index-CkcbNSPr.js",
+          "bytes": 912972,
+          "sha256": "6ad0d9795c79807b66c82995ba6cc4ab75f376ffa388fe0ee8ca3fb47396c817"
+        },
+        "css": "/assets/index-C1zRRMAe.css"
+      },
+      "visualDesignChanges": false
+    },
+    "passivePackage": {
+      "packageRoot": "C:\\Sirket\\CRM\\releases\\crm-shared-test-1ab47029d54cc6aa341b29328de29ea690e6d4f1-clean-synthetic-20261022",
+      "manifestSha256": "45c81b924d709ae570a7db70ac2b04e065216df98eddbe15bdd8576367666ca2",
+      "sourceCommit": "1ab47029d54cc6aa341b29328de29ea690e6d4f1",
+      "sourceTree": "ff50f57724795505deb5eab2febfe4874344b56c",
+      "supervisor": "deploy/test-supervisor.mjs",
+      "environment": "TEST",
+      "files": 2299,
+      "gitSealedSourceFiles": 193,
+      "build": {
+        "viteCrmTest": true,
+        "isolatedPreparation": true,
+        "preparationProfile": "clean-synthetic-20261022",
+        "nodeVersion": "v24.15.0",
+        "platform": "win32",
+        "arch": "x64",
+        "dependencyInstall": "npm-ci-offline-ignore-scripts"
+      },
+      "verifiedByExistingBuilder": true,
+      "immutableCandidate": true,
+      "installed": false,
+      "manifestFile": "C:\\Sirket\\CRM\\releases\\crm-shared-test-1ab47029d54cc6aa341b29328de29ea690e6d4f1-clean-synthetic-20261022/release-manifest.json",
+      "nodeToolchainMustMatchManifest": true,
+      "ownerInstallationAdmissionPending": true
+    },
+    "preparationHistory": {
+      "firstAttempt": {
+        "source": "e0d5dd20e698ab3cfbfe3b1890e26fa992ca8584",
+        "status": "PACKAGE_OFFLINE_DEPENDENCY_INSTALL_FAILED",
+        "sealedPackageCreated": false,
+        "failedStagingRetained": true
+      },
+      "finalAttempt": {
+        "source": "1ab47029d54cc6aa341b29328de29ea690e6d4f1",
+        "status": "VERIFIED_PASSIVE_ONLY",
+        "offline": true,
+        "ignoreScripts": true,
+        "emptyNpmConfigs": true,
+        "sharedRuntimeStarted": false
+      }
+    },
+    "existingNormalCreatePath": {
+      "ui": "Ayarlar > CRM hesap envanterini göster > Yeni TEST hesabı > Hesabı kaydet",
+      "request": "POST /crm/users",
+      "fields": [
+        "revision",
+        "username",
+        "displayName",
+        "role",
+        "active",
+        "chatwootAgentId",
+        "password"
+      ],
+      "roles": [
+        "personel",
+        "mudur"
+      ],
+      "agentMinimum": 1001,
+      "agentMaximum": 9999,
+      "returnedIdentity": "response.account.id; normal GET inventory accounts[].userId",
+      "installedGuiFinalSubmit": "BEKLIYOR"
+    },
+    "ownerBindingParameters": {
+      "erpSide": [
+        "erpUserId",
+        "employeeId (ERP only)"
+      ],
+      "crmSide": [
+        "crmUserId from normal create readback",
+        "unique explicit chatwootAgentId",
+        "actual CRM role personel or mudur"
+      ],
+      "serverGeneratedProof": [
+        "erpNormalSessionId",
+        "bindingRevision",
+        "expiresAt"
+      ],
+      "fixedContext": {
+        "environmentId": "e662fd94-d797-4b3b-938a-d143ad758b67",
+        "database": "MELISA_ERP_CLEAN_TEST_20261022",
+        "origins": "same-host 5244 -> 62800 only"
+      },
+      "authority": "Owner normal ERP identity/relation source; do not post erpUserId into the exact CRM account-create DTO or edit a private store.",
+      "doNotReplaceNormalRefreshBootstrapUserId": true
+    },
+    "lastPreviouslyMatchedRuntime": {
+      "crmSource": "acb2a3a0ce917d68221372e5f21bb788e90475aa",
+      "erpSource": "64f273df4e1a7ce96cc375c102afba7dddf5c3fe",
+      "nativeSource": "035fcc08d8f56cdd0cbc437a290285328fce1ec9",
+      "observedOwnerInstallationAt": "2026-10-24T14:30:31.5345699+03:00",
+      "freshRuntimeProbeThisWork": false,
+      "currentInstallationOfNewSourceNotProven": true,
+      "previousCrmAcceptanceReused": true
+    },
+    "remaining": {
+      "ownerInstallationAndCurrentSourcePackageRuntimeReceipt": "BEKLIYOR",
+      "normalSharedCreateFinalSubmit": "BEKLIYOR",
+      "independentMudurNormalGui": "BEKLIYOR",
+      "actualPersonalErpCrmRelationshipAndTaskReadback": "BEKLIYOR",
+      "physicalMobileNativeKeystoreWindowsHumanAcceptance": "BEKLIYOR"
+    },
+    "boundaries": {
+      "sharedHttpGuiLoginSqlAccountRoleAssignmentRuntimeWrites": 0,
+      "runtimePrivateCredentialFilesRead": false,
+      "realPeopleCreated": 0,
+      "realCustomerMessages": 0,
+      "paidApiCalls": 0,
+      "liveDeployment": false,
+      "mainMerge": false,
+      "newAgents": false,
+      "finishCountersChanged": false
+    },
+    "recordCheck": {
+      "status": "CHECK_REQUIRED",
+      "structuralIssues": 0,
+      "crmRequirements": [
+        {
+          "id": "required[0]",
+          "decision": "REUSE",
+          "code": null
+        },
+        {
+          "id": "required[1]",
+          "decision": "BLOCKED",
+          "code": "PROOF_BLOCKED"
+        },
+        {
+          "id": "required[2]",
+          "decision": "BLOCKED",
+          "code": "PROOF_BLOCKED"
+        }
+      ],
+      "wholeClosureGranted": false,
+      "repeatAcceptedTests": false,
+      "onlyOwnAgentCheckCacheWritten": true
+    }
+  },
   "currentErpRecoveryReadback": {
     "observedAt": "2026-10-24T10:41:21.591Z",
     "status": "ERP_INSTALLED_CRM_PRESERVED_PERSONNEL_NORMAL_WRITE_FAILED_OWNER_FIXING",
