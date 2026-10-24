@@ -1,4 +1,233 @@
 {
+  "currentFinalServerAndNormalBrowserReadback": {
+    "observedAt": "2026-10-24T08:40:51.928Z",
+    "readOnly": true,
+    "sourceScope": {
+      "crmInstalledSource": "59ca114b858f4042e30cd1736825be3d7c68599c",
+      "erpInstalledSource": "f4db4884c3a85f799c98e955b43d6c6745d7db55",
+      "b5Source": "acb2a3a0ce917d68221372e5f21bb788e90475aa",
+      "b5Installed": false
+    },
+    "closure": {
+      "path": "C:\\Sirket\\ERP\\clean\\20261022\\runtime\\semih-access-20261023\\e1-link-runtime-close-proof.json",
+      "sha256": "4eb58deecb990a5540e408b9779b08477a7302cf83abff36879fbef72bd92d17",
+      "record": {
+        "status": "PASS",
+        "erpSource": "f4db4884c3a85f799c98e955b43d6c6745d7db55",
+        "crmSource": "59ca114b858f4042e30cd1736825be3d7c68599c",
+        "cases": [
+          {
+            "scope": "erp",
+            "path": "/api/auth/login",
+            "status": 200,
+            "verified": true
+          },
+          {
+            "scope": "erp",
+            "path": "/api/auth/session-confirm",
+            "status": 200,
+            "verified": true
+          },
+          {
+            "scope": "erp",
+            "path": "/api/auth/terminal-handoff/prepare",
+            "status": 200,
+            "verified": true
+          },
+          {
+            "scope": "crm",
+            "path": "/auth/terminal-handoff",
+            "status": 200,
+            "verified": true
+          },
+          {
+            "scope": "crm",
+            "path": "/auth/me",
+            "status": 200,
+            "verified": true
+          },
+          {
+            "scope": "erp",
+            "path": "/api/auth/logout",
+            "status": 200,
+            "verified": true
+          },
+          {
+            "scope": "crm",
+            "path": "/auth/me",
+            "status": 403,
+            "verified": true
+          },
+          {
+            "scope": "crm",
+            "path": "/auth/logout",
+            "status": 200,
+            "verified": true
+          },
+          {
+            "scope": "crm",
+            "path": "/auth/logout",
+            "status": 200,
+            "verified": true
+          },
+          {
+            "scope": "crm",
+            "path": "/auth/me",
+            "status": 401,
+            "verified": true
+          },
+          {
+            "scope": "crm",
+            "path": "/auth/logout",
+            "status": 200,
+            "verified": true
+          },
+          {
+            "scope": "erp",
+            "path": "/api/auth/logout",
+            "status": 200,
+            "verified": true
+          }
+        ],
+        "caseCount": 12,
+        "boundSyntheticErpUser": 15,
+        "boundSyntheticCrmUser": "clean-staff-20261022",
+        "boundSyntheticAgent": 2,
+        "newLinkedFamilies": 1,
+        "allOwnLinkedFamiliesRevoked": true,
+        "existingNormalFamiliesPreserved": true,
+        "dataSummariesUnchanged": 53,
+        "priorProof": "e1-link-runtime-lan-proof.json",
+        "remainingScope": "ERP revoke followed by CRM own logout twice",
+        "nativeVault": "NOT_TESTED",
+        "physicalAndroid": "NOT_CONNECTED",
+        "normalNativeGui": "NOT_TESTED",
+        "commercialWrites": 0,
+        "accountsChanged": 0,
+        "rolesChanged": 0,
+        "failure": null,
+        "observedAt": "2026-10-24T11:37:21.6398793+03:00"
+      }
+    },
+    "delivery": {
+      "path": "C:\\Sirket\\ERP\\clean\\20261022\\runtime\\semih-access-20261023\\e1-link-final-delivery.json",
+      "sha256": "685c15d973831b0ca405c964635248b119b03d12402542d4d8069c0014c474da",
+      "record": {
+        "physicalAndroid": "NOT_CONNECTED",
+        "normalErpHome": "e1-link-normal-erp-home.png",
+        "roleChanges": 0,
+        "remainingCloseProof": "e1-link-runtime-close-proof.json",
+        "observedAt": "2026-10-24T11:37:56.2497916+03:00",
+        "review": "CRM independent reviewer P1/P2=0",
+        "erpSource": "f4db4884c3a85f799c98e955b43d6c6745d7db55",
+        "lanFlowProof": "e1-link-runtime-lan-proof.json",
+        "idempotentLogoutVerified": true,
+        "crmSource": "59ca114b858f4042e30cd1736825be3d7c68599c",
+        "lanFlowPartialFailure": "Final logout hit unchanged auth rate limit",
+        "sourceCi": {
+          "runs": [
+            40078294328,
+            40078290788
+          ],
+          "jobsPerRun": 3,
+          "status": "SUCCESS"
+        },
+        "nativeBridge": "NOT_TESTED",
+        "androidKeystore": "NOT_TESTED",
+        "liveVegaWrites": 0,
+        "nativeApkSource": "d11412060e9a14a6884373089800973004b875f5",
+        "nativeApkSha256": "E4088D9E756D915E6A33710C74C146EF0D13687B1C34E9BB3CCC812AF7474CD9",
+        "normalCrmRefreshLoginPreserved": true,
+        "humanAcceptance": "PENDING",
+        "dataSummariesUnchanged": 53,
+        "normalCrmAssignedReload": "e1-link-normal-crm-reloaded.png",
+        "commercialWrites": 0,
+        "remainingCloseCases": 12,
+        "status": "SERVER_AND_NORMAL_BROWSER_VERIFIED",
+        "oldFamiliesPreserved": true
+      }
+    },
+    "preservedPreviousFailure": {
+      "path": "C:\\Sirket\\ERP\\clean\\20261022\\runtime\\semih-access-20261023\\e1-link-runtime-lan-proof.json",
+      "sha256": "b7c54359a55763ebfed93a011400dabbc0f22a45d8320c8d9de52f0fcd569d68",
+      "status": "FAILED",
+      "caseCount": 22,
+      "reason": "Unchanged auth rate limiter returned429 at final logout; retained, not relabelled PASS."
+    },
+    "installedManifestPinRechecked": true,
+    "previous783PayloadAnd8SourceBlobProofReused": true,
+    "payloadRescan": false,
+    "protectionComparisons": [
+      {
+        "before": "e1-link-crm-data.before.txt",
+        "after": "e1-link-runtime-close-protected.after.txt",
+        "beforeSha256": "034bd4bd5447900e4eea94f96be130dc492013a0d01219667a75073ef9988bcd",
+        "afterSha256": "034bd4bd5447900e4eea94f96be130dc492013a0d01219667a75073ef9988bcd",
+        "equal": true
+      },
+      {
+        "before": "e1-link-crm-data.before.txt",
+        "after": "e1-link-normal-gui-protected.after.txt",
+        "beforeSha256": "034bd4bd5447900e4eea94f96be130dc492013a0d01219667a75073ef9988bcd",
+        "afterSha256": "034bd4bd5447900e4eea94f96be130dc492013a0d01219667a75073ef9988bcd",
+        "equal": true
+      }
+    ],
+    "images": [
+      {
+        "ownerFile": "e1-link-normal-erp-home.png",
+        "file": "installed-normal-erp-home.png",
+        "bytes": 26825,
+        "sha256": "198a73ec1448a767f9bef226788cd8e30a78ec7b9744574ee1b0e42e8232e9b4",
+        "scope": "Owner normal browser screenshot, read-only pixel inspection; not a root GUI rerun or physical/native/human acceptance."
+      },
+      {
+        "ownerFile": "e1-link-normal-crm-reloaded.png",
+        "file": "installed-normal-crm-reloaded.png",
+        "bytes": 46280,
+        "sha256": "e8a03c10b5e85f2e72c552b16cca1a8470f0ed56399e308ae5aea1f7f523233f",
+        "scope": "Owner normal browser screenshot, read-only pixel inspection; not a root GUI rerun or physical/native/human acceptance."
+      }
+    ],
+    "normalBrowserScope": "Owner normal ERP sales-person home and normal CRM sample person assigned Örnek Mağaza after full reload. This does not prove the physical native second-password-free transition.",
+    "nativeInstalledSource": "035fcc08d8f56cdd0cbc437a290285328fce1ec9",
+    "nativeApkCandidateSource": "d11412060e9a14a6884373089800973004b875f5",
+    "nativeApkCandidateSha256": "E4088D9E756D915E6A33710C74C146EF0D13687B1C34E9BB3CCC812AF7474CD9",
+    "nativeApkSourceCi": "Owner reports six SUCCESS jobs; no new Gradle/CI run by CRM.",
+    "httpCalls": 0,
+    "sqlCalls": 0,
+    "loginCalls": 0,
+    "sharedWrites": 0,
+    "normalNativeGui": "BEKLIYOR",
+    "androidKeystore": "BEKLIYOR",
+    "physicalAndroid": "NOT_CONNECTED",
+    "humanAcceptance": "BEKLIYOR",
+    "finishCountersChanged": false,
+    "recordCheck": {
+      "status": "CHECK_REQUIRED",
+      "structuralIssues": 0,
+      "crmRequirements": [
+        {
+          "id": "required[0]",
+          "decision": "REUSE",
+          "code": null
+        },
+        {
+          "id": "required[1]",
+          "decision": "BLOCKED",
+          "code": "PROOF_BLOCKED"
+        },
+        {
+          "id": "required[2]",
+          "decision": "BLOCKED",
+          "code": "PROOF_BLOCKED"
+        }
+      ],
+      "wholeClosureGranted": false,
+      "repeatAcceptedTests": false,
+      "cache": "only own CRM agent-check path"
+    }
+  },
   "currentInstalledLinkReadback": {
     "observedAt": "2026-10-24T08:28:47.313Z",
     "readOnly": true,

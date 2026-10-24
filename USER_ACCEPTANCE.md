@@ -1,5 +1,13 @@
 ## CRM-UA11 — 15 Ekim — son normal ekran ve fiziksel mobil kabulü
 
+### 24 Ekim 11:40 TR — E1 son kapanış ve normal tarayıcı makbuzu eşlendi
+
+ERP sahibinin 11:37:21 tarihli yeni dar kapanış kaydı PASS:12 doğrulanmış HTTP olayı, ERP çıkışından sonra CRM erişim reddi ve aynı kendi-aile çıkışının tekrarlarında200; bir yeni deneme ailesi iptal, eski normal aileler korunmuş. 11:37:56 final teslimi normal ERP örnek satış personeli ana ekranı ve normal CRM örnek personelinde atanmış Örnek Mağaza → tam yenileme → aynı konuşma kanıtını içerir. CRM bu iki PNG'yi yalnız okuyup piksellerini inceledi; yeni login/GUI/API/SQL denemesi yapmadı. İki yeni53özet after dosyası önceki before ile byte-eş.
+
+Kurulu CRM59ca114/ERPf4db ve783dosya/8kaynak blobu önceki RO kanıtından REUSE; yalnız mevcut manifest ve kurulum makbuzu pini tekrar okundu, bütün dosyalar/testler yeniden koşturulmadı. Önceki22olaylı429 FAILED dosyası aynı SHA ile korunur; yeni12olaylı kapanış ayrı kanıttır. Genel limiter/servis resetlenmedi. [Güncel makbuzlar](docs/evidence/crm/2026-10-24-e1-terminal/source-origin-readiness.json).
+
+**E1 sunucu ve normal tarayıcı alt kapsamı teknik olarak doğrulandı.** Android/Keystore, fiziksel TC21/telefon, native ikinci parolasız geçiş, Windows reboot/logon ve insan kabulü BEKLİYOR. D114 APK/CI kaynak adayı, kurulu native035'in yerine geçmiş sayılmaz. B5 acb2 kaynağı hazır ve ERP'de alım/uyumluluk incelemesinde; bu E1 makbuzu B5 kurulumu/kişisel hesap uygulaması değildir.25/12🟢/13🟡/0🔴 ve17başlık/74yaprak aynı.
+
 ### 24 Ekim11:31TR — E1 kurulu makbuz RO eş; B5 normal yönetim kaynağı hazır, CI/kurulum ayrı
 
 E1 CRM59ca114/783/49a76e90 ve ERPf4db48811:16kurulu; CRM783SHA/8Gitblob/main/iki53özet çifti0farkROeşledi,HTTP/SQL/login/sharedwrite0. Owner22APIcase doğrulandı fakat sonlogout429 olduğundan finalkanıtFAILED; gerçeknativeGUI/Keystore/cihaz/insanBEKLİYOR. B5 uygulama7d09fdf+testplatformacb2a3a mevcutnormalcrm.manage/scrypt/issuer/grant→kalıcımanagedkişiselhesap/role/active/uniqueagent/revisionrevoke ve ayrı155/156atamayı kaynakta tamamlar. Baseline4hesap/55-56/upstreamyazı korunur.20/10/44/45kesişenhedefgruplarıPASS,11,24sbuild,review0/secret0;ilkCIWindowsyolunuLinux'taaçmabeklentisiFAIL→testretbeklentisidüzeltildi,sonexactacb2CI PR40078289201/push40078284030/AI40078289170 SUCCESS/7iş. GörünürsentetikproductionApp'tacreate/reloadaynıID/atama/normalpersonelown155/disable-login401 veactual390taşmasız görüldü;finalroster-raceikiFAIL→44PASS. B5 **SOURCE_READY / NOT_INSTALLED**; ERPkurulum+kişiselID/görevnormalpozitifnegatifreadback veE1sonkapanış sıradaki halkalardır. İnsanE2ayrı;25/12🟢/13🟡/0🔴ve17/74aynı. [B5kanıt](docs/evidence/crm/2026-10-23-b5-assignment/README.md) · [E1eşleme](docs/evidence/crm/2026-10-24-e1-terminal/README.md).

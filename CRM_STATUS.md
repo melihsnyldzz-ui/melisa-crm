@@ -1,6 +1,6 @@
 ## Sıradaki iş — CRM06 (tek etkin yürütme kaydı)
 
-24 Ekim 2026 11:31 TR — E1 kurulu59/f4db makbuzu kaynak/paket/runtime sınırıyla RO eşlendi; B5 normal hesap yönetimi kaynak acb2 hazır, exact CI SUCCESS/7iş, ERP owner kurulumu/readback ayrı. Aşağıdaki tarihçe güncel kurulum değildir.
+24 Ekim 2026 11:40 TR — E1 sunucu kapanışı ve normal tarayıcı alt kapsamı final owner makbuzuyla RO eşlendi. B5 kaynak acb2/CI7SUCCESS hazır; ERP alım/uyumluluk incelemesi sürüyor, yeni B5 kurulum makbuzu yok. Aşağıdaki eski kapanış-bekleyen kayıtlar kendi tarihinin aşamasıdır.
 
 | Alan | Kayıt |
 | --- | --- |
@@ -8,28 +8,38 @@
 | Güncel adım | B5 kaynak7d09fdf+testplatformacb2a3a: normalcrm.manage kişiselhesap/rol/active/uniqueagent, mevcutnormalgrant/revisioniptal, sentetik155/156kalıcıatama/readback kaynakta hazır.20/10/44/45hedefgrupları(kesişir)PASS,11,24snproduction/review0/secret0; acb2 exactCI PR40078289201/push40078284030/AI40078289170 SUCCESS/7iş. Görünür production App/normalrotalar+RAMfixture create→reloadsameID→assign→normalPersonelown155→disable/login401,actual390 taşmasız; installedB5 değildir. |
 | Sahip | CRM ana ajanı kendi kaynak/UI/kanıt kaydını yönetir. Ortak runtime/SQL/ayar/depo/servis/hesap/rol/atama/APK/kurulumun tek uygulayıcısı ERP sahibidir. |
 | Bitiş koşulu | CRM06 bütün özgün katalog/ürün/adet/tek talep/yeniden açma/atanmış-yanlış personel/kalıcılık koşulları ve gereken gerçek insan kabulüyle tam kapanır. B5'in salt okunur envanter/sunum teknik sonucu bunu veya tüm E1'i kapatmaz. |
-| Mevcut kanıt | KuruluCRM59ca114b858f4042e30cd1736825be3d7c68599c /783dosya/49a76e90; ERPf4db4884c3a85f799c98e955b43d6c6745d7db55, native035korunur. CRM783SHA/8Gitblob/mainDiUlgoPK906832/9bc02fd7 veiki53özet dosya çiftiROeş,0fark.4port/6listener/3Node;OS CWDkanıtı yok. OwnerLAN22doğrulanmışAPIcase,sonlogout429→FAILED/finalGUIbekliyor. [B5source/evidence](docs/evidence/crm/2026-10-23-b5-assignment/management-source-readiness.json) · [E1ROkurulum](docs/evidence/crm/2026-10-24-e1-terminal/source-origin-readiness.json). Önceki09a kabulü kendi tarihinin REUSEkanıtıdır. |
-| Teknik bağımlılık | CRM B5 kaynakCI SUCCESS/7iş; ERP B5hesap/personel/onaylıgörevadmission/explicitkişiselbağ kaynağı veortakpaket/config/korumalımanagedfile/normalGUI kurulumu yalnızERP. KuruluE1sonlogout/readback/normalnativeGUI ERPdoğalsüreyi bekliyor; limiter/servisreset0. Gerçekmüşterisahipliği/kimlik tahminedilmez. E2insan/fizikselTC21/telefon/Windowsreboot-logonBEKLİYOR. |
-| Bitince aynı başlıktaki sonraki adım | Exactacb2 CI SUCCESS/7iş ile B5 kaynak+kanıt/explicitdefaultoffsettings ERP sahibine devredildi; uyumlu ERP B5kaynak/kurulummakbuzunu ROeşle. E1sonkapanış makbuzu gelince mevcut22case akışını tekrarlamadan yalnız yeni kaydıROoku. Başka hazır bağımsız CRM06 halkası varsa mevcutIDde sürdür; kişi/insanbeklentisi genel durma kapısı değildir. OrtakSQL/runtime/kurulum/hesap/rol/atama ERPde,25Ekim09.30/10.00TRsınırıaynı. |
+| Mevcut kanıt | KuruluCRM59ca114b858f4042e30cd1736825be3d7c68599c /783dosya/49a76e90; ERPf4db4884c3a85f799c98e955b43d6c6745d7db55, native035korunur. CRM783SHA/8Gitblob/mainDiUlgoPK906832/9bc02fd7 veiki53özet dosya çiftiROeş,0fark.4port/6listener/3Node;OS CWDkanıtı yok. Owner önceki22API/429FAILED kaydını korudu; yeni12API kapanışPASS ve normalERP/CRMörnekpersonel tamreload kanıtı ROeşlendi. Native/cihaz/insan ayrı bekliyor. [B5source/evidence](docs/evidence/crm/2026-10-23-b5-assignment/management-source-readiness.json) · [E1ROkurulum](docs/evidence/crm/2026-10-24-e1-terminal/source-origin-readiness.json). Önceki09a kabulü kendi tarihinin REUSEkanıtıdır. |
+| Teknik bağımlılık | CRM B5 kaynakCI SUCCESS/7iş; ERP B5hesap/personel/onaylıgörevadmission/explicitkişiselbağ kaynağı veortakpaket/config/korumalımanagedfile/normalGUI kurulumu yalnızERP. KuruluE1sunucu/normalbrowser alt kapsamı teknik doğrulandı; nativeGUI/Keystore/gerçekcihaz açık. Limiter/servisreset0. Gerçekmüşterisahipliği/kimlik tahminedilmez. E2insan/fizikselTC21/telefon/Windowsreboot-logonBEKLİYOR. |
+| Bitince aynı başlıktaki sonraki adım | Exactacb2 CI SUCCESS/7iş ile B5 kaynak+kanıt/explicitdefaultoffsettings ERP sahibine devredildi; uyumlu ERP B5kaynak/kurulummakbuzunu ROeşle. E1son12case kapanış/finalnormalbrowser makbuzu ROeşlendi; eski783hash/8blob/22case testleri tekrarlanmaz. Başka hazır bağımsız CRM06 halkası varsa mevcutIDde sürdür; kişi/insanbeklentisi genel durma kapısı değildir. OrtakSQL/runtime/kurulum/hesap/rol/atama ERPde,25Ekim09.30/10.00TRsınırıaynı. |
 | CRM06 tüm özgün koşulları kapanınca geçiş | CRM06 tüm özgün koşulları ve gereken insan kabulüyle tam kapanınca ERP09 ana kapanışına geçilir. CRM-DEC-018 kapsamındaki izinli bağımsız ERP09 teknik hazırlığı bu sırada sürebilir; teknik test insan kabulünü tamamlamaz. |
 
 ### 24 Ekim11:31TR — E1 kurulu makbuz RO eş; B5 normal yönetim kaynağı hazır, CI/kurulum ayrı
 
 E1 CRM59ca114/783/49a76e90 ve ERPf4db48811:16kurulu; CRM783SHA/8Gitblob/main/iki53özet çifti0farkROeşledi,HTTP/SQL/login/sharedwrite0. Owner22APIcase doğrulandı fakat sonlogout429 olduğundan finalkanıtFAILED; gerçeknativeGUI/Keystore/cihaz/insanBEKLİYOR. B5 uygulama7d09fdf+testplatformacb2a3a mevcutnormalcrm.manage/scrypt/issuer/grant→kalıcımanagedkişiselhesap/role/active/uniqueagent/revisionrevoke ve ayrı155/156atamayı kaynakta tamamlar. Baseline4hesap/55-56/upstreamyazı korunur.20/10/44/45kesişenhedefgruplarıPASS,11,24sbuild,review0/secret0;ilkCIWindowsyolunuLinux'taaçmabeklentisiFAIL→testretbeklentisidüzeltildi,sonexactacb2CI PR40078289201/push40078284030/AI40078289170 SUCCESS/7iş. GörünürsentetikproductionApp'tacreate/reloadaynıID/atama/normalpersonelown155/disable-login401 veactual390taşmasız görüldü;finalroster-raceikiFAIL→44PASS. B5 **SOURCE_READY / NOT_INSTALLED**; ERPkurulum+kişiselID/görevnormalpozitifnegatifreadback veE1sonkapanış sıradaki halkalardır. İnsanE2ayrı;25/12🟢/13🟡/0🔴ve17/74aynı. [B5kanıt](docs/evidence/crm/2026-10-23-b5-assignment/README.md) · [E1eşleme](docs/evidence/crm/2026-10-24-e1-terminal/README.md).
 
+### 24 Ekim 11:40 TR — E1 son kapanış ve normal tarayıcı makbuzu eşlendi
+
+ERP sahibinin 11:37:21 tarihli yeni dar kapanış kaydı PASS:12 doğrulanmış HTTP olayı, ERP çıkışından sonra CRM erişim reddi ve aynı kendi-aile çıkışının tekrarlarında200; bir yeni deneme ailesi iptal, eski normal aileler korunmuş. 11:37:56 final teslimi normal ERP örnek satış personeli ana ekranı ve normal CRM örnek personelinde atanmış Örnek Mağaza → tam yenileme → aynı konuşma kanıtını içerir. CRM bu iki PNG'yi yalnız okuyup piksellerini inceledi; yeni login/GUI/API/SQL denemesi yapmadı. İki yeni53özet after dosyası önceki before ile byte-eş.
+
+Kurulu CRM59ca114/ERPf4db ve783dosya/8kaynak blobu önceki RO kanıtından REUSE; yalnız mevcut manifest ve kurulum makbuzu pini tekrar okundu, bütün dosyalar/testler yeniden koşturulmadı. Önceki22olaylı429 FAILED dosyası aynı SHA ile korunur; yeni12olaylı kapanış ayrı kanıttır. Genel limiter/servis resetlenmedi. [Güncel makbuzlar](docs/evidence/crm/2026-10-24-e1-terminal/source-origin-readiness.json).
+
+**E1 sunucu ve normal tarayıcı alt kapsamı teknik olarak doğrulandı.** Android/Keystore, fiziksel TC21/telefon, native ikinci parolasız geçiş, Windows reboot/logon ve insan kabulü BEKLİYOR. D114 APK/CI kaynak adayı, kurulu native035'in yerine geçmiş sayılmaz. B5 acb2 kaynağı hazır ve ERP'de alım/uyumluluk incelemesinde; bu E1 makbuzu B5 kurulumu/kişisel hesap uygulaması değildir.25/12🟢/13🟡/0🔴 ve17başlık/74yaprak aynı.
+
+Son kayıt/önkoşul okuması: yapısal CRM tutarsızlığı0; runtime REUSE, fiziksel native kapsamındaki normal-role/UI iki BLOCKED, ERP mevcut üç BLOCKED. Genel kapanış verilmedi; eski kabul testleri tekrarlanmadı. Yalnız CRM'nin kendi agent-check cache'i güncellendi.
+
 ### Mevcut önkoşul görünümü — yeni kapı veya kabul değildir
 
 **Önceki 24 Ekim11:00TR B5 dar RO devir (aşağıdaki kaynak-yok ifadeleri tarihsel aşamadır):** Kayıtlı tamCRM4 ve sırsızERP11 makbuzları dokuz istenen kişinin kişisel hesabını içermiyor;SemihERP10018/CRMclean-semih kesin ve korunur. Bu genel “kimlik eksik” veya insan kabulü bekleme engeli değildir: ERP normal kullanıcı/personel UI+API/core var, fakat exactclean POST/PATCH frontgate ve genericwriteguard bunu kapatıyor; CRM normal hesap/rol/temsilci kalıcı yönetim yazısı yok, clean atama read-only. Görev rolleri/örnekID'lere sabit iş admission'ı da yeni kişileri desteklemeli. [Dokuz kişinin somut alanı, normal yol/dosya ve teknik bitiş ölçütü](docs/evidence/crm/2026-10-23-b5-assignment/README.md). Yeni hesap/API/SQL/login/rol/atama yazısı veya eski envanter/sunum tekrarı yok; teknikB5 olumlu/olumsuz normalTEST ile kapanır, insanE2 ayrı. Bu tespit E1native/kurulum sahibini veya17/74-25/12/13/0 sayısını değiştirmez.
 
-Aşağıdaki `normal-role` ve `normal-ui`, kurulu E1 aynı-kişi normal native ekranı kapsamıdır; sentetik server API kişi bağı doğrulandı, son kapanış/GUI açık. B5'in örnek Patron ve09a'nın kendi sentetik Personel ile doğrulanmış normal ekranını reddetmez veya yeniden denetletmez. `runtime-health`, yalnız mevcut owner kurulum/normal ekran ve makbuz eşlemesinin zamanlı REUSE kaydıdır; yeni canlı sağlık sorgusu değildir. Kayıt denetimi uygulama, fiziksel cihaz, insan veya LIVE PASS vermez.
+Aşağıdaki `normal-role` ve `normal-ui`, kurulu E1 aynı-kişi normal native ekranı kapsamıdır; sentetik server API kişi bağı, son kapanış ve normal browser doğrulandı; fiziksel native ekran ayrı açık. B5'in örnek Patron ve09a'nın kendi sentetik Personel ile doğrulanmış normal ekranını reddetmez veya yeniden denetletmez. `runtime-health`, yalnız mevcut owner kurulum/normal ekran ve makbuz eşlemesinin zamanlı REUSE kaydıdır; yeni canlı sağlık sorgusu değildir. Kayıt denetimi uygulama, fiziksel cihaz, insan veya LIVE PASS vermez.
 
 ```melisa-preflight
 {
   "current": {
     "environment": "clean-e662fd94-d797-4b3b-938a-d143ad758b67-t1false",
     "runtime": "crm59ca114b-erpf4db4884-native035fcc08-20261024T111654",
-    "identityRole": "synthetic-erp15-crmcleanstaff-agent2-peer-api-closure-pending",
-    "surface": "e1-linked-normal-native-gui-not-tested"
+    "identityRole": "synthetic-erp15-crmcleanstaff-agent2-server-browser-verified-native-pending",
+    "surface": "e1-server-and-normal-browser-verified-native-not-tested"
   },
   "required": [
     {
@@ -64,8 +74,8 @@ Aşağıdaki `normal-role` ve `normal-ui`, kurulu E1 aynı-kişi normal native e
       "context": {
         "environment": "clean-e662fd94-d797-4b3b-938a-d143ad758b67-t1false",
         "runtime": "crm59ca114b-erpf4db4884-native035fcc08-20261024T111654",
-        "identityRole": "synthetic-erp15-crmcleanstaff-agent2-peer-api-closure-pending",
-        "surface": "e1-linked-normal-native-gui-not-tested"
+        "identityRole": "synthetic-erp15-crmcleanstaff-agent2-server-browser-verified-native-pending",
+        "surface": "e1-server-and-normal-browser-verified-native-not-tested"
       },
       "evidenceRef": "docs/evidence/crm/2026-10-24-e1-terminal/source-origin-readiness.json"
     },
@@ -75,8 +85,8 @@ Aşağıdaki `normal-role` ve `normal-ui`, kurulu E1 aynı-kişi normal native e
       "context": {
         "environment": "clean-e662fd94-d797-4b3b-938a-d143ad758b67-t1false",
         "runtime": "crm59ca114b-erpf4db4884-native035fcc08-20261024T111654",
-        "identityRole": "synthetic-erp15-crmcleanstaff-agent2-peer-api-closure-pending",
-        "surface": "e1-linked-normal-native-gui-not-tested"
+        "identityRole": "synthetic-erp15-crmcleanstaff-agent2-server-browser-verified-native-pending",
+        "surface": "e1-server-and-normal-browser-verified-native-not-tested"
       },
       "evidenceRef": "docs/evidence/crm/2026-10-24-e1-terminal/source-origin-readiness.json",
       "error": "E1_NATIVE_NORMAL_ROLE_SURFACE_NOT_PROVEN"
@@ -87,8 +97,8 @@ Aşağıdaki `normal-role` ve `normal-ui`, kurulu E1 aynı-kişi normal native e
       "context": {
         "environment": "clean-e662fd94-d797-4b3b-938a-d143ad758b67-t1false",
         "runtime": "crm59ca114b-erpf4db4884-native035fcc08-20261024T111654",
-        "identityRole": "synthetic-erp15-crmcleanstaff-agent2-peer-api-closure-pending",
-        "surface": "e1-linked-normal-native-gui-not-tested"
+        "identityRole": "synthetic-erp15-crmcleanstaff-agent2-server-browser-verified-native-pending",
+        "surface": "e1-server-and-normal-browser-verified-native-not-tested"
       },
       "evidenceRef": "docs/evidence/crm/2026-10-24-e1-terminal/source-origin-readiness.json",
       "error": "E1_LINKED_NORMAL_GUI_NOT_TESTED"

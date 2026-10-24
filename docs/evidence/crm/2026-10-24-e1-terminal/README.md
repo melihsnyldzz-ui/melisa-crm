@@ -1,5 +1,15 @@
 # E1 / M01 / CRM-UA11 — mevcut terminal girişinin CRM kaynak parçası
 
+### 24 Ekim 11:40 TR — E1 son kapanış ve normal tarayıcı makbuzu eşlendi
+
+ERP sahibinin 11:37:21 tarihli yeni dar kapanış kaydı PASS:12 doğrulanmış HTTP olayı, ERP çıkışından sonra CRM erişim reddi ve aynı kendi-aile çıkışının tekrarlarında200; bir yeni deneme ailesi iptal, eski normal aileler korunmuş. 11:37:56 final teslimi normal ERP örnek satış personeli ana ekranı ve normal CRM örnek personelinde atanmış Örnek Mağaza → tam yenileme → aynı konuşma kanıtını içerir. CRM bu iki PNG'yi yalnız okuyup piksellerini inceledi; yeni login/GUI/API/SQL denemesi yapmadı. İki yeni53özet after dosyası önceki before ile byte-eş.
+
+Kurulu CRM59ca114/ERPf4db ve783dosya/8kaynak blobu önceki RO kanıtından REUSE; yalnız mevcut manifest ve kurulum makbuzu pini tekrar okundu, bütün dosyalar/testler yeniden koşturulmadı. Önceki22olaylı429 FAILED dosyası aynı SHA ile korunur; yeni12olaylı kapanış ayrı kanıttır. Genel limiter/servis resetlenmedi. [Güncel makbuzlar](source-origin-readiness.json).
+
+**E1 sunucu ve normal tarayıcı alt kapsamı teknik olarak doğrulandı.** Android/Keystore, fiziksel TC21/telefon, native ikinci parolasız geçiş, Windows reboot/logon ve insan kabulü BEKLİYOR. D114 APK/CI kaynak adayı, kurulu native035'in yerine geçmiş sayılmaz. B5 acb2 kaynağı hazır ve ERP'de alım/uyumluluk incelemesinde; bu E1 makbuzu B5 kurulumu/kişisel hesap uygulaması değildir.25/12🟢/13🟡/0🔴 ve17başlık/74yaprak aynı.
+
+[Normal ERP ana ekranı](installed-normal-erp-home.png) · [normal CRM tam yenileme sonrası](installed-normal-crm-reloaded.png). Bu ekranların sahibi ERP, CRM yalnız kanıt dosyalarını okudu.
+
 ## 24 Ekim 11:29 TR — ERP kurulum makbuzu hazır, CRM kaynak/paket eşlemesi salt okunur tamam
 
 ERP owner11:16:03 ERPf4db4884c3a85f799c98e955b43d6c6745d7db55 ve11:16:54 CRM59ca114b858f4042e30cd1736825be3d7c68599c kurulum makbuzlarını verdi. CRM immutable paket CLEAN-CRM-20261024-59ca114b858f-E1LINK / **783dosya**, manifest49a76e90623ccaba3541da7d82ab4563878ac682ab5b4c105933729e88930e03. CRM tüm783payloadSHA,8kritikGitblob(59) ve mainDiUlgoPK906832/9bc02fd7 eşliğini doğruladı; fark0. İki53koruma özeti before/after dosya çifti byte-eş. SaltOS4port/6listener/3Node kimliği kurulum zamanıyla tutarlı; CLI göreli olduğundan CWD/source path OS'den bağımsız kanıtlanmadı, kaynak→runtime owner makbuzuyla bağlıdır. CRM yeniHTTP/SQL/login/restart/kurulum/sharedwrite yapmadı. [Yeni currentInstalledLinkReadback](source-origin-readiness.json) eski09a ve kaynak-only kanıtlarını tarihsel olarak korur.
