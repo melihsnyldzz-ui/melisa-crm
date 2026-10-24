@@ -1,3 +1,9 @@
+## 24 Ekim 04:15 TR — E1 exact-origin CRM tüketici kaynağı hazır
+
+**[2c21c0f](https://github.com/melihsnyldzz-ui/melisa-crm/commit/2c21c0f7a0c4b10d29886b3dc3b61ba1a10c9c75)** mevcut native nesne ve terminal gezinme modülüne yalnız exact clean çocuk/aynı-host parent çiftini ekler; eski profiller ve tokensız üç alanlı activate/logout şeması korunur. Backend, normal auth/refresh, depo, hesap/rol/atama veya ERP dosyası değişmedi.3yeni test önce3FAIL; düzeltmede3yeni+6doğrudan etkilenen uyumluluk9PASS/48,81ms. Mevcut doğru clean profilli üretim build16,98sn PASS; bağımsız source review açıkP1/P2=0. Exact2c CI PR40048946210/push40048939909/AI40048946107 tamamlandı: SUCCESS /7job. [Kaynak ve somut eksik halkalar](docs/evidence/crm/2026-10-24-e1-terminal/README.md).
+
+**E1 tamam değil:** kaynak hazır, kurulum/pinli ERP native profil/depo/APK, desteklenen clean normal refresh ve doğrulanmış ERP→CRM kişi/temsilci/müşteri bağı eksiktir. Eski dedicated refresh guard'ı açılmadı; aynı-kişi ikinci parolasız giriş, yeniden açılış/çıkış/revoke, fiziksel TC21 ve insan kabulü bu testlerle PASS değildir. Kurulum ve ortak yazı ERP sahibinde;25/12/13/0 ve17/74 aynı. Kullanıcı adına geri alınabilir karar yalnız exact origin tüketicisini eklemek, eski profili ve kapalı güvenlik sınırlarını korumaktır.
+
 ## 24 Ekim 04:11 TR — B5 iki sunum eksiği kaynakta düzeltildi
 
 **63513b21ff931f2b6516c735479c095955213a13** yalnız frontend sunumunu değiştirir: envanter kartı avatarsız iki sütunlu başlıkla tam ad/kullanıcı adını sarar; Ayarlar atama açıklaması menü/handler ile aynı mevcut etkin `canAssign` sonucunu kullanır. Yetki/rol/atama işlemi/API değişmedi. Yeni iki App regresyonu eski kaynakta2FAIL → düzeltmede2PASS (4senaryo); doğru profilli üretim build11,66sn PASS. Bağımsız kaynak review açıkP1/P2=0; 635 exact CI PR40048602545/push40048594210/AI40048602594 tamamlandı: SUCCESS /7job.

@@ -1,0 +1,211 @@
+{
+  "kind": "existing-E1-CRM-source-consumer-readiness",
+  "observedAt": "2026-10-24T01:15:48Z",
+  "sourceCommit": "2c21c0f7a0c4b10d29886b3dc3b61ba1a10c9c75",
+  "baseSource": "63513b21ff931f2b6516c735479c095955213a13",
+  "existingAcceptanceIds": [
+    "M01",
+    "C01",
+    "C02",
+    "CRM-UA11"
+  ],
+  "directHumanSource": "01a16b6d-3d65-7853-970f-db1e6474b083",
+  "status": "SOURCE_READY_INSTALLATION_NORMAL_LOGIN_IDENTITY_DEVICE_PENDING",
+  "scope": "Only exact clean child-parent origin recognition and existing protected-native-object availability. No new auth API, cross-account login, store, account, password transfer or role/assignment behavior.",
+  "productionFiles": [
+    {
+      "path": "apps/frontend/src/nativeSessionBridge.js",
+      "physicalSha256": "aab64141228abf77436c9c43dc7ecad8805ec943a10c0759836b3d66b64dbc27",
+      "gitBlobSha256": "aab64141228abf77436c9c43dc7ecad8805ec943a10c0759836b3d66b64dbc27"
+    },
+    {
+      "path": "apps/frontend/src/terminalNavigation.js",
+      "physicalSha256": "955c2edc26d7336d4bd303c0796a091937127482c1007afbf06bd41df81753b7",
+      "gitBlobSha256": "955c2edc26d7336d4bd303c0796a091937127482c1007afbf06bd41df81753b7"
+    }
+  ],
+  "testFiles": [
+    {
+      "path": "apps/frontend/tests/native-session-bridge.test.mjs",
+      "physicalSha256": "d5a19d73070384bdfd74174058e1d6e742195b14192abb83f705b0f60b631096",
+      "gitBlobSha256": "d5a19d73070384bdfd74174058e1d6e742195b14192abb83f705b0f60b631096"
+    },
+    {
+      "path": "apps/frontend/tests/terminal-navigation.test.mjs",
+      "physicalSha256": "e26bfb9bcaf8e9d2d53b758540df8efab8cc2f712e5331e717d104cb1d56a28f",
+      "gitBlobSha256": "e26bfb9bcaf8e9d2d53b758540df8efab8cc2f712e5331e717d104cb1d56a28f"
+    }
+  ],
+  "tests": {
+    "newTests": 3,
+    "beforeNewTests": "3 FAIL",
+    "afterNewTests": "3 PASS",
+    "directlyAffectedCompatibilityTests": 6,
+    "totalTargetedPass": 9,
+    "durationMs": 48.8111,
+    "command": "node --import ./tests/offline-test-guard.mjs --test --test-isolation=none --test-reporter=tap --test-timeout=20000 --test-concurrency=1 --test-name-pattern=\"E1|bridge uses only|repeated bridge construction|terminal parent is exact|only exact parent|shared terminal permits|business terminal binds\" apps/frontend/tests/native-session-bridge.test.mjs apps/frontend/tests/terminal-navigation.test.mjs",
+    "evidenceScope": "offline module behavior only; no installed normal GUI or native device"
+  },
+  "build": {
+    "sourceCommit": "2c21c0f7a0c4b10d29886b3dc3b61ba1a10c9c75",
+    "NODE_ENV": "production",
+    "profileArgument": "--profile=clean-synthetic-20261022",
+    "buildSeconds": 16.98,
+    "result": "PASS",
+    "installed": false,
+    "assets": [
+      {
+        "path": "/assets/index-DOoZFoFf.js",
+        "bytes": 901291,
+        "sha256": "15e9af8ddfa894612b7f0a0d48caad07a60511950f4ef16a449bf3a27c4476d9"
+      },
+      {
+        "path": "/assets/index-C1zRRMAe.css",
+        "bytes": 167649,
+        "sha256": "3358f7ded98d63dc4e364d2557174490914b08bda7c0016262ed1a8f63e851da"
+      }
+    ]
+  },
+  "review": {
+    "agent": "/root/az_independent_reviewer",
+    "openP1P2": 0,
+    "scope": "four source/test files; no test/browser/runtime/SQL operations"
+  },
+  "secretScan": "staged source PASS,0 findings",
+  "ci": {
+    "sourceCommit": "2c21c0f7a0c4b10d29886b3dc3b61ba1a10c9c75",
+    "status": "COMPLETED_SUCCESS",
+    "jobsPassed": 7,
+    "runs": [
+      {
+        "run": 40048946210,
+        "sourceCommit": "2c21c0f7a0c4b10d29886b3dc3b61ba1a10c9c75",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/40048946210",
+        "jobs": [
+          {
+            "id": 120737006176,
+            "name": "windows-startup-test",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/40048946210/job/120737006176"
+          },
+          {
+            "id": 120737006372,
+            "name": "quality-build-test",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/40048946210/job/120737006372"
+          },
+          {
+            "id": 120737006423,
+            "name": "secret-scan",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/40048946210/job/120737006423"
+          }
+        ]
+      },
+      {
+        "run": 40048939909,
+        "sourceCommit": "2c21c0f7a0c4b10d29886b3dc3b61ba1a10c9c75",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/40048939909",
+        "jobs": [
+          {
+            "id": 120736986768,
+            "name": "windows-startup-test",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/40048939909/job/120736986768"
+          },
+          {
+            "id": 120736987040,
+            "name": "secret-scan",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/40048939909/job/120736987040"
+          },
+          {
+            "id": 120736987084,
+            "name": "quality-build-test",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/40048939909/job/120736987084"
+          }
+        ]
+      },
+      {
+        "run": 40048946107,
+        "sourceCommit": "2c21c0f7a0c4b10d29886b3dc3b61ba1a10c9c75",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/40048946107",
+        "jobs": [
+          {
+            "id": 120737005401,
+            "name": "ai-sales-offline",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/40048946107/job/120737005401"
+          }
+        ]
+      }
+    ]
+  },
+  "preserved": [
+    "existing legacy profiles and same-host matching",
+    "exact parent window/origin and exact action/type/version schema",
+    "no identity or credential in navigation messages",
+    "native get/put/clear v1 protocol and native-object requirement",
+    "normal auth /me and current server permission/revoke checks",
+    "all existing refresh/storage/account/assignment guards; no shared config writes"
+  ],
+  "blockedDependencies": [
+    {
+      "component": "ERP terminal profile/protected namespace/APK source and installation receipt",
+      "owner": "ERP",
+      "state": "PENDING_OWNER_PIN_AND_INSTALLATION; owner is preparing independently, absence of implementation is not inferred"
+    },
+    {
+      "component": "Existing normal CRM refresh admission for clean accounts",
+      "owner": "CRM/ERP existing contract",
+      "state": "NOT_READY_IN_CURRENT_SOURCE; normalRefreshSession.mjs95-108 and assignedStaffRefreshSession.mjs31-40 admit the legacy dedicated DB/user profile, not the clean account namespace. Closed guard was not opened."
+    },
+    {
+      "component": "ERP user ID to CRM user ID to representative and assigned-customer identity",
+      "owner": "ERP normal account inventory/application",
+      "state": "NOT_PROVEN; full4CRM sample accounts do not establish the approved real people mapping; no guessed identity or shared account"
+    },
+    {
+      "component": "Same person without second password, protected reopen/refresh/logout/revoke, phone/TC21 and human acceptance",
+      "owner": "ERP installed technical flow then real personnel E2 acceptance",
+      "state": "PENDING; source origin recognition/CI is not sufficient"
+    }
+  ],
+  "handoff": {
+    "owner": "ERP main agent",
+    "status": "SOURCE_CANDIDATE_ONLY",
+    "changesFrom635": "Two production frontend modules only; backend/config/store/API/native source unchanged by CRM",
+    "build": "NODE_ENV=production; node ../../scripts/ci/build-frontend.mjs --profile=clean-synthetic-20261022 (from apps/frontend)",
+    "sealedPackage": null,
+    "runtime": "Not changed by CRM. ERP owns install, namespace isolation, rollback and normal GUI/native receipt."
+  },
+  "userDefaultDecision": "Keep old profiles and add exact clean consumer pairing; reject old ERP ports from the clean CRM child. Preserve closed normal-refresh and identity guards; no new auth architecture or guessed cross-project identity.",
+  "finishCounts": {
+    "CRM": 25,
+    "green": 12,
+    "yellow": 13,
+    "red": 0,
+    "combinedLeaves": 74,
+    "headings": 17
+  },
+  "humanAcceptance": "PENDING",
+  "evidenceReview": {
+    "agent": "/root/az_independent_reviewer",
+    "openP1P2": 0,
+    "scope": "04:15 E1 records/source/build and pending installed login/identity/storage/APK/device/human acceptance; links, counts and source hashes. No new test/browser/runtime operation."
+  }
+}
