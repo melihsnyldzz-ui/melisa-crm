@@ -4,6 +4,22 @@ const HEX=/^[a-f0-9]{64}$/;
 const IDENTITY=['version','environmentId','database','erpOrigin','crmOrigin','erpUserId','erpNormalSessionId','crmUserId','chatwootAgentId','bindingRevision','expiresAt'];
 const LINK=['linkId','requestId','deviceBinding','erpOrigin','crmOrigin','linkExpiresAt','terminalIdentity'];
 const REQUEST=['code','requestId','deviceBinding','codeVerifier','erpOrigin','crmOrigin'];
+const failureDetails=Symbol('terminalFailureDetails');
+const failureStages=new Set(['peer-redeem','peer-verify','peer-revoke','current-user','grant-issue','fresh-verification','verified-user','grant-recheck','token-publication']);
+const failureReasons=new Set(['peer-http-status','peer-transport-or-json','peer-reply-shape','link-expiry-changed','identity-invalid','binding-changed','assertion-outlives-link','link-assertion-invalid','jwt-deadline','stored-binding']);
+// Internal fault localization only. Neither values nor diagnostics enter the
+// public error DTO; no identity, deadline, credential or raw peer body is kept.
+export function annotateTerminalFailure(error,{stage,reason,peerStatus,changedFields,linkExpiryEqual}={}){
+ if(!error||typeof error!=='object')return error;
+ if(stage!==undefined&&!failureStages.has(stage)||reason!==undefined&&!failureReasons.has(reason))return error;
+ const details={...(failureStages.has(stage)?{terminalStage:stage}:{}),...(failureReasons.has(reason)?{terminalReason:reason}:{}),
+  ...(Number.isInteger(peerStatus)&&peerStatus>=100&&peerStatus<=599?{terminalPeerStatus:peerStatus}:{}),
+  ...(Array.isArray(changedFields)&&changedFields.length<=IDENTITY.length&&changedFields.every(field=>IDENTITY.includes(field)&&field!=='expiresAt')?{terminalChangedFields:Object.freeze([...new Set(changedFields)])}:{}),
+  ...(typeof linkExpiryEqual==='boolean'?{terminalLinkExpiryEqual:linkExpiryEqual}:{}),...error[failureDetails]};
+ try{Object.defineProperty(error,failureDetails,{value:Object.freeze(details),configurable:true});}catch{}
+ return error;
+}
+export function terminalFailureForLog(error){return error?.[failureDetails]?{...error[failureDetails]}:{};}
 export const reject=(statusCode=403)=>Object.assign(Error(statusCode===503?'Terminal oturum doğrulaması kullanılamıyor. Yeniden deneyin.':'Terminal hesabının CRM bağlantısı doğrulanamadı.'),{statusCode,code:statusCode===503?'CRM_TERMINAL_PEER_UNAVAILABLE':'CRM_TERMINAL_IDENTITY_REQUIRED'});
 export const exact=(value,fields)=>value&&Object.getPrototypeOf(value)===Object.prototype&&Object.keys(value).length===fields.length&&fields.every(key=>Object.hasOwn(value,key));
 const origins=(erp,crm)=>['127.0.0.1','192.168.1.46'].some(host=>erp===`http://${host}:5244`&&crm===`http://${host}:62800`);

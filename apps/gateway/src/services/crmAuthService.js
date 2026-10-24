@@ -8,7 +8,7 @@ import { configuredNormalRefreshStore, configuredSemihTestRefreshStore, isDedica
 import {configuredCustomerRequestIssuerStore,customerRequestSharedConfig} from './customerRequestIssuerSession.mjs';
 import {configuredAssignedStaffRefreshStore,DEDICATED_ASSIGNED_STAFF_TEST_USER_ID} from './assignedStaffRefreshSession.mjs';
 import {configuredTerminalHandoffPeer,isTerminalPeerProof} from './terminalHandoffPeer.mjs';
-import {reject as terminalReject,validateTerminalRequest,terminalIdentityKey} from '../../../../packages/contracts/terminal-handoff.mjs';
+import {reject as terminalReject,validateTerminalRequest,terminalIdentityKey,annotateTerminalFailure} from '../../../../packages/contracts/terminal-handoff.mjs';
 import {configuredCleanCrmManagement} from './cleanCrmManagement.mjs';
 
 const ROLE_PERMISSIONS = Object.freeze({
@@ -172,9 +172,9 @@ function normalLoginResult(user, grant = null, {maxExpiresAt} = {}) {
     {subject:user.id,issuer:env.auth.issuer,audience:env.auth.audience,expiresIn:env.auth.tokenExpiresIn,jwtid:crypto.randomUUID()},
   );
   if(maxExpiresAt!==undefined){
-    if(!Number.isSafeInteger(maxExpiresAt)||maxExpiresAt<=Date.now())throw terminalReject();
+    if(!Number.isSafeInteger(maxExpiresAt)||maxExpiresAt<=Date.now())throw annotateTerminalFailure(terminalReject(),{reason:'jwt-deadline'});
     const payload=jwt.decode(accessToken);payload.exp=Math.min(payload.exp,Math.floor(maxExpiresAt/1000));
-    if(payload.exp<=Math.floor(Date.now()/1000))throw terminalReject();
+    if(payload.exp<=Math.floor(Date.now()/1000))throw annotateTerminalFailure(terminalReject(),{reason:'jwt-deadline'});
     accessToken=jwt.sign(payload,env.auth.jwtSecret);
   }
   const expiresAt=jwt.decode(accessToken).exp*1000;
@@ -278,7 +278,7 @@ export function verifyCrmAccessToken(token, { includeContext = false } = {}) {
     if(!store)throw authError('AUTH_TOKEN_INVALID','Yeniden giriş yapın.');
     const verified=store.verify(payload.normalSessionId,user,{includeTerminalLink:true});
     if(verified.terminalLink){
-      if(store!==cleanNormalRefreshStore||verified.terminalLink.terminalIdentity.crmUserId!==user.id||verified.terminalLink.terminalIdentity.chatwootAgentId!==user.chatwootAgentId)throw terminalReject();
+      if(store!==cleanNormalRefreshStore||verified.terminalLink.terminalIdentity.crmUserId!==user.id||verified.terminalLink.terminalIdentity.chatwootAgentId!==user.chatwootAgentId)throw annotateTerminalFailure(terminalReject(),{reason:'stored-binding'});
       linkedTerminalGrants.set(user,{store,sid:payload.normalSessionId,link:verified.terminalLink});
     }
     if(store===customerRequestIssuer?.store)verifiedCustomerRequestIssuers.add(user);
@@ -298,7 +298,9 @@ function terminalUser(proof){
 }
 async function verifyTerminalLink(link){
   if(!terminalPeer)throw terminalReject();
-  const proof=await terminalPeer.verify(link);terminalUser(proof);return proof;
+  let stage='peer-verify';
+  try{const proof=await terminalPeer.verify(link);stage='verified-user';terminalUser(proof);return proof;}
+  catch(error){throw annotateTerminalFailure(error,{stage});}
 }
 async function closeTerminalGrant(store,grant,link){
   // Local own-family revoke is independent of ERP availability or current role.
@@ -308,15 +310,20 @@ async function closeTerminalGrant(store,grant,link){
 export async function authenticateCrmTerminalHandoff(input){
   validateTerminalRequest(input);if(!terminalPeer)throw terminalReject();
   const proof=await terminalPeer.redeem(input);
-  let grant;
+  let grant,stage='current-user';
   try{
     const user=terminalUser(proof);
+    stage='grant-issue';
     grant=cleanNormalRefreshStore.issue(user,{terminalLink:proof,maxExpiresAt:proof.linkExpiresAt});
-    const fresh=await verifyTerminalLink(proof),actual=terminalUser(fresh);
+    stage='fresh-verification';const fresh=await verifyTerminalLink(proof);
+    stage='verified-user';const actual=terminalUser(fresh);
+    stage='grant-recheck';
     cleanNormalRefreshStore.verify(grant.sid,actual);
+    stage='token-publication';
     const result=normalLoginResult(actual,grant,{maxExpiresAt:fresh.linkExpiresAt});
     result.user.terminalIdentity=fresh.terminalIdentity;return result;
   }catch(error){
+    annotateTerminalFailure(error,{stage});
     if(grant)await closeTerminalGrant(cleanNormalRefreshStore,grant,proof).catch(()=>{});
     else await terminalPeer.revoke(proof).catch(()=>{});
     throw error;

@@ -1,6 +1,7 @@
 import { env } from '../config/env.js';
 import { logger } from '../utils/logger.js';
 import { safeRequestPath } from '../utils/safeRequestPath.js';
+import {terminalFailureForLog} from '../../../../packages/contracts/terminal-handoff.mjs';
 
 export function errorHandler(err, req, res, next) {
   if (res.headersSent) {
@@ -31,6 +32,7 @@ export function errorHandler(err, req, res, next) {
     providerStatus: err.meta?.providerStatus || err.meta?.status,
     providerCode: err.meta?.providerCode,
     deliveryState: err.meta?.deliveryState,
+    ...terminalFailureForLog(err),
   });
 
   const meta = {
