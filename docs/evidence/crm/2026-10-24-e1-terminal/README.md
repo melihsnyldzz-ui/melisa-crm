@@ -1,5 +1,7 @@
 # E1 / M01 / CRM-UA11 — mevcut terminal girişinin CRM kaynak parçası
 
+24 Ekim 04:44 TR güncellemesi: ERP normal yenileme source8aa API-web'e gerçekten kuruldu; mevcut13durumlu auth kontrolü, normal ERP ekranı ve53koruma özeti owner makbuzunda doğrulandı. Bu CRM clean yenilemesi, source2c kurulumu, aynı kişi geçişi veya cihaz/insan kabulü değildir. CRM bu tur yalnız mevcut makbuzları RO okudu. Güncel tek yürütme kaydı [CRM_STATUS.md](../../../../CRM_STATUS.md), ayrıntı bu klasördeki JSON'dadır. Aşağıdaki kaynak-hazır/kurulmamış ifadeleri önceki04:15/04:11 tarihli aşamalardır.
+
 24 Ekim 2026 04:15 TR. [Kaynak 2c21c0f](https://github.com/melihsnyldzz-ui/melisa-crm/commit/2c21c0f7a0c4b10d29886b3dc3b61ba1a10c9c75), mevcut [PR3](https://github.com/melihsnyldzz-ui/melisa-crm/pull/3). Bu, mevcut E1'in dar tüketici uyarlamasıdır; yeni plan veya giriş mimarisi değildir. [Sırsız kaynak/build/test ve eksik halkalar](source-origin-readiness.json).
 
 Mevcut `nativeSessionBridge.js`, yalnız exact loopback/LAN clean CRM originlerinde **zaten sunulan** native nesneyi tanır; sıradan tarayıcıda native depo üretilmez. `terminalNavigation.js`, clean çocuk için yalnız aynı hosttaki clean ERP parent'ını kabul eder. Eski profiller yerinde kalır; clean çocuk eski ERP portlarına bağlanmaz. Parent kaynağı/origin ve üç alanlı gezinme/çıkış mesaj şeması değişmez; kullanıcı ID'si veya credential mesajla taşınmaz. Normal auth, refresh, hesap/rol/temsilci/atama ve native depo uygulaması değiştirilmedi.

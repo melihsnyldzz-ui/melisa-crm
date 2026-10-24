@@ -165,6 +165,56 @@
   ],
   "blockedDependencies": [
     {
+      "component": "ERP existing normal clean session refresh engine",
+      "owner": "ERP",
+      "state": "INSTALLED8AA_OWNER_API_AND_NORMAL_GUI_TECHNICAL_VERIFIED; separate from CRM and physical device acceptance"
+    },
+    {
+      "component": "CRM exact-origin consumer source2c installation",
+      "owner": "ERP installer",
+      "state": "SOURCE_READY_NOT_INSTALLED_IN_LAST_RECEIPT; currently installed CRM frontend635/backendc1"
+    },
+    {
+      "component": "Existing normal CRM refresh admission for clean accounts",
+      "owner": "CRM source / ERP existing contract and installation",
+      "state": "NOT_READY_IN_CURRENT_CRM_SOURCE; legacy dedicated policy remains; ERP8aa does not change CRM backendc1 or create a CRM identity/grant"
+    },
+    {
+      "component": "ERP user ID to CRM user ID to representative and assigned-customer identity",
+      "owner": "ERP normal account inventory/application",
+      "state": "NOT_PROVEN; configured4CRM sample accounts are an exact readonly scope, not real-person mapping"
+    },
+    {
+      "component": "Terminal APK/native protected persistence, same-person CRM reopen/logout/revoke and physical/personnel acceptance",
+      "owner": "ERP installed flow then real personnel E2 acceptance",
+      "state": "PENDING; passive APK/source and ERP normal-auth cases do not establish device or human acceptance"
+    }
+  ],
+  "handoff": {
+    "owner": "ERP main agent",
+    "status": "SOURCE_CANDIDATE_ONLY",
+    "changesFrom635": "Two production frontend modules only; backend/config/store/API/native source unchanged by CRM",
+    "build": "NODE_ENV=production; node ../../scripts/ci/build-frontend.mjs --profile=clean-synthetic-20261022 (from apps/frontend)",
+    "sealedPackage": null,
+    "runtime": "Last CRM frontend635/backendc1 B5UX is installed. This2c CRM consumer remains a source candidate. ERP API/web8aa is installed; nativeSource035 remains separate. ERP owns installation, protected namespace, rollback and native device proof."
+  },
+  "userDefaultDecision": "Keep old profiles and add exact clean consumer pairing; reject old ERP ports from the clean CRM child. Preserve closed normal-refresh and identity guards; no new auth architecture or guessed cross-project identity.",
+  "finishCounts": {
+    "CRM": 25,
+    "green": 12,
+    "yellow": 13,
+    "red": 0,
+    "combinedLeaves": 74,
+    "headings": 17
+  },
+  "humanAcceptance": "PENDING",
+  "evidenceReview": {
+    "agent": "/root/az_independent_reviewer",
+    "openP1P2": 0,
+    "scope": "04:15 E1 records/source/build and pending installed login/identity/storage/APK/device/human acceptance; links, counts and source hashes. No new test/browser/runtime operation."
+  },
+  "previousBlockedDependencies20261024T011548Z": [
+    {
       "component": "ERP terminal profile/protected namespace/APK source and installation receipt",
       "owner": "ERP",
       "state": "PENDING_OWNER_PIN_AND_INSTALLATION; owner is preparing independently, absence of implementation is not inferred"
@@ -185,27 +235,236 @@
       "state": "PENDING; source origin recognition/CI is not sufficient"
     }
   ],
-  "handoff": {
-    "owner": "ERP main agent",
-    "status": "SOURCE_CANDIDATE_ONLY",
-    "changesFrom635": "Two production frontend modules only; backend/config/store/API/native source unchanged by CRM",
-    "build": "NODE_ENV=production; node ../../scripts/ci/build-frontend.mjs --profile=clean-synthetic-20261022 (from apps/frontend)",
-    "sealedPackage": null,
-    "runtime": "Not changed by CRM. ERP owns install, namespace isolation, rollback and normal GUI/native receipt."
+  "erpNormalRefreshInstallation": {
+    "sourceCommit": "8aa3093efd43a4010dbf0106497ef7e592edc46a",
+    "receipt": {
+      "name": "e1-session-installation.json",
+      "bytes": 829,
+      "sha256": "af4511ebac8f55dceb66735f973fa177b5ff11973acd3e0c92ed0e6f5175b9dd",
+      "status": "INSTALLED",
+      "source": "8aa3093efd43a4010dbf0106497ef7e592edc46a",
+      "frontendSource": "8aa3093efd43a4010dbf0106497ef7e592edc46a",
+      "package": "CLEAN-ERP-20261022-8aa3093efd43",
+      "root": "C:/Sirket/ERP/releases/CLEAN-ERP-20261024-8aa3093efd43-E1SESSION",
+      "files": 3410,
+      "manifestSha": "1C77742208370B4A1FDF7EFC4CF84BE7DB92782CD4E510AAF3558BF98FB7AAE2",
+      "changedPorts": [
+        4194,
+        5244
+      ],
+      "nativeSource": "035fcc08d8f56cdd0cbc437a290285328fce1ec9",
+      "preservedListeners": 18,
+      "crmStatus": 200,
+      "dataSummariesUnchanged": 53,
+      "protectedSessionStatePrepared": true,
+      "database": "MELISA_ERP_CLEAN_TEST_20261022",
+      "environmentId": "e662fd94-d797-4b3b-938a-d143ad758b67",
+      "synthetic": true,
+      "actualT1": false,
+      "installedAt": "2026-10-24T04:38:18.3317224+03:00"
+    },
+    "normalRuntimeReceipt": {
+      "name": "e1-normal-session-runtime.json",
+      "bytes": 1711,
+      "sha256": "31c6b6ad96b463268fbf1b8d7ab3b083814702772bebb7a821feaab2afbe801c",
+      "status": "TECHNICAL_NORMAL_AUTH_VERIFIED",
+      "source": "8aa3093efd43a4010dbf0106497ef7e592edc46a",
+      "observedAt": "2026-10-24T04:38:58.4161297+03:00",
+      "actorId": 18,
+      "role": "clean_test_warehouse",
+      "cases": [
+        {
+          "operation": "login",
+          "status": 200,
+          "verified": true
+        },
+        {
+          "operation": "me",
+          "status": 200,
+          "verified": true
+        },
+        {
+          "operation": "session-confirm",
+          "status": 200,
+          "verified": true
+        },
+        {
+          "operation": "session-confirm",
+          "status": 400,
+          "verified": true
+        },
+        {
+          "operation": "refresh",
+          "status": 200,
+          "verified": true
+        },
+        {
+          "operation": "refresh",
+          "status": 401,
+          "verified": true
+        },
+        {
+          "operation": "session-confirm",
+          "status": 200,
+          "verified": true
+        },
+        {
+          "operation": "logout",
+          "status": 200,
+          "verified": true
+        },
+        {
+          "operation": "me",
+          "status": 401,
+          "verified": true
+        },
+        {
+          "operation": "refresh",
+          "status": 401,
+          "verified": true
+        },
+        {
+          "operation": "login",
+          "status": 200,
+          "verified": true
+        },
+        {
+          "operation": "logout",
+          "status": 200,
+          "verified": true
+        },
+        {
+          "operation": "session-confirm",
+          "status": 401,
+          "verified": true
+        }
+      ],
+      "rawCredentialsLogged": false,
+      "rawRefreshPersisted": false,
+      "privateAclPreserved": true,
+      "dataSummariesUnchanged": 53,
+      "commercialWrites": 0,
+      "newAccounts": 0,
+      "rolesChanged": 0,
+      "deviceResult": "NOT_RUN",
+      "humanAcceptance": "PENDING"
+    },
+    "ci": {
+      "sourceCommit": "8aa3093efd43a4010dbf0106497ef7e592edc46a",
+      "status": "completed",
+      "conclusion": "success",
+      "jobsPassed": 3,
+      "url": "https://github.com/melihsnyldzz-ui/melisa-erp-v2/actions/runs/40050045544",
+      "receipt": {
+        "name": "e1-session-ci.json",
+        "bytes": 642,
+        "sha256": "87b4399b6f591da9c514bfebd60ef420264af16bb4bd4f2e2bf196cb5c58a7a4"
+      }
+    },
+    "review": {
+      "reviewer": "CRM main agent, independent of ERP writer",
+      "openP1P2": 0,
+      "scope": "Read-only exact8aa diff and existing auth/middleware context; no test or runtime action"
+    },
+    "protectionSummaryBytes": [
+      {
+        "before": "e1-session-install-protected.before.txt",
+        "after": "e1-session-install-protected.after.txt",
+        "available": true,
+        "byteEqual": true
+      },
+      {
+        "before": "e1-session-install-protected.after.txt",
+        "after": "e1-normal-session-protected.after.txt",
+        "available": true,
+        "byteEqual": true
+      },
+      {
+        "before": "e1-normal-session-protected.after.txt",
+        "after": "e1-session-gui-protected.after.txt",
+        "available": true,
+        "byteEqual": true
+      }
+    ],
+    "evidenceScope": "Recorded owner installation and13stateful auth cases plus normal ERP stock/supplier GUI; CRM read existing receipt/protection files only. No new auth/SQL/HTTP/GUI execution."
   },
-  "userDefaultDecision": "Keep old profiles and add exact clean consumer pairing; reject old ERP ports from the clean CRM child. Preserve closed normal-refresh and identity guards; no new auth architecture or guessed cross-project identity.",
-  "finishCounts": {
-    "CRM": 25,
-    "green": 12,
-    "yellow": 13,
-    "red": 0,
-    "combinedLeaves": 74,
-    "headings": 17
-  },
-  "humanAcceptance": "PENDING",
-  "evidenceReview": {
-    "agent": "/root/az_independent_reviewer",
-    "openP1P2": 0,
-    "scope": "04:15 E1 records/source/build and pending installed login/identity/storage/APK/device/human acceptance; links, counts and source hashes. No new test/browser/runtime operation."
+  "currentCrmInstallationReference": "docs/evidence/crm/2026-10-23-b5-assignment/normal-user-inventory.json",
+  "recordReconciliation": {
+    "observedAt": "2026-10-24T01:44:21Z",
+    "beforeCrmSource": "548fee85f7a2b2897f048b9e7ac4378cfb2e6f29",
+    "beforeCrmInconsistencies": 9,
+    "cause": "New second-level delivery headings immediately after the current heading ended the current parser section before its existing work fields and preflight.",
+    "historyPreserved": true,
+    "checker": "Existing ERP delivery-checks/project.mjs pure checkProjects function only; configured run.mjs/cache not executed",
+    "checkerSha256": "a949281040fef900a9d8c3c505bd5b251ae30a9d73081394943d21b8887fe558",
+    "functionalOrHumanClosureGranted": false,
+    "historicalBodySha256": "45ed11450925beb2cd401ec77731023f4305446ef20d84f5e05d801c418faaf4",
+    "historicalBodyBytes": 296621,
+    "afterCrmInconsistencies": 0,
+    "afterCrmIssues": [
+      {
+        "code": "PROOF_BLOCKED",
+        "kind": "check_required",
+        "at": "CRM.preflight.required[1]",
+        "message": "Bu önkoşulun hata veya engel kaydı çözülmedi."
+      },
+      {
+        "code": "PROOF_BLOCKED",
+        "kind": "check_required",
+        "at": "CRM.preflight.required[2]",
+        "message": "Bu önkoşulun hata veya engel kaydı çözülmedi."
+      }
+    ],
+    "crmPrerequisiteDecisions": [
+      {
+        "id": "required[0]",
+        "decision": "REUSE",
+        "code": null,
+        "fingerprint": "fa3544c0e70a176d68237df3fc89535838661cf12dadea0cf5bb4bb4fd6e6b69"
+      },
+      {
+        "id": "required[1]",
+        "decision": "BLOCKED",
+        "code": "PROOF_BLOCKED",
+        "fingerprint": "aca7e085de620c7744a15ce052cbcae0a5bcc31d8af9582ca7caab7202a3039e"
+      },
+      {
+        "id": "required[2]",
+        "decision": "BLOCKED",
+        "code": "PROOF_BLOCKED",
+        "fingerprint": "1777e4aacdff290983267158581793ef05d8d61ba72a657db79bbb3f8580b8db"
+      }
+    ],
+    "mainIds": {
+      "ERP": "CRM06",
+      "CRM": "CRM06"
+    },
+    "erpRecordScope": "Canonical ERP STATUS was read-only input. Its existing prerequisites remain separate; CRM did not rewrite it or grant global consistency/functional closure.",
+    "erpIssues": [
+      {
+        "code": "PROOF_BLOCKED",
+        "kind": "check_required",
+        "at": "ERP.preflight.required[0]",
+        "message": "Bu önkoşulun hata veya engel kaydı çözülmedi."
+      },
+      {
+        "code": "PROOF_BLOCKED",
+        "kind": "check_required",
+        "at": "ERP.preflight.required[1]",
+        "message": "Bu önkoşulun hata veya engel kaydı çözülmedi."
+      },
+      {
+        "code": "PROOF_BLOCKED",
+        "kind": "check_required",
+        "at": "ERP.preflight.required[2]",
+        "message": "Bu önkoşulun hata veya engel kaydı çözülmedi."
+      }
+    ],
+    "currentStatusSha256": "a06a5be28cf7e4f02f52d9299495066d63264bbd3ededf6554ed340179597bbb",
+    "independentReview": {
+      "agent": "/root/az_independent_reviewer",
+      "openP1P2": 0,
+      "scope": "Five staged documents; single current table/preflight,296621-byte historical body equality, links, mixed635/c1 package-source distinction, ERP8aa versus unappliedCRM2c and pending acceptance. Reviewer performed no checker/test/GUI/HTTP/SQL/runtime or writes."
+    }
   }
 }

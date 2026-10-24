@@ -338,7 +338,7 @@
     ]
   },
   "installation": {
-    "state": "INSTALLED_FRONTEND_A32_BACKEND_C1_NORMAL_GUI_VERIFIED",
+    "state": "INSTALLED_FRONTEND_635_BACKEND_C1_OWNER_NORMAL_GUI_VERIFIED",
     "writer": "ERP owner only",
     "requiredComponents": [
       "CRM gateway/backend",
@@ -442,7 +442,7 @@
       "runtimeScope": "fresh public index/module bytes plus owner normal API/readback; no independent process/SQL query",
       "sharedWrites": 0
     },
-    "freshPublicAssetReadPerformed": true,
+    "freshPublicAssetReadPerformed": false,
     "normalApiReadback": {
       "path": "C:\\Sirket\\ERP\\clean\\20261022\\runtime\\semih-access-20261023\\b5-crm-inventory-readback.json",
       "bytes": 2860,
@@ -574,9 +574,23 @@
       "humanAcceptance": "PENDING"
     },
     "ownerNormalGui": {
-      "login": "PASS with existing sample Patron normal account",
-      "inventoryEntry": "FAIL: Users view has no normal navigation entry in installed c1",
-      "humanAcceptance": "PENDING"
+      "normalChrome": true,
+      "normalManagerSession": true,
+      "settingsEntry": true,
+      "refresh": true,
+      "fullReload": true,
+      "sessionPreserved": true,
+      "configuredAccounts": 4,
+      "active": 4,
+      "inactive": 0,
+      "unlinkedAgents": 1,
+      "syntheticConversationAssignments": 1,
+      "screenshot": "b5-ux-normal-settings.png",
+      "source": "63513b21ff931f2b6516c735479c095955213a13",
+      "actualRole": "patron",
+      "realPersonOrManagerAcceptance": false,
+      "evidence": "owner-runtime/b5-ux-normal-reloaded.txt",
+      "observedByCrm": "Existing screenshot and normal reload AX artifact read only; no new CRM login or GUI execution"
     },
     "packageCreator": "ERP owner only; CRM source build is not this package",
     "previousPublishedBase": {
@@ -622,10 +636,11 @@
       "humanAcceptance": "PENDING"
     },
     "currentPublished": {
-      "frontendSource": "a32e071221f5f242dc08996b8ace0c1b1294214e",
-      "frontendPackage": "CLEAN-CRM-20261024-a32e071221f5-B5PROFILE",
+      "frontendSource": "63513b21ff931f2b6516c735479c095955213a13",
+      "frontendPackage": "CLEAN-CRM-20261024-63513b21ff93-B5UX",
       "backendSource": "c1bc351218c3db70ac2b3fa7cff5ba2bf7560ffb",
-      "backendPackage": "CLEAN-CRM-20261024-c1bc351218c3-B5"
+      "backendPackage": "CLEAN-CRM-20261024-63513b21ff93-B5UX",
+      "backendPackageScope": "The sealed mixed635 package carries unchanged c1 gateway source. Source comparison c1..635 apps/gateway is empty; no new independent live process-path query was performed."
     },
     "normalGuiBuildBlocker": {
       "path": "C:\\Sirket\\ERP\\clean\\20261022\\runtime\\semih-access-20261023\\b5-crm-inventory-ui-http.json",
@@ -682,6 +697,70 @@
       "humanAcceptance": "PENDING"
     },
     "ownerFinalReceipt": {
+      "name": "b5-ux-final-delivery.json",
+      "bytes": 1689,
+      "sha256": "8f0f380e88367d9a6c9567fa3dcc946d24ab8b609470d73b46fd087171402852",
+      "status": "TECHNICAL_INVENTORY_UI_COMPLETE",
+      "source": "63513b21ff931f2b6516c735479c095955213a13",
+      "frontendSource": "63513b21ff931f2b6516c735479c095955213a13",
+      "backendSource": "c1bc351218c3db70ac2b3fa7cff5ba2bf7560ffb",
+      "root": "C:/Sirket/ERP/releases/CLEAN-CRM-20261024-63513b21ff93-B5UX",
+      "manifestSha": "3A5F7D9333184269B5DB2E4639B2CF5285EA45AB0C9EA0CE2C13C0FC380A2E2C",
+      "files": 762,
+      "changedPorts": [
+        62800,
+        62801,
+        62802,
+        62803
+      ],
+      "preservedListeners": 16,
+      "erpSource": "04a83e53c64d6757c6749ede752837ae689156da",
+      "nativeSource": "035fcc08d8f56cdd0cbc437a290285328fce1ec9",
+      "database": "MELISA_ERP_CLEAN_TEST_20261022",
+      "environmentId": "e662fd94-d797-4b3b-938a-d143ad758b67",
+      "synthetic": true,
+      "actualT1": false,
+      "dataSummariesUnchanged": 53,
+      "installedAt": "2026-10-24T04:19:08.2068359+03:00",
+      "gui": {
+        "normalChrome": true,
+        "normalManagerSession": true,
+        "settingsEntry": true,
+        "refresh": true,
+        "fullReload": true,
+        "sessionPreserved": true,
+        "configuredAccounts": 4,
+        "active": 4,
+        "inactive": 0,
+        "unlinkedAgents": 1,
+        "syntheticConversationAssignments": 1,
+        "screenshot": "b5-ux-normal-settings.png"
+      },
+      "http": {
+        "indexSha": "ef1d6aeac91559adaa859d5d2cbb0335717aabe25392dcd98dbbadbd8b91dd76",
+        "mainPath": "/assets/index-CZ-0Gx-l.js",
+        "mainSha": "9a149af3f1f3aa94be97e7e438753a4b7bcf0d416508898841adf108b0b61ee4"
+      },
+      "dataSummariesUnchangedAfterGui": 53,
+      "realPersonMapping": "NOT_PROVEN",
+      "humanAcceptance": "PENDING",
+      "limitations": [
+        "Real-person mapping and human/device acceptance remain pending"
+      ],
+      "verifiedAt": "2026-10-24T01:21:48.015Z",
+      "path": "owner-runtime/b5-ux-final-delivery.json"
+    },
+    "protectedSummaryFileBytesUnchanged": {
+      "files": [
+        "C:\\Sirket\\ERP\\clean\\20261022\\runtime\\semih-access-20261023\\b5-crm-inventory-profile-data.before.txt",
+        "C:\\Sirket\\ERP\\clean\\20261022\\runtime\\semih-access-20261023\\b5-crm-inventory-profile-data.after.txt",
+        "C:\\Sirket\\ERP\\clean\\20261022\\runtime\\semih-access-20261023\\b5-final-data.after-gui.txt"
+      ],
+      "sha256": "034bd4bd5447900e4eea94f96be130dc492013a0d01219667a75073ef9988bcd",
+      "ownerSqlScopeCount": 53,
+      "sqlQueriedByCrm": false
+    },
+    "previousOwnerFinalReceiptA32": {
       "path": "C:\\Sirket\\ERP\\clean\\20261022\\runtime\\semih-access-20261023\\b5-final-delivery.json",
       "bytes": 1837,
       "sha256": "43255b64ae4c147c6d8bebb5a5a7c407a6419084b786e124b3997528c730f263",
@@ -735,15 +814,102 @@
       ],
       "verifiedAt": "2026-10-24T00:37:08.606Z"
     },
-    "protectedSummaryFileBytesUnchanged": {
-      "files": [
-        "C:\\Sirket\\ERP\\clean\\20261022\\runtime\\semih-access-20261023\\b5-crm-inventory-profile-data.before.txt",
-        "C:\\Sirket\\ERP\\clean\\20261022\\runtime\\semih-access-20261023\\b5-crm-inventory-profile-data.after.txt",
-        "C:\\Sirket\\ERP\\clean\\20261022\\runtime\\semih-access-20261023\\b5-final-data.after-gui.txt"
+    "previousOwnerNormalGui": {
+      "login": "PASS with existing sample Patron normal account",
+      "inventoryEntry": "FAIL: Users view has no normal navigation entry in installed c1",
+      "humanAcceptance": "PENDING"
+    },
+    "previousPublicAssetReadA32Performed": true,
+    "currentArtifactReconciliation": {
+      "kind": "readonly-record-reconciliation",
+      "crmSource": "63513b21ff931f2b6516c735479c095955213a13",
+      "crmManifestSha256": "3a5f7d9333184269b5db2e4639b2cf5285ea45ab0c9ea0ce2c13c0fc380a2e2c",
+      "crmFilesVerified": 762,
+      "productionSourceComparisons": [
+        {
+          "path": "apps/frontend/src/App.jsx",
+          "physicalSha256": "254b9696b2fb190c27f9c3b2084ec3a9e7a1a9b787af2abf4117e9a19dbdb62f",
+          "gitBlobSha256": "4754e373acbab3c8fe1ed70373fb6fb00ddb7a7a42ceb232d38ef7b41669f113",
+          "equalAfterOnlyCRLFNormalization": true
+        },
+        {
+          "path": "apps/frontend/src/CrmUserInventory.jsx",
+          "physicalSha256": "5c9d4bbfec7dfb1c44387a57eca018e2255a4727c0b65fcde8c922ed4b9d52d6",
+          "gitBlobSha256": "d004eecc1bf80e4a73d0358b3f548c04a6d7c9a7f51787cf9cc2b276e5357776",
+          "equalAfterOnlyCRLFNormalization": true
+        },
+        {
+          "path": "apps/frontend/src/styles.css",
+          "physicalSha256": "de6d2d9863619781471b4612569d57ee707b44fe58867ecfb365759d17c52e97",
+          "gitBlobSha256": "0c8aecd00a7b726439fdf2fca50de9bcd9a21a89157bfa1db1ccd26d48578a62",
+          "equalAfterOnlyCRLFNormalization": true
+        }
       ],
-      "sha256": "034bd4bd5447900e4eea94f96be130dc492013a0d01219667a75073ef9988bcd",
-      "ownerSqlScopeCount": 53,
-      "sqlQueriedByCrm": false
+      "receipts": [
+        {
+          "name": "b5-ux-final-delivery.json",
+          "bytes": 1689,
+          "sha256": "8f0f380e88367d9a6c9567fa3dcc946d24ab8b609470d73b46fd087171402852"
+        },
+        {
+          "name": "b5-crm-ux-installation.json",
+          "bytes": 861,
+          "sha256": "54870e2e725fd444326be5a4aafdb236d2817cd11033109b3354c52ff45c913c"
+        },
+        {
+          "name": "e1-normal-session-runtime.json",
+          "bytes": 1711,
+          "sha256": "31c6b6ad96b463268fbf1b8d7ab3b083814702772bebb7a821feaab2afbe801c"
+        },
+        {
+          "name": "e1-session-installation.json",
+          "bytes": 829,
+          "sha256": "af4511ebac8f55dceb66735f973fa177b5ff11973acd3e0c92ed0e6f5175b9dd"
+        },
+        {
+          "name": "e1-session-ci.json",
+          "bytes": 642,
+          "sha256": "87b4399b6f591da9c514bfebd60ef420264af16bb4bd4f2e2bf196cb5c58a7a4"
+        },
+        {
+          "name": "b5-ux-normal-settings.png",
+          "bytes": 127136,
+          "sha256": "b5aaec87343b2ae3ae463e91e44b88329cf0f7b9c76ead5ba09cca491339d5fe"
+        }
+      ],
+      "ownerProtectionSummaryFileComparisons": [
+        {
+          "before": "b5-crm-ux-data.before.txt",
+          "after": "b5-crm-ux-data.after.txt",
+          "available": true,
+          "byteEqual": true
+        },
+        {
+          "before": "b5-crm-ux-data.after.txt",
+          "after": "b5-ux-data.after-gui.txt",
+          "available": true,
+          "byteEqual": true
+        },
+        {
+          "before": "e1-session-install-protected.before.txt",
+          "after": "e1-session-install-protected.after.txt",
+          "available": true,
+          "byteEqual": true
+        },
+        {
+          "before": "e1-session-install-protected.after.txt",
+          "after": "e1-normal-session-protected.after.txt",
+          "available": true,
+          "byteEqual": true
+        },
+        {
+          "before": "e1-normal-session-protected.after.txt",
+          "after": "e1-session-gui-protected.after.txt",
+          "available": true,
+          "byteEqual": true
+        }
+      ],
+      "scope": "Existing artifacts and recorded owner outcomes only. No new HTTP/SQL/login/GUI/test/service or shared writes."
     }
   },
   "boundaries": {
@@ -766,7 +932,7 @@
     "combinedLeaves": 74,
     "headings": 17
   },
-  "next": "ERP owner installation receipt for the B5 presentation source635; parallel dependency-ready E1 exact-origin consumer source, with existing normal auth/refresh/identity prerequisites explicit. Do not infer identities or unblock clean refresh guards.",
+  "next": "B5 readonly inventory and presentation installed635/c1 are technically complete. E1 ERP normal refresh installed8aa is separate from CRM2c source-only consumer, current unsupported clean CRM normal refresh and unproven cross-project person/representative/customer mapping. No guessed identity or guard bypass.",
   "settingsEntryFix": {
     "sourceCommit": "4ead69a529b45e00669ad930c744a12af37f631d",
     "changedProductionFiles": [
@@ -1050,40 +1216,23 @@
     "humanAcceptance": "PENDING",
     "ownerHandoffSent": true
   },
-  "lastVerifiedAt": "2026-10-24T00:38:53.452270+00:00",
-  "technicalInventoryStatus": "COMPLETE_SOURCE_PACKAGE_RUNTIME_OWNER_NORMAL_GUI",
+  "lastVerifiedAt": "2026-10-24T01:44:21Z",
+  "technicalInventoryStatus": "COMPLETE_SOURCE_PACKAGE_RUNTIME_OWNER_NORMAL_GUI_AND_PRESENTATION",
   "guiEvidence": {
-    "provider": "ERP owner normal Chrome; CRM inspected saved pixels and metadata",
-    "testUrl": "http://192.168.1.46:62800/",
-    "path": [
-      "Hesabım",
-      "Ayarlar",
-      "Hesap envanterini göster"
-    ],
-    "accounts": 4,
-    "active": 4,
-    "inactive": 0,
-    "unlinkedAgents": 1,
-    "conversationAssignment": "55 -> agent2 -> clean-staff-20261022",
-    "normalReloadAndSessionPreserved": true,
+    "ownerReceiptReference": "installation.ownerFinalReceipt",
     "screenshot": {
-      "path": "docs/evidence/crm/2026-10-23-b5-assignment/inventory-normal-settings-a32.png",
-      "bytes": 124632,
-      "sha256": "011d6403555af7cbb4c184681504ded16e84bd23ba9882efab5bfcf0b3f0ad09",
-      "pixelsInspectedByCrm": true
+      "name": "b5-ux-normal-settings.png",
+      "bytes": 127136,
+      "sha256": "b5aaec87343b2ae3ae463e91e44b88329cf0f7b9c76ead5ba09cca491339d5fe"
     },
-    "physicalPhone": "PENDING",
-    "realMudurAccount": "NOT_PROVEN; sample manager is Patron",
-    "realPersonMapping": "NOT_PROVEN",
-    "humanAcceptance": "PENDING",
-    "limitations": [
-      "Long account display names are visually truncated in inventory cards",
-      "Generic Settings assignment label is inconsistent with read-only inventory API assignment=false; no assignment action was performed"
-    ]
+    "crmReadOnlyImageObserved": true,
+    "fullDisplayNamesVisible": true,
+    "readonlyAssignmentDescriptionInReloadAx": "Bu oturumda kapalı · salt okunur",
+    "humanAcceptance": "PENDING"
   },
   "presentationFix": {
     "sourceCommit": "63513b21ff931f2b6516c735479c095955213a13",
-    "status": "SOURCE_READY_INSTALLATION_PENDING",
+    "status": "INSTALLED_OWNER_NORMAL_GUI_VERIFIED",
     "directHumanSource": "01a16b6d-3d65-7853-970f-db1e6474b083",
     "deadline": "2026-10-25T10:00:00+03:00",
     "noLongNewWorkAfter": "2026-10-25T09:30:00+03:00",
@@ -1874,8 +2023,8 @@
     },
     "handoff": {
       "owner": "ERP main agent",
-      "installation": "PENDING",
-      "currentInstalledFrontend": "a32e071221f5f242dc08996b8ace0c1b1294214e",
+      "installation": "INSTALLED_20261024T041908_TR_OWNER_GUI_RELOAD_VERIFIED",
+      "currentInstalledFrontend": "63513b21ff931f2b6516c735479c095955213a13",
       "currentInstalledBackend": "c1bc351218c3db70ac2b3fa7cff5ba2bf7560ffb",
       "productionFiles": [
         "apps/frontend/src/App.jsx",
@@ -1884,13 +2033,44 @@
       ],
       "backendChanged": false,
       "build": "NODE_ENV=production; node ../../scripts/ci/build-frontend.mjs --profile=clean-synthetic-20261022 (from apps/frontend)",
-      "note": "Local dist is a source build, not a sealed package or deployment. ERP alone packages/installs and returns source/package/runtime/rollback/normal GUI evidence."
+      "note": "Local production build remains a source artifact. ERP created and installed the separate sealed762-file package; current receipt and GUI evidence are installation.ownerFinalReceipt/ownerNormalGui."
     },
-    "remaining": "Real-person/account/role/representative/customer mapping, normal installed GUI for this presentation fix, physical device and human acceptance pending. Existing synthetic technical inventory remains complete; no finish counter increased.",
+    "remaining": "Real-person/account/role/representative/customer mapping, physical device and human acceptance pending. Installed B5 full-name/readonly-description normal GUI is technically verified; source2c E1 consumer and CRM clean refresh are separate.",
     "evidenceReview": {
       "agent": "/root/az_independent_reviewer",
       "openP1P2": 0,
       "scope": "Five JPG bytes/digests and wrapping, relative links, exact source635 versus installeda32/c1, isolated component browser versus pending human/device acceptance"
-    }
+    },
+    "ownerInstallationReference": "installation.ownerFinalReceipt"
+  },
+  "scopeNote": "source is the original c1 backend/API handoff; currentPublished and ownerFinalReceipt are latest635 frontend/c1 backend installation snapshots. Historical c1/4ead/a32 stages remain explicit. Related ERP moved later to8aa; the B5 receipt ERP04a pin is historical at04:19.",
+  "previousGuiEvidenceA32": {
+    "provider": "ERP owner normal Chrome; CRM inspected saved pixels and metadata",
+    "testUrl": "http://192.168.1.46:62800/",
+    "path": [
+      "Hesabım",
+      "Ayarlar",
+      "Hesap envanterini göster"
+    ],
+    "accounts": 4,
+    "active": 4,
+    "inactive": 0,
+    "unlinkedAgents": 1,
+    "conversationAssignment": "55 -> agent2 -> clean-staff-20261022",
+    "normalReloadAndSessionPreserved": true,
+    "screenshot": {
+      "path": "docs/evidence/crm/2026-10-23-b5-assignment/inventory-normal-settings-a32.png",
+      "bytes": 124632,
+      "sha256": "011d6403555af7cbb4c184681504ded16e84bd23ba9882efab5bfcf0b3f0ad09",
+      "pixelsInspectedByCrm": true
+    },
+    "physicalPhone": "PENDING",
+    "realMudurAccount": "NOT_PROVEN; sample manager is Patron",
+    "realPersonMapping": "NOT_PROVEN",
+    "humanAcceptance": "PENDING",
+    "limitations": [
+      "Long account display names are visually truncated in inventory cards",
+      "Generic Settings assignment label is inconsistent with read-only inventory API assignment=false; no assignment action was performed"
+    ]
   }
 }

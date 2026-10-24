@@ -1,5 +1,7 @@
 # B5 / C01–C02 / CRM-UA11 — rol ve kaynak yeteneğiyle atama
 
+24 Ekim 04:44 TR güncellemesi: B5 sunum source635/backendc1 gerçekten kuruldu:762dosya/3A5F7D93, normal owner Ayarlar/yenile/tamreload ve aynı4hesap doğrulandı. CRM yeni GUI/SQL/API çalıştırmadan762dosyayı,3kaynak blobunu ve mevcut normal ekran artefaktını RO okudu. Gerçek kişi eşlemesi ve insan/cihaz kabulü BEKLİYOR. Güncel tek yürütme kaydı [CRM_STATUS.md](../../../../CRM_STATUS.md), ayrıntı bu klasördeki JSON'dadır. Aşağıdaki kaynak-hazır/kurulmamış ifadeleri önceki04:15/04:11 tarihli aşamalardır.
+
 ## 24 Ekim 04:11 TR — B5 iki sunum eksiği kaynakta düzeltildi
 
 **63513b21ff931f2b6516c735479c095955213a13** yalnız frontend sunumunu değiştirir: envanter kartı avatarsız iki sütunlu başlıkla tam ad/kullanıcı adını sarar; Ayarlar atama açıklaması menü/handler ile aynı mevcut etkin `canAssign` sonucunu kullanır. Yetki/rol/atama işlemi/API değişmedi. Yeni iki App regresyonu eski kaynakta2FAIL → düzeltmede2PASS (4senaryo); doğru profilli üretim build11,66sn PASS. Bağımsız kaynak review açıkP1/P2=0; 635 exact CI PR40048602545/push40048594210/AI40048602594 tamamlandı: SUCCESS /7job.

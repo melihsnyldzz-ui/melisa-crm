@@ -1,5 +1,101 @@
 ## Sıradaki iş — CRM06 (tek etkin yürütme kaydı)
 
+24 Ekim 2026 04:44 TR — mevcut makbuzlarla güncel kayıt. Bu bölüm tek etkin yürütme görünümüdür; aşağıdaki tarihçe yeni iş veya güncel kurulum sayılmaz. Uygulama kodu, ortak TEST ve kabul kapsamı değişmedi.
+
+| Alan | Kayıt |
+| --- | --- |
+| Ana ID / sıra | CRM06 — mevcut katalog ve müşteri ürün talebi ana kapsamı; B5/C01/C02 ve E1/M01 bağlı teknik halkaları. 25 CRM yaprağı:12🟢/13🟡/0🔴;17 başlık/74 yaprak aynı. |
+| Güncel adım | B5 sunum kaynak63513b2/backendc1 kurulu ve normal owner ekranında doğrulandı. E1 CRM tüketici source2c21c0f hazır; kurulum makbuzunda yok. ERP'nin kendi normal yenileme source8aa3093e kuruludur; bu, CRM clean yenilemesi veya aynı kişiyle geçiş değildir. |
+| Sahip | CRM ana ajanı kendi kaynak/UI/kanıt kaydını yönetir. Ortak runtime/SQL/ayar/depo/servis/hesap/rol/atama/APK/kurulumun tek uygulayıcısı ERP sahibidir. |
+| Bitiş koşulu | CRM06 bütün özgün katalog/ürün/adet/tek talep/yeniden açma/atanmış-yanlış personel/kalıcılık koşulları ve gereken gerçek insan kabulüyle tam kapanır. B5'in salt okunur envanter/sunum teknik sonucu bunu veya tüm E1'i kapatmaz. |
+| Mevcut kanıt | B5:63513b21ff931f2b6516c735479c095955213a13 / CLEAN-CRM-20261024-63513b21ff93-B5UX /762dosya/manifest3A5F7D93; kurulum04:19, normal Ayarlar/refresh/fullreload04:21,4etkin/0kapalı/1temsilcisiz/tek yapay atama. ERP:8aa3093e API-web kurulum04:38,13durumlu login/yenileme/çıkış kontrolü ve normal ERP ekranı;53özet byte korunumu owner kanıtı. CRM762dosya ve3kaynak blobu RO eşlendi; taze HTTP/SQL/GUI testi yapılmadı. [B5 makbuzu](docs/evidence/crm/2026-10-23-b5-assignment/normal-user-inventory.json) · [E1 kaynak/ERP makbuzu](docs/evidence/crm/2026-10-24-e1-terminal/source-origin-readiness.json). |
+| Teknik bağımlılık | E1 için CRM backend clean normal yenileme sözleşmesi ve ERP ID→CRM ID→temsilci→müşteri bağı hazır değil. Dört configured CRM hesabı gerçek çalışan eşlemesi değildir; Semih/ID/atamalar korunur, isimden kimlik çıkarılmaz. ERP yenilemesi kurulu; CRM2c/native cihaz/aynı kişi kabulü ayrı. İnsan/TC21 ve Windows reboot/logon BEKLİYOR; teknik işlere genel kapı yapılmaz. |
+| Bitince aynı başlıktaki sonraki adım | Mevcut E1'in CRM sorumluluğundaki normal oturum/kimlik tüketici eksiği, pinli sözleşme ve kanıtlı kapsamla ayrılır; belirsiz kişi/atama veya kapalı guard varsayımla açılmaz. Kaynak2c kurulumu ERP'de kalır. Hazır bağımsız yetkili kaynak işi rutin devam beklemeden sürer;25Ekim09.30 sonrası uzun yeni iş,10.00TR sonrası yeni geliştirme yok. |
+| CRM06 tüm özgün koşulları kapanınca geçiş | CRM06 tüm özgün koşulları ve gereken insan kabulüyle tam kapanınca ERP09 ana kapanışına geçilir. CRM-DEC-018 kapsamındaki izinli bağımsız ERP09 teknik hazırlığı bu sırada sürebilir; teknik test insan kabulünü tamamlamaz. |
+
+### Mevcut önkoşul görünümü — yeni kapı veya kabul değildir
+
+Aşağıdaki `normal-role` ve `normal-ui`, sonraki E1 aynı-kişi/CRM oturumu kapsamıdır. B5'in örnek Patron ile doğrulanmış salt okunur normal ekranını reddetmez veya yeniden denetletmez. `runtime-health`, yalnız mevcut owner kurulum/normal ekran ve makbuz eşlemesinin zamanlı REUSE kaydıdır; yeni canlı sağlık sorgusu değildir. Kayıt denetimi uygulama, fiziksel cihaz, insan veya LIVE PASS vermez.
+
+```melisa-preflight
+{
+  "current": {
+    "environment": "clean-e662fd94-d797-4b3b-938a-d143ad758b67-t1false",
+    "runtime": "crm63513b2-bkc1bc351-erp8aa3093e-native035fcc08-20261024T043858",
+    "identityRole": "configured4-readonly-c1bc351-sameperson-unproven",
+    "surface": "crm-b5-settings635-owner042148-e1-sameperson-unproven"
+  },
+  "required": [
+    {
+      "id": "runtime-health",
+      "contextKeys": [
+        "environment",
+        "runtime"
+      ]
+    },
+    {
+      "id": "normal-role",
+      "contextKeys": [
+        "environment",
+        "runtime",
+        "identityRole"
+      ]
+    },
+    {
+      "id": "normal-ui",
+      "contextKeys": [
+        "environment",
+        "runtime",
+        "identityRole",
+        "surface"
+      ]
+    }
+  ],
+  "proofs": [
+    {
+      "requirementId": "runtime-health",
+      "status": "verified",
+      "context": {
+        "environment": "clean-e662fd94-d797-4b3b-938a-d143ad758b67-t1false",
+        "runtime": "crm63513b2-bkc1bc351-erp8aa3093e-native035fcc08-20261024T043858",
+        "identityRole": "configured4-readonly-c1bc351-sameperson-unproven",
+        "surface": "crm-b5-settings635-owner042148-e1-sameperson-unproven"
+      },
+      "evidenceRef": "docs/evidence/crm/2026-10-24-e1-terminal/source-origin-readiness.json"
+    },
+    {
+      "requirementId": "normal-role",
+      "status": "blocked",
+      "context": {
+        "environment": "clean-e662fd94-d797-4b3b-938a-d143ad758b67-t1false",
+        "runtime": "crm63513b2-bkc1bc351-erp8aa3093e-native035fcc08-20261024T043858",
+        "identityRole": "configured4-readonly-c1bc351-sameperson-unproven",
+        "surface": "crm-b5-settings635-owner042148-e1-sameperson-unproven"
+      },
+      "evidenceRef": "docs/evidence/crm/2026-10-24-e1-terminal/source-origin-readiness.json",
+      "error": "ERP_CRM_SAME_PERSON_MAPPING_NOT_PROVEN"
+    },
+    {
+      "requirementId": "normal-ui",
+      "status": "blocked",
+      "context": {
+        "environment": "clean-e662fd94-d797-4b3b-938a-d143ad758b67-t1false",
+        "runtime": "crm63513b2-bkc1bc351-erp8aa3093e-native035fcc08-20261024T043858",
+        "identityRole": "configured4-readonly-c1bc351-sameperson-unproven",
+        "surface": "crm-b5-settings635-owner042148-e1-sameperson-unproven"
+      },
+      "evidenceRef": "docs/evidence/crm/2026-10-24-e1-terminal/source-origin-readiness.json",
+      "error": "CLEAN_CRM_NORMAL_SESSION_SURFACE_NOT_READY"
+    }
+  ]
+}
+```
+
+Kayıt düzeni kontrolü mevcut saf checker ile yapılır; cache/dosya yazan `run.mjs` çağrılmaz. Eski kabul/testler tekrarlanmaz, sayaç yükseltilmez. Gerçek mesaj/finansal yazı/LIVE/Vega/T1/ücretli servis/main/tag ve güvenlik reddini aşma sınırları korunur.
+
+## Tarihsel teslim kayıtları — önceki durumlar yalnız kendi tarihinin kanıtıdır
+
+
 ## 24 Ekim 04:15 TR — E1 exact-origin CRM tüketici kaynağı hazır
 
 **[2c21c0f](https://github.com/melihsnyldzz-ui/melisa-crm/commit/2c21c0f7a0c4b10d29886b3dc3b61ba1a10c9c75)** mevcut native nesne ve terminal gezinme modülüne yalnız exact clean çocuk/aynı-host parent çiftini ekler; eski profiller ve tokensız üç alanlı activate/logout şeması korunur. Backend, normal auth/refresh, depo, hesap/rol/atama veya ERP dosyası değişmedi.3yeni test önce3FAIL; düzeltmede3yeni+6doğrudan etkilenen uyumluluk9PASS/48,81ms. Mevcut doğru clean profilli üretim build16,98sn PASS; bağımsız source review açıkP1/P2=0. Exact2c CI PR40048946210/push40048939909/AI40048946107 tamamlandı: SUCCESS /7job. [Kaynak ve somut eksik halkalar](docs/evidence/crm/2026-10-24-e1-terminal/README.md).
