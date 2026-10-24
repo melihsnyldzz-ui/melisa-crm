@@ -1,5 +1,19 @@
 ## CRM-UA11 — 15 Ekim — son normal ekran ve fiziksel mobil kabulü
 
+### 24 Ekim03:03TR — B5 kaynak okuması hazır; gerçek kişi uygulaması ve insan kabulü BEKLİYOR
+
+Bu checkpoint önceki02:19 belge hazırlığının devamıdır. Normal `crm.manage` için yeni `/crm/users` kaynağı ve Kullanıcılar ekranında talep üzerine salt okunur panel **c1bc351** ile PR3'e gönderildi; yerel hedefli doğrulama/build/review başarılı; exact-source PR40042765600/push40042760521/AI40042765647 completed SUCCESS/7job. Backend+frontend dar kurulum devri mevcut ERP sahibine iletildi; bağımsız belge/kanıt review açıkP1/P2=0. Bu, gerçek tarayıcı/telefon veya insan kabulü değildir. **SOURCE_UNAPPLIED; GUI DENENMEDİ.** Yeni backend+frontend kurulumu, mevcut normal hesapla ekran kontrolü ve sırsız tam readback ERP sahibindedir; B7 kurulumu sürerken CRM ortak sorgu veya yazı yapmaz.
+
+Owner'ın hazır yeni envanteri `b5-current-normal-inventory.json`,30096bayt/SHA256 **16550F62193F774E63FB824C8A1AE60A586F1E493609DBFD93616C92F3E27E78**,24Ekim02:44:59TR / ERPb40 / cleanDB-E662-synthetictrue olarak okundu. Ham özel dosya kopyalanmadı.
+
+| Kanıtlı ad alanı | Gözlenen kayıt | Sınır |
+|---|---|---|
+|ERP etkin hesaplar|11hesap;10018=`semih`/rol28; diğerleri1,15,16,17,18,19,20,21,22,23.103izin satırı.|Bu etkin listede Mehmet/Turgay/Angela kullanıcı adları yok; kapalı/tüm ERP hesabının yokluğu kanıtı değildir. Semih'in36izni önceki owner kaydıyla korunur.|
+|CRM etkin temsilci bağlantıları|`clean-manager-20261022`/ornek-mudur/Patron→1; `clean-staff-20261022`/ornek-personel/Personel→2; `clean-stranger-20261022`/ornek-diger/Personel→3.|Yalnız etkin ve temsilciID'li3kayıt; Semih'in tam CRM hesap/temsilci kaydı ve diğer kapalı/temsilcisiz hesaplar bu makbuzdan doğrulanmaz. Tam hesap envanteri veya Angela hesabı değildir.|
+|Sentetik konuşma ataması|55→temsilci2→`clean-staff-20261022`.|Gerçek müşteri/personel eşlemesi değildir; ERP15ornek-satis ile aynı kişi diye bağlanmaz.|
+
+**Kullanıcı adına seçilen varsayılan:** Önce mevcut doğrulanmış ID/atamalar korunur; geniş hesap oluşturma/reset veya adla birleştirme yapılmadan yalnız normal yöneticiye sırsız tam CRM okuması sunulur. Gerekçe: agents kapsamındaki eksikliği hesap yokluğu saymadan kimlik çakışmasını ayırmak ve ortak ortamı tek yazarda tutmak. Yeni kaynak hiçbir hesap/yetki/atamayı değiştirmez. Tam yapılandırma kapsanamıyorsa UI/API açıkça kısmi der; eksik kayıt için yokluk iddiası kurmaz. Owner normal tam okuma/uygulama makbuzu sonrasında aşağıdaki on kişi tablosu gerçek ID'lerle doldurulur; bugün gerçek çalışan/Angela yetkileri uygulanmış sayılmaz. Kişi/rol/parola yeniden sorulmaz. Özgün üç adımlı kabul, fiziksel cihaz ve gerçek insan BEKLİYOR; terminal ön koşul değildir.
+
 ### 24 Ekim — C01/C02 kişi–rol ve fiziksel cihaz kabul hazırlığı
 
 **B5 eşleme hazırlığı kısmi; gerçek kişi envanteri, yetki uygulaması ve insan kabulü BEKLİYOR.** [CRM-DEC-025](PROJECT_DECISIONS.md) ile gerçek kişi/görevler netleşti. ERP B6 owner'ın [cdf4488b teknik kapanışında](https://github.com/melihsnyldzz-ui/melisa-erp-v2/blob/cdf4488bdb199108c1ee594ae8fb476e6d01bbdb/docs/evidence/erp/2026-10-22-clean-shared-install.md) tamamlandı; ERP B7'ye devam ederken CRM yalnız B5 kayıtlarını salt okunur karşılaştırdı. Normal giriş, GUI/API/SQL denemesi veya yeni kayıt/işlem yok. **Terminal tek giriş/görsel geliştirmesi B serisi dışında beklemede**, önceki hazırlık aşağıda korunur; B5'e ön koşul değildir. Belge hazırlığı kurulum gerektirmez; B5 hesap/yetki/atama uygulaması yalnız ERP sahibindedir. Üç kabul adımı ancak gereken kimlik/bağlantı hazır olduğunda uygulanabilir.

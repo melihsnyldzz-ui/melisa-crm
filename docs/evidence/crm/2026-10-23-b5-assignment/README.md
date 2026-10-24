@@ -2,6 +2,42 @@
 
 23 Ekim2026. Bu, mevcut bitiş ağacının dar CRM kaynak düzeltmesi ve salt okunur erişim denetimidir. Yeni gereksinim, atama motoru, yardımcı servis veya kurulum değildir. Teknik kaynak sonucu, kurulu normal hesap kanıtı ve insan kabulü ayrı tutulur.
 
+## 24 Ekim — B5 tam CRM hesap okuması kaynak teslimi
+
+Önceki e1 atama-kapalı düzeltmesi korunur. ERP ana konuşmasındaki doğrudan kullanıcı onayı `01a16b29-ac26-75a2-8554-1d304f61072c` ile mevcut B5'in eksik sırsız normal hesap/rol/temsilci/atama okuması tamamlandı. [Kaynak c1bc351](https://github.com/melihsnyldzz-ui/melisa-crm/commit/c1bc351218c3db70ac2b3fa7cff5ba2bf7560ffb), mevcut feature/[PR3](https://github.com/melihsnyldzz-ui/melisa-crm/pull/3); yeni ana iş veya takip sistemi değildir. [Yapılandırılmış kaynak ve kapsam kanıtı](normal-user-inventory.json).
+
+### Eksik ve uygulanan davranış
+
+`/crm/agents` yalnız etkin, temsilciye bağlı hesapları döndürür. Owner'ın 24Ekim02:44:59TR tarihli hazır `b5-current-normal-inventory.json` dosyası (30096bayt/SHA256 `16550F62193F774E63FB824C8A1AE60A586F1E493609DBFD93616C92F3E27E78`) ERPb40 kaynağındaki11etkin ERP hesabını ve ayrı3CRM temsilci bağlantısını gösterir; kapalı/temsilcisiz CRM hesaplarını kapsamaz. Görüşme55→temsilci2→`clean-staff-20261022` kanıtlı; örnek ERP15 ile aynı kişi olduğu veya gerçek personel eşlemesi çıkarılmaz. Ham özel makbuz repoya alınmadı; yeni ortak sorgu/SQL yapılmadı.
+
+Yeni **GET `/crm/users`**, mevcut normal auth + `crm.manage` ile yalnız exact clean ortamında çalışır. Güncel kullanıcı/revoke ve mevcut projection/topoloji/DB/E662/synthetic doğrulamaları aynen kullanılır. Configured CRM namespace içindeki geçerli hesapların kapalı/temsilcisiz olanları dahil açık metadata DTO'su döner; eksik config kapsamı veya çift ID/ad/temsilci bağlantısı açıkça belirtilir. ERP kullanıcılarıyla veya ad benzerliğiyle birleştirme, yazma endpoint'i, yeni kullanıcı/yetki/atama, credential/hash/token, müşteri telefon/içeriği ve cache yoktur. Diğer ortam404; personel403/anonim401; iptal edilmiş hesap/rol tokenı mevcut fingerprint ile401.
+
+Mevcut **Kullanıcılar** ekranında yalnız normal yönetici ve clean build için talep üzerine okuma paneli eklendi. İlk açılışta ek istek yok. Eski hesap verisi oturum değişiminin ilk render'ında gizlenir; istek iptal edilir ve geç yanıtlar reddedilir. Yeniden okuma/ret eski listeyi temizler. Tasarım/CSS veya atama özelliği yeniden geliştirilmedi.
+
+### Hedefli teknik kanıt
+
+- Backend yeni route regresyonu: **11 PASS** =10alt test+1üst test. Kapalı/temsilcisiz hesaplar, gerçek `mudur` ve `patron` fixture yetkisi, retler, DTO sır dışlama, çakışmalar, partial kapsam, güncel revoke ve write reddi. Önceki kaynakta route404; eski test beklentisindeki rol değişimi403→401 düzeltmesi ürün hatası sayılmadı.
+- Frontend: **4 PASS**, gerçek ReactDOM/effect'leri inert DOM host'ta ve API sınırı mock'uyla. Gerçek tarayıcı/GUI değildir. Talep üzerine okuma, oturum değişimi/ilk render, abort/geç yanıt, ret/partial kapsam ve normal GET transport doğrulandı.
+- Doğrudan etkilenen mevcut clean projection testi yalnız `clean conversation seed` filtresiyle **1 PASS**; önceki kabul paketleri topluca yeniden çalıştırılmadı.
+- Offline guard dış/sabit TEST/provider/SQL erişimini kapattı. Exact clean bayraklarıyla kaynak frontend derlemesi **PASS /25,22sn**; bu immutable paket veya kurulum değildir. Syntax/diff ve staged gitleaks0 bulgu.
+- Mevcut bağımsız reviewer dokuz source/test dosyasını RO inceledi, açık **P1/P2=0**. Fiziksel review hash'leri ve exact Git blob hash'leri JSON'da ayrı tutulur.
+- Exact c1 source için [PR40042765600](https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/40042765600), [push40042760521](https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/40042760521) ve [AI40042765647](https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/40042765647) **completed SUCCESS /7job**, GitHub'dan tek tek geri okundu; JSON her job kimliğini/sonucunu tutar. Eski e1 CI yeni c1 kanıtı sayılmadı. Son bağımsız RO belge/kanıt incelemesi de açıkP1/P2=0; üç ad alanı/kapsam ve yedi üretim dosyalı devir doğrulandı. Kaynak/CI/build pinleri mevcut ERP sahibine iletildi; kurulum tek yazarı ERP olmaya devam eder.
+
+### ERP sahibine dar kurulum devri
+
+**SOURCE_UNAPPLIED / GUI DENENMEDİ / insan BEKLİYOR.** Son yayımlanmış kurulum frontend `e1ce12b7218ef003198f4955fc1e5871e7430383` / `CLEAN-CRM-FRONTEND-20261023-e1ce12b7218e-CLEAN`, backend `bc8c307ee29f115b2bb7fd4e61f87e9bf482ba54`; bu tur taze runtime health veya süreç sorgusu yapılmadı. B7 nihai makbuzu hazır olmadan paralel kurulum yok. Yeni endpoint yalnız frontend güncellemesiyle çalışmaz; owner mevcut sahipli kurulum yolunda **backend+frontend birlikte** kaynak c1 adayını kurar:
+
+| Kurulu taban → c1 | Değişen üretim dosyaları |
+|---|---|
+|Backend bc8|`apps/gateway/src/controllers/agentController.js`, `apps/gateway/src/routes/agentRoutes.js`, `apps/gateway/src/services/chatwootInboxService.js`, yeni `apps/gateway/src/services/crmUserInventory.js`|
+|Frontend e1|`apps/frontend/src/App.jsx`, `apps/frontend/src/liveApi.js`, yeni `apps/frontend/src/CrmUserInventory.jsx`|
+
+`packages`/`deploy` farkı0; mevcut clean auth/config/roller ve kapalı assign/send/provider/AI korunur. Yeni SQL/migration, rol motoru, hesap hazırlığı veya izin genişletme gerekmiyor. Yerel clean build bayrakları `VITE_CRM_TEST=1`, `VITE_CRM_ISOLATED_PREPARATION=1`, `VITE_CRM_CLEAN_SYNTHETIC_TEST=1`, `VITE_ERP_ORDER_TEST_DATABASE=MELISA_ERP_CLEAN_TEST_20261022`; owner'ın mevcut exact profilini değiştirme yetkisi CRM'de değildir. Owner pinli paket/manifest/bundle ve backend source/PID ile kurulum/readback verir; başarısızlıkta önceki korunan backend+frontend çiftine kendi rollback yoluyla döner.
+
+Kurulumdan sonra mevcut normal yönetici **Kullanıcılar → Hesap envanterini göster** ile tam CRM kapsamını okur; personelin bu listeye erişememesi korunur. Kapsam/kimlik/rol/temsilci ve mevcut sentetik atama metadata'sı sırsız kaydedilir. Kaynak/full config okuması olmadan gerçek hesap yokluğu veya kurulmuş yetki iddia edilmez; Semih ve mevcut ID/atamalar korunur. Onaylı yedi çalışan/Angela/İlker gerçek eşlemesi ancak bu readback'ten sonra uygulanabilir; insan/fiziksel telefon/TC21 son kabulü ayrıca BEKLİYOR. Özgün25/12🟢/13🟡/0🔴 ve17/74 aynı; terminal tek giriş/görsel işi bu B serisi turunun dışında.
+
+## Aşağıdaki 23 Ekim kayıtları tarihsel kaynak ve kurulum aşamalarıdır
+
 ## Karar ve kurulu gözlem
 
 [CRM-DEC-017](https://github.com/melihsnyldzz-ui/melisa-crm/blob/5342b4358d8cd7e0ffb606a93fa532e3049e6f55/PROJECT_DECISIONS.md#crm-dec-017--15-ekim-2026--sanal-personel-test%C3%A7isi-crm-alt-rol%C3%BC) personel için atanmış görüşme ve yanlış personel reddi; müdür için genel erişim/atama kontrolü ister. [Şirket LOCKED kararları](https://github.com/melihsnyldzz-ui/melisa-os/blob/bfa3b00f221f33c3a101a112adc34dbf82fb83f0/docs/operations/ecosystem-decisions.md) en az yetki, kişi başına hesap, TEST/gerçek veri ayrımı ve sırların korunmasını gerektirir. Bu dar çalışma MFA, ticari indirim veya tüm şirket yetkilerinin kabulü değildir.

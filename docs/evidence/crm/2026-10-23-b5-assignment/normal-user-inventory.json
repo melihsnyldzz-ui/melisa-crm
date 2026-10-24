@@ -1,0 +1,383 @@
+{
+  "version": 1,
+  "kind": "B5 normal clean CRM account inventory source handoff",
+  "observedAt": "2026-10-24T00:01:43.276040+00:00",
+  "decision": "CRM-DEC-025",
+  "acceptanceIds": [
+    "C01",
+    "C02",
+    "CRM-UA11"
+  ],
+  "directUserAuthorization": {
+    "threadId": "01a107ef-f13e-73c0-9e08-fd5c4545325e",
+    "messageId": "01a16b29-ac26-75a2-8554-1d304f61072c",
+    "text": "Evet, B5 talimatını CRM ajanına gönder"
+  },
+  "source": {
+    "commit": "c1bc351218c3db70ac2b3fa7cff5ba2bf7560ffb",
+    "branch": "codex/crm-agents-on-completion-20261003",
+    "pr": "https://github.com/melihsnyldzz-ui/melisa-crm/pull/3",
+    "gitBlobDigests": [
+      {
+        "path": "apps/frontend/src/App.jsx",
+        "sha256": "a165fd5405cceaa36622d3fbadb1b3da06737925eb393ca7c52d5d96c0c0e27c"
+      },
+      {
+        "path": "apps/frontend/src/liveApi.js",
+        "sha256": "716a982f591a95145383fa5e46b0cf2047cc1c7f1eff55a2286a38d4bd5b025f"
+      },
+      {
+        "path": "apps/frontend/src/CrmUserInventory.jsx",
+        "sha256": "06081c9a80b962bcc68d1e6de4ac4db40b01f3c3ba2aaa4daf1cc53a4209eb27"
+      },
+      {
+        "path": "apps/frontend/tests/crm-user-inventory.test.mjs",
+        "sha256": "0cc7ef49b2e35e6b84923a655ef800bf17dcfa2cdbba331ed8346c78c740aea7"
+      },
+      {
+        "path": "apps/gateway/src/controllers/agentController.js",
+        "sha256": "3e1f57b6ad9e519421892c891dd6e833c1123798829e56c5c69ef4ae61691d47"
+      },
+      {
+        "path": "apps/gateway/src/routes/agentRoutes.js",
+        "sha256": "2a032ad03c3762dbd6542a06b94823f06e8725f64753020024ba4412b38e01e4"
+      },
+      {
+        "path": "apps/gateway/src/services/chatwootInboxService.js",
+        "sha256": "8109bc5f107fb11716f100c8785fdcea8626d2d1f9e1abfa2fa4cac5ebfec89c"
+      },
+      {
+        "path": "apps/gateway/src/services/crmUserInventory.js",
+        "sha256": "7edd846d60ed6e15d7c293e0a62eedd9a8922f21f32fdc0b39c897d28ab1679e"
+      },
+      {
+        "path": "apps/gateway/src/routes/crmUserInventory.test.mjs",
+        "sha256": "e7c563ad6cb6eec24624809ba075987eab273be13e35faaa90d3c65be4c91a49"
+      }
+    ]
+  },
+  "ownerInventory": {
+    "path": "C:\\Sirket\\ERP\\clean\\20261022\\runtime\\semih-access-20261023\\b5-current-normal-inventory.json",
+    "bytes": 30096,
+    "sha256": "16550f62193f774e63fb824c8a1ae60a586f1e493609dbfd93616c92f3e27e78",
+    "observedAt": "2026-10-23T23:44:59.3682354Z",
+    "erpSource": "b40a0788bea320ee703dfc1abf36ec769298eeff",
+    "database": "MELISA_ERP_CLEAN_TEST_20261022",
+    "environmentId": "e662fd94-d797-4b3b-938a-d143ad758b67",
+    "synthetic": true,
+    "actualT1": false,
+    "activeErpAccountCount": 11,
+    "erpPermissionRows": 103,
+    "erpActiveAccountIdentifiers": [
+      {
+        "id": 1,
+        "username": "admin",
+        "roleId": 2,
+        "roleCode": "admin",
+        "isActive": true
+      },
+      {
+        "id": 18,
+        "username": "ornek-depo",
+        "roleId": 23,
+        "roleCode": "clean_test_warehouse",
+        "isActive": true
+      },
+      {
+        "id": 20,
+        "username": "ornek-finans",
+        "roleId": 25,
+        "roleCode": "clean_test_finance",
+        "isActive": true
+      },
+      {
+        "id": 23,
+        "username": "ornek-finans-kontrol",
+        "roleId": 29,
+        "roleCode": "clean_test_finance_checker",
+        "isActive": true
+      },
+      {
+        "id": 22,
+        "username": "ornek-inceleme",
+        "roleId": 27,
+        "roleCode": "clean_test_inventory_supervisor",
+        "isActive": true
+      },
+      {
+        "id": 19,
+        "username": "ornek-kontrol",
+        "roleId": 24,
+        "roleCode": "clean_test_inbound_supervisor",
+        "isActive": true
+      },
+      {
+        "id": 16,
+        "username": "ornek-okuyucu",
+        "roleId": 21,
+        "roleCode": "clean_test_reader",
+        "isActive": true
+      },
+      {
+        "id": 15,
+        "username": "ornek-satis",
+        "roleId": 20,
+        "roleCode": "clean_test_sales",
+        "isActive": true
+      },
+      {
+        "id": 21,
+        "username": "ornek-sayim",
+        "roleId": 26,
+        "roleCode": "clean_test_counter",
+        "isActive": true
+      },
+      {
+        "id": 17,
+        "username": "ornek-sorumlu",
+        "roleId": 22,
+        "roleCode": "clean_test_supervisor",
+        "isActive": true
+      },
+      {
+        "id": 10018,
+        "username": "semih",
+        "roleId": 28,
+        "roleCode": "clean_test_administrator",
+        "isActive": true
+      }
+    ],
+    "crmCoverage": "active users with agent ID only; inactive or no-agent accounts not covered",
+    "crmActiveAgentLinks": [
+      {
+        "userId": "clean-manager-20261022",
+        "username": "ornek-mudur",
+        "role": "patron",
+        "chatwootAgentId": 1
+      },
+      {
+        "userId": "clean-staff-20261022",
+        "username": "ornek-personel",
+        "role": "personel",
+        "chatwootAgentId": 2
+      },
+      {
+        "userId": "clean-stranger-20261022",
+        "username": "ornek-diger",
+        "role": "personel",
+        "chatwootAgentId": 3
+      }
+    ],
+    "assignments": [
+      {
+        "conversationId": "55",
+        "assigneeAgentId": 2
+      }
+    ],
+    "fullCrmAccountsVerified": false,
+    "realPersonMappingsVerified": false,
+    "privateArtifactCopied": false
+  },
+  "behavior": {
+    "method": "GET",
+    "path": "/crm/users",
+    "permission": "crm.manage",
+    "scope": "configured-crm-users, including inactive and unlinked accounts",
+    "environment": "exact clean-synthetic-20261022 only",
+    "cache": "no-store; fresh authorization and account fingerprint",
+    "assignmentScope": "clean-synthetic-conversation-projection",
+    "conflictsReported": [
+      "duplicate-user-id",
+      "duplicate-username",
+      "shared-agent"
+    ],
+    "nameBasedIdentityMatching": false,
+    "frontend": "on-demand existing Users view; previous session data hidden on first render; late responses ignored"
+  },
+  "verification": {
+    "backend": {
+      "reportedPass": 11,
+      "subtests": 10,
+      "parentTest": 1,
+      "log": ".git/b5-inventory-backend-test.log"
+    },
+    "frontend": {
+      "pass": 4,
+      "kind": "real ReactDOM in inert DOM host with mocked API boundary; not browser GUI"
+    },
+    "cleanProjectionCompatibility": {
+      "pass": 1,
+      "pattern": "clean conversation seed",
+      "log": ".git/b5-inventory-clean-compat.log"
+    },
+    "cleanFrontendBuild": {
+      "result": "PASS",
+      "durationSeconds": 25.22,
+      "log": ".git/b5-inventory-clean-build.log",
+      "flags": {
+        "VITE_CRM_TEST": "1",
+        "VITE_CRM_ISOLATED_PREPARATION": "1",
+        "VITE_CRM_CLEAN_SYNTHETIC_TEST": "1",
+        "VITE_ERP_ORDER_TEST_DATABASE": "MELISA_ERP_CLEAN_TEST_20261022"
+      },
+      "installedPackage": false
+    },
+    "independentReview": {
+      "agent": "/root/az_independent_reviewer",
+      "openP1P2": 0,
+      "backendPhysicalSha256": "7EDD846D60ED6E15D7C293E0A62EEDD9A8922F21F32FDC0B39C897D28AB1679E",
+      "frontendPhysicalSha256": "06081C9A80B962BCC68D1E6DE4AC4DB40B01F3C3BA2AAA4DAF1CC53A4209EB27"
+    },
+    "stagedSecretScan": "PASS, 0 leaks",
+    "independentEvidenceReview": {
+      "agent": "/root/az_independent_reviewer",
+      "openP1P2": 0,
+      "scope": "current existing status/finish/acceptance/board and source inventory evidence; no runtime/GUI/tests by reviewer"
+    },
+    "secretScanMetadataCorrection": "The staged scanner matched a verified source-file SHA256 next to the liveApi filename. File paths and digests are now explicit separate fields; no secret rule or exclusion changed."
+  },
+  "ci": {
+    "sourceCommit": "c1bc351218c3db70ac2b3fa7cff5ba2bf7560ffb",
+    "state": "COMPLETED_SUCCESS",
+    "passedJobs": 7,
+    "runs": [
+      {
+        "id": 40042765600,
+        "event": "pull_request",
+        "name": "CRM CI",
+        "sourceCommit": "c1bc351218c3db70ac2b3fa7cff5ba2bf7560ffb",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/40042765600",
+        "updatedAt": "2026-10-24T00:02:41Z",
+        "jobs": [
+          {
+            "databaseId": 120717417815,
+            "name": "windows-startup-test",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/40042765600/job/120717417815"
+          },
+          {
+            "databaseId": 120717418133,
+            "name": "secret-scan",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/40042765600/job/120717418133"
+          },
+          {
+            "databaseId": 120717418234,
+            "name": "quality-build-test",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/40042765600/job/120717418234"
+          }
+        ]
+      },
+      {
+        "id": 40042760521,
+        "event": "push",
+        "name": "CRM CI",
+        "sourceCommit": "c1bc351218c3db70ac2b3fa7cff5ba2bf7560ffb",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/40042760521",
+        "updatedAt": "2026-10-24T00:02:47Z",
+        "jobs": [
+          {
+            "databaseId": 120717402202,
+            "name": "quality-build-test",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/40042760521/job/120717402202"
+          },
+          {
+            "databaseId": 120717402417,
+            "name": "windows-startup-test",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/40042760521/job/120717402417"
+          },
+          {
+            "databaseId": 120717402517,
+            "name": "secret-scan",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/40042760521/job/120717402517"
+          }
+        ]
+      },
+      {
+        "id": 40042765647,
+        "event": "pull_request",
+        "name": "AI Sales Agent - Offline",
+        "sourceCommit": "c1bc351218c3db70ac2b3fa7cff5ba2bf7560ffb",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/40042765647",
+        "updatedAt": "2026-10-24T00:00:45Z",
+        "jobs": [
+          {
+            "databaseId": 120717417599,
+            "name": "ai-sales-offline",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/40042765647/job/120717417599"
+          }
+        ]
+      }
+    ]
+  },
+  "installation": {
+    "state": "SOURCE_UNAPPLIED",
+    "writer": "ERP owner only",
+    "requiredComponents": [
+      "CRM gateway/backend",
+      "CRM clean-profile frontend"
+    ],
+    "lastPublishedFrontendSource": "e1ce12b7218ef003198f4955fc1e5871e7430383",
+    "lastPublishedFrontendPackage": "CLEAN-CRM-FRONTEND-20261023-e1ce12b7218e-CLEAN",
+    "lastPublishedBackendSource": "bc8c307ee29f115b2bb7fd4e61f87e9bf482ba54",
+    "freshRuntimeHealthPerformed": false,
+    "newImmutablePackageCreated": false,
+    "newReceiptAvailable": false,
+    "ownerB7FinalReceipt": "PENDING",
+    "handoffSentToExistingErpOwner": true,
+    "productionChanges": {
+      "backendBase": "bc8c307ee29f115b2bb7fd4e61f87e9bf482ba54",
+      "frontendBase": "e1ce12b7218ef003198f4955fc1e5871e7430383",
+      "productionFiles": [
+        "apps/gateway/src/controllers/agentController.js",
+        "apps/gateway/src/routes/agentRoutes.js",
+        "apps/gateway/src/services/chatwootInboxService.js",
+        "apps/gateway/src/services/crmUserInventory.js",
+        "apps/frontend/src/App.jsx",
+        "apps/frontend/src/liveApi.js",
+        "apps/frontend/src/CrmUserInventory.jsx"
+      ],
+      "packagesOrDeployDiff": false,
+      "databaseMigrationRequired": false
+    }
+  },
+  "boundaries": {
+    "sharedRuntimeSqlConfigStoreServiceWrites": 0,
+    "realMessages": 0,
+    "realCommercialWrites": 0,
+    "liveWrites": 0,
+    "paidApiCalls": 0,
+    "accountOrPermissionOrAssignmentMutation": false,
+    "providerAndAiSendEnabled": false,
+    "gui": "NOT_TRIED",
+    "physicalDevice": "PENDING",
+    "humanAcceptance": "PENDING"
+  },
+  "originalFinishCounts": {
+    "total": 25,
+    "green": 12,
+    "yellow": 13,
+    "red": 0,
+    "combinedLeaves": 74,
+    "headings": 17
+  },
+  "next": "ERP owner installs exact backend+frontend candidate in own window, provides source/package/runtime and normal full account readback; preserve existing IDs and resolve explicit mappings only."
+}
