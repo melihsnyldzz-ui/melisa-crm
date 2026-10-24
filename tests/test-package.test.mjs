@@ -61,6 +61,22 @@ test('B5 terminal contract is sealed when imported while older rollback packages
   f.manifest.sourceFiles.push({path:contract,gitBlob:blob(fs.readFileSync(path.join(f.root,contract)))});sort(f.manifest.sourceFiles);f.seal();
   assert.equal(f.verify().environment,'TEST');
 });
+
+test('B5 clean passive preparation uses the existing fixed clean frontend flags',t=>{
+  const f=fixture(t),env=offlineBuildEnvironment(f.root,{isolatedPreparation:true,preparationProfile:'clean-synthetic-20261022'});
+  assert.equal(env.VITE_CRM_TEST,'1');assert.equal(env.VITE_CRM_ISOLATED_PREPARATION,'1');
+  assert.equal(env.VITE_CRM_CLEAN_SYNTHETIC_TEST,'1');assert.equal(env.VITE_ERP_ORDER_TEST_DATABASE,'MELISA_ERP_CLEAN_TEST_20261022');
+  assert.equal(env.npm_config_offline,'true');assert.equal(env.npm_config_ignore_scripts,'true');
+  assert.throws(()=>offlineBuildEnvironment(f.root,{preparationProfile:'clean-synthetic-20261022'}),{code:'PACKAGE_BUILD_PROFILE_REJECTED'});
+  assert.throws(()=>offlineBuildEnvironment(f.root,{isolatedPreparation:true,preparationProfile:'unapproved'}),{code:'PACKAGE_BUILD_PROFILE_REJECTED'});
+});
+
+test('B5 clean passive manifest binds the explicit profile without changing older packages',t=>{
+  const f=fixture(t);f.manifest.build.isolatedPreparation=true;f.manifest.build.preparationProfile='clean-synthetic-20261022';f.seal();
+  assert.equal(f.verify().environment,'TEST');
+  f.manifest.build.preparationProfile='unapproved';f.seal();assert.throws(()=>f.verify(),{code:'PACKAGE_BUILD_REJECTED'});
+  f.manifest.build.preparationProfile='clean-synthetic-20261022';delete f.manifest.build.isolatedPreparation;f.seal();assert.throws(()=>f.verify(),{code:'PACKAGE_BUILD_REJECTED'});
+});
 test('changed backend, frontend or dependency byte, same-size edit, missing file and unlisted file all fail verification',t=>{
   for(const change of ['apps/gateway/package.json','apps/frontend/dist/client/assets/test.js','apps/gateway/node_modules/dotenv/lib/main.js']){
     const f=fixture(t),file=path.join(f.root,change),bytes=fs.readFileSync(file);bytes[0]=bytes[0]===65?66:65;fs.writeFileSync(file,bytes);assert.throws(()=>f.verify(),{code:'PACKAGE_PAYLOAD_MISMATCH'});

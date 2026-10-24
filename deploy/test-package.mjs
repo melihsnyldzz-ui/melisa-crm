@@ -19,6 +19,7 @@ const stockPoolPath='packages/erp-adapter/services/crmStockWorkerPool.mjs';
 const canonicalCatalogPaths=['packages/erp-adapter/services/canonicalCatalog.mjs','packages/erp-adapter/services/canonicalCatalogReader.mjs'];
 const terminalContractPath='packages/contracts/terminal-handoff.mjs';
 const terminalContractImporters=new Set(['apps/gateway/src/services/crmAuthService.js','apps/gateway/src/services/normalRefreshSession.mjs','apps/gateway/src/services/terminalHandoffPeer.mjs']);
+const cleanPreparationProfile='clean-synthetic-20261022';
 const buildFiles = ['apps/frontend/index.html','apps/frontend/vite.config.mjs','apps/frontend/scripts/prepare-sites-build.mjs','apps/frontend/worker/index.js','apps/frontend/.openai/hosting.json'];
 // This is one approved source/toolchain tuple, not a general alternate root.
 const crm18Node2419=Object.freeze({
@@ -159,8 +160,8 @@ export function validateLockedDependencies(lock,manifest) {
 function validateManifest(manifest) {
   if(!keysOnly(manifest,['schemaVersion','kind','environment','source','build','locks','entrypoints','externalDependencies','files','sourceFiles'])||manifest.schemaVersion!==1||manifest.kind!=='melisa-crm-test-package'||manifest.environment!=='TEST')failure('PACKAGE_MANIFEST_REJECTED');
   if(!keysOnly(manifest.source,['repository','commit','tree'])||manifest.source.repository!==CRM_SOURCE_ORIGIN||!hex(manifest.source.commit,40)||!hex(manifest.source.tree,40))failure('PACKAGE_SOURCE_REJECTED');
-  const buildKeys=['viteCrmTest','nodeVersion','platform','arch','dependencyInstall',...(Object.hasOwn(manifest.build||{},'isolatedPreparation')?['isolatedPreparation']:[])];
-  if(!keysOnly(manifest.build,buildKeys)||Object.hasOwn(manifest.build,'isolatedPreparation')&&manifest.build.isolatedPreparation!==true||manifest.build.viteCrmTest!==true||!/^v\d+\.\d+\.\d+$/.test(manifest.build.nodeVersion)||!['win32','linux','darwin'].includes(manifest.build.platform)||!['x64','arm64'].includes(manifest.build.arch)||manifest.build.dependencyInstall!=='npm-ci-offline-ignore-scripts')failure('PACKAGE_BUILD_REJECTED');
+  const buildKeys=['viteCrmTest','nodeVersion','platform','arch','dependencyInstall',...(Object.hasOwn(manifest.build||{},'isolatedPreparation')?['isolatedPreparation']:[]),...(Object.hasOwn(manifest.build||{},'preparationProfile')?['preparationProfile']:[])];
+  if(!keysOnly(manifest.build,buildKeys)||Object.hasOwn(manifest.build,'isolatedPreparation')&&manifest.build.isolatedPreparation!==true||Object.hasOwn(manifest.build,'preparationProfile')&&(manifest.build.preparationProfile!==cleanPreparationProfile||manifest.build.isolatedPreparation!==true)||manifest.build.viteCrmTest!==true||!/^v\d+\.\d+\.\d+$/.test(manifest.build.nodeVersion)||!['win32','linux','darwin'].includes(manifest.build.platform)||!['x64','arm64'].includes(manifest.build.arch)||manifest.build.dependencyInstall!=='npm-ci-offline-ignore-scripts')failure('PACKAGE_BUILD_REJECTED');
   if(manifest.build.nodeVersion!==process.version||manifest.build.platform!==process.platform||manifest.build.arch!==process.arch)failure('PACKAGE_TOOLCHAIN_MISMATCH');
   if(!keysOnly(manifest.entrypoints,['supervisor','server'])||manifest.entrypoints.supervisor!=='deploy/test-supervisor.mjs'||manifest.entrypoints.server!=='deploy/test-server.mjs')failure('PACKAGE_ENTRYPOINT_REJECTED');
   if(JSON.stringify(manifest.externalDependencies)!==JSON.stringify(['private-test-configuration','canonical-erp-test-api-root','canonical-erp-test-order-service']))failure('PACKAGE_EXTERNAL_DEPENDENCIES_REJECTED');
@@ -231,11 +232,11 @@ export function selectPackageSource(treeOutput){
   for(const name of [...runtimeFiles,...buildFiles])if(!rows.some(row=>row.path===name))failure('PACKAGE_SOURCE_REQUIRED_FILE_MISSING');
   return rows;
 }
-export function offlineBuildEnvironment(staging,{isolatedPreparation=false}={}){
-  if(typeof isolatedPreparation!=='boolean')failure('PACKAGE_BUILD_PROFILE_REJECTED');
+export function offlineBuildEnvironment(staging,{isolatedPreparation=false,preparationProfile}={}){
+  if(typeof isolatedPreparation!=='boolean'||preparationProfile!==undefined&&(preparationProfile!==cleanPreparationProfile||!isolatedPreparation))failure('PACKAGE_BUILD_PROFILE_REJECTED');
   // Build inputs must not inherit a credential, private dotenv reference or VITE_*.
   const env={};for(const [key,value]of Object.entries(process.env))if(/^(PATH|PATHEXT|SYSTEMROOT|WINDIR|COMSPEC|TEMP|TMP|LOCALAPPDATA|APPDATA|USERPROFILE|HOME|HOMEDRIVE|HOMEPATH|PROCESSOR_ARCHITECTURE|NUMBER_OF_PROCESSORS)$/i.test(key))env[key]=value;
-  return {...env,VITE_CRM_TEST:'1',...(isolatedPreparation?{VITE_CRM_ISOLATED_PREPARATION:'1',VITE_ERP_ORDER_TEST_DATABASE:'MELISA_ERP_CRM_SHARED_TEST_20261009_01'}:{}),NODE_ENV:'production',npm_config_offline:'true',npm_config_ignore_scripts:'true',npm_config_audit:'false',npm_config_fund:'false',npm_config_userconfig:path.join(staging,'.npm-user-config'),npm_config_globalconfig:path.join(staging,'.npm-global-config')};
+  return {...env,VITE_CRM_TEST:'1',...(isolatedPreparation?{VITE_CRM_ISOLATED_PREPARATION:'1',...(preparationProfile===cleanPreparationProfile?{VITE_CRM_CLEAN_SYNTHETIC_TEST:'1',VITE_ERP_ORDER_TEST_DATABASE:'MELISA_ERP_CLEAN_TEST_20261022'}:{VITE_ERP_ORDER_TEST_DATABASE:'MELISA_ERP_CRM_SHARED_TEST_20261009_01'})}:{}),NODE_ENV:'production',npm_config_offline:'true',npm_config_ignore_scripts:'true',npm_config_audit:'false',npm_config_fund:'false',npm_config_userconfig:path.join(staging,'.npm-user-config'),npm_config_globalconfig:path.join(staging,'.npm-global-config')};
 }
 export function pinnedNpmCliCandidates(nodeExecutable=process.execPath){
   if(!path.isAbsolute(nodeExecutable))failure('PACKAGE_PINNED_NODE_PATH_REQUIRED');
@@ -278,7 +279,8 @@ function node2419ReleaseRoot({repoRoot,commit,tree,releasesRoot,isolatedPreparat
 }
 export function createTestPackage({repoRoot=canonicalRoot,commit,releasesRoot,isolatedPreparation=false,preparationProfile}){
   const closedNode2419Profile=preparationProfile===crm18Node2419.profile||preparationProfile===crm20261020Node2419.profile||preparationProfile===crm20261021Node2419.profile;
-  if(typeof isolatedPreparation!=='boolean'||preparationProfile!==undefined&&!closedNode2419Profile)failure('PACKAGE_BUILD_PROFILE_REJECTED');
+  const cleanPreparation=preparationProfile===cleanPreparationProfile;
+  if(typeof isolatedPreparation!=='boolean'||preparationProfile!==undefined&&!closedNode2419Profile&&!cleanPreparation||cleanPreparation&&!isolatedPreparation)failure('PACKAGE_BUILD_PROFILE_REJECTED');
   const tree=verifyGitPackageSource(repoRoot,commit);
   if(closedNode2419Profile)releasesRoot=node2419ReleaseRoot({repoRoot,commit,tree,releasesRoot,isolatedPreparation,preparationProfile});
   else{
@@ -286,7 +288,7 @@ export function createTestPackage({repoRoot=canonicalRoot,commit,releasesRoot,is
     if(typeof releasesRoot!=='string'||!path.isAbsolute(releasesRoot)||!samePath(releasesRoot,path.join(path.dirname(path.resolve(repoRoot)),'releases'))||within(repoRoot,releasesRoot))failure('PACKAGE_RELEASE_ROOT_REJECTED');
   }
   assertPathAncestors(path.dirname(releasesRoot));fs.mkdirSync(releasesRoot,{recursive:true});assertPathAncestors(releasesRoot);
-  const packageName=`crm-${isolatedPreparation?'shared-':''}test-${commit}`;
+  const packageName=`crm-${isolatedPreparation?'shared-':''}test-${commit}${cleanPreparation?'-'+cleanPreparationProfile:''}`;
   const destination=path.join(releasesRoot,packageName),staging=path.join(releasesRoot,`.${packageName}-${crypto.randomUUID()}.tmp`);
   if(fs.existsSync(destination))failure('PACKAGE_ALREADY_EXISTS');
   fs.mkdirSync(staging);
@@ -294,7 +296,7 @@ export function createTestPackage({repoRoot=canonicalRoot,commit,releasesRoot,is
     const sourceFiles=selectPackageSource(git(repoRoot,['ls-tree','-r','-z',commit]));
     for(const row of sourceFiles){const bytes=git(repoRoot,['cat-file','blob',row.gitBlob]);assertPublicBytes(row.path,bytes);const absolute=path.join(staging,row.path);fs.mkdirSync(path.dirname(absolute),{recursive:true});fs.writeFileSync(absolute,bytes,{flag:'wx'});}
     const locks={};for(const target of ['gateway','frontend']){const name=`apps/${target}/package-lock.json`;validateLockedDependencies(JSON.parse(fs.readFileSync(path.join(staging,name),'utf8')),JSON.parse(fs.readFileSync(path.join(staging,`apps/${target}/package.json`),'utf8')));locks[target]={path:name,sha256:hash(fs.readFileSync(path.join(staging,name)))};}
-    const env=offlineBuildEnvironment(staging,{isolatedPreparation});for(const file of [env.npm_config_userconfig,env.npm_config_globalconfig])fs.writeFileSync(file,'',{flag:'wx'});
+    const env=offlineBuildEnvironment(staging,{isolatedPreparation,...(cleanPreparation?{preparationProfile}:{})});for(const file of [env.npm_config_userconfig,env.npm_config_globalconfig])fs.writeFileSync(file,'',{flag:'wx'});
     npmCi(path.join(staging,'apps/gateway'),{production:true,env});npmCi(path.join(staging,'apps/frontend'),{env});
     try{execFileSync(process.execPath,[path.join(staging,'apps/frontend/node_modules/vite/bin/vite.js'),'build','--configLoader','native'],{cwd:path.join(staging,'apps/frontend'),env,stdio:['ignore','pipe','pipe'],windowsHide:true,maxBuffer:16*1024*1024});}
     catch{failure('PACKAGE_FRONTEND_BUILD_FAILED');}
@@ -306,7 +308,7 @@ export function createTestPackage({repoRoot=canonicalRoot,commit,releasesRoot,is
     projectLockedRuntimeDocumentation(staging);
     const files=inventoryPackage(staging).files;
     for(const row of files)if(!allowedPayloadPath(row.path))failure('PACKAGE_UNEXPECTED_PAYLOAD');
-    const manifest={schemaVersion:1,kind:'melisa-crm-test-package',environment:'TEST',source:{repository:CRM_SOURCE_ORIGIN,commit,tree},build:{viteCrmTest:true,...(isolatedPreparation?{isolatedPreparation:true}:{}),nodeVersion:process.version,platform:process.platform,arch:process.arch,dependencyInstall:'npm-ci-offline-ignore-scripts'},locks,entrypoints:{supervisor:'deploy/test-supervisor.mjs',server:'deploy/test-server.mjs'},externalDependencies:['private-test-configuration','canonical-erp-test-api-root','canonical-erp-test-order-service'],files,sourceFiles};
+    const manifest={schemaVersion:1,kind:'melisa-crm-test-package',environment:'TEST',source:{repository:CRM_SOURCE_ORIGIN,commit,tree},build:{viteCrmTest:true,...(isolatedPreparation?{isolatedPreparation:true}:{}),...(cleanPreparation?{preparationProfile}:{}),nodeVersion:process.version,platform:process.platform,arch:process.arch,dependencyInstall:'npm-ci-offline-ignore-scripts'},locks,entrypoints:{supervisor:'deploy/test-supervisor.mjs',server:'deploy/test-server.mjs'},externalDependencies:['private-test-configuration','canonical-erp-test-api-root','canonical-erp-test-order-service'],files,sourceFiles};
     const manifestBytes=Buffer.from(JSON.stringify(manifest,null,2)+'\n'),manifestSha256=hash(manifestBytes);fs.writeFileSync(path.join(staging,TEST_PACKAGE_MANIFEST),manifestBytes,{flag:'wx'});
     verifyGitPackageSource(repoRoot,commit);verifyTestPackage({packageRoot:staging,manifestSha256});
     if(fs.existsSync(destination))failure('PACKAGE_ALREADY_EXISTS');
