@@ -1,4 +1,461 @@
 {
+  "currentTerminalHandoffAdapter": {
+    "observedAtUtc": "2026-10-24T07:47:31.331660+00:00",
+    "sourceCommit": "3218a0a37451ab746d38ade4ff66d555913208d9",
+    "frontendConsumerCommit": "6f0bb189404a0fa09b9d4e9546058ce3fdb7ea38",
+    "status": "SOURCE_READY_NATIVE_AND_INSTALLATION_PENDING",
+    "sourceFiles": [
+      {
+        "path": "apps/gateway/src/app.js",
+        "bytes": 2562,
+        "sha256": "8c5465f6f138cd13374c5ad5f218c76bdd402c4840bd863407c0c52a59cd28ec",
+        "gitBlob": "7b29daaaaca39c92f1d963c35b3089cd0185b1c3"
+      },
+      {
+        "path": "apps/gateway/src/controllers/authController.js",
+        "bytes": 5076,
+        "sha256": "ffdf85d02db60f279d02717618632043e99cc923c484f54f9847f402c01899d0",
+        "gitBlob": "d237aee24d20801de4e624cfdd3945e830842fc9"
+      },
+      {
+        "path": "apps/gateway/src/middleware/auth.js",
+        "bytes": 1485,
+        "sha256": "e13b4c46071f0e2321688de905286e7172593bf39da9e83c08f939569888603d",
+        "gitBlob": "e0e5c8c5ffa3467b757b9750a37ef587bd72657f"
+      },
+      {
+        "path": "apps/gateway/src/routes/authRoutes.js",
+        "bytes": 961,
+        "sha256": "144ef7ef00b1447c1e3ac9a76b0896527409a7704742b30fe4f0dfac49a08152",
+        "gitBlob": "31f6f449525e465ce456e0e4e233a3d0beea25cf"
+      },
+      {
+        "path": "apps/gateway/src/routes/terminalHandoffRoutes.test.mjs",
+        "bytes": 17186,
+        "sha256": "8fb85844d573133cda601245cb0ab8a2fa889ec48127ffddf0edc6d9854d44a8",
+        "gitBlob": "f3e39c85ee225384553b2f835ba726ed08b28db1"
+      },
+      {
+        "path": "apps/gateway/src/services/crmAuthService.js",
+        "bytes": 22746,
+        "sha256": "5d96f476dac1bc06b9f8382a972a64629a053a39cc552bfb3bff8d2db766c169",
+        "gitBlob": "042df47004e584c30673640255c26311115ae4c0"
+      },
+      {
+        "path": "apps/gateway/src/services/normalRefreshSession.mjs",
+        "bytes": 13591,
+        "sha256": "242e7fed0a99414ec26855e337686f73835e38d9cb72757c9916e54c933ce2d3",
+        "gitBlob": "0ef9f3cbc7c2b40d3bfa6f434c95d5a3b4685dc5"
+      },
+      {
+        "path": "apps/gateway/src/services/terminalHandoffPeer.mjs",
+        "bytes": 4047,
+        "sha256": "3cd1f884d68cce1e96fed6f5df88f7c956d0ec980d3025afca34739667ccf77e",
+        "gitBlob": "fc5580ae8442117dede83ec4af0d88a1e2b2a4e9"
+      },
+      {
+        "path": "apps/gateway/src/services/terminalHandoffPeer.test.mjs",
+        "bytes": 4455,
+        "sha256": "d13182a230e1ba0a5b341f35406b8e117548f451a9f77092dc5f4a78e8bf5e62",
+        "gitBlob": "8bd17dfe8bdc29b102748346e6fd202e6c3ce230"
+      },
+      {
+        "path": "deploy/test-server.mjs",
+        "bytes": 20282,
+        "sha256": "b4ffd983f173cb77fa17bf9fca2c0d7cc178fa66ab12ee469d643621e211d8c4",
+        "gitBlob": "1e6d728ea39b7c76e1d541fc02556912fe754c4b"
+      },
+      {
+        "path": "packages/contracts/terminal-handoff.mjs",
+        "bytes": 2905,
+        "sha256": "a1ae9f497dbd3efc6ff6d6f806da5df274cdcde458efd118f13b18912f2f34c4",
+        "gitBlob": "9b70dc606245f48d7d821be718c9186142d3c82c"
+      },
+      {
+        "path": "tests/clean-normal-refresh-config.test.mjs",
+        "bytes": 3354,
+        "sha256": "f8f6f1011df410825d35a8a72d067feb970e778ae279be098b2bfb58720394e9",
+        "gitBlob": "cb18b84b83e8e5f69cd69a721a3c0840546ca897"
+      }
+    ],
+    "scope": "Default-off exact clean existing personnel only. Trusted ERP one-use PKCE handoff redeems to the existing normal CRM issuer and hash journal. Every protected HTTP and verified refresh reads current ERP binding; synchronous JWT API retained; same HTTP/token duplicate middleware only is deduplicated.",
+    "activation": {
+      "enabledSetting": "CRM_TERMINAL_HANDOFF_ENABLED",
+      "serverPeerKeySettingName": "CRM_TERMINAL_PEER_KEY",
+      "containsKeyValue": false,
+      "default": "off",
+      "baselineCanActivate": false,
+      "requiresExplicitOwnerPreBaselineSnapshot": true,
+      "existingNormalRefreshPolicyUnchanged": true,
+      "canonicalPeerKeyBytes": 32,
+      "keyCannotEqualCrmJwtSecret": true
+    },
+    "protocol": {
+      "nativeCrmRoute": "/api/live/auth/terminal-handoff",
+      "gatewayRoute": "/auth/terminal-handoff",
+      "requestFields": [
+        "code",
+        "requestId",
+        "deviceBinding",
+        "codeVerifier",
+        "erpOrigin",
+        "crmOrigin"
+      ],
+      "erpPeerBase": "http://127.0.0.1:4194/api/auth/terminal-handoff",
+      "operations": [
+        "redeem",
+        "verify",
+        "revoke"
+      ],
+      "peerHeaderName": "x-melisa-terminal-peer",
+      "erpAccessRefreshOrPasswordForwarded": false,
+      "identityMaxAgeMs": 30000,
+      "codeMaxAgeMs": 30000,
+      "grantAndJwtExpiryCappedToErpFamily": true,
+      "journalMetadataOnly": "linkId, request/device/origins, family expiry and verified terminalIdentity; no code/verifier/peer key",
+      "normalUserPolicy": "Existing clean-staff-20261022/personel/agent2/current crm.view+crm.send; no account/role/assignment creation"
+    },
+    "verification": {
+      "localTargetedReports": 52,
+      "pass": 52,
+      "fail": 0,
+      "skip": 0,
+      "localWindowsRouteReports": 12,
+      "localWindowsRouteSubcases": 11,
+      "hostedLinuxWindowsExactPathRoute": "SKIPPED_BY_PLATFORM_AND_NOT_CLAIMED_AS_PASS",
+      "frontendTargetedReportsInSeparateConsumerDelivery": 57,
+      "reviewOpenP1P2": 0,
+      "stagedSecretFindings": 0,
+      "firstRouteAttempt": {
+        "reports": 11,
+        "pass": 9,
+        "fail": 2,
+        "reason": "Synthetic projection required existing agent3 fixture account. Corrected fixture only, no application guard change."
+      },
+      "nativeConnectedRouteCase": "Existing protected manager + terminal loader + real CRM API/JWT/store; ERP peer/native provider fixture; reopen same family and revoke closes vault.",
+      "evidenceReviewOpenP1P2": 0
+    },
+    "ci": {
+      "sourceCommit": "3218a0a37451ab746d38ade4ff66d555913208d9",
+      "jobsSuccessful": 7,
+      "runs": [
+        {
+          "id": 40074898536,
+          "event": "pull_request",
+          "jobs": [
+            120816048004,
+            120816048158,
+            120816048178
+          ],
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 40074895060,
+          "event": "push",
+          "jobs": [
+            120816037231,
+            120816037234,
+            120816037284
+          ],
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 40074898543,
+          "event": "pull_request",
+          "jobs": [
+            120816047755
+          ],
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    },
+    "sourceConformance": {
+      "status": "PASS_SOURCE_ONLY",
+      "erpProtocolCommit": "de72265cc5f3fbf2eafaee9d381ce8657de554b3",
+      "erpCurrentOwnerSourceRead": "8df2330965368c583ee7458fbaa236cd265bde7b",
+      "erpProviderRouterUnchangedAtCurrentOwnerSource": true,
+      "crmSourceCommit": "3218a0a37451ab746d38ade4ff66d555913208d9",
+      "reports": 5,
+      "subcases": 4,
+      "pass": 5,
+      "fail": 0,
+      "skip": 0,
+      "durationMs": 754.5983,
+      "erpFiles": [
+        {
+          "path": "apps/api/src/services/terminalHandoffProvider.mjs",
+          "sha256": "da7e31b4c319d8cce838e02d778354cd82dc456935ea4a28e99050808df80e63"
+        },
+        {
+          "path": "apps/api/src/routes/terminalHandoffRoutes.mjs",
+          "sha256": "8bb68749bcece7fd6fb02bd937f907ae4f5edbb66b52c49d1663dfb5290264b0"
+        }
+      ],
+      "erpSourceGitBlobComparedBeforeAndAfter": true,
+      "realCode": "ERP provider core/router + CRM createApp/auth issuer/JWT/normal store + frontend protected refresh manager/session loader",
+      "syntheticCallbacks": [
+        "ERP normal auth and normal-family reads",
+        "explicit ERP15->CRMstaff->agent2 relation",
+        "native vault"
+      ],
+      "scenarios": [
+        "Empty realm receives own normal CRM family and assigned55",
+        "Actual ERP atomic take rejects code replay/wrong PKCE/device without extra grant",
+        "Protected reopen retains same normal CRM family and does not obtain another handoff",
+        "ERP relation revoke closes own CRM family and vault; already-absent link revoke succeeds"
+      ],
+      "harness": "docs/evidence/crm/2026-10-24-e1-terminal/joint-source-conformance.mjs",
+      "harnessSha256": "96b830497833fac027a53eca3efd7f13495a212910cd7745d61da97d53e608f4",
+      "localLogSha256": "20aa1b28521d2bb6f2cce20c68ac4c86853abddc97d9ebb831baa96297f2f710",
+      "http": "Two ephemeral loopback servers, closed by teardown; fixed ERP peer transport intercepted only in this fixture",
+      "sqlOrSharedFileWrites": 0,
+      "normalGui": "NOT_TRIED",
+      "physicalDevice": "PENDING",
+      "humanAcceptance": "PENDING",
+      "erpCi": "Not inherited from ERP de722; its separate compatibility/logger follow-up and CI belong to ERP owner.",
+      "confirmedLogoutAssertions": [
+        "Native manager logout HTTP200 and loggedOut=true",
+        "No CRM_TERMINAL_CLOSE_UNCONFIRMED error",
+        "Repeated logout after ERP removed the link HTTP200 and loggedOut=true"
+      ]
+    },
+    "reviewCorrections": {
+      "crmConsumer": "Three P2 (replacement, expiry/transient revoke, coercion) closed in6f0; targeted failing cases retained in history.",
+      "crmBackend": "Baseline activation inheritance closed; explicit owner default-off and two new config tests.",
+      "erpPeerReadOnlyReview": "Already absent revoke=false and revision array coercion found; corrected by ERP owner in de722. CRM did not edit ERP.",
+      "evidence": "Review found local close assertions did not prove remote200. Added captured logout receipts, explicit200/loggedOut, absence of CLOSE_UNCONFIRMED and repeated already-absent logout200 assertions; rerun5/5PASS."
+    },
+    "installation": {
+      "newSourceInstalled": false,
+      "installedCrmSource": "09a2ea30dd9fea152554dbf6efe43c731add1510",
+      "existingReconciliationCommit": "1eebf8dd557c6b0d3977e49a371c2701b61b6a5f",
+      "existingPackage": "CLEAN-CRM-20261024-09a2ea30dd9f-E1SESSION",
+      "existingManifestSha256": "B1420C607F67A27E18404FDA5D911703FF2175406FBB9129B72C1A3BD073E911",
+      "existingPackageFiles": 772,
+      "baselineReceiptsReusedNotRetested": true,
+      "frontendBuildReusedFromConsumer": true,
+      "frontendSourceDiffBetweenCommits": false,
+      "owner": "ERP",
+      "next": "ERP native protected provider + exact candidate/explicit peer config/package/runtime/normal GUI receipt; CRM read-only reconciliation when ready."
+    },
+    "boundaries": {
+      "sharedRuntimeOrServiceWrites": 0,
+      "sqlWrites": 0,
+      "accountsRolesAssignmentsChanged": 0,
+      "erpSourceWritesByCrm": 0,
+      "customerMessages": 0,
+      "paidApi": 0,
+      "liveVegaT1": false,
+      "mainMergeOrTag": false,
+      "samePersonNormalGui": "NOT_TRIED",
+      "nativeKeystoreTC21MobileWindowsReboot": "PENDING",
+      "humanAcceptance": "PENDING",
+      "crmLeaves": {
+        "total": 25,
+        "green": 12,
+        "yellow": 13,
+        "red": 0
+      },
+      "wholeTree": {
+        "headings": 17,
+        "leaves": 74
+      }
+    }
+  },
+  "currentTerminalIdentityConsumer": {
+    "observedAtUtc": "2026-10-24T07:34:20.813795+00:00",
+    "sourceCommit": "6f0bb189404a0fa09b9d4e9546058ce3fdb7ea38",
+    "status": "SOURCE_CONSUMER_READY_NOT_INSTALLED",
+    "existingAcceptanceIds": [
+      "E1",
+      "M01",
+      "CRM-UA11",
+      "C01",
+      "C02"
+    ],
+    "scope": "Only exact clean embedded CRM62800 with same-host ERP5244; existing protected normal CRM grant, authenticated me and assigned inbox; no new issuer or ERP credentials in frontend.",
+    "sourceFiles": [
+      {
+        "path": "apps/frontend/src/App.jsx",
+        "bytes": 189507,
+        "sha256": "49ed154211f763509592ea45ea2600e33958fd7606446bc2d8798980b7ae45da"
+      },
+      {
+        "path": "apps/frontend/src/sessionLoader.js",
+        "bytes": 3644,
+        "sha256": "297786b7e7442d038a3fe6b5a9adee8bc5b8ca0ca06f1bef9de021a35bf98a9f"
+      },
+      {
+        "path": "apps/frontend/src/terminalNavigation.js",
+        "bytes": 3243,
+        "sha256": "12bf5ac6302aa86a39e6cce83bdbdfa671033234bda7e99bcec15aa4d237d05a"
+      },
+      {
+        "path": "apps/frontend/src/terminalSessionIdentity.js",
+        "bytes": 6881,
+        "sha256": "357119ddded189bf847f8ce2ad3ddb1b73aee9d405b7276b2204a7dcda84ac2e"
+      },
+      {
+        "path": "apps/frontend/tests/terminal-session-identity.test.mjs",
+        "bytes": 14079,
+        "sha256": "66089d5c2fa0dde5aff55ada6ecbfde742a372e9f37e18ca392b2a51a0967bde"
+      },
+      {
+        "path": "apps/frontend/tests/terminal-session-ui.test.mjs",
+        "bytes": 2151,
+        "sha256": "d7af65f25449db224808b48484800e724d2cc0f0c65290f39ace7cd135cabd90"
+      }
+    ],
+    "verification": {
+      "targetedReports": 57,
+      "pass": 57,
+      "fail": 0,
+      "skip": 0,
+      "newConsumerTests": 18,
+      "actualLoginGateSsrTests": 1,
+      "browser": "NOT_TRIED_FOR_NEW_SAME_PERSON_FLOW",
+      "firstConsumerPreparation": {
+        "pass": 0,
+        "fail": 9,
+        "meaning": "Eight absent consumer API cases and one premature-ready case; not nine previously accepted application bugs."
+      },
+      "reviewRegressionsBefore": {
+        "pass": 0,
+        "fail": 3
+      },
+      "transientSideCaseBefore": {
+        "pass": 0,
+        "fail": 1
+      },
+      "reviewFinalOpenP1P2": 0,
+      "stagedSecretFindings": 0
+    },
+    "build": {
+      "profile": "clean-synthetic-20261022",
+      "seconds": 9.59,
+      "indexSelectedMain": "/assets/index-BTJ5sPZI.js",
+      "bytes": 906821,
+      "sha256": "15b7307bffcd79c455c151c33ac59337a0c2686129a6f63e2d01640ca0d5d2cf",
+      "css": "/assets/index-C1zRRMAe.css",
+      "cssSha256": "3358f7ded98d63dc4e364d2557174490914b08bda7c0016262ed1a8f63e851da",
+      "isInstalledPackage": false
+    },
+    "ci": {
+      "sourceCommit": "6f0bb189404a0fa09b9d4e9546058ce3fdb7ea38",
+      "jobsSuccessful": 7,
+      "runs": [
+        {
+          "id": 40073931261,
+          "event": "pull_request",
+          "jobs": [
+            120813141297,
+            120813141422,
+            120813141464
+          ],
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 40073928656,
+          "event": "push",
+          "jobs": [
+            120813132945,
+            120813133126,
+            120813133196
+          ],
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 40073931264,
+          "event": "pull_request",
+          "jobs": [
+            120813141070
+          ],
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    },
+    "installation": {
+      "newSourceInstalled": false,
+      "installedApplicationSource": "09a2ea30dd9fea152554dbf6efe43c731add1510",
+      "existingReconciliationCommit": "1eebf8dd557c6b0d3977e49a371c2701b61b6a5f",
+      "receiptReusedNotRetested": true,
+      "owner": "ERP"
+    },
+    "upstreamContract": {
+      "authenticatedCrmField": "/auth/me.terminalIdentity",
+      "fields": [
+        "version",
+        "environmentId",
+        "database",
+        "erpOrigin",
+        "crmOrigin",
+        "erpUserId",
+        "erpNormalSessionId",
+        "crmUserId",
+        "chatwootAgentId",
+        "bindingRevision",
+        "expiresAt"
+      ],
+      "erpSessionConfirmVerifiedFamilyField": "normalTestSessionId",
+      "fixtureOnlyRelation": "ERP15 -> clean-staff-20261022 -> agent2; not real personnel mapping",
+      "firstGrantAdapter": "IN_PROGRESS_IN_EXISTING_E1_NOT_INSTALLED",
+      "erpPeerRoutes": [
+        "/api/auth/terminal-handoff/redeem",
+        "/api/auth/terminal-handoff/verify",
+        "/api/auth/terminal-handoff/revoke"
+      ],
+      "nativeCrmRoute": "/api/live/auth/terminal-handoff",
+      "publicRequestFields": [
+        "code",
+        "requestId",
+        "deviceBinding",
+        "codeVerifier",
+        "erpOrigin",
+        "crmOrigin"
+      ],
+      "serverPeerHeaderName": "x-melisa-terminal-peer",
+      "peerAddress": "http://127.0.0.1:4194",
+      "codeMaxSeconds": 30,
+      "trust": "Server-owned current ERP family plus explicit relation and existing CRM policy; never parent/native/body user ID or copied confirmed:true."
+    },
+    "boundaries": {
+      "sharedRuntimeWrites": 0,
+      "sqlWrites": 0,
+      "accountsRolesAssignmentsChanged": 0,
+      "erpSourceWrites": 0,
+      "customerMessages": 0,
+      "paidApi": 0,
+      "liveVegaT1": false,
+      "mainMerge": false,
+      "physicalDevice": "PENDING",
+      "windowsRebootLogon": "PENDING",
+      "humanAcceptance": "PENDING",
+      "crmLeaves": {
+        "total": 25,
+        "green": 12,
+        "yellow": 13,
+        "red": 0
+      },
+      "wholeTree": {
+        "headings": 17,
+        "leaves": 74
+      }
+    },
+    "recordCheck": {
+      "configuredRunnerWasRunOnce": true,
+      "exitCode": 1,
+      "crmRuntimeProof": "REUSE",
+      "crmSamePersonRoleAndUi": "BLOCKED",
+      "wholeClosureGranted": false,
+      "meaning": "Known missing joint identity/normal GUI proof; not a source/build failure or permission to skip upstream security."
+    }
+  },
   "currentCleanNormalSession": {
     "observedAtUtc": "2026-10-24T06:36:58.054729+00:00",
     "observedAtIstanbul": "2026-10-24T09:36:58.054729+03:00",

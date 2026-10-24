@@ -1,5 +1,17 @@
 ## CRM-UA11 — 15 Ekim — son normal ekran ve fiziksel mobil kabulü
 
+### 24 Ekim 10:43 TR — E1 ilk grant ve same-person kaynak hazır; kabul BEKLİYOR
+
+[3218a0a](https://github.com/melihsnyldzz-ui/melisa-crm/commit/3218a0a37451ab746d38ade4ff66d555913208d9)+6f0: ilk boşCRMrealm için dar ERPdevri ve mevcut normal issuer/refresh/çıkış/atanmışliste tüketicisi teknik hazır;frontend57/backend52hedefPASS,exactCIikiSHA'da7şerSUCCESS,review0/secret0. GerçekERPprovider/routerde722↔CRM3218API/JWT/journal ve mevcut frontendprotectedmanager/loader5sourceconformancePASS. ERPnormal-authcallback/nativevault/ilişki sentetiktir;bu normalGUI/Keystore/TC21/gerçekpersonel/insan kabulü değildir. [Kanıt ve sınırlar](docs/evidence/crm/2026-10-24-e1-terminal/README.md).
+
+Kullanıcı adına geri alınabilir teknik seçim: ikinci CRMparolasını kalıcı önkoşul yapmak yerine mevcutnormalgrant'a default-off/30sn/PKCE/alıcı-istek-cihaz bağlı tekuseERPdevri;peerkeyserver-only,baseline'dan aktivasyonmirasıyok. GerçekkişininID/rol/ataması seçilmedi,değişmedi. Yeni source kurulmadı;ERPnative sağlayıcı/Keystore ve ortak kurulum tekERP sahibinde. **Yeni same-person GUI DENENMEDİ; CRM-UA11/C01/C02/M01/E1 boşcihaz/çıkış-hesapdeğişimi/revoke/fizikselTC21/telefon/Windowsreboot-logon/insan BEKLİYOR.** Eski09a kendiCRMhesabı kabulü korunur;25/12🟢/13🟡/0🔴 ve17/74aynı.
+
+### 24 Ekim 10:24 TR — E1 kaynak tüketicisi; insan/cihaz/ortak giriş BEKLİYOR
+
+[6f0bb189](https://github.com/melihsnyldzz-ui/melisa-crm/commit/6f0bb189404a0fa09b9d4e9546058ce3fdb7ea38) yalnız mevcut normal grant'in authenticated aynı-kişi/temsilci/atama bağıyla görünmesini, taze izin/bağ okumasını, geç cevap ve kapanış ayrımını hazırlar.57offline/SSR PASS,production9,59sn ve bağımsızreview0 teknik kanıttır. **Yeni akış GUI DENENMEDİ**; gerçek same-person server alanı ve boş protectedCRM alanına ilk destekli devir henüz yok. Koordinatör bu ilk devri mevcut normal issuer'a dar, tek kullanımlık/alıcı-istek-cihaz bağlı adapterle hazırlamayı seçti; ikinci CRM parolasını kalıcı önkoşul yapmadık. Gerçek kişi/atama veya güvenilir provider varmış gibi davranılmadı.
+
+Kurulu09a'nın önceki normal CRM hesabı/yenileme/çıkış kabulü korunur; yeni source kurulmadı, önceki test tekrarlanmadı. CRM-UA11/C01/C02/M01/E1'in aynıkişi boşcihaz girişi, logout/revoke/hesap değişimi, fizikselTC21/telefon/gerçekpersonel/Windowsreboot-logon ve insan kabulü **BEKLİYOR**. Kaynak/fixture/SSR bunu kapatmaz;25/12🟢/13🟡/0🔴 ve17/74 aynı. [Sözleşme, kaynak, CI ve sınırlar](docs/evidence/crm/2026-10-24-e1-terminal/README.md).
+
 ### 24 Ekim 09:54 TR — E1 kendi normal CRM oturumu kurulu teknik doğrulandı
 
 ERP owner source09a2ea30'u09:44:34TR'de772dosya/B1420manifest ile gerçekten kurdu;16normalAPI ve kurulu normal Personel→1atanmış konuşma→tamreload'da kimlik→çıkış→reloadkapalı,3aile sunucuda revoked kanıtı var. CRM772hash/4Gitblob/mainartifact ve53koruma özeti dosyalarını RO eşledi;[ERP6e3c4bda](https://github.com/melihsnyldzz-ui/melisa-erp-v2/blob/6e3c4bdaf48612421ef6872ea5ed820ee8331eba/STATUS.md) /[mevcut CRM kanıtı](docs/evidence/crm/2026-10-24-e1-terminal/README.md). Yeni test/kurulum yapılmadı;source09aCI7/7aynı.

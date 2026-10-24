@@ -1,3 +1,15 @@
+### 24 Ekim 10:43 TR — E1 ilk normal-grant devri kaynak/CI hazır; kurulum ve gerçek kabul açık
+
+[3218a0a](https://github.com/melihsnyldzz-ui/melisa-crm/commit/3218a0a37451ab746d38ade4ff66d555913208d9)+6f0 mevcut normal issuer/JWT/journal/refresh/çıkışa dar, default-off clean-only ERP tekuse/PKCE/peer bağını ekler. Public kimlik yalnız taze sunucu doğrulaması; requestler arası yetki cache'i ve ERPcredential aktarımı yok. Frontend57/backend52hedefPASS,her iki exactsource7CIişiSUCCESS,review açıkP1P2=0/secret0. ExactERPde722gerçekprovider/router↔CRM3218 gerçekAPI/normalgrant/native tüketici sourceconformance5PASS;ERPnormal-authcallback/nativevault sentetik,GUI/cihaz/insan değildir. [Aynı E1 kanıtı ve tekrarlanabilir harness](docs/evidence/crm/2026-10-24-e1-terminal/README.md).
+
+Kurulu09a/772/B1420 önceden eşlendi;tekraryok. Yeni3218 veERPpeer kurulmadı. Sıradaki aynıE1 native sağlayıcı/Keystore bağlayıcısı ve exactkaynak/paket/runtime/normalGUI makbuzu ERP sahibindedir. CRM makbuz hazır olunca RO eşler;gerçek9kişi bağı tahminedilmez. **GUI DENENMEDİ / fizikselTC21/telefon/Windowsreboot-logon/insan BEKLİYOR**.25/12🟢/13🟡/0🔴 ve17/74aynı;sonraki notlar kendi tarihinin aşamasıdır.
+
+### 24 Ekim 10:24 TR — E1 aynı-kişi tüketicisi source hazır; tam ortak giriş açık
+
+[6f0bb189](https://github.com/melihsnyldzz-ui/melisa-crm/commit/6f0bb189404a0fa09b9d4e9546058ce3fdb7ea38) normal loader/refresh/me/atama tüketicisini yalnız clean gömülü terminal için bağlar. Eksik/yanlış/iptal ilişki, eski işlem ve kapanış doğrulanmadan görünüm açılmaz; olağan expiry ve geçici ağ hatası korumalı yenilemeyi silmez.18yeni+1gerçekbileşenSSR ve doğrudan etkilenen kontroller toplam57PASS,production9,59sn,review açıkP1P2=0/secret0. Exact source CI ve11alan upstream sözleşmesi [aynı E1 kanıtında](docs/evidence/crm/2026-10-24-e1-terminal/README.md).
+
+Kurulu09a/772dosya/B1420paket eşlemesi zaten1eeb'de tamam; tekrarlanmadı. Yeni6f0 kaynak **kurulmadı**; gerçek `/auth/me.terminalIdentity` server doğrulaması, boşCRMrealm için dar tek kullanımlık normal-grant devri ve ERP/native provider/revoke halkası hazırlanacak. Tam ortak giriş, fizikselTC21/telefon/gerçekpersonel/Windowsreboot-logon/insan **BEKLİYOR**, yeniGUI DENENMEDİ. Ortak kurulum/SQL/runtime yalnız ERP sahibinde; sayaç25/12🟢/13🟡/0🔴 ve17/74 aynı. Aşağıdaki kayıtlar tarihsel aşamalardır.
+
 ### 24 Ekim 09:54 TR — E1 kendi normal CRM oturumu kurulu teknik doğrulandı
 
 ERP owner source09a2ea30'u09:44:34TR'de772dosya/B1420manifest ile gerçekten kurdu;16normalAPI ve kurulu normal Personel→1atanmış konuşma→tamreload'da kimlik→çıkış→reloadkapalı,3aile sunucuda revoked kanıtı var. CRM772hash/4Gitblob/mainartifact ve53koruma özeti dosyalarını RO eşledi;[ERP6e3c4bda](https://github.com/melihsnyldzz-ui/melisa-erp-v2/blob/6e3c4bdaf48612421ef6872ea5ed820ee8331eba/STATUS.md) /[mevcut CRM kanıtı](docs/evidence/crm/2026-10-24-e1-terminal/README.md). Yeni test/kurulum yapılmadı;source09aCI7/7aynı.
