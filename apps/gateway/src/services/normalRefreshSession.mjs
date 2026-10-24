@@ -1,6 +1,7 @@
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
+import {validateTerminalLink} from '../../../../packages/contracts/terminal-handoff.mjs';
 
 const hash = value => crypto.createHash('sha256').update(value).digest('hex');
 const reject = () => Object.assign(new Error('Oturum sona erdi. Yeniden giriş yapın.'), {code:'AUTH_TOKEN_INVALID',statusCode:401});
@@ -74,7 +75,8 @@ export function createNormalRefreshStore({file,resolveUser,authorizeUser=()=>tru
     try{data=JSON.parse(fs.readFileSync(file,'utf8'));}
     catch(error){if(error.code==='ENOENT')return {schema:1,grants:[]};throw reject();}
     if(data.schema!==1||!Array.isArray(data.grants)||data.grants.length>10000||data.grants.some(g=>!g||typeof g.sid!=='string'||!/^[a-f0-9]{64}$/.test(g.tokenHash||'')||!/^[a-f0-9]{64}$/.test(g.fingerprint||'')||typeof g.userId!=='string'||!Number.isSafeInteger(g.expiresAt)||typeof g.revoked!=='boolean'
-      ||(g.retiredHashes!==undefined&&(!Array.isArray(g.retiredHashes)||g.retiredHashes.length>2048||g.retiredHashes.some(h=>!/^[a-f0-9]{64}$/.test(h))))) )throw reject();
+      ||(g.retiredHashes!==undefined&&(!Array.isArray(g.retiredHashes)||g.retiredHashes.length>2048||g.retiredHashes.some(h=>!/^[a-f0-9]{64}$/.test(h))))
+      ||(g.terminalLink!==undefined&&(()=>{try{validateTerminalLink(g.terminalLink);return false;}catch{return true;}})())) )throw reject();
     return data;
   };
   const mutate=fn=>{
@@ -95,11 +97,14 @@ export function createNormalRefreshStore({file,resolveUser,authorizeUser=()=>tru
   };
   const tokenHash=token=>{if(typeof token!=='string'||!/^[A-Za-z0-9_-]{43}$/.test(token))throw reject();return hash(token);};
   return {
-    issue(user){return mutate(data=>{
+    issue(user,{terminalLink,maxExpiresAt}={}){return mutate(data=>{
       if(!user?.active||!authorizeUser(user))throw reject();const refreshToken=random(),sid=crypto.randomUUID(),expiresAt=now()+ttlMs;
+      if(terminalLink){validateTerminalLink(terminalLink,{now:now(),fresh:true});if(maxExpiresAt!==terminalLink.linkExpiresAt||!Number.isSafeInteger(maxExpiresAt)||maxExpiresAt<=now())throw reject();}
+      else if(maxExpiresAt!==undefined)throw reject();
       if(data.grants.length>=10000)throw reject();
-      data.grants.push({sid,userId:String(user.id),fingerprint:normalSessionFingerprint(user),tokenHash:tokenHash(refreshToken),retiredHashes:[],expiresAt,revoked:false});
-      return {sid,refreshToken,refreshExpiresAt:expiresAt};
+      const until=terminalLink?Math.min(expiresAt,maxExpiresAt):expiresAt;
+      data.grants.push({sid,userId:String(user.id),fingerprint:normalSessionFingerprint(user),tokenHash:tokenHash(refreshToken),retiredHashes:[],expiresAt:until,revoked:false,...(terminalLink?{terminalLink}: {})});
+      return {sid,refreshToken,refreshExpiresAt:until};
     });},
     rotate(token){return mutate(data=>{
       const grant=data.grants.find(g=>g.tokenHash===tokenHash(token));const user=current(grant),refreshToken=random();
@@ -108,7 +113,13 @@ export function createNormalRefreshStore({file,resolveUser,authorizeUser=()=>tru
     });},
     inspect(token){return current(read().grants.find(g=>g.tokenHash===tokenHash(token)));},
     ownsToken(token,{includeRetired=false}={}){const digest=tokenHash(token);return read().grants.some(g=>g.tokenHash===digest||(includeRetired&&g.retiredHashes?.includes(digest)));},
-    verify(sid,user){const grant=read().grants.find(g=>g.sid===sid);const actual=current(grant);if(actual.id!==user.id||!authorizeUser(user))throw reject();return actual;},
+    verify(sid,user,{includeTerminalLink=false}={}){const grant=read().grants.find(g=>g.sid===sid);const actual=current(grant);if(actual.id!==user.id||!authorizeUser(user))throw reject();return includeTerminalLink?{user:actual,terminalLink:grant.terminalLink?structuredClone(grant.terminalLink):null}:actual;},
+    terminalLinkForSession(sid,user){const grant=read().grants.find(g=>g.sid===sid),actual=current(grant);if(actual.id!==user?.id||!authorizeUser(user))throw reject();return grant.terminalLink?structuredClone(grant.terminalLink):null;},
+    terminalLinkForToken(token,{includeRetired=false,includeRevoked=false}={}){
+      const digest=tokenHash(token),grant=read().grants.find(g=>g.tokenHash===digest||(includeRetired&&g.retiredHashes?.includes(digest)));
+      if(!grant)return null;if(!includeRevoked)current(grant);
+      return grant.terminalLink?structuredClone(grant.terminalLink):null;
+    },
     // A simultaneous logout can hold the token retired by an in-flight refresh.
     // Retired hashes may revoke their own family but never rotate it again.
     revoke(token){return mutate(data=>{const digest=tokenHash(token),grant=data.grants.find(g=>g.tokenHash===digest||g.retiredHashes?.includes(digest));if(grant)grant.revoked=true;return {loggedOut:true};});},

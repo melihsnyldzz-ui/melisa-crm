@@ -8,6 +8,7 @@ import { routes } from './routes/index.js';
 import { createWaapiWebhookRoutes } from './routes/waapiWebhookRoutes.js';
 import { createMessageUploadParser } from './middleware/messageUploadParser.js';
 import {customerRequestRuntimeConfig} from './services/customerProductRequestIntegration.mjs';
+import {terminalHandoffEnabled} from './services/crmAuthService.js';
 
 export function createApp({customerProductRequestRouter=null}={}) {
   const app = express();
@@ -31,7 +32,7 @@ export function createApp({customerProductRequestRouter=null}={}) {
   // Native ERP drafts use the separate isolated order proxy, never this gateway.
   app.use((req,res,next)=>{
     if(process.env.CRM_ISOLATED_PREPARATION==='true'&&!['GET','HEAD','OPTIONS'].includes(req.method)
-      &&!(req.method==='POST'&&(req.path==='/auth/login'||((process.env.CRM_NORMAL_REFRESH_ENABLED==='true'||process.env.CRM_CUSTOMER_PRODUCT_REQUEST_ENABLED==='true')&&['/auth/refresh','/auth/logout'].includes(req.path))))){
+      &&!(req.method==='POST'&&(req.path==='/auth/login'||req.path==='/auth/terminal-handoff'&&terminalHandoffEnabled()||((process.env.CRM_NORMAL_REFRESH_ENABLED==='true'||process.env.CRM_CUSTOMER_PRODUCT_REQUEST_ENABLED==='true')&&['/auth/refresh','/auth/logout'].includes(req.path))))){
       return res.status(403).json({success:false,error:{code:'CRM_PREPARATION_READ_ONLY',message:'Ortak hazırlık ortamında mevcut CRM kayıtları değiştirilemez.'}});
     }
     next();

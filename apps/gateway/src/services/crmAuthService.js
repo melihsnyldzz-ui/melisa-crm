@@ -7,6 +7,8 @@ import { verifyTestPersonnelSession } from './testPersonnelSession.mjs';
 import { configuredNormalRefreshStore, configuredSemihTestRefreshStore, isDedicatedNormalTestUser, isDedicatedSemihTestUser, normalRefreshUserPolicy, semihRefreshUserPolicy, normalSessionFingerprint, DEDICATED_NORMAL_TEST_USER_ID, DEDICATED_SEMIH_TEST_USER_ID, CLEAN_NORMAL_TEST_USER_ID } from './normalRefreshSession.mjs';
 import {configuredCustomerRequestIssuerStore,customerRequestSharedConfig} from './customerRequestIssuerSession.mjs';
 import {configuredAssignedStaffRefreshStore,DEDICATED_ASSIGNED_STAFF_TEST_USER_ID} from './assignedStaffRefreshSession.mjs';
+import {configuredTerminalHandoffPeer,isTerminalPeerProof} from './terminalHandoffPeer.mjs';
+import {reject as terminalReject,validateTerminalRequest,terminalIdentityKey} from '../../../../packages/contracts/terminal-handoff.mjs';
 
 const ROLE_PERMISSIONS = Object.freeze({
   patron: ['crm.view', 'crm.send', 'crm.assign', 'crm.agents', 'crm.manage'],
@@ -21,6 +23,8 @@ const DUMMY_DIGEST = crypto.scryptSync('invalid-password', DUMMY_SALT, 64).toStr
 const verifiedCustomerRequestIssuers = new WeakSet();
 const verifiedAssignedStaffSessions = new WeakSet();
 const verifiedCleanNormalSessions = new WeakSet();
+const linkedTerminalGrants = new WeakMap();
+const verifiedTerminalIdentities = new WeakMap();
 
 function authError(code, message, statusCode = 401) {
   const error = new Error(message);
@@ -90,6 +94,7 @@ export function publicCrmUser(user) {
     ...(verifiedCustomerRequestIssuers.has(user)?{customerProductRequestIssuer:true}:{}),
     ...(verifiedAssignedStaffSessions.has(user)?{assignedStaffRefresh:true}:{}),
     ...(verifiedCleanNormalSessions.has(user)?{normalRefreshSession:true}:{}),
+    ...(verifiedTerminalIdentities.has(user)?{terminalIdentity:verifiedTerminalIdentities.get(user)}:{}),
     ...(process.env.CRM_NORMAL_REFRESH_ENABLED==='true'&&process.env.CRM_ISOLATED_PREPARATION==='true'
       &&process.env.CRM_TEST_EXPECTED_DATABASE==='MELISA_ERP_CRM_SHARED_TEST_20261009_02'
       &&user.id===process.env.CRM_NORMAL_REFRESH_USER_ID&&isDedicatedNormalTestUser(user)
@@ -122,6 +127,8 @@ const cleanNormalRefreshStore = process.env.CRM_TEST_PROFILE==='clean-synthetic-
 const semihRefreshStore = configuredSemihTestRefreshStore({resolveUser:findCrmUserById});
 const assignedStaffRefreshStore = configuredAssignedStaffRefreshStore({resolveUser:findCrmUserById});
 const customerRequestIssuer = configuredCustomerRequestIssuerStore({resolveUser:findCrmUserById});
+const terminalPeer = configuredTerminalHandoffPeer();
+export const terminalHandoffEnabled=()=>Boolean(terminalPeer?.enabled());
 
 export function customerRequestIssuerSessionsEnabled(){
   try{return Boolean(customerRequestIssuer&&customerRequestSharedConfig());}catch{return false;}
@@ -152,12 +159,18 @@ export function rememberedSemihCrmUser(refreshToken){
   return publicCrmUser(user);
 }
 
-function normalLoginResult(user, grant = null) {
-  const accessToken = jwt.sign(
+function normalLoginResult(user, grant = null, {maxExpiresAt} = {}) {
+  let accessToken = jwt.sign(
     { username: user.username, role: user.role, ...(grant ? {normalSessionId:grant.sid} : {}) },
     env.auth.jwtSecret,
     {subject:user.id,issuer:env.auth.issuer,audience:env.auth.audience,expiresIn:env.auth.tokenExpiresIn,jwtid:crypto.randomUUID()},
   );
+  if(maxExpiresAt!==undefined){
+    if(!Number.isSafeInteger(maxExpiresAt)||maxExpiresAt<=Date.now())throw terminalReject();
+    const payload=jwt.decode(accessToken);payload.exp=Math.min(payload.exp,Math.floor(maxExpiresAt/1000));
+    if(payload.exp<=Math.floor(Date.now()/1000))throw terminalReject();
+    accessToken=jwt.sign(payload,env.auth.jwtSecret);
+  }
   const expiresAt=jwt.decode(accessToken).exp*1000;
   return {accessToken,tokenType:'Bearer',expiresIn:env.auth.tokenExpiresIn,user:publicCrmUser(verifyCrmAccessToken(accessToken)),
     ...(grant ? {refreshToken:grant.refreshToken,refreshExpiresAt:grant.refreshExpiresAt,expiresAt} : {})};
@@ -197,7 +210,11 @@ function refreshFromStore(store,token){
   if(refreshStoreForUser(grant.user)!==store)throw authError('AUTH_TOKEN_INVALID','Yeniden giriş yapın.');
   return normalLoginResult(grant.user,grant);
 }
-export function refreshNormalCrmSession(refreshToken){return refreshFromStore(refreshStoreForToken(refreshToken),refreshToken);}
+export function refreshNormalCrmSession(refreshToken){
+  const store=refreshStoreForToken(refreshToken);
+  if(store?.terminalLinkForToken(refreshToken))throw terminalReject();
+  return refreshFromStore(store,refreshToken);
+}
 export function refreshSemihCrmSession(refreshToken){return refreshFromStore(semihTestContinueEnabled()?semihRefreshStore:null,refreshToken);}
 
 export function logoutNormalCrmSession(refreshToken) {
@@ -252,12 +269,91 @@ export function verifyCrmAccessToken(token, { includeContext = false } = {}) {
   if(payload.normalSessionId){
     const store=refreshStoreForUser(user);
     if(!store)throw authError('AUTH_TOKEN_INVALID','Yeniden giriş yapın.');
-    store.verify(payload.normalSessionId,user);
+    const verified=store.verify(payload.normalSessionId,user,{includeTerminalLink:true});
+    if(verified.terminalLink){
+      if(store!==cleanNormalRefreshStore||verified.terminalLink.terminalIdentity.crmUserId!==user.id||verified.terminalLink.terminalIdentity.chatwootAgentId!==user.chatwootAgentId)throw terminalReject();
+      linkedTerminalGrants.set(user,{store,sid:payload.normalSessionId,link:verified.terminalLink});
+    }
     if(store===customerRequestIssuer?.store)verifiedCustomerRequestIssuers.add(user);
     if(store===assignedStaffRefreshStore)verifiedAssignedStaffSessions.add(user);
     if(store===cleanNormalRefreshStore)verifiedCleanNormalSessions.add(user);
   }
   return includeContext ? { user, expiresAt: Number.isFinite(payload.exp) ? payload.exp * 1000 : NaN } : user;
+}
+
+function terminalUser(proof){
+  if(!isTerminalPeerProof(proof)||!terminalHandoffEnabled())throw terminalReject();
+  const user=findCrmUserById(proof.terminalIdentity.crmUserId);
+  if(!user?.active||!normalRefreshUserAllowed(user)||refreshStoreForUser(user)!==cleanNormalRefreshStore
+    ||user.role!=='personel'||user.chatwootAgentId!==proof.terminalIdentity.chatwootAgentId)throw terminalReject();
+  return user;
+}
+async function verifyTerminalLink(link){
+  if(!terminalPeer)throw terminalReject();
+  const proof=await terminalPeer.verify(link);terminalUser(proof);return proof;
+}
+async function closeTerminalGrant(store,grant,link){
+  // Local own-family revoke is independent of ERP availability or current role.
+  store.revoke(grant.refreshToken);
+  if(terminalPeer)await terminalPeer.revoke(link);
+}
+export async function authenticateCrmTerminalHandoff(input){
+  validateTerminalRequest(input);if(!terminalPeer)throw terminalReject();
+  const proof=await terminalPeer.redeem(input);
+  let grant;
+  try{
+    const user=terminalUser(proof);
+    grant=cleanNormalRefreshStore.issue(user,{terminalLink:proof,maxExpiresAt:proof.linkExpiresAt});
+    const fresh=await verifyTerminalLink(proof),actual=terminalUser(fresh);
+    cleanNormalRefreshStore.verify(grant.sid,actual);
+    const result=normalLoginResult(actual,grant,{maxExpiresAt:fresh.linkExpiresAt});
+    result.user.terminalIdentity=fresh.terminalIdentity;return result;
+  }catch(error){
+    if(grant)await closeTerminalGrant(cleanNormalRefreshStore,grant,proof).catch(()=>{});
+    else await terminalPeer.revoke(proof).catch(()=>{});
+    throw error;
+  }
+}
+/** Extra asynchronous authority check at the HTTP boundary, never a cached role. */
+export async function verifyTerminalCrmSession(user){
+  const binding=linkedTerminalGrants.get(user);if(!binding)return user;
+  try{
+    const proof=await verifyTerminalLink(binding.link);
+    const current=binding.store.verify(binding.sid,user,{includeTerminalLink:true});
+    if(!current.terminalLink||terminalIdentityKey(current.terminalLink.terminalIdentity)!==terminalIdentityKey(proof.terminalIdentity)
+      ||current.terminalLink.linkId!==proof.linkId)throw terminalReject();
+    verifiedTerminalIdentities.set(user,proof.terminalIdentity);return user;
+  }catch(error){
+    if([401,403].includes(error.statusCode))binding.store.revokeSession(binding.sid,user);
+    throw error;
+  }
+}
+export async function refreshNormalCrmSessionVerified(refreshToken){
+  const store=refreshStoreForToken(refreshToken);if(!store)throw authError('AUTH_TOKEN_INVALID','Yeniden giriş yapın.');
+  const link=store.terminalLinkForToken(refreshToken);
+  if(!link)return refreshFromStore(store,refreshToken);
+  let grant;
+  try{
+    const before=await verifyTerminalLink(link);terminalUser(before);
+    grant=store.rotate(refreshToken);
+    const fresh=await verifyTerminalLink(link),actual=terminalUser(fresh);store.verify(grant.sid,actual);
+    const result=normalLoginResult(actual,grant,{maxExpiresAt:fresh.linkExpiresAt});result.user.terminalIdentity=fresh.terminalIdentity;return result;
+  }catch(error){
+    if(grant)await closeTerminalGrant(store,grant,link).catch(()=>{});
+    else if([401,403].includes(error.statusCode))store.revoke(refreshToken);
+    throw error;
+  }
+}
+export async function logoutNormalCrmSessionVerified(refreshToken){
+  const store=refreshStoreForToken(refreshToken,{includeRetired:true});
+  const link=store?.terminalLinkForToken(refreshToken,{includeRetired:true,includeRevoked:true});
+  const result=store?.revoke(refreshToken)||{loggedOut:true};
+  if(link){if(!terminalPeer)throw terminalReject();await terminalPeer.revoke(link);}return result;
+}
+export async function logoutNormalAccessSessionVerified(accessToken){
+  const user=verifyCrmAccessToken(accessToken),binding=linkedTerminalGrants.get(user);
+  const result=logoutNormalAccessSession(accessToken);
+  if(binding){if(!terminalPeer)throw terminalReject();await terminalPeer.revoke(binding.link);}return result;
 }
 
 export function assertCrmPermission(user, permissionKey) {

@@ -9,6 +9,7 @@ import {installTestAdminSession} from '../apps/gateway/src/services/testAdminSes
 import {installTestPersonnelSession} from '../apps/gateway/src/services/testPersonnelSession.mjs';
 import {resolveTestEndpoints} from './test-endpoints.mjs';
 import {normalRefreshUserPolicy} from '../apps/gateway/src/services/normalRefreshSession.mjs';
+import {configuredTerminalHandoffPeer} from '../apps/gateway/src/services/terminalHandoffPeer.mjs';
 const mime = { '.html':'text/html; charset=utf-8', '.js':'text/javascript', '.css':'text/css', '.png':'image/png', '.svg':'image/svg+xml', '.woff2':'font/woff2' };
 
 export function validateTestLanAddress(value='') {
@@ -118,6 +119,10 @@ const cleanRefresh=endpoints.cleanSynthetic?{
   CRM_NORMAL_REFRESH_USER_ID:env.CRM_NORMAL_REFRESH_ENABLED==='true'?env.CRM_NORMAL_REFRESH_USER_ID:'',
   CRM_NORMAL_REFRESH_JOURNAL_PATH:env.CRM_NORMAL_REFRESH_ENABLED==='true'?env.CRM_NORMAL_REFRESH_JOURNAL_PATH:'',
 }:null;
+const terminalHandoff={
+  CRM_TERMINAL_HANDOFF_ENABLED:endpoints.cleanSynthetic&&env.CRM_TERMINAL_HANDOFF_ENABLED==='true'?'true':'false',
+  CRM_TERMINAL_PEER_KEY:endpoints.cleanSynthetic&&env.CRM_TERMINAL_HANDOFF_ENABLED==='true'?env.CRM_TERMINAL_PEER_KEY:'',
+};
 const paidAi=env.CRM_PAID_AI_ENABLED==='true'&&!endpoints.isolated;
 const {lanAddress,tailscaleAddress,peers}=testUiNetworkSettings(env,endpoints);
 const uiOrigins=[endpoints.uiOrigin,...[lanAddress,tailscaleAddress].filter(Boolean).map(address=>`http://${address}:${endpoints.ui}`)];
@@ -137,6 +142,7 @@ const salesRules=path.join(runtime,'ai-sales-rules.json');
 const loaded=loadBaseline({ path: env.CRM_BASELINE_ENV, processEnv:env, override: true, quiet: true });
 if(loaded?.error)throw Error('CRM_BASELINE_ENV_UNAVAILABLE');
 Object.assign(env, {
+  ...terminalHandoff,
   ...requests,
   WHATSAPP_CRM_PORT: String(endpoints.gateway), CRM_UI_ORIGIN: endpoints.uiOrigin,
   WHATSAPP_CRM_CORS_ORIGINS: uiOrigins.join(','),
@@ -162,6 +168,7 @@ Object.assign(env, {
 if(endpoints.isolated)Object.assign(env,{WHATSAPP_SEND_ENABLED:'false',WHATSAPP_LIVE_SEND_APPROVED:'false',WAAPI_CHATWOOT_BRIDGE_ENABLED:'false',WAAPI_INCOMING_READER_ENABLED:'false',CRM_AI_SALES_MODE:'off'});
 if(endpoints.cleanSynthetic)Object.assign(env,{CRM_TEST_PROFILE:endpoints.profile,CRM_TEST_TERMINAL_PERSONNEL_USERNAME:'',CRM_CUSTOMER_PRODUCT_REQUEST_ENABLED:'false',CRM_CUSTOMER_PRODUCT_REQUEST_ISSUER_IDS:'',CRM_NORMAL_REFRESH_ENABLED:'false',CRM_SEMIH_TEST_CONTINUE_ENABLED:'false',CHATWOOT_INBOX_READ_ENABLED:'false',CHATWOOT_INBOX_FALLBACK_ENABLED:'false',CRM_PAID_AI_ENABLED:'false',OPENAI_API_KEY:'',WAAPI_API_KEY:'',CHATWOOT_API_ACCESS_TOKEN:'',EVOLUTION_API_KEY:'',CRM_OUTBOUND_NAMESPACE:'melisa-crm:clean-synthetic-20261022'});
 if(cleanRefresh){Object.assign(env,cleanRefresh);if(cleanRefresh.CRM_NORMAL_REFRESH_ENABLED==='true')normalRefreshUserPolicy(env);}
+if(terminalHandoff.CRM_TERMINAL_HANDOFF_ENABLED==='true')configuredTerminalHandoffPeer({config:env});
 if(requests.CRM_CUSTOMER_PRODUCT_REQUEST_ENABLED==='true')env.CRM_SEMIH_TEST_CONTINUE_ENABLED='false';
 }
 export async function createTestCustomerProductRequestIntegration({environment=process.env,endpoints=resolveTestEndpoints(environment),Router,catalogReader}={}){

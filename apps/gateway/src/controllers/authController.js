@@ -1,5 +1,5 @@
 import { refreshWaapiReadiness } from '../services/waapiReadiness.js';
-import { authenticateCrmUser, publicCrmUser, refreshNormalCrmSession, logoutNormalCrmSession, logoutNormalAccessSession, refreshSemihCrmSession, logoutSemihCrmSession, rememberedSemihCrmUser, semihTestContinueEnabled } from '../services/crmAuthService.js';
+import { authenticateCrmUser, authenticateCrmTerminalHandoff, publicCrmUser, refreshNormalCrmSessionVerified, logoutNormalCrmSessionVerified, logoutNormalAccessSessionVerified, refreshSemihCrmSession, logoutSemihCrmSession, rememberedSemihCrmUser, semihTestContinueEnabled } from '../services/crmAuthService.js';
 import { semihCookieToken, semihSameOrigin, semihBrowserLogin, writeSemihCookie, clearSemihCookie, clearRejectedSemihCookie } from '../services/semihTestCookie.mjs';
 import { ok } from '../utils/response.js';
 import { catalogAccess } from '../services/crmCatalogAccess.mjs';
@@ -31,15 +31,15 @@ function cookieRefreshToken(req){
   if(!req.body||Array.isArray(req.body)||Object.keys(req.body).length)throw Object.assign(new Error('Oturum isteği geçerli değil.'),{code:'AUTH_TOKEN_INVALID',statusCode:401});
   return semihCookieToken(req);
 }
-export function postAuthRefresh(req,res,next){
+export async function postAuthRefresh(req,res,next){
   try{
     res.set('Cache-Control','no-store');
     const nativeMode=typeof req.body?.refreshToken==='string';
-    const result=nativeMode?refreshNormalCrmSession(req.body.refreshToken):refreshSemihCrmSession(cookieRefreshToken(req));
+    const result=nativeMode?await refreshNormalCrmSessionVerified(req.body.refreshToken):refreshSemihCrmSession(cookieRefreshToken(req));
     return ok(res,nativeMode?result:writeSemihCookie(res,result),{source:'crm-auth'});
   }catch(error){clearRejectedSemihCookie(req,res,error);return next(error);}
 }
-export function postAuthLogout(req,res,next){
+export async function postAuthLogout(req,res,next){
   try{
     res.set('Cache-Control','no-store');
     const authorization=req.get('authorization')||'';
@@ -49,14 +49,22 @@ export function postAuthLogout(req,res,next){
       if(!/^Bearer [^\s]+$/.test(authorization)||!req.is('application/json')||!req.body||Array.isArray(req.body)
         ||Object.keys(req.body).length||Object.keys(req.query||{}).length
         ||/melisa-crm-semih-test(?:-request-proof)?-refresh=/.test(req.get('cookie')||''))throw Object.assign(new Error('Oturum isteği geçerli değil.'),{code:'AUTH_TOKEN_INVALID',statusCode:401});
-      return ok(res,logoutNormalAccessSession(authorization.slice(7)),{source:'crm-auth'});
+      return ok(res,await logoutNormalAccessSessionVerified(authorization.slice(7)),{source:'crm-auth'});
     }
     const nativeMode=typeof req.body?.refreshToken==='string';
     const token=nativeMode?req.body.refreshToken:cookieRefreshToken(req);
-    const result=nativeMode?logoutNormalCrmSession(token):semihTestContinueEnabled()&&!token?{loggedOut:true}:logoutSemihCrmSession(token);
+    const result=nativeMode?await logoutNormalCrmSessionVerified(token):semihTestContinueEnabled()&&!token?{loggedOut:true}:logoutSemihCrmSession(token);
     if(!nativeMode)clearSemihCookie(res);
     return ok(res,result,{source:'crm-auth'});
   }catch(error){clearRejectedSemihCookie(req,res,error);return next(error);}
+}
+export async function postAuthTerminalHandoff(req,res,next){
+  try{
+    res.set('Cache-Control','no-store');
+    if(!req.is('application/json')||Object.keys(req.query||{}).length||req.get('authorization')||req.get('cookie')
+      ||req.get('origin')&&req.get('origin')!==req.body?.crmOrigin)throw Object.assign(Error('Terminal giriş isteği geçerli değil.'),{statusCode:403,code:'CRM_TERMINAL_IDENTITY_REQUIRED'});
+    return ok(res,await authenticateCrmTerminalHandoff(req.body),{source:'crm-auth'});
+  }catch(error){return next(error);}
 }
 export function getAuthRemembered(req,res,next){
   try{
