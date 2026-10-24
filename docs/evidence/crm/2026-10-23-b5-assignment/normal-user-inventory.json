@@ -766,7 +766,7 @@
     "combinedLeaves": 74,
     "headings": 17
   },
-  "next": "Existing B5 real-person/account/role/representative/assignment mapping and owner application receipt; no guessing from sample users. Preserve Semih and current IDs. Human/device acceptance and two recorded UI limitations remain pending.",
+  "next": "ERP owner installation receipt for the B5 presentation source635; parallel dependency-ready E1 exact-origin consumer source, with existing normal auth/refresh/identity prerequisites explicit. Do not infer identities or unblock clean refresh guards.",
   "settingsEntryFix": {
     "sourceCommit": "4ead69a529b45e00669ad930c744a12af37f631d",
     "changedProductionFiles": [
@@ -1080,5 +1080,817 @@
       "Long account display names are visually truncated in inventory cards",
       "Generic Settings assignment label is inconsistent with read-only inventory API assignment=false; no assignment action was performed"
     ]
+  },
+  "presentationFix": {
+    "sourceCommit": "63513b21ff931f2b6516c735479c095955213a13",
+    "status": "SOURCE_READY_INSTALLATION_PENDING",
+    "directHumanSource": "01a16b6d-3d65-7853-970f-db1e6474b083",
+    "deadline": "2026-10-25T10:00:00+03:00",
+    "noLongNewWorkAfter": "2026-10-25T09:30:00+03:00",
+    "behavior": "Inventory-only two-column heading and full display-name/username wrapping. Settings description consumes the existing effective canAssign value; no auth, role, assignment handler or API change.",
+    "tests": {
+      "newRegressionTests": 2,
+      "newRegressionScenarios": 4,
+      "originalSourceResult": "2 FAIL",
+      "fixedResult": "2 PASS",
+      "kind": "Actual App normal Settings event handlers with offline SSR, not normal GUI or human acceptance",
+      "command": "node --import ./tests/offline-test-guard.mjs --test --test-isolation=none --test-reporter=tap --test-timeout=90000 --test-concurrency=1 --test-name-pattern=\"B5 settings assignment description\" apps/frontend/tests/text-draft-app.test.mjs",
+      "durationMs": 8175.8389,
+      "fixtureCorrection": "An intermediate fixture used inbox.assignmentEnabled at an unsupported level. It was corrected to actual inbox.capabilities.assign, without widening production authorization.",
+      "runnerLimitation": "The Node24 process-isolated attempt produced no output and was stopped by exact verified local test PIDs only. The same offline guard passed with test-isolation=none; no shared process or service was touched."
+    },
+    "localProductionBuild": {
+      "sourceCommit": "63513b21ff931f2b6516c735479c095955213a13",
+      "NODE_ENV": "production",
+      "profileArgument": "--profile=clean-synthetic-20261022",
+      "buildSeconds": 11.66,
+      "result": "PASS",
+      "installed": false,
+      "assets": [
+        {
+          "path": "/assets/index-CZ-0Gx-l.js",
+          "bytes": 901129,
+          "sha256": "9a149af3f1f3aa94be97e7e438753a4b7bcf0d416508898841adf108b0b61ee4"
+        },
+        {
+          "path": "/assets/index-C1zRRMAe.css",
+          "bytes": 167649,
+          "sha256": "3358f7ded98d63dc4e364d2557174490914b08bda7c0016262ed1a8f63e851da"
+        }
+      ]
+    },
+    "initialBuildScope": "The first14.67s compilation did not select NODE_ENV=production and is not the deliverable production build. The11.66s build explicitly selected production plus the existing fixed TEST profile.",
+    "layout": {
+      "kind": "isolated real component and stylesheet in IAB with mocked API only; not installed CRM or human/device acceptance",
+      "zoomMeasurementCorrection": "IAB zoom expands CSS width; first requested1440 was actual1600 and evidence renamed. Later widths asserted from window.innerWidth.",
+      "beforeActual1600": [
+        {
+          "height": 14,
+          "name": "Uzun Adlı Örnek Satış ve Müşteri İlişkileri Yöneticisi",
+          "overflow": "hidden",
+          "scrollHeight": 14,
+          "scrollWidth": 265,
+          "textOverflow": "ellipsis",
+          "whiteSpace": "nowrap",
+          "width": 43
+        },
+        {
+          "height": 14,
+          "name": "ÇokUzunBoşluksuzSentetikPersonelHesapAdıSınırKontrolü",
+          "overflow": "hidden",
+          "scrollHeight": 14,
+          "scrollWidth": 303,
+          "textOverflow": "ellipsis",
+          "whiteSpace": "nowrap",
+          "width": 43
+        },
+        {
+          "height": 14,
+          "name": "Temsilci Bağlantısı Olmayan Örnek Yönetici Hesabı",
+          "overflow": "hidden",
+          "scrollHeight": 14,
+          "scrollWidth": 260,
+          "textOverflow": "ellipsis",
+          "whiteSpace": "nowrap",
+          "width": 43
+        },
+        {
+          "height": 14,
+          "name": "Kapalı Örnek Personel Hesabı",
+          "overflow": "hidden",
+          "scrollHeight": 14,
+          "scrollWidth": 152,
+          "textOverflow": "ellipsis",
+          "whiteSpace": "nowrap",
+          "width": 43
+        }
+      ],
+      "afterActual1600": {
+        "note": "initial1600 captured separately, full names visible"
+      },
+      "after1440": {
+        "documentWidth": 1440,
+        "height": 1000,
+        "names": [
+          {
+            "height": 14,
+            "name": "Uzun Adlı Örnek Satış ve Müşteri İlişkileri Yöneticisi",
+            "overflow": "visible",
+            "scrollHeight": 14,
+            "scrollWidth": 390,
+            "whiteSpace": "normal",
+            "width": 390
+          },
+          {
+            "height": 14,
+            "name": "ÇokUzunBoşluksuzSentetikPersonelHesapAdıSınırKontrolü",
+            "overflow": "visible",
+            "scrollHeight": 14,
+            "scrollWidth": 390,
+            "whiteSpace": "normal",
+            "width": 390
+          },
+          {
+            "height": 14,
+            "name": "Temsilci Bağlantısı Olmayan Örnek Yönetici Hesabı",
+            "overflow": "visible",
+            "scrollHeight": 14,
+            "scrollWidth": 390,
+            "whiteSpace": "normal",
+            "width": 390
+          },
+          {
+            "height": 14,
+            "name": "Kapalı Örnek Personel Hesabı",
+            "overflow": "visible",
+            "scrollHeight": 14,
+            "scrollWidth": 386,
+            "whiteSpace": "normal",
+            "width": 386
+          }
+        ],
+        "width": 1440
+      },
+      "after1024": {
+        "documentWidth": 1024,
+        "names": [
+          {
+            "height": 14,
+            "name": "Uzun Adlı Örnek Satış ve Müşteri İlişkileri Yöneticisi",
+            "overflow": "visible",
+            "scrollHeight": 14,
+            "scrollWidth": 424,
+            "whiteSpace": "normal",
+            "width": 424
+          },
+          {
+            "height": 14,
+            "name": "ÇokUzunBoşluksuzSentetikPersonelHesapAdıSınırKontrolü",
+            "overflow": "visible",
+            "scrollHeight": 14,
+            "scrollWidth": 424,
+            "whiteSpace": "normal",
+            "width": 424
+          },
+          {
+            "height": 14,
+            "name": "Temsilci Bağlantısı Olmayan Örnek Yönetici Hesabı",
+            "overflow": "visible",
+            "scrollHeight": 14,
+            "scrollWidth": 424,
+            "whiteSpace": "normal",
+            "width": 424
+          },
+          {
+            "height": 14,
+            "name": "Kapalı Örnek Personel Hesabı",
+            "overflow": "visible",
+            "scrollHeight": 14,
+            "scrollWidth": 420,
+            "whiteSpace": "normal",
+            "width": 420
+          }
+        ],
+        "width": 1024
+      },
+      "after390": {
+        "documentWidth": 390,
+        "names": [
+          {
+            "height": 14,
+            "name": "Uzun Adlı Örnek Satış ve Müşteri İlişkileri Yöneticisi",
+            "overflow": "visible",
+            "scrollHeight": 14,
+            "scrollWidth": 274,
+            "whiteSpace": "normal",
+            "width": 274
+          },
+          {
+            "height": 29,
+            "name": "ÇokUzunBoşluksuzSentetikPersonelHesapAdıSınırKontrolü",
+            "overflow": "visible",
+            "scrollHeight": 29,
+            "scrollWidth": 274,
+            "whiteSpace": "normal",
+            "width": 274
+          },
+          {
+            "height": 14,
+            "name": "Temsilci Bağlantısı Olmayan Örnek Yönetici Hesabı",
+            "overflow": "visible",
+            "scrollHeight": 14,
+            "scrollWidth": 274,
+            "whiteSpace": "normal",
+            "width": 274
+          },
+          {
+            "height": 14,
+            "name": "Kapalı Örnek Personel Hesabı",
+            "overflow": "visible",
+            "scrollHeight": 14,
+            "scrollWidth": 270,
+            "whiteSpace": "normal",
+            "width": 270
+          }
+        ],
+        "width": 390
+      }
+    },
+    "screenshots": [
+      {
+        "path": "ux-after-1024.jpg",
+        "bytes": 66007,
+        "sha256": "674ac48fb7982f3b7da87d1ad48146d6ecee7b8686e7db9339918e3ffcd61dfa"
+      },
+      {
+        "path": "ux-after-1440.jpg",
+        "bytes": 77216,
+        "sha256": "0a81a7de1609a21b78a362f40eedebe4466c05d7df5f215327c3575048aabe1f"
+      },
+      {
+        "path": "ux-after-1600.jpg",
+        "bytes": 80841,
+        "sha256": "6e0c8c3e4b1d7f34789d911c7d6ce5d026e42185432a1559f2cdac8012601f87"
+      },
+      {
+        "path": "ux-after-390.jpg",
+        "bytes": 52975,
+        "sha256": "ed9ca1eeedd147463ebf01d9e9359678d403a2514738060c71fa0d20c6e05ab2"
+      },
+      {
+        "path": "ux-before-1600.jpg",
+        "bytes": 73187,
+        "sha256": "6555913a076aa31b72b3263d1596e7619136ba09be7cb842e3fdcd8e5ca572f4"
+      }
+    ],
+    "review": {
+      "agent": "/root/az_independent_reviewer",
+      "openP1P2": 0,
+      "scope": "Four source/test files read-only; not browser, runtime or human acceptance"
+    },
+    "secretScan": "staged source PASS,0 findings",
+    "ci": {
+      "sourceCommit": "63513b21ff931f2b6516c735479c095955213a13",
+      "status": "COMPLETED_SUCCESS",
+      "jobsPassed": 7,
+      "runs": [
+        {
+          "conclusion": "success",
+          "databaseId": 40048602545,
+          "headSha": "63513b21ff931f2b6516c735479c095955213a13",
+          "jobs": [
+            {
+              "completedAt": "2026-10-24T01:13:04Z",
+              "conclusion": "success",
+              "databaseId": 120735925222,
+              "name": "quality-build-test",
+              "startedAt": "2026-10-24T01:10:58Z",
+              "status": "completed",
+              "steps": [
+                {
+                  "completedAt": "2026-10-24T01:10:59Z",
+                  "conclusion": "success",
+                  "name": "Set up job",
+                  "number": 1,
+                  "startedAt": "2026-10-24T01:10:59Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-10-24T01:11:01Z",
+                  "conclusion": "success",
+                  "name": "Checkout source",
+                  "number": 2,
+                  "startedAt": "2026-10-24T01:10:59Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-10-24T01:11:03Z",
+                  "conclusion": "success",
+                  "name": "Use Node.js 24",
+                  "number": 3,
+                  "startedAt": "2026-10-24T01:11:01Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-10-24T01:11:08Z",
+                  "conclusion": "success",
+                  "name": "Install locked frontend dependencies without lifecycle scripts",
+                  "number": 4,
+                  "startedAt": "2026-10-24T01:11:03Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-10-24T01:11:09Z",
+                  "conclusion": "success",
+                  "name": "Install locked gateway dependencies without lifecycle scripts",
+                  "number": 5,
+                  "startedAt": "2026-10-24T01:11:08Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-10-24T01:11:18Z",
+                  "conclusion": "success",
+                  "name": "Check JavaScript syntax",
+                  "number": 6,
+                  "startedAt": "2026-10-24T01:11:09Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-10-24T01:11:24Z",
+                  "conclusion": "success",
+                  "name": "Build frontend with offline guard",
+                  "number": 7,
+                  "startedAt": "2026-10-24T01:11:18Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-10-24T01:13:02Z",
+                  "conclusion": "success",
+                  "name": "Run all offline frontend, gateway and contract tests",
+                  "number": 8,
+                  "startedAt": "2026-10-24T01:11:24Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-10-24T01:13:02Z",
+                  "conclusion": "success",
+                  "name": "Post Use Node.js 24",
+                  "number": 15,
+                  "startedAt": "2026-10-24T01:13:02Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-10-24T01:13:02Z",
+                  "conclusion": "success",
+                  "name": "Post Checkout source",
+                  "number": 16,
+                  "startedAt": "2026-10-24T01:13:02Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-10-24T01:13:02Z",
+                  "conclusion": "success",
+                  "name": "Complete job",
+                  "number": 17,
+                  "startedAt": "2026-10-24T01:13:02Z",
+                  "status": "completed"
+                }
+              ],
+              "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/40048602545/job/120735925222"
+            },
+            {
+              "completedAt": "2026-10-24T01:11:41Z",
+              "conclusion": "success",
+              "databaseId": 120735925413,
+              "name": "windows-startup-test",
+              "startedAt": "2026-10-24T01:10:58Z",
+              "status": "completed",
+              "steps": [
+                {
+                  "completedAt": "2026-10-24T01:10:59Z",
+                  "conclusion": "success",
+                  "name": "Set up job",
+                  "number": 1,
+                  "startedAt": "2026-10-24T01:10:58Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-10-24T01:11:06Z",
+                  "conclusion": "success",
+                  "name": "Checkout source",
+                  "number": 2,
+                  "startedAt": "2026-10-24T01:10:59Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-10-24T01:11:13Z",
+                  "conclusion": "success",
+                  "name": "Use Node.js 24",
+                  "number": 3,
+                  "startedAt": "2026-10-24T01:11:06Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-10-24T01:11:37Z",
+                  "conclusion": "success",
+                  "name": "Check Windows PowerShell startup contracts without installing tasks",
+                  "number": 4,
+                  "startedAt": "2026-10-24T01:11:13Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-10-24T01:11:37Z",
+                  "conclusion": "success",
+                  "name": "Post Use Node.js 24",
+                  "number": 7,
+                  "startedAt": "2026-10-24T01:11:37Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-10-24T01:11:39Z",
+                  "conclusion": "success",
+                  "name": "Post Checkout source",
+                  "number": 8,
+                  "startedAt": "2026-10-24T01:11:37Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-10-24T01:11:39Z",
+                  "conclusion": "success",
+                  "name": "Complete job",
+                  "number": 9,
+                  "startedAt": "2026-10-24T01:11:39Z",
+                  "status": "completed"
+                }
+              ],
+              "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/40048602545/job/120735925413"
+            },
+            {
+              "completedAt": "2026-10-24T01:11:05Z",
+              "conclusion": "success",
+              "databaseId": 120735925550,
+              "name": "secret-scan",
+              "startedAt": "2026-10-24T01:10:58Z",
+              "status": "completed",
+              "steps": [
+                {
+                  "completedAt": "2026-10-24T01:11:00Z",
+                  "conclusion": "success",
+                  "name": "Set up job",
+                  "number": 1,
+                  "startedAt": "2026-10-24T01:10:59Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-10-24T01:11:02Z",
+                  "conclusion": "success",
+                  "name": "Checkout full source history",
+                  "number": 2,
+                  "startedAt": "2026-10-24T01:11:00Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-10-24T01:11:03Z",
+                  "conclusion": "success",
+                  "name": "Scan reachable history with pinned Gitleaks and masked findings",
+                  "number": 3,
+                  "startedAt": "2026-10-24T01:11:02Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-10-24T01:11:04Z",
+                  "conclusion": "success",
+                  "name": "Post Checkout full source history",
+                  "number": 6,
+                  "startedAt": "2026-10-24T01:11:03Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-10-24T01:11:04Z",
+                  "conclusion": "success",
+                  "name": "Complete job",
+                  "number": 7,
+                  "startedAt": "2026-10-24T01:11:04Z",
+                  "status": "completed"
+                }
+              ],
+              "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/40048602545/job/120735925550"
+            }
+          ],
+          "status": "completed",
+          "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/40048602545"
+        },
+        {
+          "conclusion": "success",
+          "databaseId": 40048594210,
+          "headSha": "63513b21ff931f2b6516c735479c095955213a13",
+          "jobs": [
+            {
+              "completedAt": "2026-10-24T01:12:35Z",
+              "conclusion": "success",
+              "databaseId": 120735896932,
+              "name": "quality-build-test",
+              "startedAt": "2026-10-24T01:10:50Z",
+              "status": "completed",
+              "steps": [
+                {
+                  "completedAt": "2026-10-24T01:10:52Z",
+                  "conclusion": "success",
+                  "name": "Set up job",
+                  "number": 1,
+                  "startedAt": "2026-10-24T01:10:51Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-10-24T01:10:53Z",
+                  "conclusion": "success",
+                  "name": "Checkout source",
+                  "number": 2,
+                  "startedAt": "2026-10-24T01:10:52Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-10-24T01:10:55Z",
+                  "conclusion": "success",
+                  "name": "Use Node.js 24",
+                  "number": 3,
+                  "startedAt": "2026-10-24T01:10:53Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-10-24T01:10:59Z",
+                  "conclusion": "success",
+                  "name": "Install locked frontend dependencies without lifecycle scripts",
+                  "number": 4,
+                  "startedAt": "2026-10-24T01:10:55Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-10-24T01:10:59Z",
+                  "conclusion": "success",
+                  "name": "Install locked gateway dependencies without lifecycle scripts",
+                  "number": 5,
+                  "startedAt": "2026-10-24T01:10:59Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-10-24T01:11:08Z",
+                  "conclusion": "success",
+                  "name": "Check JavaScript syntax",
+                  "number": 6,
+                  "startedAt": "2026-10-24T01:10:59Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-10-24T01:11:13Z",
+                  "conclusion": "success",
+                  "name": "Build frontend with offline guard",
+                  "number": 7,
+                  "startedAt": "2026-10-24T01:11:08Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-10-24T01:12:33Z",
+                  "conclusion": "success",
+                  "name": "Run all offline frontend, gateway and contract tests",
+                  "number": 8,
+                  "startedAt": "2026-10-24T01:11:13Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-10-24T01:12:33Z",
+                  "conclusion": "success",
+                  "name": "Post Use Node.js 24",
+                  "number": 15,
+                  "startedAt": "2026-10-24T01:12:33Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-10-24T01:12:33Z",
+                  "conclusion": "success",
+                  "name": "Post Checkout source",
+                  "number": 16,
+                  "startedAt": "2026-10-24T01:12:33Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-10-24T01:12:33Z",
+                  "conclusion": "success",
+                  "name": "Complete job",
+                  "number": 17,
+                  "startedAt": "2026-10-24T01:12:33Z",
+                  "status": "completed"
+                }
+              ],
+              "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/40048594210/job/120735896932"
+            },
+            {
+              "completedAt": "2026-10-24T01:10:57Z",
+              "conclusion": "success",
+              "databaseId": 120735897108,
+              "name": "secret-scan",
+              "startedAt": "2026-10-24T01:10:51Z",
+              "status": "completed",
+              "steps": [
+                {
+                  "completedAt": "2026-10-24T01:10:52Z",
+                  "conclusion": "success",
+                  "name": "Set up job",
+                  "number": 1,
+                  "startedAt": "2026-10-24T01:10:51Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-10-24T01:10:53Z",
+                  "conclusion": "success",
+                  "name": "Checkout full source history",
+                  "number": 2,
+                  "startedAt": "2026-10-24T01:10:52Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-10-24T01:10:55Z",
+                  "conclusion": "success",
+                  "name": "Scan reachable history with pinned Gitleaks and masked findings",
+                  "number": 3,
+                  "startedAt": "2026-10-24T01:10:53Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-10-24T01:10:55Z",
+                  "conclusion": "success",
+                  "name": "Post Checkout full source history",
+                  "number": 6,
+                  "startedAt": "2026-10-24T01:10:55Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-10-24T01:10:55Z",
+                  "conclusion": "success",
+                  "name": "Complete job",
+                  "number": 7,
+                  "startedAt": "2026-10-24T01:10:55Z",
+                  "status": "completed"
+                }
+              ],
+              "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/40048594210/job/120735897108"
+            },
+            {
+              "completedAt": "2026-10-24T01:11:38Z",
+              "conclusion": "success",
+              "databaseId": 120735897116,
+              "name": "windows-startup-test",
+              "startedAt": "2026-10-24T01:10:50Z",
+              "status": "completed",
+              "steps": [
+                {
+                  "completedAt": "2026-10-24T01:10:52Z",
+                  "conclusion": "success",
+                  "name": "Set up job",
+                  "number": 1,
+                  "startedAt": "2026-10-24T01:10:51Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-10-24T01:11:01Z",
+                  "conclusion": "success",
+                  "name": "Checkout source",
+                  "number": 2,
+                  "startedAt": "2026-10-24T01:10:52Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-10-24T01:11:08Z",
+                  "conclusion": "success",
+                  "name": "Use Node.js 24",
+                  "number": 3,
+                  "startedAt": "2026-10-24T01:11:01Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-10-24T01:11:34Z",
+                  "conclusion": "success",
+                  "name": "Check Windows PowerShell startup contracts without installing tasks",
+                  "number": 4,
+                  "startedAt": "2026-10-24T01:11:08Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-10-24T01:11:34Z",
+                  "conclusion": "success",
+                  "name": "Post Use Node.js 24",
+                  "number": 7,
+                  "startedAt": "2026-10-24T01:11:34Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-10-24T01:11:37Z",
+                  "conclusion": "success",
+                  "name": "Post Checkout source",
+                  "number": 8,
+                  "startedAt": "2026-10-24T01:11:34Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-10-24T01:11:37Z",
+                  "conclusion": "success",
+                  "name": "Complete job",
+                  "number": 9,
+                  "startedAt": "2026-10-24T01:11:37Z",
+                  "status": "completed"
+                }
+              ],
+              "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/40048594210/job/120735897116"
+            }
+          ],
+          "status": "completed",
+          "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/40048594210"
+        },
+        {
+          "conclusion": "success",
+          "databaseId": 40048602594,
+          "headSha": "63513b21ff931f2b6516c735479c095955213a13",
+          "jobs": [
+            {
+              "completedAt": "2026-10-24T01:11:04Z",
+              "conclusion": "success",
+              "databaseId": 120735924990,
+              "name": "ai-sales-offline",
+              "startedAt": "2026-10-24T01:10:58Z",
+              "status": "completed",
+              "steps": [
+                {
+                  "completedAt": "2026-10-24T01:10:59Z",
+                  "conclusion": "success",
+                  "name": "Set up job",
+                  "number": 1,
+                  "startedAt": "2026-10-24T01:10:58Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-10-24T01:11:00Z",
+                  "conclusion": "success",
+                  "name": "Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+                  "number": 2,
+                  "startedAt": "2026-10-24T01:10:59Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-10-24T01:11:00Z",
+                  "conclusion": "success",
+                  "name": "Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020",
+                  "number": 3,
+                  "startedAt": "2026-10-24T01:11:00Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-10-24T01:11:01Z",
+                  "conclusion": "success",
+                  "name": "Check focused source syntax",
+                  "number": 4,
+                  "startedAt": "2026-10-24T01:11:00Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-10-24T01:11:01Z",
+                  "conclusion": "success",
+                  "name": "Run isolated tests without provider credentials or dependency installation",
+                  "number": 5,
+                  "startedAt": "2026-10-24T01:11:01Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-10-24T01:11:01Z",
+                  "conclusion": "success",
+                  "name": "Post Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020",
+                  "number": 9,
+                  "startedAt": "2026-10-24T01:11:01Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-10-24T01:11:02Z",
+                  "conclusion": "success",
+                  "name": "Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+                  "number": 10,
+                  "startedAt": "2026-10-24T01:11:01Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-10-24T01:11:02Z",
+                  "conclusion": "success",
+                  "name": "Complete job",
+                  "number": 11,
+                  "startedAt": "2026-10-24T01:11:02Z",
+                  "status": "completed"
+                }
+              ],
+              "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/40048602594/job/120735924990"
+            }
+          ],
+          "status": "completed",
+          "url": "https://github.com/melihsnyldzz-ui/melisa-crm/actions/runs/40048602594"
+        }
+      ]
+    },
+    "handoff": {
+      "owner": "ERP main agent",
+      "installation": "PENDING",
+      "currentInstalledFrontend": "a32e071221f5f242dc08996b8ace0c1b1294214e",
+      "currentInstalledBackend": "c1bc351218c3db70ac2b3fa7cff5ba2bf7560ffb",
+      "productionFiles": [
+        "apps/frontend/src/App.jsx",
+        "apps/frontend/src/CrmUserInventory.jsx",
+        "apps/frontend/src/styles.css"
+      ],
+      "backendChanged": false,
+      "build": "NODE_ENV=production; node ../../scripts/ci/build-frontend.mjs --profile=clean-synthetic-20261022 (from apps/frontend)",
+      "note": "Local dist is a source build, not a sealed package or deployment. ERP alone packages/installs and returns source/package/runtime/rollback/normal GUI evidence."
+    },
+    "remaining": "Real-person/account/role/representative/customer mapping, normal installed GUI for this presentation fix, physical device and human acceptance pending. Existing synthetic technical inventory remains complete; no finish counter increased.",
+    "evidenceReview": {
+      "agent": "/root/az_independent_reviewer",
+      "openP1P2": 0,
+      "scope": "Five JPG bytes/digests and wrapping, relative links, exact source635 versus installeda32/c1, isolated component browser versus pending human/device acceptance"
+    }
   }
 }

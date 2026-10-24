@@ -1,5 +1,13 @@
 ## CRM-UA11 — 15 Ekim — son normal ekran ve fiziksel mobil kabulü
 
+## 24 Ekim 04:11 TR — B5 iki sunum eksiği kaynakta düzeltildi
+
+**63513b21ff931f2b6516c735479c095955213a13** yalnız frontend sunumunu değiştirir: envanter kartı avatarsız iki sütunlu başlıkla tam ad/kullanıcı adını sarar; Ayarlar atama açıklaması menü/handler ile aynı mevcut etkin `canAssign` sonucunu kullanır. Yetki/rol/atama işlemi/API değişmedi. Yeni iki App regresyonu eski kaynakta2FAIL → düzeltmede2PASS (4senaryo); doğru profilli üretim build11,66sn PASS. Bağımsız kaynak review açıkP1/P2=0; 635 exact CI PR40048602545/push40048594210/AI40048602594 tamamlandı: SUCCESS /7job.
+
+Gerçek bileşen/CSS, API sınırı mock olan izole IAB ekranında denendi: eski ad alanı43px/ellipsis; düzeltmede gerçek `window.innerWidth`1440/1024/390 ve yatay taşma yok. Boşluksuz uzun ad390'da iki satıra sarıldı. Bu **sentetik bileşen tarayıcı kanıtı**, kurulu CRM/normal giriş veya insan/telefon kabulü değildir. Geçici loopback fixture durduruldu; viewport sıfırlandı. İlk1440 isteği tarayıcı zoom'uyla gerçek1600 olduğu görülünce dosyalar1600 olarak adlandırıldı; sonraki boyutlar DOM'dan doğrulandı.
+
+**SOURCE_READY / kurulum ve yeni normal GUI BEKLİYOR:** Mevcut kurulu frontend a32/backend c1 korunuyor; yeni source635 henüz ERP tarafından paketlenmiş/kurulmuş sayılmaz. Kurulum ERP sahibine devredilir. Gerçek kişi eşlemesi ve son insan/cihaz kabulü ayrıca BEKLİYOR;25/12🟢/13🟡/0🔴 ve17/74 aynı. Kullanıcı adına seçilen geri alınabilir karar, sadece envanter kartında sarma ve mevcut etkin atama sonucunu açıklamada tekrar kullanmaktır. Yeni auth/plan/ajan/Goal/otomasyon yok.
+
 ### 24 Ekim03:37TR — B5 teknik ekran kanıtı; insan kabulü hâlâ BEKLİYOR
 
 Kurulu frontend **a32e071 / CLEAN-CRM-20261024-a32e071221f5-B5PROFILE**, backend **c1bc351**,761dosya/manifest70CB2066 source/paket/runtime eşlendi. Normal ownerChrome **Hesabım → Ayarlar → Hesap envanterini göster**, yenile/fullreload ve oturum korunumu PASS; aynı4hesap ve55→clean-staff. CRM manifest/dosya/kaynak/publicHTTP ve [kaydedilen ekranı](docs/evidence/crm/2026-10-23-b5-assignment/inventory-normal-settings-a32.png) RO gördü; SQL/login yazısı yok.53ownerSQLözet dosyası before/afterGUI byteeş,16listenerkorunumu owner kanıtı. Exacta32CI7/7SUCCESS. [Tam sırsız kanıt](docs/evidence/crm/2026-10-23-b5-assignment/normal-user-inventory.json).

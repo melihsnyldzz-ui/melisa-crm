@@ -1,5 +1,15 @@
 # B5 / C01–C02 / CRM-UA11 — rol ve kaynak yeteneğiyle atama
 
+## 24 Ekim 04:11 TR — B5 iki sunum eksiği kaynakta düzeltildi
+
+**63513b21ff931f2b6516c735479c095955213a13** yalnız frontend sunumunu değiştirir: envanter kartı avatarsız iki sütunlu başlıkla tam ad/kullanıcı adını sarar; Ayarlar atama açıklaması menü/handler ile aynı mevcut etkin `canAssign` sonucunu kullanır. Yetki/rol/atama işlemi/API değişmedi. Yeni iki App regresyonu eski kaynakta2FAIL → düzeltmede2PASS (4senaryo); doğru profilli üretim build11,66sn PASS. Bağımsız kaynak review açıkP1/P2=0; 635 exact CI PR40048602545/push40048594210/AI40048602594 tamamlandı: SUCCESS /7job.
+
+Gerçek bileşen/CSS, API sınırı mock olan izole IAB ekranında denendi: eski ad alanı43px/ellipsis; düzeltmede gerçek `window.innerWidth`1440/1024/390 ve yatay taşma yok. Boşluksuz uzun ad390'da iki satıra sarıldı. Bu **sentetik bileşen tarayıcı kanıtı**, kurulu CRM/normal giriş veya insan/telefon kabulü değildir. Geçici loopback fixture durduruldu; viewport sıfırlandı. İlk1440 isteği tarayıcı zoom'uyla gerçek1600 olduğu görülünce dosyalar1600 olarak adlandırıldı; sonraki boyutlar DOM'dan doğrulandı.
+
+**SOURCE_READY / kurulum ve yeni normal GUI BEKLİYOR:** Mevcut kurulu frontend a32/backend c1 korunuyor; yeni source635 henüz ERP tarafından paketlenmiş/kurulmuş sayılmaz. Kurulum ERP sahibine devredilir. Gerçek kişi eşlemesi ve son insan/cihaz kabulü ayrıca BEKLİYOR;25/12🟢/13🟡/0🔴 ve17/74 aynı. Kullanıcı adına seçilen geri alınabilir karar, sadece envanter kartında sarma ve mevcut etkin atama sonucunu açıklamada tekrar kullanmaktır. Yeni auth/plan/ajan/Goal/otomasyon yok.
+
+[1600 önce](ux-before-1600.jpg) · [1600 sonra](ux-after-1600.jpg) · [1440](ux-after-1440.jpg) · [1024](ux-after-1024.jpg) · [390](ux-after-390.jpg) · [Sırsız source/build/layout kaydı](normal-user-inventory.json). Bu JPG'ler yalnız sentetik bileşen içindir; önceki normal owner PNG'sini değiştirmez.
+
 23 Ekim2026. Bu, mevcut bitiş ağacının dar CRM kaynak düzeltmesi ve salt okunur erişim denetimidir. Yeni gereksinim, atama motoru, yardımcı servis veya kurulum değildir. Teknik kaynak sonucu, kurulu normal hesap kanıtı ve insan kabulü ayrı tutulur.
 
 ## 24 Ekim03:37TR — B5 teknik envanter normal ekranda tamam
